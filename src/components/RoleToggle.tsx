@@ -52,7 +52,10 @@ const RoleToggle: React.FC<RoleToggleProps> = ({ variant = 'compact' }) => {
   const currentConfig = getRoleConfig(currentRole);
   const CurrentIcon = roleIcons[currentRole];
 
+  console.log('RoleToggle rendering with currentRole:', currentRole);
+
   const handleRoleSwitch = (newRole: UserRole) => {
+    console.log('RoleToggle: Switching to role:', newRole);
     switchRole(newRole);
   };
 
@@ -81,8 +84,7 @@ const RoleToggle: React.FC<RoleToggleProps> = ({ variant = 'compact' }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-80" align="start">
-            {Object.values(getRoleConfig('Executive')).map((_, index) => {
-              const role = Object.keys(roleIcons)[index] as UserRole;
+            {(Object.keys(roleIcons) as UserRole[]).map((role) => {
               const config = getRoleConfig(role);
               const Icon = roleIcons[role];
               
@@ -136,12 +138,13 @@ const RoleToggle: React.FC<RoleToggleProps> = ({ variant = 'compact' }) => {
           </p>
         </div>
         <DropdownMenuSeparator />
-        {Object.entries(roleIcons).map(([role, Icon]) => {
-          const config = getRoleConfig(role as UserRole);
+        {(Object.keys(roleIcons) as UserRole[]).map((role) => {
+          const config = getRoleConfig(role);
+          const Icon = roleIcons[role];
           return (
             <DropdownMenuItem
               key={role}
-              onClick={() => handleRoleSwitch(role as UserRole)}
+              onClick={() => handleRoleSwitch(role)}
               className={`gap-2 ${currentRole === role ? 'bg-accent' : ''}`}
             >
               <Icon className="h-4 w-4" />

@@ -106,6 +106,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   useEffect(() => {
     const savedRole = localStorage.getItem('selectedRole') as UserRole;
     if (savedRole && Object.keys(ROLE_CONFIGS).includes(savedRole)) {
+      console.log('Loading saved role from localStorage:', savedRole);
       setCurrentRole(savedRole);
     }
 
@@ -140,6 +141,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
 
   // Save role state and agent memories to localStorage when they change
   useEffect(() => {
+    console.log('Saving to localStorage - currentRole:', currentRole);
     localStorage.setItem('selectedRole', currentRole);
     localStorage.setItem('roleState', JSON.stringify(roleState));
     localStorage.setItem('agentMemories', JSON.stringify(agentMemories));
@@ -214,7 +216,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   }, [agentMemories]);
 
   const switchRole = useCallback((newRole: UserRole) => {
-    console.log('Switching from', currentRole, 'to', newRole);
+    console.log('RoleContext: Switching from', currentRole, 'to', newRole);
     
     // Save current role state
     const currentState = captureUIState();
@@ -223,14 +225,17 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
       [currentRole]: currentState,
     }));
 
-    // Switch to new role
-    setCurrentRole(newRole);
+    // Switch to new role - force re-render by using functional update
+    setCurrentRole(() => {
+      console.log('RoleContext: Setting new role state to:', newRole);
+      return newRole;
+    });
 
     // Restore state for new role
     const newRoleState = roleState[newRole] || {};
     restoreUIState(newRoleState);
 
-    console.log('Role switched to:', newRole, 'with persona:', getRolePersona(newRole));
+    console.log('RoleContext: Role switched to:', newRole, 'with persona:', getRolePersona(newRole));
   }, [currentRole, captureUIState, restoreUIState, roleState, getRolePersona]);
 
   const getRoleConfig = useCallback((role: UserRole) => {
@@ -253,6 +258,8 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     getActiveAgentMemory,
     getRolePersona,
   };
+
+  console.log('RoleProvider rendering with currentRole:', currentRole);
 
   return (
     <RoleContext.Provider value={value}>
