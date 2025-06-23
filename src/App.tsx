@@ -60,7 +60,6 @@ function App() {
                   <EnhancedErrorBoundary>
                     <Routes>
                       <Route path="/" element={<LandingPage />} />
-                      <Route path="/app" element={<LandingPage />} />
                       <Route path="/dashboard" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
