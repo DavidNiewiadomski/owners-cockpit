@@ -1,71 +1,16 @@
 
-import React, { useRef, useMemo, useCallback } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Stars, Float } from '@react-three/drei';
+import React, { useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Building2, Brain, Mic } from 'lucide-react';
+import { Building2, Brain, Mic } from 'lucide-react';
 import { useRouter } from '@/hooks/useRouter';
-import * as THREE from 'three';
-
-// Animated particle system component
-function AnimatedStars() {
-  const starsRef = useRef<THREE.Points>(null);
-  
-  useFrame((state) => {
-    if (starsRef.current) {
-      starsRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-      starsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
-    }
-  });
-
-  return (
-    <Stars 
-      ref={starsRef}
-      radius={300} 
-      depth={60} 
-      count={5000} 
-      factor={4} 
-      saturation={0} 
-      fade 
-      speed={0.5}
-    />
-  );
-}
-
-// Mouse-responsive background component
-function InteractiveBackground() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      const mouseX = (state.mouse.x * 0.1);
-      const mouseY = (state.mouse.y * 0.1);
-      meshRef.current.rotation.x = mouseY;
-      meshRef.current.rotation.y = mouseX;
-    }
-  });
-
-  const geometry = useMemo(() => new THREE.SphereGeometry(100, 64, 64), []);
-  
-  return (
-    <mesh ref={meshRef}>
-      <primitive object={geometry} />
-      <meshBasicMaterial 
-        color="#1e293b"
-        wireframe 
-        transparent 
-        opacity={0.1}
-      />
-    </mesh>
-  );
-}
 
 // Hero content component
 const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => {
   const router = useRouter();
 
   const handleGetStarted = useCallback(() => {
+    console.log('Get Started clicked - navigating to /app');
     router.push('/app');
   }, [router]);
 
@@ -141,21 +86,6 @@ const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
           </Button>
         </motion.div>
       </div>
-      
-      <motion.div
-        variants={itemVariants}
-        className="mt-16"
-      >
-        <motion.button
-          onClick={onLearnMore}
-          aria-label="Scroll to features"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="inline-flex items-center justify-center w-12 h-12 rounded-full glass cursor-pointer hover:scale-105 hover:ring-2 hover:ring-indigo-400/60 transition-all duration-200 min-h-[44px]"
-        >
-          <ArrowDown className="w-6 h-6 text-primary" />
-        </motion.button>
-      </motion.div>
     </motion.div>
   );
 };
@@ -226,7 +156,6 @@ const FeaturesSection: React.FC = () => {
               
               <button
                 onClick={() => {
-                  // Scroll to demo/video section (placeholder for now)
                   const demoSection = document.getElementById('demo');
                   if (demoSection) {
                     demoSection.scrollIntoView({ behavior: 'smooth' });
@@ -247,6 +176,7 @@ const FeaturesSection: React.FC = () => {
 // Main ParticleHero component
 const ParticleHero: React.FC = () => {
   const handleLearnMore = useCallback(() => {
+    console.log('Learn More clicked - scrolling to features');
     const featuresSection = document.getElementById('features');
     if (featuresSection) {
       featuresSection.scrollIntoView({ 
@@ -259,18 +189,10 @@ const ParticleHero: React.FC = () => {
   return (
     <>
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Three.js Background */}
-        <div className="absolute inset-0 z-0">
-          <Canvas
-            camera={{ position: [0, 0, 1], fov: 75 }}
-            style={{ background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)' }}
-          >
-            <AnimatedStars />
-            <InteractiveBackground />
-            <Float speed={2} rotationIntensity={0.1} floatIntensity={0.1}>
-              <ambientLight intensity={0.5} />
-            </Float>
-          </Canvas>
+        {/* Linear.app inspired gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-800/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-600/20 via-transparent to-transparent"></div>
         </div>
         
         <HeroContent onLearnMore={handleLearnMore} />

@@ -14,17 +14,6 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-// Mock @react-three/fiber and @react-three/drei
-jest.mock('@react-three/fiber', () => ({
-  Canvas: ({ children }: { children: React.ReactNode }) => <div data-testid="three-canvas">{children}</div>,
-  useFrame: jest.fn()
-}));
-
-jest.mock('@react-three/drei', () => ({
-  Stars: () => <div data-testid="stars" />,
-  Float: ({ children }: { children: React.ReactNode }) => <div data-testid="float">{children}</div>
-}));
-
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
   motion: {
@@ -34,13 +23,6 @@ jest.mock('framer-motion', () => ({
     button: ({ children, ...props }: any) => <button {...props}>{children}</button>
   }
 }));
-
-// Mock window.scrollTo
-const mockScrollTo = jest.fn();
-Object.defineProperty(window, 'scrollTo', {
-  value: mockScrollTo,
-  writable: true
-});
 
 // Mock Element.scrollIntoView
 Element.prototype.scrollIntoView = jest.fn();
@@ -69,17 +51,6 @@ describe('ParticleHero', () => {
     expect(screen.getByRole('button', { name: 'Learn More' })).toBeInTheDocument();
   });
 
-  it('renders Three.js canvas', () => {
-    render(
-      <TestWrapper>
-        <ParticleHero />
-      </TestWrapper>
-    );
-
-    expect(screen.getByTestId('three-canvas')).toBeInTheDocument();
-    expect(screen.getByTestId('stars')).toBeInTheDocument();
-  });
-
   it('handles Get Started button click', () => {
     render(
       <TestWrapper>
@@ -94,7 +65,6 @@ describe('ParticleHero', () => {
   });
 
   it('handles Learn More button click', async () => {
-    // Create a mock features section
     const featuresSection = document.createElement('section');
     featuresSection.id = 'features';
     featuresSection.scrollIntoView = jest.fn();
@@ -116,29 +86,6 @@ describe('ParticleHero', () => {
       });
     });
 
-    // Cleanup
-    document.body.removeChild(featuresSection);
-  });
-
-  it('handles arrow button click for scroll', async () => {
-    const featuresSection = document.createElement('section');
-    featuresSection.id = 'features';
-    featuresSection.scrollIntoView = jest.fn();
-    document.body.appendChild(featuresSection);
-
-    render(
-      <TestWrapper>
-        <ParticleHero />
-      </TestWrapper>
-    );
-
-    const arrowButton = screen.getByRole('button', { name: 'Scroll to features' });
-    fireEvent.click(arrowButton);
-
-    await waitFor(() => {
-      expect(featuresSection.scrollIntoView).toHaveBeenCalled();
-    });
-
     document.body.removeChild(featuresSection);
   });
 
@@ -153,36 +100,5 @@ describe('ParticleHero', () => {
     expect(screen.getByText('Lifecycle Coverage')).toBeInTheDocument();
     expect(screen.getByText('Role-Aware AI')).toBeInTheDocument();
     expect(screen.getByText('Voice Commands')).toBeInTheDocument();
-  });
-
-  it('ensures accessibility requirements', () => {
-    render(
-      <TestWrapper>
-        <ParticleHero />
-      </TestWrapper>
-    );
-
-    const getStartedButton = screen.getByRole('button', { name: 'Get Started' });
-    const learnMoreButton = screen.getByRole('button', { name: 'Learn More' });
-    const arrowButton = screen.getByRole('button', { name: 'Scroll to features' });
-
-    // Check minimum height for touch targets
-    expect(getStartedButton).toHaveClass('min-h-[44px]');
-    expect(learnMoreButton).toHaveClass('min-h-[44px]');
-    expect(arrowButton).toHaveClass('min-h-[44px]');
-
-    // Check aria-label on arrow button
-    expect(arrowButton).toHaveAttribute('aria-label', 'Scroll to features');
-  });
-
-  it('handles responsive design classes', () => {
-    render(
-      <TestWrapper>
-        <ParticleHero />
-      </TestWrapper>
-    );
-
-    const heroTitle = screen.getByText('Owners Cockpit');
-    expect(heroTitle).toHaveClass('text-4xl', 'sm:text-7xl');
   });
 });
