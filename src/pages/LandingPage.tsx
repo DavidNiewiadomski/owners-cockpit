@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Building2, BarChart3, Users, Shield } from 'lucide-react';
@@ -5,6 +6,8 @@ import MotionWrapper from '@/components/MotionWrapper';
 import HeroContent from '@/components/hero/HeroContent';
 
 const LandingPage: React.FC = () => {
+  console.log('LandingPage component rendering');
+  
   const handleLearnMore = () => {
     // Scroll to features section
     const featuresSection = document.getElementById('features');

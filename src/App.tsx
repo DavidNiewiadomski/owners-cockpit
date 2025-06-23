@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -48,6 +49,8 @@ const handleGlobalError = (error: Error, errorInfo: React.ErrorInfo, errorId: st
 };
 
 function App() {
+  console.log('App rendering, current path:', window.location.pathname);
+  
   return (
     <EnhancedErrorBoundary onError={handleGlobalError}>
       <QueryClientProvider client={queryClient}>

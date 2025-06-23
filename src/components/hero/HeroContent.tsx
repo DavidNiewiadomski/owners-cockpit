@@ -42,6 +42,8 @@ const HeroContent: React.FC<HeroContentProps> = ({ onLearnMore }) => {
     }
   };
 
+  console.log('HeroContent rendering');
+
   return (
     <motion.div
       variants={containerVariants}
