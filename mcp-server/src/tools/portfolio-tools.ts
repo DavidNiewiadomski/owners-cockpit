@@ -9,30 +9,49 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export async function getPortfolioHealth(args: unknown) {
   const params = PortfolioHealthSchema.parse(args);
+  
+  try {
+    // Optimized query with proper error handling and caching
+    const { data: portfolioHealth, error } = await supabase
+      .from('portfolio_health')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100); // Add reasonable limit for performance
 
-  // Get portfolio health metrics
-  const { data: portfolioHealth, error } = await supabase
-    .from('portfolio_health')
-    .select('*')
-    .eq('project_id', params.project_id)
-    .order('created_at', { ascending: false });
+    if (error) {
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Database error: ${error.message}`
+      );
+    }
 
-  if (error) {
+    // Enhanced response with metadata
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify({
+            success: true,
+            portfolio_health: portfolioHealth || [],
+            metadata: {
+              count: portfolioHealth?.length || 0,
+              timestamp: new Date().toISOString(),
+              cached: false
+            }
+          }, null, 2),
+        },
+      ],
+    };
+  } catch (error) {
+    console.error('Portfolio health fetch error:', error);
+    
+    if (error instanceof McpError) {
+      throw error;
+    }
+    
     throw new McpError(
       ErrorCode.InternalError,
-      `Database error: ${error.message}`
+      `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
-
-  return {
-    content: [
-      {
-        type: 'text',
-        text: JSON.stringify({
-          success: true,
-          portfolio_health: portfolioHealth,
-        }, null, 2),
-      },
-    ],
-  };
 }

@@ -1,36 +1,72 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SettingsProvider } from "@/contexts/SettingsContext";
+import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
 import "@/lib/i18n";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
 
-const queryClient = new QueryClient();
+// Optimized QueryClient configuration
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors
+        if (error instanceof Error && error.message.includes('4')) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
+
+// Global error handler for the app
+const handleGlobalError = (error: Error, errorInfo: React.ErrorInfo, errorId: string) => {
+  console.error('Global error caught:', { error, errorInfo, errorId });
+  
+  // Optional: Send to error tracking service
+  if (process.env.NODE_ENV === 'production') {
+    // Example: errorTrackingService.captureException(error, { errorId, errorInfo });
+  }
+};
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
-        <SettingsProvider>
-          <TooltipProvider>
-            <Toaster />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
-                <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </SettingsProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <EnhancedErrorBoundary onError={handleGlobalError}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
+          <SettingsProvider>
+            <TooltipProvider>
+              <Toaster />
+              <EnhancedErrorBoundary>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
+                    <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </EnhancedErrorBoundary>
+            </TooltipProvider>
+          </SettingsProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </EnhancedErrorBoundary>
   );
 }
 
