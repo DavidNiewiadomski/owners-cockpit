@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Settings, Plus, FolderOpen } from 'lucide-react';
@@ -10,11 +11,14 @@ import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ParticleHero from '@/components/ParticleHero';
 import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
+import SettingsModal from '@/components/SettingsModal';
 
 const Index = () => {
+  const { t } = useTranslation();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [showHero, setShowHero] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
 
   if (showHero) {
     return (
@@ -27,7 +31,7 @@ const Index = () => {
               onClick={() => setShowHero(false)}
               className="glass border-primary/20"
             >
-              Enter App
+              {t('app.enterApp')}
             </Button>
           </div>
         </div>
@@ -44,7 +48,7 @@ const Index = () => {
             <div className="flex items-center gap-4">
               <MotionWrapper animation="scaleIn" delay={0.1}>
                 <h1 className="text-2xl font-bold gradient-text cursor-pointer" onClick={() => setShowHero(true)}>
-                  Owners Cockpit
+                  {t('app.title')}
                 </h1>
               </MotionWrapper>
               <MotionWrapper animation="fadeIn" delay={0.2}>
@@ -61,13 +65,25 @@ const Index = () => {
                   size="icon"
                   onClick={() => setShowUpload(!showUpload)}
                   className="neumorphic-button hover:scale-105 transition-transform"
+                  title={t('navigation.upload')}
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="neumorphic-button hover:scale-105 transition-transform">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="neumorphic-button hover:scale-105 transition-transform"
+                  title={t('navigation.projects')}
+                >
                   <FolderOpen className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="neumorphic-button hover:scale-105 transition-transform">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="neumorphic-button hover:scale-105 transition-transform"
+                  onClick={() => setShowSettings(true)}
+                  title={t('navigation.settings')}
+                >
                   <Settings className="h-4 w-4" />
                 </Button>
                 <ThemeToggle />
@@ -89,9 +105,9 @@ const Index = () => {
             <div className="flex-1 flex items-center justify-center p-8">
               <MotionWrapper animation="scaleIn" delay={0.2}>
                 <Card className="neumorphic-card p-8 text-center max-w-2xl w-full glass">
-                  <h2 className="text-xl font-semibold mb-4">Welcome to Owners Cockpit</h2>
+                  <h2 className="text-xl font-semibold mb-4">{t('app.welcome')}</h2>
                   <p className="text-muted-foreground mb-6">
-                    Select a project to start chatting with your AI construction assistant.
+                    {t('app.selectProject')}
                   </p>
                   <div className="w-full">
                     <ProjectSwitcher 
@@ -128,6 +144,12 @@ const Index = () => {
           </MotionWrapper>
         )}
       </div>
+
+      {/* Settings Modal */}
+      <SettingsModal 
+        open={showSettings} 
+        onOpenChange={setShowSettings} 
+      />
     </div>
   );
 };
