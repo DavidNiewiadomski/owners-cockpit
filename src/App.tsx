@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,6 +8,7 @@ import "@/lib/i18n";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
+import SettingsAuditPage from "./pages/SettingsAuditPage";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +23,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
+                <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
