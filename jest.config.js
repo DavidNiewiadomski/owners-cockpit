@@ -22,11 +22,4 @@ export default {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        types: ['jest', '@testing-library/jest-dom']
-      }
-    }
-  }
 };
