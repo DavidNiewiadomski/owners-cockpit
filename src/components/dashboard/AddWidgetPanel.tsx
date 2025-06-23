@@ -9,6 +9,7 @@ import { useRole } from '@/contexts/RoleContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useDashboardStore } from '@/stores/useDashboardStore';
 import { LayoutItem } from '@/types/dashboard';
+import { UserRole } from '@/types/roles';
 
 interface AddWidgetPanelProps {
   projectId: string;
@@ -27,7 +28,7 @@ const AddWidgetPanel: React.FC<AddWidgetPanelProps> = ({
 
   // Filter widgets that are available for current role and not already added
   const availableWidgets = WIDGET_REGISTRY.filter(widget => {
-    const isRoleAllowed = !widget.roles || widget.roles.includes(currentRole as any);
+    const isRoleAllowed = !widget.roles || widget.roles.some(role => role === currentRole);
     const isNotAdded = !currentLayout.some(item => item.widgetId === widget.id);
     return isRoleAllowed && isNotAdded;
   });
