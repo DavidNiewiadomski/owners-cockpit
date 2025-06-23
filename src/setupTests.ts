@@ -30,4 +30,5 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Basic test environment setup - no jest-dom matchers
+// Import jest-dom matchers
+import '@testing-library/jest-dom';
