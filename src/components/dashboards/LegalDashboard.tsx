@@ -2,7 +2,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, FileText, Scale, Calendar, Clock, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, Scale, Calendar, Clock, CheckCircle, MessageSquare } from 'lucide-react';
 import ContractsDashboard from '@/components/contracts/ContractsDashboard';
 
 interface LegalDashboardProps {
@@ -17,39 +18,65 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
     upcomingDeadlines: 8
   };
 
+  const handleInsightClick = (insight: string) => {
+    console.log('Opening chat with insight:', insight);
+  };
+
   return (
     <div className="space-y-6">
-      {/* AI Insights - moved to top */}
-      <Card>
+      {/* AI Insights */}
+      <Card className="border border-border/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            AI Legal Insights
+          <CardTitle className="text-lg font-medium text-foreground">
+            AI Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <Badge variant="destructive">High Priority</Badge>
-              <div>
-                <h4 className="font-medium">Contract Renewal Deadline</h4>
-                <p className="text-sm text-muted-foreground">Steel supplier contract expires in 15 days. Schedule renewal meeting with procurement.</p>
+          <div className="space-y-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Contract Renewal Deadline")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="destructive" className="mt-0.5">High Priority</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Contract Renewal Deadline</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Steel supplier contract expires in 15 days. Schedule renewal meeting with procurement.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="default">Medium Priority</Badge>
-              <div>
-                <h4 className="font-medium">Regulatory Update</h4>
-                <p className="text-sm text-muted-foreground">New building codes effective Q4. Review impact on 3 active projects.</p>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Regulatory Update")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="default" className="mt-0.5">Medium Priority</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Regulatory Update</h4>
+                  <p className="text-xs text-muted-foreground mt-1">New building codes effective Q4. Review impact on 3 active projects.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="secondary">Success</Badge>
-              <div>
-                <h4 className="font-medium">Compliance Achievement</h4>
-                <p className="text-sm text-muted-foreground">94% compliance score maintained. All safety and environmental standards met.</p>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Compliance Achievement")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="secondary" className="mt-0.5">Success</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Compliance Achievement</h4>
+                  <p className="text-xs text-muted-foreground mt-1">94% compliance score maintained. All safety and environmental standards met.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
+            </Button>
           </div>
         </CardContent>
       </Card>

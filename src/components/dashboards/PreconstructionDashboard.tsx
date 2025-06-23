@@ -2,7 +2,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, MapPin, Building, Calculator, FileCheck, TrendingUp, DollarSign, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calculator, FileCheck, TrendingUp, DollarSign, Calendar, MessageSquare } from 'lucide-react';
 import PreconstructionAssistant from '@/components/preconstruction/PreconstructionAssistant';
 
 interface PreconstructionDashboardProps {
@@ -10,39 +11,65 @@ interface PreconstructionDashboardProps {
 }
 
 const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId }) => {
+  const handleInsightClick = (insight: string) => {
+    console.log('Opening chat with insight:', insight);
+  };
+
   return (
     <div className="space-y-6">
-      {/* AI Insights - moved to top */}
-      <Card>
+      {/* AI Insights */}
+      <Card className="border border-border/50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            AI Preconstruction Insights
+          <CardTitle className="text-lg font-medium text-foreground">
+            AI Insights
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <Badge variant="destructive">High Priority</Badge>
-              <div>
-                <h4 className="font-medium">Site Zoning Compliance Issue</h4>
-                <p className="text-sm text-muted-foreground">Proposed building height exceeds zoning limits by 15 feet. Recommend design revision or variance application.</p>
+          <div className="space-y-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Site Zoning Compliance Issue")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="destructive" className="mt-0.5">High Priority</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Site Zoning Compliance Issue</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Proposed building height exceeds zoning limits by 15 feet. Recommend design revision or variance application.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="default">Medium Priority</Badge>
-              <div>
-                <h4 className="font-medium">Soil Analysis Complete</h4>
-                <p className="text-sm text-muted-foreground">Geotechnical report shows stable conditions. Foundation design can proceed as planned.</p>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Soil Analysis Complete")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="default" className="mt-0.5">Medium Priority</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Soil Analysis Complete</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Geotechnical report shows stable conditions. Foundation design can proceed as planned.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="secondary">Opportunity</Badge>
-              <div>
-                <h4 className="font-medium">Early Bird Material Pricing</h4>
-                <p className="text-sm text-muted-foreground">Steel prices projected to increase 8% next quarter. Lock in current rates to save $450K.</p>
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-muted/50"
+              onClick={() => handleInsightClick("Early Bird Material Pricing")}
+            >
+              <div className="flex items-start gap-3 w-full">
+                <Badge variant="secondary" className="mt-0.5">Opportunity</Badge>
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm">Early Bird Material Pricing</h4>
+                  <p className="text-xs text-muted-foreground mt-1">Steel prices projected to increase 8% next quarter. Lock in current rates to save $450K.</p>
+                </div>
+                <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
-            </div>
+            </Button>
           </div>
         </CardContent>
       </Card>
