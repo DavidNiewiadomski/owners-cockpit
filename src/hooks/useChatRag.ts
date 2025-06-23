@@ -57,6 +57,17 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
 
       if (error) {
         console.error('Supabase function error:', error);
+        
+        // Check for specific OpenAI quota error
+        if (error.message && error.message.includes('insufficient_quota')) {
+          throw new Error('OpenAI API quota exceeded. Please check your OpenAI billing and usage at https://platform.openai.com/account/billing');
+        }
+        
+        // Check for other OpenAI API errors
+        if (error.message && error.message.includes('Embedding API error')) {
+          throw new Error('OpenAI API error. Please check your API key and quota.');
+        }
+        
         throw new Error(error.message || 'Failed to send message');
       }
 
@@ -92,11 +103,19 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
     onError: (error: Error) => {
       console.error('Chat error:', error);
       
-      // Add error message
+      // Add error message with more specific information
+      let errorContent = `Sorry, I encountered an error: ${error.message}`;
+      
+      if (error.message.includes('quota exceeded')) {
+        errorContent = `⚠️ OpenAI API quota exceeded. Please check your billing at https://platform.openai.com/account/billing and ensure you have sufficient credits.`;
+      } else if (error.message.includes('API key')) {
+        errorContent = `🔑 OpenAI API key issue. Please verify your API key is valid and has quota available.`;
+      }
+      
       const errorMessage: ChatMessage = {
         id: `error-${Date.now()}`,
         role: 'assistant',
-        content: `Sorry, I encountered an error: ${error.message}`,
+        content: errorContent,
         timestamp: new Date(),
       };
       
