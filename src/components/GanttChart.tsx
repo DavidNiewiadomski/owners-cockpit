@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Task } from '@/hooks/useTasks';
+import { Task } from '@/types/tasks';
 import { format, differenceInDays, startOfDay } from 'date-fns';
 
 interface GanttChartProps {
@@ -49,12 +49,19 @@ const GanttChart: React.FC<GanttChartProps> = ({
     return { bars, dateRange: { start: minDate, end: maxDate } };
   }, [tasks, height]);
 
-  const getPriorityColor = (priority: number, isLate: boolean) => {
+  const getPriorityColor = (priority: string, isLate: boolean) => {
     if (isLate) return '#ef4444'; // red for late tasks
     
-    if (priority >= 3) return '#f59e0b'; // amber for high priority
-    if (priority === 2) return '#3b82f6'; // blue for medium priority
-    return '#10b981'; // emerald for low priority
+    switch (priority) {
+      case 'high':
+        return '#f59e0b'; // amber
+      case 'medium':
+        return '#3b82f6'; // blue
+      case 'low':
+        return '#10b981'; // emerald
+      default:
+        return '#6b7280'; // gray
+    }
   };
 
   if (tasks.length === 0) {
