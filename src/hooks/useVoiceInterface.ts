@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -49,28 +50,32 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
       recognition.lang = config.language || 'en-US';
 
       recognition.onstart = () => {
+        console.log('Speech recognition started');
         if (!isCleaningUpRef.current) {
-          setState(prev => ({ ...prev, isListening: true, error: null }));
+          setState(prev => ({ ...prev, isListening: true, error: null, isProcessing: false }));
         }
       };
 
       recognition.onresult = (event: any) => {
+        console.log('Speech recognition result received');
         if (!isCleaningUpRef.current) {
           let transcript = '';
           for (let i = event.resultIndex; i < event.results.length; i++) {
             transcript += event.results[i][0].transcript;
           }
-          setState(prev => ({ ...prev, transcript }));
+          setState(prev => ({ ...prev, transcript, isProcessing: false }));
         }
       };
 
       recognition.onend = () => {
+        console.log('Speech recognition ended');
         if (!isCleaningUpRef.current) {
-          setState(prev => ({ ...prev, isListening: false }));
+          setState(prev => ({ ...prev, isListening: false, isProcessing: false }));
         }
       };
 
       recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
         // Don't show error if we're cleaning up (component unmounting)
         if (isCleaningUpRef.current || event.error === 'aborted') {
           return;
@@ -97,6 +102,7 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
         setState(prev => ({ 
           ...prev, 
           isListening: false, 
+          isProcessing: false,
           error: errorMessage 
         }));
         
@@ -131,15 +137,18 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
   }, [config, toast]);
 
   const startListening = useCallback(() => {
+    console.log('Attempting to start listening, current state:', state.isListening);
     if (recognitionRef.current && !state.isListening) {
       isCleaningUpRef.current = false;
-      setState(prev => ({ ...prev, transcript: '', error: null }));
+      setState(prev => ({ ...prev, transcript: '', error: null, isProcessing: true }));
       try {
         recognitionRef.current.start();
+        console.log('Speech recognition start() called');
       } catch (error) {
         console.error('Failed to start speech recognition:', error);
         setState(prev => ({ 
           ...prev, 
+          isProcessing: false,
           error: 'Failed to start speech recognition. Please try again.' 
         }));
       }
@@ -147,8 +156,10 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
   }, [state.isListening]);
 
   const stopListening = useCallback(() => {
+    console.log('Attempting to stop listening, current state:', state.isListening);
     if (recognitionRef.current && state.isListening) {
       recognitionRef.current.stop();
+      console.log('Speech recognition stop() called');
     }
   }, [state.isListening]);
 
