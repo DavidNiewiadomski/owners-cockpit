@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { RefreshCw, Settings, Plug, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { ProjectIntegration, useSyncIntegration, useDeleteIntegration } from '@/hooks/useProjectIntegrations';
+import { ProjectIntegration, useDeleteIntegration } from '@/hooks/useProjectIntegrations';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { formatDistanceToNow } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import IntegrationModal from './IntegrationModal';
 
 interface IntegrationCardProps {
@@ -55,14 +57,14 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
   projectId,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const { access, currentRole } = useRoleBasedAccess();
-  const syncMutation = useSyncIntegration();
   const deleteMutation = useDeleteIntegration();
   
   const config = PROVIDER_CONFIG[provider];
   const isConnected = integration?.status === 'connected';
   const hasError = integration?.status === 'error';
-  const isSyncing = integration?.status === 'syncing';
+  const isSyncingStatus = integration?.status === 'syncing' || isSyncing;
 
   const canManageIntegrations = access.canEditData || 
     ['Executive', 'Construction', 'Facilities'].includes(currentRole);
@@ -70,10 +72,29 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
   const handleSync = async () => {
     if (!integration) return;
     
-    syncMutation.mutate({
-      integrationId: integration.id,
-      provider: integration.provider,
-    });
+    setIsSyncing(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('mockSync', {
+        body: { 
+          project_id: integration.project_id,
+          provider: integration.provider 
+        }
+      });
+
+      if (error) {
+        console.error('Sync error:', error);
+        toast.error('Sync failed');
+      } else {
+        console.log('Sync result:', data);
+        toast.success('Sync completed successfully');
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast.error('Sync failed');
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const handleDisconnect = async () => {
@@ -85,7 +106,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
   };
 
   const getStatusBadge = () => {
-    if (isSyncing) {
+    if (isSyncingStatus) {
       return (
         <Badge variant="secondary" className="bg-blue-100 text-blue-800">
           <Clock className="w-3 h-3 mr-1" />
@@ -171,11 +192,11 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
                           variant="outline"
                           size="sm"
                           onClick={handleSync}
-                          disabled={isSyncing || !canManageIntegrations}
+                          disabled={isSyncingStatus || !canManageIntegrations}
                           className="flex-1"
                         >
-                          <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
-                          Sync Now
+                          <RefreshCw className={`w-4 h-4 mr-2 ${isSyncingStatus ? 'animate-spin' : ''}`} />
+                          {isSyncingStatus ? 'Syncing...' : 'Sync Now'}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>

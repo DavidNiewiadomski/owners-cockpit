@@ -1,17 +1,52 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useProjectIntegrations } from '@/hooks/useProjectIntegrations';
 import IntegrationCard from '@/components/integrations/IntegrationCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AVAILABLE_PROVIDERS = ['procore', 'primavera', 'box', 'iot_sensors', 'smartsheet'] as const;
 
 const IntegrationsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const { data: integrations, isLoading, error } = useProjectIntegrations(projectId || '');
+  const queryClient = useQueryClient();
+
+  // Set up realtime subscription for live updates
+  useEffect(() => {
+    if (!projectId) return;
+
+    console.log('🔄 Setting up realtime subscription for integrations');
+
+    const channel = supabase
+      .channel('integrations-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'project_integrations',
+          filter: `project_id=eq.${projectId}`
+        },
+        (payload) => {
+          console.log('📡 Integration realtime update:', payload);
+          // Invalidate queries to refetch data
+          queryClient.invalidateQueries({ queryKey: ['project-integrations', projectId] });
+        }
+      )
+      .subscribe((status) => {
+        console.log('📡 Realtime subscription status:', status);
+      });
+
+    return () => {
+      console.log('🔌 Cleaning up realtime subscription');
+      supabase.removeChannel(channel);
+    };
+  }, [projectId, queryClient]);
 
   if (!projectId) {
     return (
