@@ -1,11 +1,61 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
   :root {
+    --background: 220 13% 8%;
+    --foreground: 220 9% 95%;
+
+    --card: 220 13% 10%;
+    --card-foreground: 220 9% 95%;
+
+    --popover: 220 13% 10%;
+    --popover-foreground: 220 9% 95%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 13% 8%;
+
+    --secondary: 220 13% 15%;
+    --secondary-foreground: 220 9% 95%;
+
+    --muted: 220 13% 12%;
+    --muted-foreground: 220 9% 60%;
+
+    --accent: 220 13% 15%;
+    --accent-foreground: 220 9% 95%;
+
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 220 13% 8%;
+
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Neumorphic shadows */
+    --shadow-light: 220 13% 12%;
+    --shadow-dark: 220 13% 6%;
+    
+    /* Sidebar colors */
+    --sidebar-background: 220 13% 9%;
+    --sidebar-foreground: 220 9% 90%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 220 13% 8%;
+    --sidebar-accent: 220 13% 12%;
+    --sidebar-accent-foreground: 220 9% 90%;
+    --sidebar-border: 220 13% 15%;
+    --sidebar-ring: 217 91% 60%;
+  }
+
+  .light {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -15,7 +65,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -32,62 +82,18 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
-
+    --shadow-light: 0 0% 100%;
+    --shadow-dark: 210 20% 92%;
+    
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
@@ -98,6 +104,140 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
   }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  /* Neumorphic card styles */
+  .neumorphic-card {
+    @apply bg-card/80 backdrop-blur-sm;
+    box-shadow: 
+      inset 2px 2px 4px hsl(var(--shadow-light)),
+      inset -2px -2px 4px hsl(var(--shadow-dark)),
+      4px 4px 12px hsl(var(--shadow-dark) / 0.3),
+      -4px -4px 12px hsl(var(--shadow-light) / 0.1);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+
+  /* Neumorphic button styles */
+  .neumorphic-button {
+    @apply bg-background/80 backdrop-blur-sm transition-all duration-200;
+    box-shadow: 
+      2px 2px 6px hsl(var(--shadow-dark) / 0.4),
+      -2px -2px 6px hsl(var(--shadow-light) / 0.1),
+      inset 1px 1px 2px hsl(var(--shadow-light) / 0.1),
+      inset -1px -1px 2px hsl(var(--shadow-dark) / 0.2);
+    border: 1px solid hsl(var(--border) / 0.3);
+  }
+
+  .neumorphic-button:hover {
+    box-shadow: 
+      1px 1px 4px hsl(var(--shadow-dark) / 0.3),
+      -1px -1px 4px hsl(var(--shadow-light) / 0.1),
+      inset 2px 2px 4px hsl(var(--shadow-light) / 0.1),
+      inset -2px -2px 4px hsl(var(--shadow-dark) / 0.3);
+    transform: translateY(1px);
+  }
+
+  .neumorphic-button:active {
+    box-shadow: 
+      inset 3px 3px 6px hsl(var(--shadow-dark) / 0.4),
+      inset -3px -3px 6px hsl(var(--shadow-light) / 0.1);
+    transform: translateY(2px);
+  }
+
+  /* Glass morphism effects */
+  .glass {
+    @apply bg-background/20 backdrop-blur-md;
+    border: 1px solid hsl(var(--border) / 0.2);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-muted/20 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
