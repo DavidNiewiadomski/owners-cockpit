@@ -1,5 +1,5 @@
-
-import React, { useState, lazy, Suspense } from 'react';
+import React, { useState, lazy, Suspense, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import ParticleHero from '@/components/ParticleHero';
 import AppHeader from '@/components/AppHeader';
@@ -29,6 +29,7 @@ const SidebarSkeleton = () => (
 
 const Index = React.memo(() => {
   const { t } = useTranslation();
+  const location = useLocation();
   const { endMeasurement } = usePerformanceMonitor('Index', { threshold: 20 });
   
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -36,6 +37,14 @@ const Index = React.memo(() => {
   const [showHero, setShowHero] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
+
+  // Auto-exit hero when navigating to /app
+  useEffect(() => {
+    if (location.pathname === '/app' && showHero) {
+      console.log('Auto-exiting hero due to /app route');
+      setShowHero(false);
+    }
+  }, [location.pathname, showHero]);
 
   // Performance monitoring
   React.useEffect(() => {
@@ -71,7 +80,7 @@ const Index = React.memo(() => {
     setActiveView(view);
   }, []);
 
-  if (showHero) {
+  if (showHero && location.pathname === '/') {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <ParticleHero />
