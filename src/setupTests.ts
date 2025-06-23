@@ -30,5 +30,5 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Import jest-dom matchers
-import '@testing-library/jest-dom';
+// Setup jest-dom matchers
+import '@testing-library/jest-dom/jest-globals';
