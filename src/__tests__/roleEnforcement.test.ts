@@ -12,24 +12,32 @@ jest.mock('@/integrations/supabase/client', () => ({
   },
 }));
 
+const mockSupabase = supabase as jest.Mocked<typeof supabase>;
+
 describe('Role Enforcement', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test('should allow admin users to access all project data', async () => {
-    const mockFrom = jest.fn().mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { role: 'admin' },
-            error: null,
-          }),
-        }),
-      }),
+    const mockSingle = jest.fn().mockResolvedValue({
+      data: { role: 'admin' },
+      error: null,
     });
 
-    (supabase.from as jest.Mock).mockImplementation(mockFrom);
+    const mockEq = jest.fn().mockReturnValue({
+      single: mockSingle,
+    });
+
+    const mockSelect = jest.fn().mockReturnValue({
+      eq: mockEq,
+    });
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: mockSelect,
+    });
+
+    mockSupabase.from.mockImplementation(mockFrom);
 
     const response = await supabase
       .from('user_roles')
@@ -43,18 +51,24 @@ describe('Role Enforcement', () => {
   });
 
   test('should restrict viewer access to read-only operations', async () => {
-    const mockFrom = jest.fn().mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { role: 'viewer' },
-            error: null,
-          }),
-        }),
-      }),
+    const mockSingle = jest.fn().mockResolvedValue({
+      data: { role: 'viewer' },
+      error: null,
     });
 
-    (supabase.from as jest.Mock).mockImplementation(mockFrom);
+    const mockEq = jest.fn().mockReturnValue({
+      single: mockSingle,
+    });
+
+    const mockSelect = jest.fn().mockReturnValue({
+      eq: mockEq,
+    });
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: mockSelect,
+    });
+
+    mockSupabase.from.mockImplementation(mockFrom);
 
     const response = await supabase
       .from('user_roles')
@@ -67,18 +81,24 @@ describe('Role Enforcement', () => {
   });
 
   test('should allow GC users to manage project resources', async () => {
-    const mockFrom = jest.fn().mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { role: 'gc' },
-            error: null,
-          }),
-        }),
-      }),
+    const mockSingle = jest.fn().mockResolvedValue({
+      data: { role: 'gc' },
+      error: null,
     });
 
-    (supabase.from as jest.Mock).mockImplementation(mockFrom);
+    const mockEq = jest.fn().mockReturnValue({
+      single: mockSingle,
+    });
+
+    const mockSelect = jest.fn().mockReturnValue({
+      eq: mockEq,
+    });
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: mockSelect,
+    });
+
+    mockSupabase.from.mockImplementation(mockFrom);
 
     const response = await supabase
       .from('user_roles')
@@ -91,18 +111,24 @@ describe('Role Enforcement', () => {
   });
 
   test('should handle vendor role permissions correctly', async () => {
-    const mockFrom = jest.fn().mockReturnValue({
-      select: jest.fn().mockReturnValue({
-        eq: jest.fn().mockReturnValue({
-          single: jest.fn().mockResolvedValue({
-            data: { role: 'vendor' },
-            error: null,
-          }),
-        }),
-      }),
+    const mockSingle = jest.fn().mockResolvedValue({
+      data: { role: 'vendor' },
+      error: null,
     });
 
-    (supabase.from as jest.Mock).mockImplementation(mockFrom);
+    const mockEq = jest.fn().mockReturnValue({
+      single: mockSingle,
+    });
+
+    const mockSelect = jest.fn().mockReturnValue({
+      eq: mockEq,
+    });
+
+    const mockFrom = jest.fn().mockReturnValue({
+      select: mockSelect,
+    });
+
+    mockSupabase.from.mockImplementation(mockFrom);
 
     const response = await supabase
       .from('user_roles')
