@@ -24,15 +24,28 @@ const BarChartCard: React.FC<BarChartCardProps> = ({
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-black/90 backdrop-blur-md border border-cyan-500/30 rounded-lg p-3 shadow-2xl">
-          <p className="text-cyan-300 font-mono text-sm">{`${label}`}</p>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass-panel rounded-xl p-4 shadow-2xl border border-cyan-500/30"
+        >
+          <p className="text-cyan-300 font-futuristic text-sm font-medium mb-2">{`${label}`}</p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-white font-medium">
-              <span className="inline-block w-3 h-3 rounded-full mr-2" style={{ backgroundColor: entry.color }} />
-              {`${entry.dataKey}: ${entry.value.toLocaleString()}`}
-            </p>
+            <motion.p 
+              key={index} 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="text-white font-medium flex items-center gap-3"
+            >
+              <span 
+                className="inline-block w-3 h-3 rounded-full animate-glow" 
+                style={{ backgroundColor: entry.color, boxShadow: `0 0 10px ${entry.color}` }} 
+              />
+              <span className="font-mono">{`${entry.dataKey}: ${entry.value.toLocaleString()}`}</span>
+            </motion.p>
           ))}
-        </div>
+        </motion.div>
       );
     }
     return null;
@@ -40,56 +53,80 @@ const BarChartCard: React.FC<BarChartCardProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
       className={className}
     >
-      <Card className="bg-gradient-to-br from-slate-900/80 to-slate-800/60 backdrop-blur-xl border border-cyan-500/20 shadow-2xl shadow-cyan-500/10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-500/10 via-transparent to-transparent" />
+      <Card className="futuristic-card glow-border overflow-hidden">
+        <div className="absolute inset-0 holographic-bg opacity-30" />
+        <div className="absolute inset-0 data-grid opacity-20" />
         
-        <CardHeader className="relative">
-          <CardTitle className="text-cyan-100 font-mono tracking-wide text-lg flex items-center gap-2">
-            <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+        <CardHeader className="relative z-10">
+          <CardTitle className="text-cyan-100 font-futuristic tracking-wide text-lg flex items-center gap-3">
+            <motion.div 
+              className="w-3 h-3 bg-cyan-400 rounded-full animate-glow"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
             {title}
+            <div className="ml-auto w-12 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full" />
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="relative">
-          <div className="h-80">
+        <CardContent className="relative z-10">
+          <div className="h-80 relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent rounded-lg" />
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <defs>
                   {colors.map((color, index) => (
-                    <linearGradient key={index} id={`barGradient${index}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={color} stopOpacity={0.8} />
-                      <stop offset="50%" stopColor={color} stopOpacity={0.6} />
-                      <stop offset="100%" stopColor={color} stopOpacity={0.2} />
-                    </linearGradient>
+                    <React.Fragment key={index}>
+                      <linearGradient id={`barGradient${index}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={color} stopOpacity={0.9} />
+                        <stop offset="50%" stopColor={color} stopOpacity={0.7} />
+                        <stop offset="100%" stopColor={color} stopOpacity={0.3} />
+                      </linearGradient>
+                      <filter id={`barGlow${index}`}>
+                        <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor={color} floodOpacity="0.6"/>
+                        <feDropShadow dx="0" dy="2" stdDeviation="8" floodColor={color} floodOpacity="0.3"/>
+                      </filter>
+                    </React.Fragment>
                   ))}
-                  <filter id="glow">
-                    <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#06b6d4" floodOpacity="0.3"/>
+                  <filter id="gridGlow">
+                    <feDropShadow dx="0" dy="0" stdDeviation="1" floodColor="#06b6d4" floodOpacity="0.4"/>
                   </filter>
                 </defs>
                 
                 <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  stroke="rgba(6, 182, 212, 0.1)" 
+                  strokeDasharray="2 4" 
+                  stroke="rgba(6, 182, 212, 0.2)" 
                   strokeWidth={1}
+                  filter="url(#gridGlow)"
                 />
                 
                 <XAxis 
                   dataKey={xKey} 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#94a3b8', fontSize: 12, fontFamily: 'monospace' }}
+                  tick={{ 
+                    fill: '#94a3b8', 
+                    fontSize: 11, 
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontWeight: 500
+                  }}
                 />
                 
                 <YAxis 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#94a3b8', fontSize: 12, fontFamily: 'monospace' }}
+                  tick={{ 
+                    fill: '#94a3b8', 
+                    fontSize: 11, 
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontWeight: 500
+                  }}
+                  tickFormatter={(value) => `${(value / 1000)}K`}
                 />
                 
                 <Tooltip content={<CustomTooltip />} />
@@ -99,17 +136,23 @@ const BarChartCard: React.FC<BarChartCardProps> = ({
                     key={key}
                     dataKey={key} 
                     fill={`url(#barGradient${index})`}
-                    radius={[4, 4, 0, 0]}
-                    filter="url(#glow)"
+                    radius={[6, 6, 0, 0]}
+                    filter={`url(#barGlow${index})`}
+                    stroke={colors[index]}
+                    strokeWidth={0.5}
                   />
                 ))}
               </BarChart>
             </ResponsiveContainer>
           </div>
           
-          {/* Animated border glow */}
-          <div className="absolute inset-0 rounded-lg border border-cyan-500/20 pointer-events-none">
-            <div className="absolute inset-0 rounded-lg border border-cyan-400/10 animate-pulse" />
+          {/* Enhanced animated border effects */}
+          <div className="absolute inset-0 rounded-lg border border-cyan-500/10 pointer-events-none">
+            <motion.div 
+              className="absolute inset-0 rounded-lg border border-cyan-400/20"
+              animate={{ opacity: [0.3, 0.7, 0.3] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
           </div>
         </CardContent>
       </Card>
