@@ -32,55 +32,57 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
     return `$${(amount / 1000000).toFixed(1)}M`;
   };
 
+  const budgetUtilization = ((projectData.budgetSpent / projectData.budgetTotal) * 100).toFixed(1);
+  const scheduleStatus = projectData.daysAheadBehind > 0 ? `${projectData.daysAheadBehind} days ahead` : projectData.daysAheadBehind < 0 ? `${Math.abs(projectData.daysAheadBehind)} days behind` : 'on schedule';
+
+  const insights = {
+    summary: `${projectData.name} is ${projectData.progressPercent}% complete and ${scheduleStatus}. Budget utilization is ${budgetUtilization}% with ${projectData.changeOrders} change orders totaling ${formatCurrency(projectData.changeOrderValue)}. Safety performance shows ${projectData.safetyIncidents} incidents with productivity at ${projectData.productivity}%. Quality metrics indicate ${projectData.qualityMetrics.defectRate}% defect rate and ${projectData.qualityMetrics.inspectionPass}% inspection pass rate. Workforce of ${projectData.workforce} personnel with ${projectData.weatherDelays} weather-related delays reported.`,
+    keyFindings: [
+      `Project ${projectData.progressPercent}% complete with ${scheduleStatus} performance`,
+      `Budget performance at ${budgetUtilization}% utilization`,
+      `${projectData.overdueRFIs} overdue RFIs out of ${projectData.openRFIs} total requiring attention`,
+      `Productivity metrics show ${projectData.productivity}% efficiency`,
+      `Quality performance: ${projectData.qualityMetrics.defectRate}% defect rate, ${projectData.qualityMetrics.inspectionPass}% pass rate`
+    ],
+    recommendations: [
+      projectData.overdueRFIs > 0 ? `Prioritize resolution of ${projectData.overdueRFIs} overdue RFIs` : 'Maintain current RFI response time',
+      projectData.productivity < 85 ? 'Implement productivity improvement measures' : 'Sustain current productivity levels',
+      projectData.qualityMetrics.defectRate > 3 ? 'Enhance quality control procedures' : 'Continue current quality standards',
+      projectData.safetyIncidents > 0 ? 'Review and strengthen safety protocols' : 'Maintain excellent safety record',
+      projectData.daysAheadBehind < 0 ? 'Implement schedule recovery measures' : 'Maintain current project pace'
+    ]
+  };
+
   return (
-    <Card className="linear-insight-panel">
+    <Card>
       <CardHeader>
-        <CardTitle className="linear-chart-title">
+        <CardTitle className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-amber-500" />
-          AI Construction Insights - {projectData.name}
+          AI Construction Insights
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="bg-accent/50 border border-border rounded-lg p-4 mb-4">
-          <p className="text-sm text-foreground">
-            <strong>Project Status:</strong> {projectData.name} is {projectData.progressPercent}% complete and {projectData.status === 'on_track' ? 'on track' : projectData.daysAheadBehind > 0 ? `${projectData.daysAheadBehind} days ahead` : `${Math.abs(projectData.daysAheadBehind)} days behind`}. 
-            Budget utilization is {((projectData.budgetSpent / projectData.budgetTotal) * 100).toFixed(1)}% with {projectData.changeOrders} change orders totaling {formatCurrency(projectData.changeOrderValue)}. 
-            Safety metrics show {projectData.safetyIncidents} incidents with productivity at {projectData.productivity}%.
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="flex items-start gap-3">
-            <Badge className={projectData.overdueRFIs > 0 ? "linear-badge-destructive" : "linear-badge-secondary"}>
-              {projectData.overdueRFIs > 0 ? "High Priority" : "Normal"}
-            </Badge>
-            <div>
-              <h4 className="font-medium text-foreground">{projectData.overdueRFIs} Overdue RFIs</h4>
-              <p className="text-sm text-muted-foreground">
-                {projectData.openRFIs} total RFIs - resolving overdue items critical for schedule
-              </p>
-            </div>
+        <div className="space-y-4">
+          <div className="p-4 bg-muted rounded-lg">
+            <p className="text-sm">{insights.summary}</p>
           </div>
-          <div className="flex items-start gap-3">
-            <Badge className={projectData.productivity >= 90 ? "linear-badge-success" : "linear-badge-default"}>
-              {projectData.productivity >= 90 ? "Success" : "Monitor"}
-            </Badge>
-            <div>
-              <h4 className="font-medium text-foreground">Productivity at {projectData.productivity}%</h4>
-              <p className="text-sm text-muted-foreground">
-                {projectData.workforce} workers on site with {projectData.weatherDelays} weather delays
-              </p>
-            </div>
+          <div className="space-y-3">
+            <h4 className="font-medium">Key Findings:</h4>
+            {insights.keyFindings.map((finding, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <Badge variant="outline" className="mt-0.5">•</Badge>
+                <p className="text-sm text-muted-foreground">{finding}</p>
+              </div>
+            ))}
           </div>
-          <div className="flex items-start gap-3">
-            <Badge className={projectData.qualityMetrics.defectRate <= 2.5 ? "linear-badge-success" : "linear-badge-default"}>
-              {projectData.qualityMetrics.defectRate <= 2.5 ? "Success" : "Monitor"}
-            </Badge>
-            <div>
-              <h4 className="font-medium text-foreground">Quality Score</h4>
-              <p className="text-sm text-muted-foreground">
-                {projectData.qualityMetrics.defectRate}% defect rate, {projectData.qualityMetrics.inspectionPass}% pass rate
-              </p>
-            </div>
+          <div className="space-y-3">
+            <h4 className="font-medium">Recommendations:</h4>
+            {insights.recommendations.map((rec, index) => (
+              <div key={index} className="flex items-start gap-3">
+                <Badge variant="secondary" className="mt-0.5">→</Badge>
+                <p className="text-sm text-muted-foreground">{rec}</p>
+              </div>
+            ))}
           </div>
         </div>
       </CardContent>
