@@ -12,6 +12,7 @@ supabase db push
 supabase db push --file supabase/migrations/000_init.sql
 supabase db push --file supabase/migrations/001_pgvector.sql  
 supabase db push --file supabase/migrations/002_tables.sql
+supabase db push --file supabase/migrations/003_integration_logs.sql
 ```
 
 ### Manual Application
@@ -23,6 +24,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 \i supabase/migrations/000_init.sql
 \i supabase/migrations/001_pgvector.sql
 \i supabase/migrations/002_tables.sql
+\i supabase/migrations/003_integration_logs.sql
 ```
 
 ## Schema Overview
@@ -34,6 +36,35 @@ psql "postgresql://user:pass@host:5432/dbname"
 - **Documents**: File storage with processing status
 - **Images**: Separate image handling with OCR support
 - **Vector Index**: Embeddings for RAG with 1536-dim vectors
+- **Integration Logs**: ETL operation tracking and audit trail
+
+## Edge Functions
+
+### Procore Sync (`/functions/v1/procoreSync`)
+Synchronizes project and task data from Procore API.
+
+**Usage:**
+```bash
+curl -X POST 'https://your-project.supabase.co/functions/v1/procoreSync' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "procore_project_id": 123,
+    "access_token": "procore_access_token",
+    "refresh_token": "procore_refresh_token"
+  }'
+```
+
+**Response:**
+```json
+{
+  "inserted": 5,
+  "updated": 3,
+  "errors": []
+}
+```
+
+**CRON Schedule**: Runs daily at 02:00 UTC for automatic sync.
 
 ## Security
 
@@ -44,3 +75,10 @@ All tables have Row Level Security (RLS) enabled with project-based access contr
 - Optimized indexes on foreign keys and status fields
 - HNSW index on vector embeddings for fast similarity search
 - Automatic `updated_at` timestamp triggers
+
+## Testing
+
+Run Edge Function tests:
+```bash
+deno test tests/procoreSync.test.ts
+```

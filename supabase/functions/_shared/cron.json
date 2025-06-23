@@ -1,0 +1,18 @@
+
+{
+  "cron": [
+    {
+      "name": "procore-daily-sync",
+      "cron": "0 2 * * *",
+      "method": "POST",
+      "url": "/functions/v1/procoreSync",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "scheduled": true,
+        "sync_all_projects": true
+      }
+    }
+  ]
+}
