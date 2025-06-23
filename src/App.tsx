@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -12,6 +11,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
+import IntegrationsPage from "./pages/IntegrationsPage";
 
 // Optimized QueryClient configuration
 const queryClient = new QueryClient({
@@ -60,6 +60,7 @@ function App() {
                       <Route path="/" element={<Index />} />
                       <Route path="/app" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
+                      <Route path="/projects/:projectId/integrations" element={<IntegrationsPage />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                       <Route path="*" element={<NotFound />} />

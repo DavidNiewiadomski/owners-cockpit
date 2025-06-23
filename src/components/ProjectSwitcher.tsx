@@ -1,247 +1,149 @@
+
 import React, { useState } from 'react';
+import { Check, ChevronsUpDown, Plus, Settings, PlugZap } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Plus, Folder } from 'lucide-react';
-import { useProjects, useCreateProject, Project } from '@/hooks/useProjects';
-import { useQueryClient } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { useProjects } from '@/hooks/useProjects';
+import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
+import { useRouter } from '@/hooks/useRouter';
 
 interface ProjectSwitcherProps {
   selectedProject: string | null;
   onProjectChange: (projectId: string | null) => void;
-  variant?: 'compact' | 'expanded';
+  onSettingsToggle?: () => void;
 }
 
 const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
   selectedProject,
   onProjectChange,
-  variant = 'compact'
+  onSettingsToggle,
 }) => {
-  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
-  const [newProjectName, setNewProjectName] = useState('');
-  const [newProjectDescription, setNewProjectDescription] = useState('');
-  const { data: projects = [], isLoading, error } = useProjects();
-  const createProjectMutation = useCreateProject();
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const { data: projects = [], isLoading } = useProjects();
+  const { access } = useRoleBasedAccess();
+  const router = useRouter();
 
-  console.log('ProjectSwitcher - Projects:', projects, 'Loading:', isLoading, 'Error:', error);
+  const currentProject = projects.find(p => p.id === selectedProject);
 
-  const handleCreateProject = async () => {
-    if (!newProjectName.trim()) return;
+  const handleProjectSelect = (projectId: string | null) => {
+    onProjectChange(projectId);
+    setOpen(false);
+  };
 
-    try {
-      const newProject = await createProjectMutation.mutateAsync({
-        name: newProjectName.trim(),
-        description: newProjectDescription.trim() || undefined,
-        status: 'planning' as const,
-      });
-
-      // Refresh the projects list
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-      
-      // Select the new project
-      onProjectChange(newProject.id);
-      
-      // Reset form and close dialog
-      setNewProjectName('');
-      setNewProjectDescription('');
-      setIsNewProjectOpen(false);
-      
-      toast({
-        title: "Project created",
-        description: `${newProject.name} has been created successfully.`,
-      });
-    } catch (error) {
-      console.error('Failed to create project:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create project. Please try again.",
-        variant: "destructive",
-      });
+  const handleIntegrationsClick = () => {
+    if (selectedProject) {
+      router.push(`/projects/${selectedProject}/integrations`);
     }
   };
 
-  const getPlaceholderText = () => {
-    if (isLoading) return "Loading projects...";
-    if (error) return "Error loading projects";
-    if (projects.length === 0) return "No projects found";
-    return "Select project";
-  };
-
-  if (variant === 'expanded') {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center gap-2 mb-4">
-          <Folder className="w-5 h-5" />
-          <h3 className="text-lg font-semibold">Select Project</h3>
-        </div>
-
-        {/* Portfolio Button */}
-        <Button
-          variant={selectedProject === null ? "default" : "outline"}
-          className="justify-start text-left h-auto p-3 w-full mb-2"
-          onClick={() => onProjectChange(null)}
-        >
-          <div>
-            <div className="font-medium">Portfolio Dashboard</div>
-            <div className="text-sm text-muted-foreground mt-1">
-              View all projects and portfolio metrics
-            </div>
-          </div>
-        </Button>
-        
-        {isLoading ? (
-          <div className="text-muted-foreground">Loading projects...</div>
-        ) : error ? (
-          <div className="text-destructive">Error loading projects. Check your database connection.</div>
-        ) : projects.length === 0 ? (
-          <div className="text-muted-foreground">No projects found. Create your first project to get started.</div>
-        ) : (
-          <div className="grid gap-2">
-            {projects.map((project) => (
-              <Button
-                key={project.id}
-                variant={selectedProject === project.id ? "default" : "outline"}
-                className="justify-start text-left h-auto p-3"
-                onClick={() => onProjectChange(project.id)}
-              >
-                <div>
-                  <div className="font-medium">{project.name}</div>
-                  {project.description && (
-                    <div className="text-sm text-muted-foreground mt-1">
-                      {project.description}
-                    </div>
-                  )}
-                  <div className="text-xs text-muted-foreground mt-1 capitalize">
-                    Status: {project.status?.replace('_', ' ')}
-                  </div>
-                </div>
-              </Button>
-            ))}
-          </div>
-        )}
-
-        <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
-          <DialogTrigger asChild>
-            <Button className="w-full" variant="outline">
-              <Plus className="w-4 h-4 mr-2" />
-              New Project
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Project</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Project Name</Label>
-                <Input
-                  id="name"
-                  value={newProjectName}
-                  onChange={(e) => setNewProjectName(e.target.value)}
-                  placeholder="Enter project name"
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea
-                  id="description"
-                  value={newProjectDescription}
-                  onChange={(e) => setNewProjectDescription(e.target.value)}
-                  placeholder="Enter project description"
-                />
-              </div>
-              <Button 
-                onClick={handleCreateProject} 
-                className="w-full"
-                disabled={!newProjectName.trim()}
-              >
-                Create Project
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    );
-  }
-
   return (
     <div className="flex items-center gap-2">
-      <Select 
-        value={selectedProject === null ? "portfolio" : (selectedProject || "")} 
-        onValueChange={(value) => onProjectChange(value === "portfolio" ? null : value)}
-      >
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder={selectedProject === null ? "Portfolio" : getPlaceholderText()} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="portfolio">Portfolio Dashboard</SelectItem>
-          {!isLoading && !error && projects.length > 0 && (
-            projects.map((project) => (
-              <SelectItem key={project.id} value={project.id}>
-                {project.name}
-              </SelectItem>
-            ))
-          )}
-        </SelectContent>
-      </Select>
-
-      <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="icon">
-            <Plus className="w-4 h-4" />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-[300px] justify-between"
+          >
+            {currentProject ? currentProject.name : "Select project..."}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New Project</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="name">Project Name</Label>
-              <Input
-                id="name"
-                value={newProjectName}
-                onChange={(e) => setNewProjectName(e.target.value)}
-                placeholder="Enter project name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="description">Description (Optional)</Label>
-              <Textarea
-                id="description"
-                value={newProjectDescription}
-                onChange={(e) => setNewProjectDescription(e.target.value)}
-                placeholder="Enter project description"
-              />
-            </div>
-            <Button 
-              onClick={handleCreateProject} 
-              className="w-full"
-              disabled={!newProjectName.trim()}
+        </PopoverTrigger>
+        <PopoverContent className="w-[300px] p-0">
+          <Command>
+            <CommandInput placeholder="Search projects..." />
+            <CommandList>
+              <CommandEmpty>
+                {isLoading ? "Loading projects..." : "No projects found."}
+              </CommandEmpty>
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => handleProjectSelect(null)}
+                  className="cursor-pointer"
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      !selectedProject ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  Portfolio View
+                </CommandItem>
+                <CommandSeparator />
+                {projects.map((project) => (
+                  <CommandItem
+                    key={project.id}
+                    value={project.name}
+                    onSelect={() => handleProjectSelect(project.id)}
+                    className="cursor-pointer"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedProject === project.id ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {project.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              {access.canCreateProjects && (
+                <>
+                  <CommandSeparator />
+                  <CommandGroup>
+                    <CommandItem className="cursor-pointer">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Create Project
+                    </CommandItem>
+                  </CommandGroup>
+                </>
+              )}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+
+      {/* Project-specific actions */}
+      {selectedProject && (
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleIntegrationsClick}
+            className="h-8 px-2"
+          >
+            <PlugZap className="h-4 w-4" />
+            <span className="sr-only">Integrations</span>
+          </Button>
+          
+          {onSettingsToggle && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onSettingsToggle}
+              className="h-8 px-2"
             >
-              Create Project
+              <Settings className="h-4 w-4" />
+              <span className="sr-only">Settings</span>
             </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          )}
+        </div>
+      )}
     </div>
   );
 };
