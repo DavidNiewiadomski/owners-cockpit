@@ -34,6 +34,7 @@ const WorkOrderForm: React.FC<WorkOrderFormProps> = ({ projectId, onSuccess, onC
       const workOrderData = {
         ...formData,
         project_id: projectId,
+        status: 'open', // Add the required status field with default value
         estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : undefined,
         due_date: formData.due_date || undefined,
       };
