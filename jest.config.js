@@ -7,7 +7,11 @@ export default {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: {
+        jsx: 'react-jsx',
+      },
+    }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   testMatch: ['**/__tests__/**/*.(ts|tsx)', '**/*.(test|spec).(ts|tsx)'],
@@ -17,14 +21,4 @@ export default {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        jsx: 'react-jsx',
-        compilerOptions: {
-          types: ['jest', '@testing-library/jest-dom']
-        }
-      },
-    },
-  },
 };

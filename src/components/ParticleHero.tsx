@@ -38,19 +38,19 @@ const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="relative z-10 text-center px-6 max-w-4xl mx-auto"
+      className="relative z-10 text-center px-6 max-w-5xl mx-auto"
     >
-      <div className="glass rounded-3xl p-12 backdrop-blur-lg border border-white/10">
+      <div className="linear-card rounded-2xl p-16 backdrop-blur-xl border border-white/[0.08]">
         <motion.h1
           variants={itemVariants}
-          className="text-4xl sm:text-7xl md:text-8xl font-bold gradient-text mb-6"
+          className="text-5xl sm:text-7xl md:text-8xl font-medium linear-gradient-text mb-8 tracking-tight"
         >
           Owners Cockpit
         </motion.h1>
         
         <motion.p
           variants={itemVariants}
-          className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed"
+          className="text-xl md:text-2xl text-neutral-400 mb-12 leading-relaxed max-w-3xl mx-auto font-light"
         >
           Your AI-powered construction management platform.
           <br />
@@ -64,12 +64,12 @@ const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
           <Button
             size="lg"
             onClick={handleGetStarted}
-            className="neumorphic-button px-8 py-4 text-lg group min-h-[44px] hover:scale-105 hover:ring-2 hover:ring-indigo-400/60 transition-all duration-200"
+            className="linear-button-primary px-8 py-4 text-lg font-medium min-h-[52px] hover:scale-[1.02] transition-all duration-200"
           >
             Get Started
             <motion.div
               className="ml-2"
-              whileHover={{ x: 5 }}
+              whileHover={{ x: 4 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
               →
@@ -80,7 +80,7 @@ const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
             variant="outline"
             size="lg"
             onClick={onLearnMore}
-            className="glass border-primary/20 px-8 py-4 text-lg min-h-[44px] hover:scale-105 hover:ring-2 hover:ring-indigo-400/60 transition-all duration-200"
+            className="linear-button-secondary px-8 py-4 text-lg font-medium min-h-[52px] hover:scale-[1.02] transition-all duration-200"
           >
             Learn More
           </Button>
@@ -114,19 +114,19 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <section id="features" className="py-24 px-6 bg-gradient-to-b from-background to-muted/20">
+    <section id="features" className="py-32 px-6 linear-section-bg">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+          <h2 className="text-4xl md:text-5xl font-medium linear-gradient-text mb-8 tracking-tight">
             Intelligent Construction Management
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-neutral-400 max-w-3xl mx-auto font-light leading-relaxed">
             Experience the future of building management with AI-driven insights, 
             seamless workflows, and voice-powered controls.
           </p>
@@ -140,17 +140,17 @@ const FeaturesSection: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl p-8 backdrop-blur-lg border border-white/10 hover:border-primary/30 transition-all duration-300 group"
+              className="linear-feature-card rounded-xl p-8 backdrop-blur-xl border border-white/[0.08] hover:border-white/[0.12] transition-all duration-300 group"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <feature.icon className="w-8 h-8 text-primary" />
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-white/[0.06] mb-6 group-hover:bg-white/[0.08] transition-all duration-300">
+                <feature.icon className="w-7 h-7 text-white" />
               </div>
               
-              <h3 className="text-2xl font-semibold mb-4 text-foreground">
+              <h3 className="text-xl font-medium mb-4 text-white tracking-tight">
                 {feature.title}
               </h3>
               
-              <p className="text-muted-foreground mb-6 leading-relaxed">
+              <p className="text-neutral-400 mb-6 leading-relaxed font-light">
                 {feature.description}
               </p>
               
@@ -161,7 +161,7 @@ const FeaturesSection: React.FC = () => {
                     demoSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="text-primary hover:text-primary/80 font-medium transition-colors duration-200 group-hover:underline"
+                className="text-white/80 hover:text-white font-medium transition-colors duration-200 group-hover:underline"
               >
                 {feature.action} →
               </button>
@@ -188,11 +188,17 @@ const ParticleHero: React.FC = () => {
 
   return (
     <>
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Linear.app inspired gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-800/20 to-transparent"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-600/20 via-transparent to-transparent"></div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden linear-hero-bg">
+        {/* Linear.app inspired background */}
+        <div className="absolute inset-0">
+          {/* Base dark background */}
+          <div className="absolute inset-0 bg-[#0d0d0d]"></div>
+          
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-neutral-900/50 via-transparent to-neutral-800/30"></div>
+          
+          {/* Noise texture overlay */}
+          <div className="absolute inset-0 opacity-[0.015] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOSIgbnVtT2N0YXZlcz0iNCIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNCIvPgo8L3N2Zz4K')]"></div>
         </div>
         
         <HeroContent onLearnMore={handleLearnMore} />
