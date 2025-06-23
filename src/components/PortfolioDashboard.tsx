@@ -1,20 +1,8 @@
 
 import React from 'react';
-import { DashboardGrid } from '@/components/dashboard/DashboardGrid';
-import { useDashboardStore } from '@/stores/useDashboardStore';
+import DashboardGrid from '@/components/dashboard/DashboardGrid';
 
 const PortfolioDashboard: React.FC = () => {
-  const { layouts, widgets, loadLayout, updateLayout } = useDashboardStore();
-
-  React.useEffect(() => {
-    // Load portfolio layout (using 'portfolio' as the project ID)
-    loadLayout('portfolio');
-  }, [loadLayout]);
-
-  const handleLayoutChange = React.useCallback((newLayout: any) => {
-    updateLayout('portfolio', newLayout);
-  }, [updateLayout]);
-
   return (
     <div className="h-full p-6">
       <div className="mb-6">
@@ -24,12 +12,7 @@ const PortfolioDashboard: React.FC = () => {
         </p>
       </div>
       
-      <DashboardGrid
-        projectId="portfolio"
-        layout={layouts['portfolio'] || []}
-        widgets={widgets}
-        onLayoutChange={handleLayoutChange}
-      />
+      <DashboardGrid projectId="portfolio" />
     </div>
   );
 };
