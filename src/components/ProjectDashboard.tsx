@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { useProjects, useCreateProject } from '@/hooks/useProjects';
-import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,14 +8,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Building2, Calendar, User, LogOut } from 'lucide-react';
+import { Plus, Building2, Calendar } from 'lucide-react';
 import ChatWindow from '@/components/ChatWindow';
 import GanttChart from '@/components/GanttChart';
 import { useTasks } from '@/hooks/useTasks';
 import { format } from 'date-fns';
 
 export function ProjectDashboard() {
-  const { user, signOut } = useAuth();
   const { data: projects, isLoading } = useProjects();
   const createProject = useCreateProject();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -80,16 +78,6 @@ export function ProjectDashboard() {
             <div className="flex items-center space-x-3">
               <Building2 className="h-8 w-8 text-blue-600" />
               <h1 className="text-2xl font-bold text-gray-900">Owners Cockpit</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <User className="h-4 w-4" />
-                <span>{user?.email}</span>
-              </div>
-              <Button variant="outline" onClick={signOut}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
             </div>
           </div>
         </div>

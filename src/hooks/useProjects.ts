@@ -1,7 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export interface Project {
@@ -16,13 +15,9 @@ export interface Project {
 }
 
 export function useProjects() {
-  const { user } = useAuth();
-  
   return useQuery({
-    queryKey: ['projects', user?.id],
+    queryKey: ['projects'],
     queryFn: async () => {
-      if (!user) return [];
-      
       const { data, error } = await supabase
         .from('projects')
         .select('*')
@@ -31,21 +26,17 @@ export function useProjects() {
       if (error) throw error;
       return data as Project[];
     },
-    enabled: !!user,
   });
 }
 
 export function useCreateProject() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
   
   return useMutation({
     mutationFn: async (project: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
-      if (!user) throw new Error('User not authenticated');
-      
       const { data, error } = await supabase
         .from('projects')
-        .insert([{ ...project, owner_id: user.id }])
+        .insert([project])
         .select()
         .single();
       
