@@ -460,6 +460,65 @@ export type Database = {
           },
         ]
       }
+      purchase_orders: {
+        Row: {
+          created_at: string | null
+          delivery_date: string | null
+          description: string | null
+          external_id: string | null
+          id: string
+          issue_date: string | null
+          po_number: string
+          project_id: string
+          source: string | null
+          status: string | null
+          total_amount: number | null
+          updated_at: string | null
+          vendor_contact: string | null
+          vendor_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          delivery_date?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          issue_date?: string | null
+          po_number: string
+          project_id: string
+          source?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_contact?: string | null
+          vendor_name: string
+        }
+        Update: {
+          created_at?: string | null
+          delivery_date?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          issue_date?: string | null
+          po_number?: string
+          project_id?: string
+          source?: string | null
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+          vendor_contact?: string | null
+          vendor_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reports: {
         Row: {
           content: string
@@ -544,6 +603,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "rfi_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfps: {
+        Row: {
+          awarded_amount: number | null
+          awarded_vendor: string | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          external_id: string | null
+          id: string
+          issue_date: string | null
+          project_id: string
+          response_deadline: string | null
+          rfp_number: string
+          source: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          awarded_amount?: number | null
+          awarded_vendor?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          issue_date?: string | null
+          project_id: string
+          response_deadline?: string | null
+          rfp_number: string
+          source?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          awarded_amount?: number | null
+          awarded_vendor?: string | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          issue_date?: string | null
+          project_id?: string
+          response_deadline?: string | null
+          rfp_number?: string
+          source?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfps_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
