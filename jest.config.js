@@ -9,7 +9,8 @@ export default {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
-        jsx: 'react-jsx'
+        jsx: 'react-jsx',
+        types: ['jest', '@testing-library/jest-dom']
       },
     }],
   },
@@ -21,4 +22,7 @@ export default {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 };

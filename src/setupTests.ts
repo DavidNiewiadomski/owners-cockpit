@@ -1,5 +1,5 @@
 
-// Import jest-dom matchers
+// Import jest-dom matchers explicitly
 import '@testing-library/jest-dom';
 
 // Mock IntersectionObserver
