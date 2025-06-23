@@ -35,22 +35,12 @@ const Index = React.memo(() => {
   
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
-  const [showHero, setShowHero] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
 
-  // Show hero on root path, hide on /app
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setShowHero(true);
-    } else if (location.pathname === '/app') {
-      setShowHero(false);
-    }
-  }, [location.pathname]);
-
   // Performance monitoring
   React.useEffect(() => {
-    endMeasurement({ selectedProject, showUpload, showHero, showSettings });
+    endMeasurement({ selectedProject, showUpload, showSettings });
   });
 
   const handleProjectChange = React.useCallback((projectId: string | null) => {
@@ -66,10 +56,6 @@ const Index = React.memo(() => {
     setShowSettings(prev => !prev);
   }, []);
 
-  const handleHeroExit = React.useCallback(() => {
-    setShowHero(false);
-  }, []);
-
   const handleUploadClose = React.useCallback(() => {
     setShowUpload(false);
   }, []);
@@ -83,7 +69,7 @@ const Index = React.memo(() => {
   }, []);
 
   // Show hero page on root route
-  if (showHero && location.pathname === '/') {
+  if (location.pathname === '/') {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <ParticleHero />
@@ -91,7 +77,7 @@ const Index = React.memo(() => {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button
-              onClick={handleHeroExit}
+              onClick={() => window.location.href = '/app'}
               className="glass border-primary/20"
             >
               {t('app.enterApp')}
@@ -110,7 +96,7 @@ const Index = React.memo(() => {
         onProjectChange={handleProjectChange}
         onUploadToggle={handleUploadToggle}
         onSettingsToggle={handleSettingsToggle}
-        onHeroExit={handleHeroExit}
+        onHeroExit={() => window.location.href = '/'}
       />
 
       <RoleContextBanner />
