@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 interface PerformanceMetrics {
   componentName: string;
