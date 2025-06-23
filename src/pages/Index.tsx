@@ -68,8 +68,8 @@ const Index = React.memo(() => {
     setActiveView(view);
   }, []);
 
-  // Show hero page on root route
-  if (location.pathname === '/') {
+  // Show hero page on root route - check for exact path
+  if (location.pathname === '/' || location.pathname === '') {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <ParticleHero />
@@ -88,7 +88,7 @@ const Index = React.memo(() => {
     );
   }
 
-  // Show main app interface
+  // Show main app interface for all other routes
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader
