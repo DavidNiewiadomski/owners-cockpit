@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,6 +9,7 @@ import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
 import { RoleProvider } from "@/contexts/RoleContext";
 import "@/lib/i18n";
 import Index from "./pages/Index";
+import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
@@ -58,7 +60,7 @@ function App() {
                 <BrowserRouter>
                   <EnhancedErrorBoundary>
                     <Routes>
-                      <Route path="/" element={<Index />} />
+                      <Route path="/" element={<LandingPage />} />
                       <Route path="/app" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
