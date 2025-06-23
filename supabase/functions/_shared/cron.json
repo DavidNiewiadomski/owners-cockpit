@@ -13,6 +13,19 @@
         "scheduled": true,
         "sync_all_projects": true
       }
+    },
+    {
+      "name": "weekly-summary",
+      "cron": "0 17 * * 5",
+      "method": "POST",
+      "url": "/functions/v1/weeklySummary",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "scheduled": true,
+        "project_id": "all"
+      }
     }
   ]
 }

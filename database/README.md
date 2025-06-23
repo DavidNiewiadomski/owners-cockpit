@@ -14,6 +14,7 @@ supabase db push --file supabase/migrations/001_pgvector.sql
 supabase db push --file supabase/migrations/002_tables.sql
 supabase db push --file supabase/migrations/003_integration_logs.sql
 supabase db push --file supabase/migrations/004_vector_search.sql
+supabase db push --file supabase/migrations/005_reports_table.sql
 ```
 
 ### Manual Application
@@ -27,6 +28,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 \i supabase/migrations/002_tables.sql
 \i supabase/migrations/003_integration_logs.sql
 \i supabase/migrations/004_vector_search.sql
+\i supabase/migrations/005_reports_table.sql
 ```
 
 ## Schema Overview
@@ -39,6 +41,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 - **Images**: Separate image handling with OCR support
 - **Vector Index**: Embeddings for RAG with 1536-dim vectors
 - **Integration Logs**: ETL operation tracking and audit trail
+- **Reports**: AI-generated summaries and insights
 
 ## Edge Functions
 
@@ -127,8 +130,42 @@ curl -X POST 'https://your-project.supabase.co/functions/v1/chatRag' \
 }
 ```
 
+### Weekly Summary (`/functions/v1/weeklySummary`)
+Generates AI-powered weekly project summaries with key metrics and insights.
+
+**Usage:**
+```bash
+curl -X POST 'https://your-project.supabase.co/functions/v1/weeklySummary' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "project_id": "your-project-uuid"
+  }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "report_id": "report-uuid",
+  "summary": "**Weekly Project Summary**\n\nThis week showed solid progress...",
+  "project_name": "Construction Project Alpha",
+  "posted_to_slack": true
+}
+```
+
+**Features:**
+- Analyzes last 7 days of project activity
+- Generates ≤300-word AI summary with GPT-4
+- Tracks tasks, budget, RFIs, and document metrics
+- Automatically posts to Slack if webhook configured
+- Stores reports in database for historical tracking
+
+**CRON Schedule**: Runs every Friday at 17:00 UTC for automatic weekly reports.
+
 **Environment Variables Required:**
 - `OPENAI_KEY`: OpenAI API key for embeddings and chat completions
+- `SLACK_WEBHOOK_URL`: Optional Slack webhook for automatic posting
 
 ## Security
 
@@ -148,4 +185,5 @@ Run Edge Function tests:
 deno test tests/procoreSync.test.ts
 deno test tests/ingestUpload.test.ts
 deno test tests/chatRag.test.ts
+deno test tests/weeklySummary.test.ts
 ```
