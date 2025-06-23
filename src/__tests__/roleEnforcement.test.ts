@@ -37,7 +37,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockImplementation(mockFrom);
+    mockSupabase.from.mockReturnValue(mockFrom() as any);
 
     const response = await supabase
       .from('user_roles')
@@ -47,7 +47,7 @@ describe('Role Enforcement', () => {
       .single();
 
     expect(response.data?.role).toBe('admin');
-    expect(mockFrom).toHaveBeenCalledWith('user_roles');
+    expect(mockSupabase.from).toHaveBeenCalledWith('user_roles');
   });
 
   test('should restrict viewer access to read-only operations', async () => {
@@ -68,7 +68,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockImplementation(mockFrom);
+    mockSupabase.from.mockReturnValue(mockFrom() as any);
 
     const response = await supabase
       .from('user_roles')
@@ -98,7 +98,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockImplementation(mockFrom);
+    mockSupabase.from.mockReturnValue(mockFrom() as any);
 
     const response = await supabase
       .from('user_roles')
@@ -128,7 +128,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockImplementation(mockFrom);
+    mockSupabase.from.mockReturnValue(mockFrom() as any);
 
     const response = await supabase
       .from('user_roles')
