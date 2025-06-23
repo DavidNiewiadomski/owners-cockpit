@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
 import IntegrationsPage from "./pages/IntegrationsPage";
+import ExecutiveDashboard from "./pages/ExecutiveDashboard";
 
 // Optimized QueryClient configuration
 const queryClient = new QueryClient({
@@ -60,6 +61,7 @@ function App() {
                       <Route path="/" element={<Index />} />
                       <Route path="/app" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
+                      <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
                       <Route path="/projects/:projectId/integrations" element={<IntegrationsPage />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
