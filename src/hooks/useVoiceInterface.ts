@@ -5,8 +5,8 @@ import { useToast } from '@/hooks/use-toast';
 // Extend existing Window interface for speech recognition
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
   }
 }
 
@@ -34,7 +34,7 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
   });
 
   const { toast } = useToast();
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
 
   // Initialize speech recognition
