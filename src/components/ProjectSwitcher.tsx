@@ -1,147 +1,230 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ChevronDown, Building, Plus } from 'lucide-react';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-
-interface Project {
-  id: string;
-  name: string;
-  status: 'active' | 'on-hold' | 'completed';
-  progress: number;
-}
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Folder } from 'lucide-react';
+import { useProjects, useCreateProject, Project } from '@/hooks/useProjects';
+import { useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProjectSwitcherProps {
   selectedProject: string | null;
-  onProjectChange: (projectId: string) => void;
+  onProjectChange: (projectId: string | null) => void;
   variant?: 'compact' | 'expanded';
 }
 
-const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({ 
-  selectedProject, 
+const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
+  selectedProject,
   onProjectChange,
   variant = 'compact'
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isNewProjectOpen, setIsNewProjectOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [newProjectDescription, setNewProjectDescription] = useState('');
+  const { data: projects = [], isLoading, error } = useProjects();
+  const createProject = useCreateProject();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  // Mock projects - in real implementation, this would come from your database
-  const projects: Project[] = [
-    { id: '1', name: 'Downtown Office Complex', status: 'active', progress: 68 },
-    { id: '2', name: 'Riverside Residential', status: 'active', progress: 42 },
-    { id: '3', name: 'Tech Campus Phase 2', status: 'on-hold', progress: 25 },
-    { id: '4', name: 'Retail Plaza Renovation', status: 'completed', progress: 100 },
-  ];
+  console.log('ProjectSwitcher - Projects:', projects, 'Loading:', isLoading, 'Error:', error);
 
-  const selectedProjectData = projects.find(p => p.id === selectedProject);
+  const handleCreateProject = async () => {
+    if (!newProjectName.trim()) return;
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'default';
-      case 'on-hold': return 'secondary';
-      case 'completed': return 'outline';
-      default: return 'default';
+    try {
+      const newProject = await createProject({
+        name: newProjectName.trim(),
+        description: newProjectDescription.trim() || undefined,
+        status: 'planning' as const,
+      });
+
+      // Refresh the projects list
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      
+      // Select the new project
+      onProjectChange(newProject.id);
+      
+      // Reset form and close dialog
+      setNewProjectName('');
+      setNewProjectDescription('');
+      setIsNewProjectOpen(false);
+      
+      toast({
+        title: "Project created",
+        description: `${newProject.name} has been created successfully.`,
+      });
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create project. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   if (variant === 'expanded') {
     return (
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium text-muted-foreground">Select Project</h3>
-        <div className="grid gap-3 max-h-96 overflow-y-auto">
-          {projects.map((project) => (
-            <Card
-              key={project.id}
-              className={`p-4 cursor-pointer transition-colors neumorphic-card ${
-                selectedProject === project.id
-                  ? 'ring-2 ring-primary'
-                  : 'hover:bg-muted/50'
-              }`}
-              onClick={() => onProjectChange(project.id)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium">{project.name}</h4>
-                <Badge variant={getStatusColor(project.status)}>
-                  {project.status}
-                </Badge>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2">
-                <div
-                  className="bg-primary h-2 rounded-full transition-all"
-                  style={{ width: `${project.progress}%` }}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 mb-4">
+          <Folder className="w-5 h-5" />
+          <h3 className="text-lg font-semibold">Select Project</h3>
+        </div>
+        
+        {isLoading ? (
+          <div className="text-muted-foreground">Loading projects...</div>
+        ) : error ? (
+          <div className="text-destructive">Error loading projects. Check your database connection.</div>
+        ) : projects.length === 0 ? (
+          <div className="text-muted-foreground">No projects found. Create your first project to get started.</div>
+        ) : (
+          <div className="grid gap-2">
+            {projects.map((project) => (
+              <Button
+                key={project.id}
+                variant={selectedProject === project.id ? "default" : "outline"}
+                className="justify-start text-left h-auto p-3"
+                onClick={() => onProjectChange(project.id)}
+              >
+                <div>
+                  <div className="font-medium">{project.name}</div>
+                  {project.description && (
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {project.description}
+                    </div>
+                  )}
+                  <div className="text-xs text-muted-foreground mt-1 capitalize">
+                    Status: {project.status?.replace('_', ' ')}
+                  </div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        )}
+
+        <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-full" variant="outline">
+              <Plus className="w-4 h-4 mr-2" />
+              New Project
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Project</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Project Name</Label>
+                <Input
+                  id="name"
+                  value={newProjectName}
+                  onChange={(e) => setNewProjectName(e.target.value)}
+                  placeholder="Enter project name"
                 />
               </div>
-              <div className="text-xs text-muted-foreground mt-2">
-                {project.progress}% complete
+              <div>
+                <Label htmlFor="description">Description (Optional)</Label>
+                <Textarea
+                  id="description"
+                  value={newProjectDescription}
+                  onChange={(e) => setNewProjectDescription(e.target.value)}
+                  placeholder="Enter project description"
+                />
               </div>
-            </Card>
-          ))}
-        </div>
+              <Button 
+                onClick={handleCreateProject} 
+                className="w-full"
+                disabled={!newProjectName.trim()}
+              >
+                Create Project
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className="neumorphic-button min-w-[200px] justify-between"
-        >
-          <div className="flex items-center gap-2">
-            <Building className="w-4 h-4" />
-            <span className="truncate">
-              {selectedProjectData?.name || 'Select Project'}
-            </span>
-          </div>
-          <ChevronDown className="w-4 h-4 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      
-      <PopoverContent className="w-80 p-2" align="start">
-        <div className="space-y-1">
-          <div className="px-2 py-1 text-sm font-medium text-muted-foreground">
-            Recent Projects
-          </div>
-          
-          {projects.map((project) => (
-            <Button
-              key={project.id}
-              variant="ghost"
-              className="w-full justify-start h-auto p-3"
-              onClick={() => {
-                onProjectChange(project.id);
-                setIsOpen(false);
-              }}
+    <div className="flex items-center gap-2">
+      <Select value={selectedProject || ""} onValueChange={onProjectChange}>
+        <SelectTrigger className="w-[200px]">
+          <SelectValue placeholder={isLoading ? "Loading..." : "Select project"} />
+        </SelectTrigger>
+        <SelectContent>
+          {isLoading ? (
+            <SelectItem value="" disabled>Loading projects...</SelectItem>
+          ) : error ? (
+            <SelectItem value="" disabled>Error loading projects</SelectItem>
+          ) : projects.length === 0 ? (
+            <SelectItem value="" disabled>No projects found</SelectItem>
+          ) : (
+            projects.map((project) => (
+              <SelectItem key={project.id} value={project.id}>
+                {project.name}
+              </SelectItem>
+            ))
+          )}
+        </SelectContent>
+      </Select>
+
+      <Dialog open={isNewProjectOpen} onOpenChange={setIsNewProjectOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Plus className="w-4 h-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Project</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Project Name</Label>
+              <Input
+                id="name"
+                value={newProjectName}
+                onChange={(e) => setNewProjectName(e.target.value)}
+                placeholder="Enter project name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Textarea
+                id="description"
+                value={newProjectDescription}
+                onChange={(e) => setNewProjectDescription(e.target.value)}
+                placeholder="Enter project description"
+              />
+            </div>
+            <Button 
+              onClick={handleCreateProject} 
+              className="w-full"
+              disabled={!newProjectName.trim()}
             >
-              <div className="flex items-center justify-between w-full">
-                <div className="flex-1 text-left">
-                  <div className="font-medium">{project.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {project.progress}% complete
-                  </div>
-                </div>
-                <Badge variant={getStatusColor(project.status)} className="ml-2">
-                  {project.status}
-                </Badge>
-              </div>
-            </Button>
-          ))}
-          
-          <div className="border-t pt-2">
-            <Button variant="ghost" className="w-full justify-start">
-              <Plus className="w-4 h-4 mr-2" />
-              New Project
+              Create Project
             </Button>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
