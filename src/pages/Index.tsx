@@ -1,3 +1,4 @@
+
 import React, { useState, lazy, Suspense, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -38,13 +39,14 @@ const Index = React.memo(() => {
   const [showSettings, setShowSettings] = useState(false);
   const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
 
-  // Auto-exit hero when navigating to /app
+  // Show hero on root path, hide on /app
   useEffect(() => {
-    if (location.pathname === '/app' && showHero) {
-      console.log('Auto-exiting hero due to /app route');
+    if (location.pathname === '/') {
+      setShowHero(true);
+    } else if (location.pathname === '/app') {
       setShowHero(false);
     }
-  }, [location.pathname, showHero]);
+  }, [location.pathname]);
 
   // Performance monitoring
   React.useEffect(() => {
@@ -80,6 +82,7 @@ const Index = React.memo(() => {
     setActiveView(view);
   }, []);
 
+  // Show hero page on root route
   if (showHero && location.pathname === '/') {
     return (
       <div className="min-h-screen bg-background text-foreground">
@@ -99,6 +102,7 @@ const Index = React.memo(() => {
     );
   }
 
+  // Show main app interface
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader
