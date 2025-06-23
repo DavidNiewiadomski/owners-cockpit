@@ -51,7 +51,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onUploadToggle}
-                className="neumorphic-button hover:scale-105 transition-transform"
+                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
                 title={t('navigation.upload')}
               >
                 <Plus className="h-4 w-4" />
@@ -59,7 +59,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="neumorphic-button hover:scale-105 transition-transform"
+                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
                 title={t('navigation.projects')}
               >
                 <FolderOpen className="h-4 w-4" />
@@ -68,7 +68,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="neumorphic-button hover:scale-105 transition-transform"
+                  className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
                   onClick={() => window.open(`/settings/access/${selectedProject}`, '_blank')}
                   title="Project Access Settings"
                 >
@@ -78,7 +78,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="neumorphic-button hover:scale-105 transition-transform"
+                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
                 onClick={onSettingsToggle}
                 title={t('navigation.settings')}
               >
