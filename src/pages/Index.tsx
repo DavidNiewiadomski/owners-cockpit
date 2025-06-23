@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
@@ -45,13 +47,19 @@ const Index = () => {
     router.push('/executive-dashboard');
   };
 
+  const handleHeroExit = () => {
+    // Reset to welcome screen
+    setSelectedProject(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
         selectedProject={selectedProject}
         onProjectChange={handleProjectChange}
+        onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
-        onChatToggle={() => setShowChat(!showChat)}
+        onHeroExit={handleHeroExit}
       />
 
       <div className="flex flex-1">
@@ -65,7 +73,7 @@ const Index = () => {
               
               {/* Executive Dashboard Access */}
               {currentRole === 'Executive' && (
-                <MotionWrapper animation="slideInUp" delay={0.3}>
+                <MotionWrapper animation="slideUp" delay={0.3}>
                   <div className="max-w-4xl mx-auto px-8">
                     <Card className="p-6 border-2 border-dashed border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                       <div className="flex items-center justify-between">
@@ -105,36 +113,44 @@ const Index = () => {
         </main>
 
         {/* Chat Window */}
-        {showChat && (
-          <ChatWindow 
-            isOpen={showChat}
-            onClose={() => setShowChat(false)}
-            onSourceClick={(source) => {
-              setShowSourceModal(true);
-            }}
-            onDocumentSelect={handleDocumentSelect}
-            selectedProject={selectedProject}
-          />
+        {showChat && selectedProject && (
+          <div className="w-96 border-l border-border/40">
+            <ChatWindow projectId={selectedProject} />
+          </div>
         )}
       </div>
 
       {/* Modals */}
       <SettingsModal 
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        selectedProject={selectedProject}
+        open={showSettings}
+        onOpenChange={setShowSettings}
       />
 
       <SourceModal 
+        citation={null}
         isOpen={showSourceModal}
         onClose={() => setShowSourceModal(false)}
       />
 
-      <DocumentViewer
-        isOpen={showDocumentViewer}
-        onClose={() => setShowDocumentViewer(false)}
-        document={selectedDocument}
-      />
+      {showDocumentViewer && selectedDocument && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-background rounded-lg max-w-4xl max-h-[90vh] overflow-hidden">
+            <div className="p-4 border-b flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Document Viewer</h3>
+              <Button variant="ghost" onClick={() => setShowDocumentViewer(false)}>
+                ×
+              </Button>
+            </div>
+            <div className="p-4 overflow-auto max-h-[80vh]">
+              <DocumentViewer
+                fileUrl={selectedDocument.url}
+                mimeType={selectedDocument.mimeType}
+                title={selectedDocument.title}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <VoiceControl />
     </div>
