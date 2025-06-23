@@ -1,6 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import * as pdfjsLib from 'pdfjs-dist';
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FileText, Image, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { FileText, Image, Loader2 } from 'lucide-react';
 import { Citation } from '@/hooks/useChatRag';
-
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+import DocumentViewer from './DocumentViewer';
+import DocumentMetadata from './DocumentMetadata';
+import CitationContent from './CitationContent';
 
 interface SourceModalProps {
   citation: Citation | null;
@@ -39,10 +37,6 @@ const SourceModal: React.FC<SourceModalProps> = ({
 }) => {
   const [documentData, setDocumentData] = useState<DocumentData | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [pdfDoc, setPdfDoc] = useState<any>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -92,11 +86,6 @@ const SourceModal: React.FC<SourceModalProps> = ({
       if (urlError) throw urlError;
 
       setFileUrl(urlData.signedUrl);
-
-      // If it's a PDF, initialize PDF.js
-      if (doc.mime_type === 'application/pdf') {
-        loadPdf(urlData.signedUrl);
-      }
     } catch (err) {
       console.error('Error fetching document:', err);
       setError('Failed to load document');
@@ -104,47 +93,6 @@ const SourceModal: React.FC<SourceModalProps> = ({
       setIsLoading(false);
     }
   };
-
-  const loadPdf = async (url: string) => {
-    try {
-      const loadingTask = pdfjsLib.getDocument(url);
-      const pdf = await loadingTask.promise;
-      setPdfDoc(pdf);
-      setTotalPages(pdf.numPages);
-      setCurrentPage(1);
-    } catch (err) {
-      console.error('Error loading PDF:', err);
-      setError('Failed to load PDF document');
-    }
-  };
-
-  const renderPdfPage = async (pageNum: number) => {
-    if (!pdfDoc || !canvasRef) return;
-
-    try {
-      const page = await pdfDoc.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.5 });
-      const context = canvasRef.getContext('2d');
-
-      canvasRef.height = viewport.height;
-      canvasRef.width = viewport.width;
-
-      const renderContext = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-
-      await page.render(renderContext).promise;
-    } catch (err) {
-      console.error('Error rendering PDF page:', err);
-    }
-  };
-
-  useEffect(() => {
-    if (pdfDoc && canvasRef && currentPage) {
-      renderPdfPage(currentPage);
-    }
-  }, [pdfDoc, canvasRef, currentPage]);
 
   const getSourceIcon = (mimeType?: string) => {
     if (!mimeType) return <FileText className="w-4 h-4" />;
@@ -155,9 +103,6 @@ const SourceModal: React.FC<SourceModalProps> = ({
     
     return <FileText className="w-4 h-4" />;
   };
-
-  const isPdf = documentData?.mime_type === 'application/pdf';
-  const isImage = documentData?.mime_type?.startsWith('image/');
 
   if (!citation && !sourceId) return null;
 
@@ -195,109 +140,26 @@ const SourceModal: React.FC<SourceModalProps> = ({
             </Card>
           )}
 
-          {/* Document Info */}
-          {documentData && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="outline" className="font-mono text-xs">
-                {documentData.file_path.split('/').pop()}
-              </Badge>
-              <Badge variant="secondary" className="text-xs">
-                {(documentData.file_size / 1024).toFixed(1)} KB
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                {documentData.mime_type}
-              </Badge>
-            </div>
+          {/* Document Metadata */}
+          <DocumentMetadata
+            documentData={documentData}
+            citation={citation}
+            sourceId={sourceId}
+          />
+
+          {/* Document Viewer */}
+          {fileUrl && documentData && !isLoading && (
+            <DocumentViewer
+              fileUrl={fileUrl}
+              mimeType={documentData.mime_type}
+              title={documentData.title}
+            />
           )}
 
-          {/* Citation Source Info (fallback) */}
-          {citation && !documentData && (
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="font-mono text-xs">
-                {citation.source}
-              </Badge>
-              {citation.page && (
-                <Badge variant="secondary" className="text-xs">
-                  Page {citation.page}
-                </Badge>
-              )}
-            </div>
+          {/* Citation Content */}
+          {citation && (
+            <CitationContent citation={citation} />
           )}
-
-          {/* PDF Viewer */}
-          {isPdf && fileUrl && !isLoading && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    disabled={currentPage <= 1}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-                  <span className="text-sm">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    disabled={currentPage >= totalPages}
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-              
-              <Card className="p-4 bg-muted/30 border-border/40">
-                <div className="flex justify-center">
-                  <canvas
-                    ref={setCanvasRef}
-                    className="max-w-full border border-border/20 rounded"
-                  />
-                </div>
-              </Card>
-            </div>
-          )}
-
-          {/* Image Viewer */}
-          {isImage && fileUrl && !isLoading && (
-            <Card className="p-4 bg-muted/30 border-border/40">
-              <div className="flex justify-center">
-                <img
-                  src={fileUrl}
-                  alt={documentData?.title || 'Document image'}
-                  className="max-w-full max-h-96 object-contain rounded border border-border/20"
-                />
-              </div>
-            </Card>
-          )}
-
-          {/* Citation Content (fallback or additional info) */}
-          {citation?.snippet && (
-            <Card className="p-4 bg-muted/30 border-border/40">
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <p className="text-sm leading-relaxed font-mono whitespace-pre-wrap">
-                  {citation.snippet}
-                </p>
-              </div>
-            </Card>
-          )}
-
-          {/* Metadata */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <span>Referenced in conversation</span>
-            </div>
-            {(citation?.id || sourceId) && (
-              <Badge variant="outline" className="text-xs">
-                ID: {(citation?.id || sourceId)?.slice(0, 8)}...
-              </Badge>
-            )}
-          </div>
         </div>
       </DialogContent>
     </Dialog>
