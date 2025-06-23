@@ -55,7 +55,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
   projectId,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { access } = useRoleBasedAccess();
+  const { access, currentRole } = useRoleBasedAccess();
   const syncMutation = useSyncIntegration();
   const deleteMutation = useDeleteIntegration();
   
@@ -65,7 +65,7 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
   const isSyncing = integration?.status === 'syncing';
 
   const canManageIntegrations = access.canEditData || 
-    ['Executive', 'Construction', 'Facilities'].includes(access.currentRole);
+    ['Executive', 'Construction', 'Facilities'].includes(currentRole);
 
   const handleSync = async () => {
     if (!integration) return;

@@ -64,7 +64,12 @@ export function useProjectIntegrations(projectId: string) {
         throw error;
       }
 
-      return data || [];
+      // Type assertion to ensure proper typing after database fetch
+      return (data || []).map(item => ({
+        ...item,
+        provider: item.provider as ProjectIntegration['provider'],
+        status: item.status as ProjectIntegration['status']
+      }));
     },
     enabled: !!projectId,
   });
