@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -45,6 +44,11 @@ const Index = () => {
     router.push('/executive-dashboard');
   };
 
+  const handleHeroExit = () => {
+    // This can be a no-op since we're already in the main app
+    console.log('Hero exit called');
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
@@ -52,6 +56,7 @@ const Index = () => {
         onProjectChange={handleProjectChange}
         onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
+        onHeroExit={handleHeroExit}
       />
 
       <div className="flex flex-1">
