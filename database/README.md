@@ -1,4 +1,3 @@
-
 # Owners Cockpit Database Schema
 
 ## Applying Migrations
@@ -65,6 +64,35 @@ curl -X POST 'https://your-project.supabase.co/functions/v1/procoreSync' \
 ```
 
 **CRON Schedule**: Runs daily at 02:00 UTC for automatic sync.
+
+### Document Ingestion (`/functions/v1/ingestUpload`)
+Processes uploaded documents, extracts text, generates embeddings, and stores in vector index.
+
+**Usage:**
+```bash
+curl -X POST 'https://your-project.supabase.co/functions/v1/ingestUpload' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -F 'file=@/path/to/document.pdf' \
+  -F 'project_id=your-project-uuid' \
+  -F 'doc_type=drawing'
+```
+
+**Response:**
+```json
+{
+  "chunks_saved": 15,
+  "doc_id": "doc-uuid",
+  "file_path": "docs/project-id/file-uuid.pdf"
+}
+```
+
+**Supported File Types:**
+- PDFs: Text extraction + OCR for scanned pages
+- Images (JPEG/PNG): OpenAI Vision + Tesseract OCR
+- Document types: `drawing`, `specification`, `report`, `photo`, `contract`, `other`
+
+**Environment Variables Required:**
+- `OPENAI_KEY`: OpenAI API key for embeddings and vision processing
 
 ## Security
 
