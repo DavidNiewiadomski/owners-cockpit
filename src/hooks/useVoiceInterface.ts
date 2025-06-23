@@ -2,6 +2,60 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+// Type declarations for speech APIs
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+  
+  interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+    onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+    start(): void;
+    stop(): void;
+    abort(): void;
+  }
+  
+  interface SpeechRecognitionEvent extends Event {
+    results: SpeechRecognitionResultList;
+    resultIndex: number;
+  }
+  
+  interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+    message: string;
+  }
+  
+  interface SpeechRecognitionResultList {
+    length: number;
+    item(index: number): SpeechRecognitionResult;
+    [index: number]: SpeechRecognitionResult;
+  }
+  
+  interface SpeechRecognitionResult {
+    length: number;
+    item(index: number): SpeechRecognitionAlternative;
+    [index: number]: SpeechRecognitionAlternative;
+    isFinal: boolean;
+  }
+  
+  interface SpeechRecognitionAlternative {
+    transcript: string;
+    confidence: number;
+  }
+  
+  var SpeechRecognition: {
+    prototype: SpeechRecognition;
+    new(): SpeechRecognition;
+  };
+}
+
 interface VoiceInterfaceConfig {
   language?: string;
   continuous?: boolean;
@@ -32,8 +86,8 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
   // Initialize speech recognition
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
+      const SpeechRecognitionConstructor = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognitionConstructor();
       
       const recognition = recognitionRef.current;
       recognition.continuous = config.continuous || false;
@@ -189,11 +243,3 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
     isSupported,
   };
 };
-
-// Type declarations for speech APIs
-declare global {
-  interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
-  }
-}
