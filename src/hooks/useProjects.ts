@@ -13,6 +13,41 @@ export interface Project {
   updated_at?: string;
 }
 
+const SAMPLE_PROJECTS: Project[] = [
+  {
+    id: '11111111-1111-1111-1111-111111111111',
+    name: 'Downtown Office Complex',
+    description: 'A 12-story mixed-use office building with retail space on the ground floor.',
+    status: 'active' as const,
+    start_date: '2024-01-15',
+    end_date: '2024-12-20'
+  },
+  {
+    id: '22222222-2222-2222-2222-222222222222',
+    name: 'Residential Townhomes',
+    description: 'Development of 24 luxury townhomes with modern amenities.',
+    status: 'planning' as const,
+    start_date: '2024-03-01',
+    end_date: '2024-11-30'
+  },
+  {
+    id: '33333333-3333-3333-3333-333333333333',
+    name: 'Hospital Renovation',
+    description: 'Complete renovation of the west wing including new patient rooms.',
+    status: 'on_hold' as const,
+    start_date: '2024-02-01',
+    end_date: '2024-08-15'
+  },
+  {
+    id: '44444444-4444-4444-4444-444444444444',
+    name: 'Shopping Center Expansion',
+    description: 'Adding 50,000 sq ft retail space and updating existing facilities.',
+    status: 'completed' as const,
+    start_date: '2023-06-01',
+    end_date: '2024-01-30'
+  }
+];
+
 export function useProjects() {
   return useQuery({
     queryKey: ['projects'],
@@ -27,110 +62,22 @@ export function useProjects() {
 
         if (error) {
           console.error('Supabase error fetching projects:', error);
-          console.log('Using fallback sample data due to error');
-          
-          // Return sample data as fallback
-          return [
-            {
-              id: '11111111-1111-1111-1111-111111111111',
-              name: 'Downtown Office Complex',
-              description: 'A 12-story mixed-use office building with retail space on the ground floor.',
-              status: 'active' as const,
-              start_date: '2024-01-15',
-              end_date: '2024-12-20'
-            },
-            {
-              id: '22222222-2222-2222-2222-222222222222',
-              name: 'Residential Townhomes',
-              description: 'Development of 24 luxury townhomes with modern amenities.',
-              status: 'planning' as const,
-              start_date: '2024-03-01',
-              end_date: '2024-11-30'
-            },
-            {
-              id: '33333333-3333-3333-3333-333333333333',
-              name: 'Hospital Renovation',
-              description: 'Complete renovation of the west wing including new patient rooms.',
-              status: 'on_hold' as const,
-              start_date: '2024-02-01',
-              end_date: '2024-08-15'
-            },
-            {
-              id: '44444444-4444-4444-4444-444444444444',
-              name: 'Shopping Center Expansion',
-              description: 'Adding 50,000 sq ft retail space and updating existing facilities.',
-              status: 'completed' as const,
-              start_date: '2023-06-01',
-              end_date: '2024-01-30'
-            }
-          ];
+          console.log('Using sample data due to error');
+          return SAMPLE_PROJECTS;
         }
 
-        console.log('Projects fetched from database:', data);
-        
-        // If database returns empty but no error, use sample data for demo
-        if (!data || data.length === 0) {
-          console.log('Database returned empty projects, using sample data for demo');
-          return [
-            {
-              id: '11111111-1111-1111-1111-111111111111',
-              name: 'Downtown Office Complex',
-              description: 'A 12-story mixed-use office building with retail space on the ground floor.',
-              status: 'active' as const,
-              start_date: '2024-01-15',
-              end_date: '2024-12-20'
-            },
-            {
-              id: '22222222-2222-2222-2222-222222222222',
-              name: 'Residential Townhomes',
-              description: 'Development of 24 luxury townhomes with modern amenities.',
-              status: 'planning' as const,
-              start_date: '2024-03-01',
-              end_date: '2024-11-30'
-            },
-            {
-              id: '33333333-3333-3333-3333-333333333333',
-              name: 'Hospital Renovation',
-              description: 'Complete renovation of the west wing including new patient rooms.',
-              status: 'on_hold' as const,
-              start_date: '2024-02-01',
-              end_date: '2024-08-15'
-            },
-            {
-              id: '44444444-4444-4444-4444-444444444444',
-              name: 'Shopping Center Expansion',
-              description: 'Adding 50,000 sq ft retail space and updating existing facilities.',
-              status: 'completed' as const,
-              start_date: '2023-06-01',
-              end_date: '2024-01-30'
-            }
-          ];
+        // If database returns data, use it; otherwise use sample data
+        if (data && data.length > 0) {
+          console.log('Projects fetched successfully:', data);
+          return data;
+        } else {
+          console.log('Database returned empty projects, using sample data');
+          return SAMPLE_PROJECTS;
         }
-
-        return data || [];
       } catch (err) {
         console.error('Unexpected error fetching projects:', err);
-        console.log('Using fallback sample data due to unexpected error');
-        
-        // Return sample data as fallback for any unexpected errors
-        return [
-          {
-            id: '11111111-1111-1111-1111-111111111111',
-            name: 'Downtown Office Complex',
-            description: 'A 12-story mixed-use office building with retail space on the ground floor.',
-            status: 'active' as const,
-            start_date: '2024-01-15',
-            end_date: '2024-12-20'
-          },
-          {
-            id: '22222222-2222-2222-2222-222222222222',
-            name: 'Residential Townhomes',
-            description: 'Development of 24 luxury townhomes with modern amenities.',
-            status: 'planning' as const,
-            start_date: '2024-03-01',
-            end_date: '2024-11-30'
-          }
-        ];
+        console.log('Using sample data due to unexpected error');
+        return SAMPLE_PROJECTS;
       }
     },
   });
