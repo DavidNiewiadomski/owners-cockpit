@@ -1,7 +1,6 @@
+
 import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
+import { useMutation } from '@tanstack/react-query';
 
 interface ChatMessage {
   id: string;
@@ -38,42 +37,60 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   const sendMessage = useMutation({
     mutationFn: async (question: string): Promise<void> => {
-      if (!user) {
-        throw new Error('You must be signed in to use the chat feature');
-      }
-
-      console.log('Sending message to chatRag function...');
+      console.log('Sending message (mock mode):', question);
       
-      const { data, error } = await supabase.functions.invoke('chatRag', {
-        body: {
-          project_id: projectId,
-          question,
-          conversation_id: conversationId,
-        },
-      });
-
-      console.log('Response data:', data);
-      console.log('Response error:', error);
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        
-        // Check for specific Gemini API errors
-        if (error.message && error.message.includes('API key')) {
-          throw new Error('Gemini API key issue. Please check your API key configuration.');
-        }
-        
-        // Check for quota errors
-        if (error.message && error.message.includes('quota') || error.message.includes('rate limit')) {
-          throw new Error('Gemini API quota exceeded. Please try again later or check your quota limits.');
-        }
-        
-        throw new Error(error.message || 'Failed to send message');
+      // Simulate processing delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Generate mock response based on the question
+      let mockAnswer = "I'm currently in demo mode without authentication. ";
+      let mockCitations: Citation[] = [];
+      
+      if (question.toLowerCase().includes('budget')) {
+        mockAnswer += "Based on the project data, the total budget is $2.5M with 75% allocated. Key budget items include foundation work ($500K), steel structure ($800K), and electrical systems ($300K).";
+        mockCitations = [
+          {
+            id: 'budget-1',
+            snippet: 'Foundation work budget allocation: $500,000',
+            source: 'Budget_Analysis_Q1.pdf',
+            page: 2
+          }
+        ];
+      } else if (question.toLowerCase().includes('task') || question.toLowerCase().includes('progress')) {
+        mockAnswer += "Current tasks include foundation work (85% complete), framing phase (45% complete), and electrical installation (20% complete). The framing phase is currently behind schedule.";
+        mockCitations = [
+          {
+            id: 'task-1',
+            snippet: 'Foundation work is 85% complete as of latest update',
+            source: 'Weekly_Progress_Report.pdf',
+            page: 1
+          }
+        ];
+      } else if (question.toLowerCase().includes('safety') || question.toLowerCase().includes('requirement')) {
+        mockAnswer += "Safety requirements include mandatory hard hats, safety harnesses for work above 6 feet, daily safety briefings, and emergency evacuation procedures. All workers must complete OSHA 30-hour training.";
+        mockCitations = [
+          {
+            id: 'safety-1',
+            snippet: 'All personnel must wear hard hats and safety equipment',
+            source: 'Safety_Manual_v2.pdf',
+            page: 5
+          }
+        ];
+      } else if (question.toLowerCase().includes('specification') || question.toLowerCase().includes('foundation')) {
+        mockAnswer += "Foundation specifications call for reinforced concrete with 4000 PSI strength, #6 rebar at 12\" centers, and waterproof membrane application. Excavation depth is 8 feet below grade.";
+        mockCitations = [
+          {
+            id: 'spec-1',
+            snippet: 'Concrete strength requirement: 4000 PSI minimum',
+            source: 'Foundation_Specifications.pdf',
+            page: 3
+          }
+        ];
+      } else {
+        mockAnswer += "I can help you with questions about this construction project including budget status, task progress, safety requirements, specifications, and more. The system is currently in demo mode - try asking about budget, tasks, safety, or specifications!";
       }
 
       // Create assistant message for the response
@@ -81,8 +98,8 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
       const assistantMessage: ChatMessage = {
         id: assistantMessageId,
         role: 'assistant',
-        content: data.answer || 'No response received',
-        citations: data.citations || [],
+        content: mockAnswer,
+        citations: mockCitations,
         timestamp: new Date(),
         isStreaming: false,
       };
@@ -108,21 +125,10 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
     onError: (error: Error) => {
       console.error('Chat error:', error);
       
-      // Add error message with more specific information
-      let errorContent = `Sorry, I encountered an error: ${error.message}`;
-      
-      if (error.message.includes('quota') || error.message.includes('rate limit')) {
-        errorContent = `⚠️ Gemini API quota exceeded. Please try again later.`;
-      } else if (error.message.includes('API key')) {
-        errorContent = `🔑 Gemini API key issue. Please verify your API key is configured correctly.`;
-      } else if (error.message.includes('signed in')) {
-        errorContent = `🔐 Please sign in to use the chat feature.`;
-      }
-      
       const errorMessage: ChatMessage = {
         id: `error-${Date.now()}`,
         role: 'assistant',
-        content: errorContent,
+        content: `Sorry, I encountered an error: ${error.message}`,
         timestamp: new Date(),
       };
       

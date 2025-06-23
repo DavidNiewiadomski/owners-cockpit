@@ -1,7 +1,5 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
 
 export interface UserProject {
   id: string;
@@ -21,46 +19,67 @@ export interface UserProject {
 }
 
 export function useUserProjects() {
-  const { user } = useAuth();
-  
   return useQuery({
-    queryKey: ['user-projects', user?.id],
+    queryKey: ['user-projects'],
     queryFn: async (): Promise<UserProject[]> => {
-      if (!user) return [];
+      console.log('Returning mock user projects for demo');
       
-      console.log('Fetching user projects...');
-      
-      const { data, error } = await supabase
-        .from('user_projects')
-        .select(`
-          *,
-          project:projects (
-            id,
-            name,
-            description,
-            status,
-            start_date,
-            end_date,
-            org_id
-          )
-        `)
-        .order('created_at', { ascending: false });
+      // Return mock user projects for demo purposes
+      const mockUserProjects: UserProject[] = [
+        {
+          id: 'up1',
+          user_id: 'mock-user',
+          project_id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+          role: 'owner',
+          created_at: '2024-01-15T00:00:00Z',
+          project: {
+            id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            name: 'Downtown Office Building',
+            description: 'Modern 15-story office complex with retail space',
+            status: 'active',
+            start_date: '2024-01-15',
+            end_date: '2024-12-15'
+          }
+        },
+        {
+          id: 'up2',
+          user_id: 'mock-user',
+          project_id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+          role: 'member',
+          created_at: '2024-02-01T00:00:00Z',
+          project: {
+            id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+            name: 'Residential Complex Phase 1',
+            description: '120-unit residential development',
+            status: 'planning',
+            start_date: '2024-03-01',
+            end_date: '2025-06-30'
+          }
+        },
+        {
+          id: 'up3',
+          user_id: 'mock-user',
+          project_id: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+          role: 'member',
+          created_at: '2024-01-20T00:00:00Z',
+          project: {
+            id: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+            name: 'Industrial Warehouse',
+            description: '50,000 sq ft distribution center',
+            status: 'active',
+            start_date: '2024-02-01',
+            end_date: '2024-08-30'
+          }
+        }
+      ];
 
-      if (error) {
-        console.error('Error fetching user projects:', error);
-        throw error;
-      }
-
-      console.log('User projects fetched:', data);
-      return data || [];
+      return mockUserProjects;
     },
-    enabled: !!user,
   });
 }
 
 export function useGrantProjectAccess() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   return useMutation({
     mutationFn: async ({ projectId, userId, role = 'member' }: { 
@@ -68,21 +87,16 @@ export function useGrantProjectAccess() {
       userId?: string;
       role?: string;
     }) => {
-      const targetUserId = userId || user?.id;
-      if (!targetUserId) throw new Error('No user ID provided');
-
-      const { data, error } = await supabase
-        .from('user_projects')
-        .insert({
-          user_id: targetUserId,
-          project_id: projectId,
-          role,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
+      console.log('Granting project access (mock):', { projectId, userId, role });
+      
+      // Return mock data
+      return {
+        id: `mock-${Date.now()}`,
+        user_id: userId || 'mock-user',
+        project_id: projectId,
+        role,
+        created_at: new Date().toISOString()
+      };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-projects'] });

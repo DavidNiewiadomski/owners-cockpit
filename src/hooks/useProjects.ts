@@ -1,7 +1,5 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from './useAuth';
 
 export interface Project {
   id: string;
@@ -16,60 +14,60 @@ export interface Project {
 }
 
 export function useProjects() {
-  const { user } = useAuth();
-  
   return useQuery({
-    queryKey: ['projects', user?.id],
+    queryKey: ['projects'],
     queryFn: async (): Promise<Project[]> => {
-      if (!user) {
-        console.log('No authenticated user, returning empty projects');
-        return [];
-      }
-
-      console.log('Fetching projects from Supabase for user:', user.id);
+      console.log('Returning mock projects for demo');
       
-      try {
-        const { data, error } = await supabase
-          .from('projects')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching projects:', error);
-          throw error;
+      // Return mock projects for demo purposes
+      const mockProjects: Project[] = [
+        {
+          id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+          name: 'Downtown Office Building',
+          description: 'Modern 15-story office complex with retail space',
+          status: 'active',
+          start_date: '2024-01-15',
+          end_date: '2024-12-15',
+          created_at: '2024-01-15T00:00:00Z'
+        },
+        {
+          id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+          name: 'Residential Complex Phase 1',
+          description: '120-unit residential development',
+          status: 'planning',
+          start_date: '2024-03-01',
+          end_date: '2025-06-30',
+          created_at: '2024-02-01T00:00:00Z'
+        },
+        {
+          id: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
+          name: 'Industrial Warehouse',
+          description: '50,000 sq ft distribution center',
+          status: 'active',
+          start_date: '2024-02-01',
+          end_date: '2024-08-30',
+          created_at: '2024-01-20T00:00:00Z'
         }
+      ];
 
-        console.log('Projects fetched successfully:', data);
-        return data || [];
-      } catch (error) {
-        console.error('Database connection error:', error);
-        throw error;
-      }
+      return mockProjects;
     },
-    enabled: !!user,
   });
 }
 
 export function useCreateProject() {
-  const { user } = useAuth();
-  
   return async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
-    if (!user) throw new Error('User must be authenticated to create projects');
+    console.log('Creating project (mock):', projectData);
     
-    console.log('Creating project:', projectData);
-    
-    const { data, error } = await supabase
-      .from('projects')
-      .insert([projectData])
-      .select()
-      .single();
+    // Return mock created project
+    const mockProject: Project = {
+      id: `mock-${Date.now()}`,
+      ...projectData,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
 
-    if (error) {
-      console.error('Error creating project:', error);
-      throw error;
-    }
-
-    console.log('Project created successfully:', data);
-    return data;
+    console.log('Project created (mock):', mockProject);
+    return mockProject;
   };
 }
