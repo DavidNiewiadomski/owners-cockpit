@@ -1,6 +1,9 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { 
+  sendSlackNotification, 
+  createRiskAlertSlackPayload 
+} from "../_shared/sendSlack.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -208,54 +211,6 @@ async function saveAlert(supabase: any, alert: RiskAlert) {
   return savedAlert;
 }
 
-async function postToSlack(webhookUrl: string, alert: RiskAlert) {
-  const severityEmoji = {
-    low: '🟡',
-    medium: '🟠', 
-    high: '🔴',
-    critical: '🚨'
-  };
-
-  const slackPayload = {
-    text: `${severityEmoji[alert.severity]} Risk Alert: ${alert.project_name}`,
-    blocks: [
-      {
-        type: "header",
-        text: {
-          type: "plain_text",
-          text: `${severityEmoji[alert.severity]} ${alert.title}`
-        }
-      },
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: `*Project:* ${alert.project_name}\n*Severity:* ${alert.severity.toUpperCase()}\n*Description:* ${alert.description}`
-        }
-      },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: `Alert generated on ${new Date().toLocaleString()} by Owners Cockpit`
-          }
-        ]
-      }
-    ]
-  };
-
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(slackPayload),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Slack webhook error: ${response.status}`);
-  }
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -304,7 +259,13 @@ serve(async (req) => {
 
         // Send to Slack if webhook is configured
         if (slackWebhook) {
-          await postToSlack(slackWebhook, alert);
+          const slackPayload = createRiskAlertSlackPayload(
+            alert.project_name,
+            alert.title,
+            alert.severity,
+            alert.description
+          );
+          await sendSlackNotification(slackWebhook, slackPayload);
           console.log(`Sent Slack notification for: ${alert.title}`);
         }
       } catch (error) {

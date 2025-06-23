@@ -1,6 +1,9 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { 
+  sendSlackNotification, 
+  createWeeklySummarySlackPayload 
+} from "../_shared/sendSlack.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -198,47 +201,6 @@ async function saveReport(supabase: any, projectId: string, summary: string, con
   return data;
 }
 
-async function postToSlack(webhookUrl: string, projectName: string, summary: string) {
-  const slackPayload = {
-    text: `📊 Weekly Project Summary: ${projectName}`,
-    blocks: [
-      {
-        type: "header",
-        text: {
-          type: "plain_text",
-          text: `📊 ${projectName} - Weekly Summary`
-        }
-      },
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: summary
-        }
-      },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: `Generated on ${new Date().toLocaleDateString()} by Owners Cockpit`
-          }
-        ]
-      }
-    ]
-  };
-
-  const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(slackPayload),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Slack webhook error: ${response.status}`);
-  }
-}
-
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -284,7 +246,8 @@ serve(async (req) => {
     // Post to Slack if webhook is configured
     if (slackWebhook) {
       try {
-        await postToSlack(slackWebhook, context.project_name, summary);
+        const slackPayload = createWeeklySummarySlackPayload(context.project_name, summary);
+        await sendSlackNotification(slackWebhook, slackPayload);
         console.log('Posted to Slack successfully');
       } catch (error) {
         console.error('Failed to post to Slack:', error);
