@@ -47,7 +47,7 @@ const HeroContent: React.FC<HeroContentProps> = ({ onLearnMore }) => {
           variants={itemVariants}
           className="text-5xl sm:text-7xl md:text-8xl font-medium linear-gradient-text mb-8 tracking-tight"
         >
-          Owners Cockpit
+          Building Intelligence Platform
         </motion.h1>
         
         <motion.p
