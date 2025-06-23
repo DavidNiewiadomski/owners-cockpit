@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calculator, FileCheck, TrendingUp, DollarSign, Calendar, MessageSquare } from 'lucide-react';
+import { Calculator, FileCheck, TrendingUp, DollarSign, Calendar, MessageSquare, MapPin } from 'lucide-react';
 import PreconstructionAssistant from '@/components/preconstruction/PreconstructionAssistant';
 
 interface PreconstructionDashboardProps {

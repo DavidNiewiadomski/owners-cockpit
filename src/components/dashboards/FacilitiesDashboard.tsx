@@ -125,7 +125,7 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
           </CardHeader>
           <CardContent className="space-y-4">
             {systemsData.map((system, index) => (
-              <SystemStatusCard key={index} {...system} />
+              <SystemStatusCard key={index} system={system} />
             ))}
           </CardContent>
         </Card>
@@ -136,14 +136,14 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
           </CardHeader>
           <CardContent className="space-y-4">
             {workOrders.map((order, index) => (
-              <WorkOrderCard key={index} {...order} />
+              <WorkOrderCard key={index} workOrder={order} />
             ))}
           </CardContent>
         </Card>
       </div>
 
       {/* Work Order Form */}
-      <WorkOrderForm />
+      <WorkOrderForm projectId={projectId} />
     </div>
   );
 };

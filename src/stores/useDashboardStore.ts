@@ -98,7 +98,8 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         return;
       }
 
-      const layout = data?.layout || generateDefaultLayout(role);
+      // Type assertion to handle the Json type from Supabase
+      const layout = (data?.layout as LayoutItem[]) || generateDefaultLayout(role);
       get().setLayout(userId, role, projectId, layout);
     } catch (error) {
       console.error('Error loading layout:', error);
@@ -121,7 +122,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
             user_id: userId,
             role,
             project_id: projectId,
-            layout,
+            layout: layout as any, // Type assertion for Supabase Json compatibility
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'user_id,role,project_id'
