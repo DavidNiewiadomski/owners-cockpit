@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 
 interface InsightSidebarProps {
-  projectId: string;
+  selectedProject: string | null;
 }
 
-const InsightSidebar: React.FC<InsightSidebarProps> = ({ projectId }) => {
+const InsightSidebar: React.FC<InsightSidebarProps> = ({ selectedProject }) => {
   // Mock data - in real implementation, this would come from your database
   const insights = {
     budget: {
@@ -59,6 +59,21 @@ const InsightSidebar: React.FC<InsightSidebarProps> = ({ projectId }) => {
       default: return 'default';
     }
   };
+
+  if (!selectedProject) {
+    return (
+      <div className="w-80 border-l border-border/40 bg-background/50 backdrop-blur-sm">
+        <div className="p-4 border-b border-border/40">
+          <h2 className="text-lg font-semibold">Project Insights</h2>
+        </div>
+        <div className="p-4">
+          <div className="text-center text-muted-foreground">
+            Select a project to view insights
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-80 border-l border-border/40 bg-background/50 backdrop-blur-sm">
@@ -170,7 +185,7 @@ const InsightSidebar: React.FC<InsightSidebarProps> = ({ projectId }) => {
               <div key={risk.id} className="p-2 bg-background/50 rounded-lg">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium">{risk.title}</span>
-                  <Badge variant={getSeverityColor(risk.severity)} className="text-xs">
+                  <Badge variant={getSeverityColor(risk.severity) as any} className="text-xs">
                     {risk.severity}
                   </Badge>
                 </div>
