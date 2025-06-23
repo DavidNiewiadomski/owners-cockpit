@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
+import { RoleProvider } from "@/contexts/RoleContext";
 import "@/lib/i18n";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -50,19 +50,21 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
           <SettingsProvider>
-            <TooltipProvider>
-              <Toaster />
-              <BrowserRouter>
-                <EnhancedErrorBoundary>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
-                    <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </EnhancedErrorBoundary>
-              </BrowserRouter>
-            </TooltipProvider>
+            <RoleProvider>
+              <TooltipProvider>
+                <Toaster />
+                <BrowserRouter>
+                  <EnhancedErrorBoundary>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
+                      <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </EnhancedErrorBoundary>
+                </BrowserRouter>
+              </TooltipProvider>
+            </RoleProvider>
           </SettingsProvider>
         </ThemeProvider>
       </QueryClientProvider>

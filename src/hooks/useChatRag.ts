@@ -1,6 +1,6 @@
-
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useRole } from '@/contexts/RoleContext';
 
 interface ChatMessage {
   id: string;
@@ -37,61 +37,67 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
+  const { currentRole, getRoleConfig } = useRole();
 
   const sendMessage = useMutation({
     mutationFn: async (question: string): Promise<void> => {
-      console.log('Sending message (mock mode):', question);
+      console.log('Sending message (mock mode) with role:', currentRole, question);
       
       // Simulate processing delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Generate mock response based on the question
-      let mockAnswer = "I'm currently in demo mode without authentication. ";
+      // Generate role-specific mock response
+      const roleConfig = getRoleConfig(currentRole);
+      let mockAnswer = `As a ${roleConfig.displayName}, I can help you with ${roleConfig.description.toLowerCase()}. `;
       let mockCitations: Citation[] = [];
       
-      if (question.toLowerCase().includes('budget')) {
-        mockAnswer += "Based on the project data, the total budget is $2.5M with 75% allocated. Key budget items include foundation work ($500K), steel structure ($800K), and electrical systems ($300K).";
-        mockCitations = [
-          {
-            id: 'budget-1',
-            snippet: 'Foundation work budget allocation: $500,000',
-            source: 'Budget_Analysis_Q1.pdf',
-            page: 2
-          }
-        ];
-      } else if (question.toLowerCase().includes('task') || question.toLowerCase().includes('progress')) {
-        mockAnswer += "Current tasks include foundation work (85% complete), framing phase (45% complete), and electrical installation (20% complete). The framing phase is currently behind schedule.";
-        mockCitations = [
-          {
-            id: 'task-1',
-            snippet: 'Foundation work is 85% complete as of latest update',
-            source: 'Weekly_Progress_Report.pdf',
-            page: 1
-          }
-        ];
-      } else if (question.toLowerCase().includes('safety') || question.toLowerCase().includes('requirement')) {
-        mockAnswer += "Safety requirements include mandatory hard hats, safety harnesses for work above 6 feet, daily safety briefings, and emergency evacuation procedures. All workers must complete OSHA 30-hour training.";
-        mockCitations = [
-          {
-            id: 'safety-1',
-            snippet: 'All personnel must wear hard hats and safety equipment',
-            source: 'Safety_Manual_v2.pdf',
-            page: 5
-          }
-        ];
-      } else if (question.toLowerCase().includes('specification') || question.toLowerCase().includes('foundation')) {
-        mockAnswer += "Foundation specifications call for reinforced concrete with 4000 PSI strength, #6 rebar at 12\" centers, and waterproof membrane application. Excavation depth is 8 feet below grade.";
-        mockCitations = [
-          {
-            id: 'spec-1',
-            snippet: 'Concrete strength requirement: 4000 PSI minimum',
-            source: 'Foundation_Specifications.pdf',
-            page: 3
-          }
-        ];
+      // Role-specific responses
+      if (currentRole === 'Executive') {
+        if (question.toLowerCase().includes('budget')) {
+          mockAnswer += "The overall project is tracking at 75% budget utilization with key cost centers performing within expected parameters. Total project value: $2.5M.";
+        } else if (question.toLowerCase().includes('progress')) {
+          mockAnswer += "Project is 65% complete and on track for Q3 delivery. Key milestones achieved on schedule.";
+        } else {
+          mockAnswer += "I provide high-level strategic insights and executive summaries. Ask me about overall project status, budget performance, or strategic decisions.";
+        }
+      } else if (currentRole === 'Construction') {
+        if (question.toLowerCase().includes('safety')) {
+          mockAnswer += "Current safety metrics: 0 incidents this week, 100% hard hat compliance, daily safety briefings completed. OSHA requirements up to date.";
+        } else if (question.toLowerCase().includes('progress')) {
+          mockAnswer += "Daily progress: Foundation 85% complete, framing 45% complete. Electrical rough-in starting next week. Weather delays minimal.";
+        } else {
+          mockAnswer += "I can help with construction progress, safety protocols, daily operations, and resource management.";
+        }
+      } else if (currentRole === 'Finance') {
+        if (question.toLowerCase().includes('budget')) {
+          mockAnswer += "Budget analysis: $1.875M spent of $2.5M budget (75%). Largest expenses: Labor $800K, Materials $600K, Equipment $300K. Variance tracking within 3%.";
+        } else if (question.toLowerCase().includes('cost')) {
+          mockAnswer += "Cost per square foot: $125. Original estimate: $120/sqft. Variance acceptable within project parameters.";
+        } else {
+          mockAnswer += "I provide detailed financial analysis, budget tracking, cost control, and payment status updates.";
+        }
+      } else if (currentRole === 'Facilities') {
+        if (question.toLowerCase().includes('maintenance')) {
+          mockAnswer += "Maintenance schedule: HVAC inspection due next week, elevator service current, fire safety systems tested quarterly.";
+        } else if (question.toLowerCase().includes('building')) {
+          mockAnswer += "Building systems operational: 99.2% uptime, energy efficiency within targets, all safety systems functional.";
+        } else {
+          mockAnswer += "I manage building operations, maintenance schedules, work orders, and facility performance metrics.";
+        }
       } else {
-        mockAnswer += "I can help you with questions about this construction project including budget status, task progress, safety requirements, specifications, and more. The system is currently in demo mode - try asking about budget, tasks, safety, or specifications!";
+        // Default role-based response
+        mockAnswer += `I'm configured for ${roleConfig.displayName} tasks. Ask me about areas relevant to ${roleConfig.description.toLowerCase()}.`;
       }
+
+      // Role-appropriate citations
+      mockCitations = [
+        {
+          id: `${currentRole.toLowerCase()}-1`,
+          snippet: `${roleConfig.displayName} report data`,
+          source: `${roleConfig.displayName}_Report.pdf`,
+          page: 1
+        }
+      ];
 
       // Create assistant message for the response
       const assistantMessageId = `assistant-${Date.now()}`;

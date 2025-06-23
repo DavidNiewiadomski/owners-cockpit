@@ -1,4 +1,3 @@
-
 import React, { useState, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
@@ -11,6 +10,8 @@ import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
 import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
+import RoleToggle from '@/components/RoleToggle';
+import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 // Lazy load heavy components
 const ChatWindow = lazy(() => import('@/components/ChatWindow'));
@@ -40,6 +41,7 @@ const SidebarSkeleton = () => (
 const Index = React.memo(() => {
   const { t } = useTranslation();
   const { endMeasurement } = usePerformanceMonitor('Index', { threshold: 20 });
+  const { access, getRoleContextualMessage } = useRoleBasedAccess();
   
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -115,6 +117,7 @@ const Index = React.memo(() => {
             </div>
             <MotionWrapper animation="fadeIn" delay={0.3}>
               <div className="flex items-center gap-2">
+                <RoleToggle variant="compact" />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -132,7 +135,7 @@ const Index = React.memo(() => {
                 >
                   <FolderOpen className="h-4 w-4" />
                 </Button>
-                {selectedProject && (
+                {selectedProject && access.canManageUsers && (
                   <Button 
                     variant="ghost" 
                     size="icon" 
@@ -159,8 +162,15 @@ const Index = React.memo(() => {
         </header>
       </MotionWrapper>
 
+      {/* Role Context Banner */}
+      <div className="bg-muted/50 border-b border-border/40 px-6 py-2">
+        <p className="text-sm text-muted-foreground">
+          {getRoleContextualMessage}
+        </p>
+      </div>
+
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-[calc(100vh-114px)]">
         {/* Chat Area */}
         <div className="flex-1 flex flex-col">
           {selectedProject ? (
@@ -179,7 +189,8 @@ const Index = React.memo(() => {
                   <p className="text-muted-foreground mb-6">
                     {t('app.selectProject')}
                   </p>
-                  <div className="w-full">
+                  <div className="w-full space-y-4">
+                    <RoleToggle variant="expanded" />
                     <ProjectSwitcher 
                       selectedProject={selectedProject}
                       onProjectChange={handleProjectChange}
