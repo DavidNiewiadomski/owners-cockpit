@@ -7,6 +7,7 @@ import Dashboard from '@/components/Dashboard';
 import WelcomeScreen from '@/components/WelcomeScreen';
 
 const ChatWindow = lazy(() => import('@/components/ChatWindow'));
+const PortfolioDashboard = lazy(() => import('@/components/PortfolioDashboard'));
 
 const ChatWindowSkeleton = () => (
   <div className="flex-1 p-4 space-y-4">
@@ -19,7 +20,7 @@ const ChatWindowSkeleton = () => (
 
 interface MainContentProps {
   selectedProject: string | null;
-  activeView: 'dashboard' | 'chat';
+  activeView: 'dashboard' | 'chat' | 'portfolio';
   onProjectChange: (projectId: string | null) => void;
 }
 
@@ -28,6 +29,20 @@ const MainContent: React.FC<MainContentProps> = ({
   activeView,
   onProjectChange
 }) => {
+  // Portfolio view
+  if (activeView === 'portfolio') {
+    return (
+      <MotionWrapper animation="fadeIn" className="flex-1">
+        <EnhancedErrorBoundary>
+          <Suspense fallback={<ChatWindowSkeleton />}>
+            <PortfolioDashboard />
+          </Suspense>
+        </EnhancedErrorBoundary>
+      </MotionWrapper>
+    );
+  }
+
+  // No project selected
   if (!selectedProject) {
     return (
       <WelcomeScreen 
@@ -37,6 +52,7 @@ const MainContent: React.FC<MainContentProps> = ({
     );
   }
 
+  // Project-specific views
   return (
     <MotionWrapper animation="fadeIn" className="flex-1">
       <EnhancedErrorBoundary>

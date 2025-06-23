@@ -92,6 +92,20 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
           <Folder className="w-5 h-5" />
           <h3 className="text-lg font-semibold">Select Project</h3>
         </div>
+
+        {/* Portfolio Button */}
+        <Button
+          variant={selectedProject === null ? "default" : "outline"}
+          className="justify-start text-left h-auto p-3 w-full mb-2"
+          onClick={() => onProjectChange(null)}
+        >
+          <div>
+            <div className="font-medium">Portfolio Dashboard</div>
+            <div className="text-sm text-muted-foreground mt-1">
+              View all projects and portfolio metrics
+            </div>
+          </div>
+        </Button>
         
         {isLoading ? (
           <div className="text-muted-foreground">Loading projects...</div>
@@ -170,11 +184,15 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
 
   return (
     <div className="flex items-center gap-2">
-      <Select value={selectedProject || ""} onValueChange={onProjectChange}>
+      <Select 
+        value={selectedProject === null ? "portfolio" : (selectedProject || "")} 
+        onValueChange={(value) => onProjectChange(value === "portfolio" ? null : value)}
+      >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder={getPlaceholderText()} />
+          <SelectValue placeholder={selectedProject === null ? "Portfolio" : getPlaceholderText()} />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="portfolio">Portfolio Dashboard</SelectItem>
           {!isLoading && !error && projects.length > 0 && (
             projects.map((project) => (
               <SelectItem key={project.id} value={project.id}>

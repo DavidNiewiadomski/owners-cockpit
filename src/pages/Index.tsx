@@ -1,4 +1,3 @@
-
 import React, { useState, lazy, Suspense, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -34,11 +33,16 @@ const Index = React.memo(() => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'portfolio'>('dashboard');
 
   const handleProjectChange = React.useCallback((projectId: string | null) => {
     setSelectedProject(projectId);
-    setActiveView('dashboard');
+    // Set portfolio view if no project selected
+    if (projectId === null) {
+      setActiveView('portfolio');
+    } else {
+      setActiveView('dashboard');
+    }
   }, []);
 
   const handleUploadToggle = React.useCallback(() => {
@@ -57,8 +61,29 @@ const Index = React.memo(() => {
     setShowSettings(open);
   }, []);
 
-  const handleViewChange = React.useCallback((view: 'dashboard' | 'chat') => {
+  const handleViewChange = React.useCallback((view: 'dashboard' | 'chat' | 'portfolio') => {
     setActiveView(view);
+  }, []);
+
+  // Add keyboard shortcut handler
+  React.useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Check for 'g p' sequence
+      if (e.key === 'g') {
+        const handleSecondKey = (e2: KeyboardEvent) => {
+          if (e2.key === 'p') {
+            setSelectedProject(null);
+            setActiveView('portfolio');
+          }
+          document.removeEventListener('keydown', handleSecondKey);
+        };
+        document.addEventListener('keydown', handleSecondKey);
+        setTimeout(() => document.removeEventListener('keydown', handleSecondKey), 1000);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
   }, []);
 
   // Show hero page on root route - check for exact path
