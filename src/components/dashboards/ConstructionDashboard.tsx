@@ -32,6 +32,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       endDate: new Date('2024-02-28'),
       priority: 'high',
       assignee: 'Foundation Crew',
+      projectId: projectId,
       isLate: false
     },
     {
@@ -42,6 +43,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       endDate: new Date('2024-04-15'),
       priority: 'high',
       assignee: 'Steel Crew',
+      projectId: projectId,
       isLate: false
     },
     {
@@ -52,6 +54,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       endDate: new Date('2024-05-30'),
       priority: 'medium',
       assignee: 'MEP Contractors',
+      projectId: projectId,
       isLate: true
     },
     {
@@ -62,6 +65,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       endDate: new Date('2024-06-15'),
       priority: 'medium',
       assignee: 'Finish Crew',
+      projectId: projectId,
       isLate: false
     }
   ];
