@@ -1,5 +1,4 @@
 
-
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
@@ -33,4 +32,3 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Import jest-dom matchers
 import '@testing-library/jest-dom';
-
