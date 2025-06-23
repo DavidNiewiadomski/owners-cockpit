@@ -1,35 +1,22 @@
 
 import React, { useState, lazy, Suspense } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Settings, Plus, FolderOpen, Users } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ParticleHero from '@/components/ParticleHero';
-import ThemeToggle from '@/components/ThemeToggle';
+import AppHeader from '@/components/AppHeader';
+import RoleContextBanner from '@/components/RoleContextBanner';
+import ViewToggle from '@/components/ViewToggle';
+import MainContent from '@/components/MainContent';
 import MotionWrapper from '@/components/MotionWrapper';
 import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
-import RoleToggle from '@/components/RoleToggle';
-import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-import Dashboard from '@/components/Dashboard';
+import { Button } from '@/components/ui/button';
+import ThemeToggle from '@/components/ThemeToggle';
+import { useTranslation } from 'react-i18next';
 
 // Lazy load heavy components
-const ChatWindow = lazy(() => import('@/components/ChatWindow'));
 const UploadDropzone = lazy(() => import('@/components/UploadDropzone'));
 const InsightSidebar = lazy(() => import('@/components/InsightSidebar'));
 const SettingsModal = lazy(() => import('@/components/SettingsModal'));
-
-// Loading components
-const ChatWindowSkeleton = () => (
-  <div className="flex-1 p-4 space-y-4">
-    <Skeleton className="h-8 w-full" />
-    <Skeleton className="h-32 w-full" />
-    <Skeleton className="h-8 w-3/4" />
-    <Skeleton className="h-24 w-full" />
-  </div>
-);
 
 const SidebarSkeleton = () => (
   <div className="w-80 border-l border-border/40 p-4 space-y-4">
@@ -43,7 +30,6 @@ const SidebarSkeleton = () => (
 const Index = React.memo(() => {
   const { t } = useTranslation();
   const { endMeasurement } = usePerformanceMonitor('Index', { threshold: 20 });
-  const { access, getRoleContextualMessage } = useRoleBasedAccess();
   
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
@@ -58,7 +44,7 @@ const Index = React.memo(() => {
 
   const handleProjectChange = React.useCallback((projectId: string | null) => {
     setSelectedProject(projectId);
-    setActiveView('dashboard'); // Switch to dashboard when project is selected
+    setActiveView('dashboard');
   }, []);
 
   const handleUploadToggle = React.useCallback(() => {
@@ -79,6 +65,10 @@ const Index = React.memo(() => {
 
   const handleSettingsClose = React.useCallback((open: boolean) => {
     setShowSettings(open);
+  }, []);
+
+  const handleViewChange = React.useCallback((view: 'dashboard' | 'chat') => {
+    setActiveView(view);
   }, []);
 
   if (showHero) {
@@ -102,136 +92,29 @@ const Index = React.memo(() => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Header */}
-      <MotionWrapper animation="slideUp" className="sticky top-0 z-50">
-        <header className="border-b border-border/40 glass backdrop-blur-sm">
-          <div className="flex items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <MotionWrapper animation="scaleIn" delay={0.1}>
-                <h1 className="text-2xl font-bold gradient-text cursor-pointer" onClick={handleHeroExit}>
-                  {t('app.title')}
-                </h1>
-              </MotionWrapper>
-              <MotionWrapper animation="fadeIn" delay={0.2}>
-                <ProjectSwitcher 
-                  selectedProject={selectedProject}
-                  onProjectChange={handleProjectChange}
-                />
-              </MotionWrapper>
-            </div>
-            <MotionWrapper animation="fadeIn" delay={0.3}>
-              <div className="flex items-center gap-2">
-                <RoleToggle variant="compact" />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleUploadToggle}
-                  className="neumorphic-button hover:scale-105 transition-transform"
-                  title={t('navigation.upload')}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="neumorphic-button hover:scale-105 transition-transform"
-                  title={t('navigation.projects')}
-                >
-                  <FolderOpen className="h-4 w-4" />
-                </Button>
-                {selectedProject && access.canManageUsers && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="neumorphic-button hover:scale-105 transition-transform"
-                    onClick={() => window.open(`/settings/access/${selectedProject}`, '_blank')}
-                    title="Project Access Settings"
-                  >
-                    <Users className="h-4 w-4" />
-                  </Button>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="neumorphic-button hover:scale-105 transition-transform"
-                  onClick={handleSettingsToggle}
-                  title={t('navigation.settings')}
-                >
-                  <Settings className="h-4 w-4" />
-                </Button>
-                <ThemeToggle />
-              </div>
-            </MotionWrapper>
-          </div>
-        </header>
-      </MotionWrapper>
+      <AppHeader
+        selectedProject={selectedProject}
+        onProjectChange={handleProjectChange}
+        onUploadToggle={handleUploadToggle}
+        onSettingsToggle={handleSettingsToggle}
+        onHeroExit={handleHeroExit}
+      />
 
-      {/* Role Context Banner */}
-      <div className="bg-muted/50 border-b border-border/40 px-6 py-2">
-        <p className="text-sm text-muted-foreground">
-          {getRoleContextualMessage}
-        </p>
-      </div>
+      <RoleContextBanner />
 
-      {/* View Toggle */}
-      {selectedProject && (
-        <div className="border-b border-border/40 px-6 py-2">
-          <div className="flex items-center gap-2">
-            <Button
-              variant={activeView === 'dashboard' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveView('dashboard')}
-            >
-              Dashboard
-            </Button>
-            <Button
-              variant={activeView === 'chat' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => setActiveView('chat')}
-            >
-              AI Chat
-            </Button>
-          </div>
-        </div>
-      )}
+      <ViewToggle
+        activeView={activeView}
+        onViewChange={handleViewChange}
+        selectedProject={selectedProject}
+      />
 
       {/* Main Content */}
       <div className="flex h-[calc(100vh-154px)]">
-        {/* Primary Content Area */}
-        <div className="flex-1 flex flex-col">
-          {selectedProject ? (
-            <MotionWrapper animation="fadeIn" className="flex-1">
-              <EnhancedErrorBoundary>
-                {activeView === 'dashboard' ? (
-                  <Dashboard projectId={selectedProject} />
-                ) : (
-                  <Suspense fallback={<ChatWindowSkeleton />}>
-                    <ChatWindow projectId={selectedProject} />
-                  </Suspense>
-                )}
-              </EnhancedErrorBoundary>
-            </MotionWrapper>
-          ) : (
-            <div className="flex-1 flex items-center justify-center p-8">
-              <MotionWrapper animation="scaleIn" delay={0.2}>
-                <Card className="neumorphic-card p-8 text-center max-w-2xl w-full glass">
-                  <h2 className="text-xl font-semibold mb-4">{t('app.welcome')}</h2>
-                  <p className="text-muted-foreground mb-6">
-                    {t('app.selectProject')}
-                  </p>
-                  <div className="w-full space-y-4">
-                    <RoleToggle variant="expanded" />
-                    <ProjectSwitcher 
-                      selectedProject={selectedProject}
-                      onProjectChange={handleProjectChange}
-                      variant="expanded"
-                    />
-                  </div>
-                </Card>
-              </MotionWrapper>
-            </div>
-          )}
-        </div>
+        <MainContent
+          selectedProject={selectedProject}
+          activeView={activeView}
+          onProjectChange={handleProjectChange}
+        />
 
         {/* Upload Dropzone Overlay */}
         {showUpload && (
