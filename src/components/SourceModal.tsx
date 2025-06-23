@@ -1,5 +1,7 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import * as pdfjsLib from 'pdfjs-dist';
 import {
   Dialog,
   DialogContent,
@@ -9,44 +11,195 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { FileText, Image, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { FileText, Image, Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Citation } from '@/hooks/useChatRag';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface SourceModalProps {
   citation: Citation | null;
+  sourceId?: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const SourceModal: React.FC<SourceModalProps> = ({ citation, isOpen, onClose }) => {
-  if (!citation) return null;
+interface DocumentData {
+  file_path: string;
+  title: string;
+  mime_type: string;
+  file_size: number;
+}
 
-  const getSourceIcon = (source?: string) => {
-    if (!source) return <FileText className="w-4 h-4" />;
+const SourceModal: React.FC<SourceModalProps> = ({ 
+  citation, 
+  sourceId, 
+  isOpen, 
+  onClose 
+}) => {
+  const [documentData, setDocumentData] = useState<DocumentData | null>(null);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [pdfDoc, setPdfDoc] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Initialize Supabase client
+  const supabase = createClient(
+    process.env.REACT_APP_SUPABASE_URL || '',
+    process.env.REACT_APP_SUPABASE_ANON_KEY || ''
+  );
+
+  useEffect(() => {
+    if (isOpen && sourceId) {
+      fetchDocumentData();
+    }
+  }, [isOpen, sourceId]);
+
+  const fetchDocumentData = async () => {
+    if (!sourceId) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Fetch document metadata from database
+      const { data: doc, error: docError } = await supabase
+        .from('documents')
+        .select('file_path, title, mime_type, file_size')
+        .eq('id', sourceId)
+        .single();
+
+      if (docError) throw docError;
+
+      setDocumentData(doc);
+
+      // Get signed URL for the file
+      const { data: urlData, error: urlError } = await supabase.storage
+        .from('documents')
+        .createSignedUrl(doc.file_path, 3600); // 1 hour expiry
+
+      if (urlError) throw urlError;
+
+      setFileUrl(urlData.signedUrl);
+
+      // If it's a PDF, initialize PDF.js
+      if (doc.mime_type === 'application/pdf') {
+        loadPdf(urlData.signedUrl);
+      }
+    } catch (err) {
+      console.error('Error fetching document:', err);
+      setError('Failed to load document');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadPdf = async (url: string) => {
+    try {
+      const loadingTask = pdfjsLib.getDocument(url);
+      const pdf = await loadingTask.promise;
+      setPdfDoc(pdf);
+      setTotalPages(pdf.numPages);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error('Error loading PDF:', err);
+      setError('Failed to load PDF document');
+    }
+  };
+
+  const renderPdfPage = async (pageNum: number) => {
+    if (!pdfDoc || !canvasRef) return;
+
+    try {
+      const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const context = canvasRef.getContext('2d');
+
+      canvasRef.height = viewport.height;
+      canvasRef.width = viewport.width;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
+
+      await page.render(renderContext).promise;
+    } catch (err) {
+      console.error('Error rendering PDF page:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (pdfDoc && canvasRef && currentPage) {
+      renderPdfPage(currentPage);
+    }
+  }, [pdfDoc, canvasRef, currentPage]);
+
+  const getSourceIcon = (mimeType?: string) => {
+    if (!mimeType) return <FileText className="w-4 h-4" />;
     
-    if (source.includes('image') || source.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+    if (mimeType.startsWith('image/')) {
       return <Image className="w-4 h-4" />;
     }
     
     return <FileText className="w-4 h-4" />;
   };
 
+  const isPdf = documentData?.mime_type === 'application/pdf';
+  const isImage = documentData?.mime_type?.startsWith('image/');
+
+  if (!citation && !sourceId) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl neumorphic-card">
+      <DialogContent className="max-w-4xl max-h-[90vh] neumorphic-card">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {getSourceIcon(citation.source)}
-            Source Document
+            {getSourceIcon(documentData?.mime_type || citation?.source)}
+            {documentData?.title || 'Source Document'}
           </DialogTitle>
           <DialogDescription>
-            Document excerpt and source information
+            {sourceId ? 'Document viewer and source information' : 'Document excerpt and source information'}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Source Info */}
-          {citation.source && (
+        <div className="space-y-4 overflow-y-auto">
+          {/* Loading State */}
+          {isLoading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin mr-2" />
+              <span>Loading document...</span>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <Card className="p-4 bg-destructive/10 border-destructive/20">
+              <p className="text-destructive text-sm">{error}</p>
+            </Card>
+          )}
+
+          {/* Document Info */}
+          {documentData && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <Badge variant="outline" className="font-mono text-xs">
+                {documentData.file_path.split('/').pop()}
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {(documentData.file_size / 1024).toFixed(1)} KB
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                {documentData.mime_type}
+              </Badge>
+            </div>
+          )}
+
+          {/* Citation Source Info (fallback) */}
+          {citation && !documentData && (
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="font-mono text-xs">
                 {citation.source}
@@ -59,14 +212,67 @@ const SourceModal: React.FC<SourceModalProps> = ({ citation, isOpen, onClose }) 
             </div>
           )}
 
-          {/* Content */}
-          <Card className="p-4 bg-muted/30 border-border/40">
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <p className="text-sm leading-relaxed font-mono whitespace-pre-wrap">
-                {citation.snippet}
-              </p>
+          {/* PDF Viewer */}
+          {isPdf && fileUrl && !isLoading && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage <= 1}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                  <span className="text-sm">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                    disabled={currentPage >= totalPages}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+              
+              <Card className="p-4 bg-muted/30 border-border/40">
+                <div className="flex justify-center">
+                  <canvas
+                    ref={setCanvasRef}
+                    className="max-w-full border border-border/20 rounded"
+                  />
+                </div>
+              </Card>
             </div>
-          </Card>
+          )}
+
+          {/* Image Viewer */}
+          {isImage && fileUrl && !isLoading && (
+            <Card className="p-4 bg-muted/30 border-border/40">
+              <div className="flex justify-center">
+                <img
+                  src={fileUrl}
+                  alt={documentData?.title || 'Document image'}
+                  className="max-w-full max-h-96 object-contain rounded border border-border/20"
+                />
+              </div>
+            </Card>
+          )}
+
+          {/* Citation Content (fallback or additional info) */}
+          {citation?.snippet && (
+            <Card className="p-4 bg-muted/30 border-border/40">
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <p className="text-sm leading-relaxed font-mono whitespace-pre-wrap">
+                  {citation.snippet}
+                </p>
+              </div>
+            </Card>
+          )}
 
           {/* Metadata */}
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
@@ -74,9 +280,11 @@ const SourceModal: React.FC<SourceModalProps> = ({ citation, isOpen, onClose }) 
               <Calendar className="w-3 h-3" />
               <span>Referenced in conversation</span>
             </div>
-            <Badge variant="outline" className="text-xs">
-              ID: {citation.id.slice(0, 8)}...
-            </Badge>
+            {(citation?.id || sourceId) && (
+              <Badge variant="outline" className="text-xs">
+                ID: {(citation?.id || sourceId)?.slice(0, 8)}...
+              </Badge>
+            )}
           </div>
         </div>
       </DialogContent>

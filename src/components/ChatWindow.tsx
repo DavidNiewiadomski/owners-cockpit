@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -16,6 +15,7 @@ interface ChatWindowProps {
 const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
+  const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(undefined);
   const [isSourceModalOpen, setIsSourceModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
@@ -51,8 +51,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     }
   };
 
-  const handleCitationClick = (citation: Citation) => {
+  const handleCitationClick = (citation: Citation, sourceId?: string) => {
     setSelectedCitation(citation);
+    setSelectedSourceId(sourceId);
     setIsSourceModalOpen(true);
   };
 
@@ -199,10 +200,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
       {/* Source Modal */}
       <SourceModal
         citation={selectedCitation}
+        sourceId={selectedSourceId}
         isOpen={isSourceModalOpen}
         onClose={() => {
           setIsSourceModalOpen(false);
           setSelectedCitation(null);
+          setSelectedSourceId(undefined);
         }}
       />
     </div>
