@@ -79,6 +79,13 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
     }
   };
 
+  const getPlaceholderText = () => {
+    if (isLoading) return "Loading projects...";
+    if (error) return "Error loading projects";
+    if (projects.length === 0) return "No projects found";
+    return "Select project";
+  };
+
   if (variant === 'expanded') {
     return (
       <div className="space-y-4">
@@ -166,16 +173,10 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
     <div className="flex items-center gap-2">
       <Select value={selectedProject || ""} onValueChange={onProjectChange}>
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder={isLoading ? "Loading..." : "Select project"} />
+          <SelectValue placeholder={getPlaceholderText()} />
         </SelectTrigger>
         <SelectContent>
-          {isLoading ? (
-            <SelectItem value="" disabled>Loading projects...</SelectItem>
-          ) : error ? (
-            <SelectItem value="" disabled>Error loading projects</SelectItem>
-          ) : projects.length === 0 ? (
-            <SelectItem value="" disabled>No projects found</SelectItem>
-          ) : (
+          {!isLoading && !error && projects.length > 0 && (
             projects.map((project) => (
               <SelectItem key={project.id} value={project.id}>
                 {project.name}
