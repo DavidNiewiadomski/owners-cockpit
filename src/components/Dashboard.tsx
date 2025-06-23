@@ -2,13 +2,7 @@
 import React from 'react';
 import { useRole } from '@/contexts/RoleContext';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-import ExecutiveDashboard from './dashboards/ExecutiveDashboard';
-import PreconstructionDashboard from './dashboards/PreconstructionDashboard';
-import ConstructionDashboard from './dashboards/ConstructionDashboard';
-import FacilitiesDashboard from './dashboards/FacilitiesDashboard';
-import SustainabilityDashboard from './dashboards/SustainabilityDashboard';
-import LegalDashboard from './dashboards/LegalDashboard';
-import FinanceDashboard from './dashboards/FinanceDashboard';
+import DashboardGrid from '@/components/dashboard/DashboardGrid';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -21,29 +15,8 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { access } = useRoleBasedAccess();
   const roleConfig = getRoleConfig(currentRole);
 
-  const renderRoleDashboard = () => {
-    switch (currentRole) {
-      case 'Executive':
-        return <ExecutiveDashboard projectId={projectId} />;
-      case 'Preconstruction':
-        return <PreconstructionDashboard projectId={projectId} />;
-      case 'Construction':
-        return <ConstructionDashboard projectId={projectId} />;
-      case 'Facilities':
-        return <FacilitiesDashboard projectId={projectId} />;
-      case 'Sustainability':
-        return <SustainabilityDashboard projectId={projectId} />;
-      case 'Legal':
-        return <LegalDashboard projectId={projectId} />;
-      case 'Finance':
-        return <FinanceDashboard projectId={projectId} />;
-      default:
-        return <ExecutiveDashboard projectId={projectId} />;
-    }
-  };
-
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6" data-testid="dashboard-main">
       {/* Dashboard Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -55,8 +28,8 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
         </Badge>
       </div>
 
-      {/* Role-Specific Dashboard Content */}
-      {renderRoleDashboard()}
+      {/* Dashboard Grid */}
+      <DashboardGrid projectId={projectId} />
     </div>
   );
 };
