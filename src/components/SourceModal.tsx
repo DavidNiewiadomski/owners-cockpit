@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -47,11 +46,13 @@ const SourceModal: React.FC<SourceModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize Supabase client with Vite environment variables
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL || '',
-    import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-  );
+  // Check if Supabase environment variables are available
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const hasSupabaseConfig = supabaseUrl && supabaseAnonKey;
+
+  // Initialize Supabase client only if credentials are available
+  const supabase = hasSupabaseConfig ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
   useEffect(() => {
     if (isOpen && sourceId) {
@@ -61,6 +62,12 @@ const SourceModal: React.FC<SourceModalProps> = ({
 
   const fetchDocumentData = async () => {
     if (!sourceId) return;
+
+    // If no Supabase configuration, show error
+    if (!hasSupabaseConfig || !supabase) {
+      setError('Supabase configuration is not available. Please connect to Supabase to view documents.');
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -180,6 +187,11 @@ const SourceModal: React.FC<SourceModalProps> = ({
           {error && (
             <Card className="p-4 bg-destructive/10 border-destructive/20">
               <p className="text-destructive text-sm">{error}</p>
+              {!hasSupabaseConfig && (
+                <p className="text-muted-foreground text-xs mt-2">
+                  To enable document viewing, please connect your project to Supabase.
+                </p>
+              )}
             </Card>
           )}
 
