@@ -10,6 +10,7 @@ export default {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
         jsx: 'react-jsx',
+        types: ['jest', 'testing-library__jest-dom']
       },
     }],
   },
