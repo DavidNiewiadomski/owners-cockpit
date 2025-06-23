@@ -37,7 +37,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockReturnValue(mockFrom() as any);
+    (mockSupabase.from as jest.Mock).mockReturnValue(mockFrom());
 
     const response = await supabase
       .from('user_roles')
@@ -68,7 +68,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockReturnValue(mockFrom() as any);
+    (mockSupabase.from as jest.Mock).mockReturnValue(mockFrom());
 
     const response = await supabase
       .from('user_roles')
@@ -98,7 +98,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockReturnValue(mockFrom() as any);
+    (mockSupabase.from as jest.Mock).mockReturnValue(mockFrom());
 
     const response = await supabase
       .from('user_roles')
@@ -128,7 +128,7 @@ describe('Role Enforcement', () => {
       select: mockSelect,
     });
 
-    mockSupabase.from.mockReturnValue(mockFrom() as any);
+    (mockSupabase.from as jest.Mock).mockReturnValue(mockFrom());
 
     const response = await supabase
       .from('user_roles')
