@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -57,6 +58,8 @@ function App() {
                   <EnhancedErrorBoundary>
                     <Routes>
                       <Route path="/" element={<Index />} />
+                      <Route path="/app" element={<Index />} />
+                      <Route path="/projects" element={<Index />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                       <Route path="*" element={<NotFound />} />

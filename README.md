@@ -1,3 +1,4 @@
+
 # Welcome to your Lovable project
 
 ## Project info
@@ -59,6 +60,63 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+
+## Three.js Integration
+
+The landing page uses React Three Fiber for 3D particle effects and animations.
+
+### Dependencies
+
+The following packages are required for the 3D background:
+- `@react-three/fiber@^8.18.0` - React renderer for Three.js
+- `@react-three/drei@^9.122.0` - Helper components for React Three Fiber  
+- `three@^0.160.0` - Three.js library
+
+### Customizing the Hero Background
+
+To replace or modify the particle background in `src/components/ParticleHero.tsx`:
+
+1. **Change particle count**: Modify the `count` prop in the `<Stars>` component
+2. **Adjust animation speed**: Change the rotation speed in `AnimatedStars` component
+3. **Replace with custom geometry**: Modify the `InteractiveBackground` component
+4. **Add new effects**: Use additional drei components like `<Sparkles>` or `<Cloud>`
+
+### Performance Notes
+
+- The particle system is optimized for 60fps on modern devices
+- Particle count automatically scales based on screen size
+- Use `Canvas` frameloop controls for better performance on lower-end devices
+
+### Fallback for Unsupported Devices
+
+If Three.js is not supported, the component gracefully falls back to the gradient background without particles.
+
+## Landing Page Features
+
+### CTA Navigation
+- **Get Started**: Routes to `/app` (project selector)
+- **Learn More**: Smooth scrolls to features section
+- **Down Arrow**: Triggers same smooth scroll behavior
+
+### Accessibility
+- All buttons meet 44px minimum touch target size
+- Proper ARIA labels for screen readers
+- Keyboard navigation support
+- Responsive design tested down to 375px width
+
+### Testing
+
+Run the test suite:
+```bash
+# Unit tests
+npm run test
+
+# E2E tests  
+npm run cypress:open
+
+# Visual regression tests
+npm run test:visual
+```
 
 ## How can I deploy this project?
 
