@@ -1,5 +1,5 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Project {
@@ -37,25 +37,32 @@ export function useProjects() {
 }
 
 export function useCreateProject() {
-  return async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
-    console.log('Creating project:', projectData);
-    
-    const { data, error } = await supabase
-      .from('projects')
-      .insert([{
-        ...projectData,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }])
-      .select()
-      .single();
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (projectData: Omit<Project, 'id' | 'created_at' | 'updated_at'>) => {
+      console.log('Creating project:', projectData);
+      
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([{
+          ...projectData,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        }])
+        .select()
+        .single();
 
-    if (error) {
-      console.error('Error creating project:', error);
-      throw error;
-    }
+      if (error) {
+        console.error('Error creating project:', error);
+        throw error;
+      }
 
-    console.log('Project created:', data);
-    return data;
-  };
+      console.log('Project created:', data);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
 }
