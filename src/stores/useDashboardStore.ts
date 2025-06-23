@@ -60,6 +60,22 @@ const generateDefaultLayout = (role: UserRole): LayoutItem[] => {
   return defaults[role] || [];
 };
 
+// Helper function to safely parse layout data from Supabase
+const parseLayoutData = (data: any): LayoutItem[] => {
+  try {
+    if (Array.isArray(data)) {
+      return data as LayoutItem[];
+    }
+    if (typeof data === 'string') {
+      return JSON.parse(data) as LayoutItem[];
+    }
+    return [];
+  } catch (error) {
+    console.warn('Failed to parse layout data:', error);
+    return [];
+  }
+};
+
 let saveTimeout: NodeJS.Timeout | null = null;
 
 export const useDashboardStore = create<DashboardState>((set, get) => ({
@@ -98,8 +114,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
         return;
       }
 
-      // Type assertion to handle the Json type from Supabase
-      const layout = (data?.layout as LayoutItem[]) || generateDefaultLayout(role);
+      const layout = data?.layout ? parseLayoutData(data.layout) : generateDefaultLayout(role);
       get().setLayout(userId, role, projectId, layout);
     } catch (error) {
       console.error('Error loading layout:', error);
@@ -122,7 +137,7 @@ export const useDashboardStore = create<DashboardState>((set, get) => ({
             user_id: userId,
             role,
             project_id: projectId,
-            layout: layout as any, // Type assertion for Supabase Json compatibility
+            layout: JSON.stringify(layout),
             updated_at: new Date().toISOString()
           }, {
             onConflict: 'user_id,role,project_id'

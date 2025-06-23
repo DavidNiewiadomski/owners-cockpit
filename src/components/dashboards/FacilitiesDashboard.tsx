@@ -6,23 +6,112 @@ import { AlertTriangle, Wrench, Zap, Thermometer, Settings } from 'lucide-react'
 import SystemStatusCard from '@/components/facilities/SystemStatusCard';
 import WorkOrderCard from '@/components/facilities/WorkOrderCard';
 import WorkOrderForm from '@/components/facilities/WorkOrderForm';
+import { BuildingSystem, WorkOrder } from '@/hooks/useFacilitiesData';
 
 interface FacilitiesDashboardProps {
   projectId: string;
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) => {
-  const systemsData = [
-    { name: 'HVAC System A', status: 'operational', efficiency: 94, lastMaintenance: '2024-05-15' },
-    { name: 'Electrical Grid', status: 'operational', efficiency: 98, lastMaintenance: '2024-06-01' },
-    { name: 'Fire Safety', status: 'warning', efficiency: 87, lastMaintenance: '2024-04-20' },
-    { name: 'Security System', status: 'operational', efficiency: 96, lastMaintenance: '2024-05-28' }
+  const systemsData: BuildingSystem[] = [
+    { 
+      id: 'sys-1',
+      project_id: projectId,
+      system_name: 'HVAC System A', 
+      system_type: 'HVAC',
+      status: 'operational', 
+      efficiency_rating: 94, 
+      last_maintenance: '2024-05-15',
+      uptime_percentage: 98,
+      energy_consumption: 150,
+      alerts_count: 0,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 'sys-2',
+      project_id: projectId,
+      system_name: 'Electrical Grid', 
+      system_type: 'Electrical',
+      status: 'operational', 
+      efficiency_rating: 98, 
+      last_maintenance: '2024-06-01',
+      uptime_percentage: 99,
+      energy_consumption: 200,
+      alerts_count: 0,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 'sys-3',
+      project_id: projectId,
+      system_name: 'Fire Safety', 
+      system_type: 'Safety',
+      status: 'maintenance', 
+      efficiency_rating: 87, 
+      last_maintenance: '2024-04-20',
+      uptime_percentage: 95,
+      energy_consumption: 50,
+      alerts_count: 2,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 'sys-4',
+      project_id: projectId,
+      system_name: 'Security System', 
+      system_type: 'Security',
+      status: 'operational', 
+      efficiency_rating: 96, 
+      last_maintenance: '2024-05-28',
+      uptime_percentage: 97,
+      energy_consumption: 75,
+      alerts_count: 0,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    }
   ];
 
-  const workOrders = [
-    { id: 'WO-001', title: 'HVAC Filter Replacement', priority: 'Medium', status: 'In Progress', assignee: 'John Smith' },
-    { id: 'WO-002', title: 'Elevator Inspection', priority: 'High', status: 'Pending', assignee: 'Mike Johnson' },
-    { id: 'WO-003', title: 'Parking Lot Lighting', priority: 'Low', status: 'Completed', assignee: 'Sarah Davis' }
+  const workOrders: WorkOrder[] = [
+    { 
+      id: 'WO-001', 
+      project_id: projectId,
+      title: 'HVAC Filter Replacement', 
+      work_type: 'maintenance',
+      priority: 'medium', 
+      status: 'in_progress', 
+      assigned_to: 'John Smith',
+      description: 'Replace HVAC filters',
+      estimated_hours: 4,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 'WO-002', 
+      project_id: projectId,
+      title: 'Elevator Inspection', 
+      work_type: 'inspection',
+      priority: 'high', 
+      status: 'assigned', 
+      assigned_to: 'Mike Johnson',
+      description: 'Annual elevator safety inspection',
+      estimated_hours: 8,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    },
+    { 
+      id: 'WO-003', 
+      project_id: projectId,
+      title: 'Parking Lot Lighting', 
+      work_type: 'repair',
+      priority: 'low', 
+      status: 'completed', 
+      assigned_to: 'Sarah Davis',
+      description: 'Fix broken parking lot lights',
+      estimated_hours: 2,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: '2024-01-01T00:00:00Z'
+    }
   ];
 
   return (
