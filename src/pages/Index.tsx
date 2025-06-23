@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Settings, Plus, FolderOpen } from 'lucide-react';
+import { Settings, Plus, FolderOpen, Users } from 'lucide-react';
 import ChatWindow from '@/components/ChatWindow';
 import UploadDropzone from '@/components/UploadDropzone';
 import InsightSidebar from '@/components/InsightSidebar';
@@ -77,6 +76,17 @@ const Index = () => {
                 >
                   <FolderOpen className="h-4 w-4" />
                 </Button>
+                {selectedProject && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="neumorphic-button hover:scale-105 transition-transform"
+                    onClick={() => window.open(`/settings/access/${selectedProject}`, '_blank')}
+                    title="Project Access Settings"
+                  >
+                    <Users className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button 
                   variant="ghost" 
                   size="icon" 

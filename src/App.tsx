@@ -8,6 +8,7 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import "@/lib/i18n";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import SettingsAccessPage from "./pages/SettingsAccessPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function App() {
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

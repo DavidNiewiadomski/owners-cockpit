@@ -238,6 +238,47 @@ export type Database = {
           },
         ]
       }
+      external_invites: {
+        Row: {
+          created_at: string | null
+          email: string
+          expires_at: string | null
+          id: string
+          invited_by: string | null
+          project_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string | null
+          project_id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          expires_at?: string | null
+          id?: string
+          invited_by?: string | null
+          project_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "external_invites_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       images: {
         Row: {
           created_at: string | null
@@ -807,6 +848,41 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          project_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          project_id: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vector_index: {
         Row: {
           chunk_id: string
@@ -890,8 +966,20 @@ export type Database = {
         Args: { "": unknown[] }
         Returns: number
       }
+      has_admin_access: {
+        Args: { _user_id: string; _project_id: string }
+        Returns: boolean
+      }
       has_project_access: {
         Args: { project_uuid: string }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _user_id: string
+          _project_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
         Returns: boolean
       }
       hnsw_bit_support: {
@@ -985,6 +1073,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "admin" | "gc" | "vendor" | "viewer"
       document_type:
         | "drawing"
         | "specification"
@@ -1115,6 +1204,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "gc", "vendor", "viewer"],
       document_type: [
         "drawing",
         "specification",
