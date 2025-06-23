@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatMessage {
   id: string;
@@ -43,53 +44,34 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
     mutationFn: async (question: string): Promise<void> => {
       console.log('Sending message to chatRag function...');
       
-      const response = await fetch('/functions/v1/chatRag', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('supabase-token')}`,
-        },
-        body: JSON.stringify({
+      const { data, error } = await supabase.functions.invoke('chatRag', {
+        body: {
           project_id: projectId,
           question,
           conversation_id: conversationId,
-        }),
+        },
       });
 
-      console.log('Response status:', response.status);
+      console.log('Response data:', data);
+      console.log('Response error:', error);
 
-      if (!response.ok) {
-        let errorMessage = 'Failed to send message';
-        try {
-          const error = await response.json();
-          errorMessage = error.error || errorMessage;
-        } catch (e) {
-          console.error('Failed to parse error response:', e);
-        }
-        throw new Error(errorMessage);
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Failed to send message');
       }
 
-      // Handle regular JSON response (not streaming)
-      try {
-        const data = await response.json();
-        console.log('Received response data:', data);
+      // Create assistant message for the response
+      const assistantMessageId = `assistant-${Date.now()}`;
+      const assistantMessage: ChatMessage = {
+        id: assistantMessageId,
+        role: 'assistant',
+        content: data.answer || 'No response received',
+        citations: data.citations || [],
+        timestamp: new Date(),
+        isStreaming: false,
+      };
 
-        // Create assistant message for the response
-        const assistantMessageId = `assistant-${Date.now()}`;
-        const assistantMessage: ChatMessage = {
-          id: assistantMessageId,
-          role: 'assistant',
-          content: data.answer || 'No response received',
-          citations: data.citations || [],
-          timestamp: new Date(),
-          isStreaming: false,
-        };
-
-        setMessages(prev => [...prev, assistantMessage]);
-      } catch (parseError) {
-        console.error('Failed to parse response:', parseError);
-        throw new Error('Failed to parse server response');
-      }
+      setMessages(prev => [...prev, assistantMessage]);
     },
     onMutate: async (question: string) => {
       setIsLoading(true);
