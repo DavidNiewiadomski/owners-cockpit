@@ -21,6 +21,9 @@ export default {
     'ts-jest': {
       tsconfig: {
         jsx: 'react-jsx',
+        compilerOptions: {
+          types: ['jest', '@testing-library/jest-dom']
+        }
       },
     },
   },
