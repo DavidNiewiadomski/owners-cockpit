@@ -23,7 +23,6 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
@@ -57,7 +56,6 @@ const Index = () => {
       <AppHeader 
         selectedProject={selectedProject}
         onProjectChange={handleProjectChange}
-        onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
         onHeroExit={handleHeroExit}
       />
@@ -75,27 +73,27 @@ const Index = () => {
               {currentRole === 'Executive' && (
                 <MotionWrapper animation="slideUp" delay={0.3}>
                   <div className="max-w-4xl mx-auto px-8">
-                    <Card className="p-6 border-2 border-dashed border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <Card className="p-6 border-2 border-dashed border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-400/30">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="p-3 bg-blue-100 rounded-lg">
-                            <BarChart3 className="w-6 h-6 text-blue-600" />
+                          <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                            <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                           </div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                               Executive Portfolio Dashboard
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 dark:text-gray-400">
                               Get a comprehensive overview of your entire construction portfolio
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
                             <Building2 className="w-3 h-3 mr-1" />
                             Portfolio View
                           </Badge>
-                          <Button onClick={handleExecutiveDashboard} className="bg-blue-600 hover:bg-blue-700">
+                          <Button onClick={handleExecutiveDashboard} className="bg-blue-600 hover:bg-blue-700 text-white">
                             Open Dashboard
                           </Button>
                         </div>
