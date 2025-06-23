@@ -1,5 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface UserProject {
   id: string;
@@ -22,58 +23,23 @@ export function useUserProjects() {
   return useQuery({
     queryKey: ['user-projects'],
     queryFn: async (): Promise<UserProject[]> => {
-      console.log('Returning mock user projects for demo');
+      console.log('Fetching user projects from Supabase...');
       
-      // Return mock user projects for demo purposes
-      const mockUserProjects: UserProject[] = [
-        {
-          id: 'up1',
-          user_id: 'mock-user',
-          project_id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-          role: 'owner',
-          created_at: '2024-01-15T00:00:00Z',
-          project: {
-            id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-            name: 'Downtown Office Building',
-            description: 'Modern 15-story office complex with retail space',
-            status: 'active',
-            start_date: '2024-01-15',
-            end_date: '2024-12-15'
-          }
-        },
-        {
-          id: 'up2',
-          user_id: 'mock-user',
-          project_id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-          role: 'member',
-          created_at: '2024-02-01T00:00:00Z',
-          project: {
-            id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
-            name: 'Residential Complex Phase 1',
-            description: '120-unit residential development',
-            status: 'planning',
-            start_date: '2024-03-01',
-            end_date: '2025-06-30'
-          }
-        },
-        {
-          id: 'up3',
-          user_id: 'mock-user',
-          project_id: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
-          role: 'member',
-          created_at: '2024-01-20T00:00:00Z',
-          project: {
-            id: 'cccccccc-cccc-cccc-cccc-cccccccccccc',
-            name: 'Industrial Warehouse',
-            description: '50,000 sq ft distribution center',
-            status: 'active',
-            start_date: '2024-02-01',
-            end_date: '2024-08-30'
-          }
-        }
-      ];
+      const { data, error } = await supabase
+        .from('user_projects')
+        .select(`
+          *,
+          project:projects(*)
+        `)
+        .order('created_at', { ascending: false });
 
-      return mockUserProjects;
+      if (error) {
+        console.error('Error fetching user projects:', error);
+        throw error;
+      }
+
+      console.log('User projects fetched from database:', data);
+      return data || [];
     },
   });
 }
@@ -87,16 +53,24 @@ export function useGrantProjectAccess() {
       userId?: string;
       role?: string;
     }) => {
-      console.log('Granting project access (mock):', { projectId, userId, role });
+      console.log('Granting project access:', { projectId, userId, role });
       
-      // Return mock data
-      return {
-        id: `mock-${Date.now()}`,
-        user_id: userId || 'mock-user',
-        project_id: projectId,
-        role,
-        created_at: new Date().toISOString()
-      };
+      const { data, error } = await supabase
+        .from('user_projects')
+        .insert([{
+          user_id: userId || 'demo-user-123',
+          project_id: projectId,
+          role,
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error granting project access:', error);
+        throw error;
+      }
+
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-projects'] });

@@ -1,7 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Task, TasksResponse } from '@/types/tasks';
-import { useAuth } from './useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UseTasksOptions {
   projectId: string;
@@ -9,87 +9,43 @@ interface UseTasksOptions {
 }
 
 export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
-  const { user } = useAuth();
-  
   return useQuery({
-    queryKey: ['tasks', projectId, limit, user?.id],
+    queryKey: ['tasks', projectId, limit],
     queryFn: async (): Promise<TasksResponse> => {
-      if (!user) {
-        console.log('No authenticated user, returning empty tasks');
-        return { tasks: [], totalCount: 0 };
+      console.log(`Fetching tasks for project ${projectId} from Supabase...`);
+      
+      const { data, error } = await supabase
+        .from('tasks')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Error fetching tasks:', error);
+        throw error;
       }
 
-      console.log(`Fetching tasks for project ${projectId}...`);
-      
-      // Always return sample data for consistent demo experience
-      const mockTasks: Task[] = [
-        {
-          id: '1',
-          name: 'Foundation Work',
-          startDate: new Date('2024-01-15'),
-          endDate: new Date('2024-02-15'),
-          progress: 85,
-          priority: 'high',
-          assignee: 'John Smith',
-          projectId,
-          isLate: false,
-        },
-        {
-          id: '2',
-          name: 'Framing Phase',
-          startDate: new Date('2024-02-10'),
-          endDate: new Date('2024-03-10'),
-          progress: 45,
-          priority: 'medium',
-          assignee: 'Mike Johnson',
-          projectId,
-          isLate: true,
-        },
-        {
-          id: '3',
-          name: 'Electrical Installation',
-          startDate: new Date('2024-03-01'),
-          endDate: new Date('2024-03-25'),
-          progress: 20,
-          priority: 'medium',
-          assignee: 'Sarah Wilson',
-          projectId,
-          isLate: false,
-        },
-        {
-          id: '4',
-          name: 'Plumbing Work',
-          startDate: new Date('2024-03-05'),
-          endDate: new Date('2024-04-01'),
-          progress: 10,
-          priority: 'low',
-          assignee: 'David Brown',
-          projectId,
-          isLate: true,
-        },
-        {
-          id: '5',
-          name: 'Interior Finishing',
-          startDate: new Date('2024-04-01'),
-          endDate: new Date('2024-05-15'),
-          progress: 0,
-          priority: 'medium',
-          assignee: 'Lisa Davis',
-          projectId,
-          isLate: false,
-        },
-      ];
+      // Transform the data to match the expected Task interface
+      const tasks: Task[] = (data || []).map(task => ({
+        id: task.id,
+        name: task.name,
+        startDate: task.created_at ? new Date(task.created_at) : new Date(),
+        endDate: task.due_date ? new Date(task.due_date) : new Date(),
+        progress: 0, // This would need to be calculated or stored separately
+        priority: task.priority === 1 ? 'low' : task.priority === 2 ? 'medium' : 'high',
+        assignee: task.assigned_to || 'Unassigned',
+        projectId: task.project_id,
+        isLate: task.due_date ? new Date(task.due_date) < new Date() : false,
+      }));
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      console.log(`Returning ${mockTasks.length} sample tasks for project ${projectId}`);
+      console.log(`Returning ${tasks.length} tasks for project ${projectId}`);
 
       return {
-        tasks: mockTasks.slice(0, limit),
-        totalCount: mockTasks.length,
+        tasks,
+        totalCount: tasks.length,
       };
     },
-    enabled: !!projectId && !!user,
+    enabled: !!projectId,
   });
 }
