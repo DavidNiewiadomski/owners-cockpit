@@ -1,12 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Thermometer, Zap, Wrench, AlertCircle, CheckCircle, Clock, Plus } from 'lucide-react';
-import { useBuildingSystems, useWorkOrders, useEquipment } from '@/hooks/useFacilitiesData';
+import { AlertTriangle, Wrench, Zap, Thermometer, Settings } from 'lucide-react';
 import SystemStatusCard from '@/components/facilities/SystemStatusCard';
 import WorkOrderCard from '@/components/facilities/WorkOrderCard';
 import WorkOrderForm from '@/components/facilities/WorkOrderForm';
@@ -16,71 +12,67 @@ interface FacilitiesDashboardProps {
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) => {
-  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
-  
-  const { data: buildingSystems = [], isLoading: systemsLoading } = useBuildingSystems(projectId);
-  const { data: workOrders = [], isLoading: workOrdersLoading } = useWorkOrders(projectId);
-  const { data: equipment = [], isLoading: equipmentLoading } = useEquipment(projectId);
-
-  // Calculate KPIs from real data
-  const activeWorkOrders = workOrders.filter(wo => wo.status !== 'completed' && wo.status !== 'cancelled');
-  const completedToday = workOrders.filter(wo => {
-    if (!wo.completed_date) return false;
-    const today = new Date().toDateString();
-    return new Date(wo.completed_date).toDateString() === today;
-  });
-
-  const operationalSystems = buildingSystems.filter(sys => sys.status === 'operational');
-  const avgUptime = buildingSystems.length > 0 
-    ? buildingSystems.reduce((sum, sys) => sum + (sys.uptime_percentage || 0), 0) / buildingSystems.length 
-    : 100;
-
-  const avgEfficiency = buildingSystems.length > 0
-    ? buildingSystems.reduce((sum, sys) => sum + (sys.efficiency_rating || 0), 0) / buildingSystems.length
-    : 92;
-
-  // Sample maintenance schedule (this could come from maintenance_schedules table)
-  const maintenanceSchedule = [
-    { item: 'HVAC Filter Change', due: '2024-06-25', status: 'upcoming' },
-    { item: 'Elevator Inspection', due: '2024-06-28', status: 'scheduled' },
-    { item: 'Fire Alarm Test', due: '2024-07-01', status: 'upcoming' },
-    { item: 'Generator Service', due: '2024-07-05', status: 'scheduled' }
+  const systemsData = [
+    { name: 'HVAC System A', status: 'operational', efficiency: 94, lastMaintenance: '2024-05-15' },
+    { name: 'Electrical Grid', status: 'operational', efficiency: 98, lastMaintenance: '2024-06-01' },
+    { name: 'Fire Safety', status: 'warning', efficiency: 87, lastMaintenance: '2024-04-20' },
+    { name: 'Security System', status: 'operational', efficiency: 96, lastMaintenance: '2024-05-28' }
   ];
 
-  if (systemsLoading || workOrdersLoading || equipmentLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </CardHeader>
-              <CardContent>
-                <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
-                <div className="h-2 bg-gray-200 rounded"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const workOrders = [
+    { id: 'WO-001', title: 'HVAC Filter Replacement', priority: 'Medium', status: 'In Progress', assignee: 'John Smith' },
+    { id: 'WO-002', title: 'Elevator Inspection', priority: 'High', status: 'Pending', assignee: 'Mike Johnson' },
+    { id: 'WO-003', title: 'Parking Lot Lighting', priority: 'Low', status: 'Completed', assignee: 'Sarah Davis' }
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Building Performance KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* AI Insights - moved to top */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            AI Facilities Insights
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <Badge variant="destructive">High Priority</Badge>
+              <div>
+                <h4 className="font-medium">Fire Safety System Alert</h4>
+                <p className="text-sm text-muted-foreground">Fire suppression system efficiency at 87%. Schedule maintenance within 48 hours.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="default">Medium Priority</Badge>
+              <div>
+                <h4 className="font-medium">Energy Optimization</h4>
+                <p className="text-sm text-muted-foreground">HVAC runtime can be optimized during off-peak hours. Potential 12% energy savings.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="secondary">Success</Badge>
+              <div>
+                <h4 className="font-medium">Preventive Maintenance</h4>
+                <p className="text-sm text-muted-foreground">All critical systems maintained on schedule. 98% uptime achieved this quarter.</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">System Uptime</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{avgUptime.toFixed(1)}%</div>
-            <Progress value={avgUptime} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              {operationalSystems.length}/{buildingSystems.length} systems operational
+            <div className="text-2xl font-bold text-green-600">98.2%</div>
+            <p className="text-xs text-muted-foreground">
+              Above 95% target
             </p>
           </CardContent>
         </Card>
@@ -88,173 +80,70 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Energy Efficiency</CardTitle>
-            <Zap className="h-4 w-4 text-amber-600" />
+            <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{avgEfficiency.toFixed(0)}%</div>
-            <Progress value={avgEfficiency} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              vs. building baseline
+            <div className="text-2xl font-bold">94%</div>
+            <p className="text-xs text-muted-foreground">
+              Optimal performance
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Work Orders</CardTitle>
-            <Wrench className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium">Open Work Orders</CardTitle>
+            <Wrench className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{activeWorkOrders.length}</div>
+            <div className="text-2xl font-bold">7</div>
             <p className="text-xs text-muted-foreground">
-              Open • {completedToday.length} completed today
+              2 high priority
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Temperature Control</CardTitle>
+            <Thermometer className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">72°F</div>
+            <p className="text-xs text-muted-foreground">
+              Optimal comfort zone
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Building Systems Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Building Systems Status</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {buildingSystems.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No building systems configured yet.</p>
-              <p className="text-sm">Connect your building automation systems to see real-time status.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {buildingSystems.map((system) => (
-                <SystemStatusCard key={system.id} system={system} />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Work Orders & Maintenance */}
+      {/* System Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
-                Active Work Orders
-              </CardTitle>
-              <Dialog open={showWorkOrderForm} onOpenChange={setShowWorkOrderForm}>
-                <DialogTrigger asChild>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-1" />
-                    Create
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Create New Work Order</DialogTitle>
-                  </DialogHeader>
-                  <WorkOrderForm
-                    projectId={projectId}
-                    onSuccess={() => setShowWorkOrderForm(false)}
-                    onCancel={() => setShowWorkOrderForm(false)}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
+            <CardTitle>System Status</CardTitle>
           </CardHeader>
-          <CardContent>
-            {activeWorkOrders.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No active work orders.</p>
-                <p className="text-sm">Create a work order to get started.</p>
-              </div>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {activeWorkOrders.slice(0, 5).map((order) => (
-                  <WorkOrderCard
-                    key={order.id}
-                    workOrder={order}
-                    onView={(wo) => console.log('View work order:', wo)}
-                  />
-                ))}
-                {activeWorkOrders.length > 5 && (
-                  <Button variant="outline" className="w-full">
-                    View All {activeWorkOrders.length} Work Orders
-                  </Button>
-                )}
-              </div>
-            )}
+          <CardContent className="space-y-4">
+            {systemsData.map((system, index) => (
+              <SystemStatusCard key={index} {...system} />
+            ))}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-blue-600" />
-              Maintenance Schedule
-            </CardTitle>
+            <CardTitle>Recent Work Orders</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {maintenanceSchedule.map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded">
-                  <div>
-                    <h4 className="font-medium text-sm">{item.item}</h4>
-                    <p className="text-sm text-muted-foreground">Due: {item.due}</p>
-                  </div>
-                  <Badge variant={item.status === 'upcoming' ? 'secondary' : 'default'}>
-                    {item.status}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-            <Button variant="outline" className="w-full mt-4">
-              View Full Schedule
-            </Button>
+          <CardContent className="space-y-4">
+            {workOrders.map((order, index) => (
+              <WorkOrderCard key={index} {...order} />
+            ))}
           </CardContent>
         </Card>
       </div>
 
-      {/* Real-time Alerts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>System Alerts & Notifications</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {buildingSystems.some(sys => sys.alerts_count && sys.alerts_count > 0) ? (
-              buildingSystems
-                .filter(sys => sys.alerts_count && sys.alerts_count > 0)
-                .map((system) => (
-                  <div key={system.id} className="border-l-4 border-amber-500 pl-4 bg-amber-50 dark:bg-amber-950 p-3 rounded-r">
-                    <h4 className="font-medium text-amber-900 dark:text-amber-100">
-                      {system.system_name} Alert
-                    </h4>
-                    <p className="text-sm text-amber-800 dark:text-amber-200">
-                      {system.alerts_count} active alert{system.alerts_count > 1 ? 's' : ''} - Check system status
-                    </p>
-                  </div>
-                ))
-            ) : (
-              <>
-                <div className="border-l-4 border-green-500 pl-4 bg-green-50 dark:bg-green-950 p-3 rounded-r">
-                  <h4 className="font-medium text-green-900 dark:text-green-100">All Systems Operational</h4>
-                  <p className="text-sm text-green-800 dark:text-green-200">
-                    All building systems are running normally with no active alerts.
-                  </p>
-                </div>
-                <div className="border-l-4 border-blue-500 pl-4 bg-blue-50 dark:bg-blue-950 p-3 rounded-r">
-                  <h4 className="font-medium text-blue-900 dark:text-blue-100">Predictive Maintenance</h4>
-                  <p className="text-sm text-blue-800 dark:text-blue-200">
-                    AI-powered maintenance scheduling is monitoring equipment performance for optimal efficiency.
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Work Order Form */}
+      <WorkOrderForm />
     </div>
   );
 };

@@ -3,217 +3,212 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Leaf, Droplets, Recycle, Zap, Target, TrendingDown } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { AlertTriangle, Leaf, Zap, Droplets, Recycle, TrendingUp, TrendingDown } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 interface SustainabilityDashboardProps {
   projectId: string;
 }
 
 const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId }) => {
-  const sustainabilityMetrics = {
-    carbonFootprint: 245, // tons CO2
-    carbonTarget: 200,
-    energyReduction: 18, // percentage
-    waterSavings: 25, // percentage
-    wasteRecycling: 78, // percentage
-    leedProgress: 85 // percentage toward certification
-  };
-
+  // Mock sustainability data
   const energyData = [
-    { month: 'Jan', usage: 120, target: 115 },
-    { month: 'Feb', usage: 118, target: 115 },
-    { month: 'Mar', usage: 115, target: 115 },
-    { month: 'Apr', usage: 110, target: 115 },
-    { month: 'May', usage: 108, target: 115 },
-    { month: 'Jun', usage: 105, target: 115 }
+    { month: 'Jan', renewable: 65, grid: 35 },
+    { month: 'Feb', renewable: 70, grid: 30 },
+    { month: 'Mar', renewable: 68, grid: 32 },
+    { month: 'Apr', renewable: 75, grid: 25 },
+    { month: 'May', renewable: 80, grid: 20 },
+    { month: 'Jun', renewable: 85, grid: 15 }
   ];
 
-  const esgScorecard = [
-    { category: 'Energy Efficiency', score: 92, target: 90 },
-    { category: 'Water Conservation', score: 88, target: 85 },
-    { category: 'Waste Management', score: 78, target: 80 },
-    { category: 'Indoor Air Quality', score: 95, target: 90 },
-    { category: 'Green Transportation', score: 72, target: 75 }
+  const wasteData = [
+    { category: 'Recycled', value: 65, color: '#10b981' },
+    { category: 'Composted', value: 20, color: '#8b5cf6' },
+    { category: 'Landfill', value: 15, color: '#ef4444' }
   ];
 
   return (
     <div className="space-y-6">
-      {/* Sustainability KPIs */}
+      {/* AI Insights - moved to top */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            AI Sustainability Insights
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <Badge variant="destructive">High Priority</Badge>
+              <div>
+                <h4 className="font-medium">Water Usage Spike</h4>
+                <p className="text-sm text-muted-foreground">Water consumption up 23% this month. Check for leaks in zones 3 and 7.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="default">Medium Priority</Badge>
+              <div>
+                <h4 className="font-medium">LEED Certification Progress</h4>
+                <p className="text-sm text-muted-foreground">On track for Gold certification. Need to complete 3 more energy efficiency upgrades.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="secondary">Achievement</Badge>
+              <div>
+                <h4 className="font-medium">Carbon Neutral Milestone</h4>
+                <p className="text-sm text-muted-foreground">85% renewable energy achieved. Exceeded quarterly sustainability targets.</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Carbon Footprint</CardTitle>
-            <Leaf className="h-4 w-4 text-green-600" />
+            <Leaf className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{sustainabilityMetrics.carbonFootprint}t</div>
-            <Progress 
-              value={(sustainabilityMetrics.carbonFootprint / sustainabilityMetrics.carbonTarget) * 100} 
-              className="mt-2" 
-            />
-            <p className="text-xs text-muted-foreground mt-2">
-              Target: {sustainabilityMetrics.carbonTarget}t CO₂
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Energy Reduction</CardTitle>
-            <Zap className="h-4 w-4 text-amber-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{sustainabilityMetrics.energyReduction}%</div>
-            <p className="text-xs text-muted-foreground flex items-center mt-2">
-              <TrendingDown className="h-3 w-3 mr-1 text-green-600" />
-              vs. baseline consumption
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Water Savings</CardTitle>
-            <Droplets className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{sustainabilityMetrics.waterSavings}%</div>
+            <div className="text-2xl font-bold text-green-600">-45%</div>
             <p className="text-xs text-muted-foreground">
-              Reduction in water usage
+              <span className="text-green-600 flex items-center">
+                <TrendingDown className="h-3 w-3 mr-1" />
+                vs. baseline year
+              </span>
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Waste Recycling</CardTitle>
-            <Recycle className="h-4 w-4 text-green-600" />
+            <CardTitle className="text-sm font-medium">Renewable Energy</CardTitle>
+            <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{sustainabilityMetrics.wasteRecycling}%</div>
-            <Progress value={sustainabilityMetrics.wasteRecycling} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">
-              Diversion from landfill
+            <div className="text-2xl font-bold">85%</div>
+            <p className="text-xs text-muted-foreground">
+              <span className="text-green-600 flex items-center">
+                <TrendingUp className="h-3 w-3 mr-1" />
+                +15% this quarter
+              </span>
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Water Conservation</CardTitle>
+            <Droplets className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">32%</div>
+            <p className="text-xs text-muted-foreground">
+              Reduction vs. standard
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Waste Diverted</CardTitle>
+            <Recycle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">85%</div>
+            <p className="text-xs text-muted-foreground">
+              From landfills
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Energy Performance */}
+      {/* LEED Progress */}
+      <Card>
+        <CardHeader>
+          <CardTitle>LEED Certification Progress</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Sustainable Sites</span>
+                <span className="font-medium">24/26 points</span>
+              </div>
+              <Progress value={92} className="h-2" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Water Efficiency</span>
+                <span className="font-medium">9/10 points</span>
+              </div>
+              <Progress value={90} className="h-2" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Energy & Atmosphere</span>
+                <span className="font-medium">30/33 points</span>
+              </div>
+              <Progress value={91} className="h-2" />
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Materials & Resources</span>
+                <span className="font-medium">12/13 points</span>
+              </div>
+              <Progress value={92} className="h-2" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Energy Usage Trend</CardTitle>
+            <CardTitle>Energy Mix Trend</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={energyData}>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={energyData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
-                <Tooltip formatter={(value, name) => [`${value} kWh/sqft`, name === 'usage' ? 'Actual' : 'Target']} />
-                <Line type="monotone" dataKey="usage" stroke="#3b82f6" strokeWidth={2} />
-                <Line type="monotone" dataKey="target" stroke="#ef4444" strokeDasharray="5 5" />
-              </LineChart>
+                <Tooltip />
+                <Area type="monotone" dataKey="renewable" stackId="1" stroke="#10b981" fill="#10b981" />
+                <Area type="monotone" dataKey="grid" stackId="1" stroke="#ef4444" fill="#ef4444" />
+              </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
-              LEED Certification Progress
-            </CardTitle>
+            <CardTitle>Waste Management</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-green-600">{sustainabilityMetrics.leedProgress}%</div>
-                <p className="text-sm text-muted-foreground">Progress toward LEED Gold</p>
-                <Progress value={sustainabilityMetrics.leedProgress} className="mt-2" />
-              </div>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Energy & Atmosphere</span>
-                  <Badge variant="default">Complete</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Water Efficiency</span>
-                  <Badge variant="default">Complete</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Materials & Resources</span>
-                  <Badge variant="secondary">In Progress</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Indoor Environmental Quality</span>
-                  <Badge variant="outline">Pending</Badge>
-                </div>
-              </div>
-            </div>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={wasteData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  dataKey="value"
+                  label={({ category, value }) => `${category}: ${value}%`}
+                >
+                  {wasteData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </CardContent>
         </Card>
       </div>
-
-      {/* ESG Scorecard */}
-      <Card>
-        <CardHeader>
-          <CardTitle>ESG Performance Scorecard</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {esgScorecard.map((item, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">{item.category}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Target: {item.target}</span>
-                    <Badge variant={item.score >= item.target ? 'default' : 'secondary'}>
-                      {item.score}/100
-                    </Badge>
-                  </div>
-                </div>
-                <Progress value={item.score} className="h-2" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Environmental Impact */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Environmental Impact Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h4 className="font-medium">This Month's Achievements</h4>
-              <div className="border-l-4 border-green-500 pl-4 bg-green-50 dark:bg-green-950 p-3 rounded-r">
-                <h5 className="font-medium text-green-900 dark:text-green-100">Energy Milestone</h5>
-                <p className="text-sm text-green-800 dark:text-green-200">Achieved 18% energy reduction vs. baseline - exceeding annual target.</p>
-              </div>
-              <div className="border-l-4 border-blue-500 pl-4 bg-blue-50 dark:bg-blue-950 p-3 rounded-r">
-                <h5 className="font-medium text-blue-900 dark:text-blue-100">Water Conservation</h5>
-                <p className="text-sm text-blue-800 dark:text-blue-200">Rainwater harvesting system installed, projected 30% reduction in municipal water use.</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-medium">Upcoming Initiatives</h4>
-              <div className="border-l-4 border-amber-500 pl-4 bg-amber-50 dark:bg-amber-950 p-3 rounded-r">
-                <h5 className="font-medium text-amber-900 dark:text-amber-100">Solar Installation</h5>
-                <p className="text-sm text-amber-800 dark:text-amber-200">Rooftop solar project scheduled for Q4, targeting 40% renewable energy mix.</p>
-              </div>
-              <div className="border-l-4 border-purple-500 pl-4 bg-purple-50 dark:bg-purple-950 p-3 rounded-r">
-                <h5 className="font-medium text-purple-900 dark:text-purple-100">Green Transportation</h5>
-                <p className="text-sm text-purple-800 dark:text-purple-200">EV charging stations deployment to support carbon-neutral commuting goals.</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
