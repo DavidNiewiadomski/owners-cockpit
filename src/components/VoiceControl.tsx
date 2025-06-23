@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -58,18 +59,14 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
 
   const handleVoiceInput = useCallback(async (text: string) => {
     try {
-      const command = processVoiceCommand(text);
+      const availableCommands = getAvailableCommands();
+      const command = processVoiceCommand(text, availableCommands);
       
       if (command) {
-        if (command.needsConfirmation) {
-          setPendingCommand(command);
-          const confirmationText = `I understood: "${text}". Should I proceed?`;
-          speak(confirmationText);
-          setShowTranscript(true);
-        } else {
-          await executeVoiceCommand(command, onSendMessage, toast);
-          setPendingCommand(null);
-        }
+        // For now, execute commands directly without confirmation
+        // In the future, we could add confirmation logic based on command type
+        await executeVoiceCommand(command, onSendMessage, toast);
+        setPendingCommand(null);
       } else {
         // Fallback to general query
         if (onSendMessage) {
@@ -80,7 +77,7 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
       console.error('Voice input processing error:', error);
       speak("Sorry, I had trouble processing that command. Please try again.");
     }
-  }, [processVoiceCommand, executeVoiceCommand, onSendMessage, speak, toast]);
+  }, [processVoiceCommand, executeVoiceCommand, onSendMessage, speak, toast, getAvailableCommands]);
 
   const handleMicrophoneClick = useCallback(() => {
     if (disabled) return;
