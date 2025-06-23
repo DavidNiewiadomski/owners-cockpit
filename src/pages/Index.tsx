@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -16,8 +17,9 @@ import { useRouter } from '@/hooks/useRouter';
 
 const Index = () => {
   const { t } = useTranslation();
-  // Start with portfolio view by default
-  const [selectedProject, setSelectedProject] = useState<string | null>('portfolio');
+  // Start with null - portfolio will be handled separately
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'portfolio' | 'project'>('portfolio');
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
@@ -32,7 +34,13 @@ const Index = () => {
   }, [currentRole]);
 
   const handleProjectChange = (projectId: string | null) => {
-    setSelectedProject(projectId);
+    if (projectId === 'portfolio') {
+      setViewMode('portfolio');
+      setSelectedProject(null);
+    } else {
+      setViewMode('project');
+      setSelectedProject(projectId);
+    }
   };
 
   const handleDocumentSelect = (document: any) => {
@@ -52,7 +60,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
-        selectedProject={selectedProject}
+        selectedProject={viewMode === 'portfolio' ? 'portfolio' : selectedProject}
         onProjectChange={handleProjectChange}
         onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
@@ -61,7 +69,7 @@ const Index = () => {
 
       <div className="flex flex-1">
         <main className="flex-1 relative">
-          {selectedProject === 'portfolio' ? (
+          {viewMode === 'portfolio' ? (
             <PortfolioDashboard />
           ) : selectedProject ? (
             <Dashboard projectId={selectedProject} />
@@ -72,7 +80,7 @@ const Index = () => {
         </main>
 
         {/* Chat Window */}
-        {showChat && selectedProject && selectedProject !== 'portfolio' && (
+        {showChat && selectedProject && viewMode === 'project' && (
           <div className="w-96 border-l border-border/40">
             <ChatWindow projectId={selectedProject} />
           </div>

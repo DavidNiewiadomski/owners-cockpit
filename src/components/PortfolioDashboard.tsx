@@ -12,7 +12,8 @@ const PortfolioDashboard: React.FC = () => {
         </p>
       </div>
       
-      <DashboardGrid projectId="portfolio" />
+      {/* Pass null instead of "portfolio" to avoid UUID errors */}
+      <DashboardGrid projectId={null} />
     </div>
   );
 };
