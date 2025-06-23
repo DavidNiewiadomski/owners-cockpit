@@ -6,6 +6,7 @@ import { SafetyIncidents } from './components/SafetyIncidents';
 import { WeatherConditions } from './components/WeatherConditions';
 import WorkOrders from './components/WorkOrders';
 import EnergyUsage from './components/EnergyUsage';
+import SustainabilityMetrics from './components/SustainabilityMetrics';
 
 export const WIDGET_REGISTRY = [
   {
@@ -79,6 +80,15 @@ export const WIDGET_REGISTRY = [
     category: 'facilities',
     roles: ['facilities_manager', 'sustainability_manager', 'executive'] as const,
     defaultSize: { w: 1, h: 1 }
+  },
+  {
+    id: 'sustainability-metrics',
+    name: 'Sustainability Metrics',
+    description: 'Environmental performance and ESG tracking',
+    component: SustainabilityMetrics,
+    category: 'sustainability',
+    roles: ['sustainability_manager', 'facilities_manager', 'executive'] as const,
+    defaultSize: { w: 1, h: 1 }
   }
 ];
 
@@ -87,7 +97,7 @@ export interface WidgetDefinition {
   name: string;
   description?: string;
   component: React.ComponentType<any>;
-  category: 'construction' | 'other' | 'facilities';
+  category: 'construction' | 'other' | 'facilities' | 'sustainability';
   roles: readonly string[];
   defaultSize: { w: number; h: number };
 }
@@ -100,6 +110,10 @@ export const WIDGET_CATEGORIES = [
   {
     id: 'facilities',
     name: 'Facilities',
+  },
+  {
+    id: 'sustainability',
+    name: 'Sustainability',
   },
   {
     id: 'other',
