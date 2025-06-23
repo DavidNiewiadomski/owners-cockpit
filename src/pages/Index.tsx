@@ -88,16 +88,18 @@ const Index = () => {
           ) : (
             <div className="flex-1 flex items-center justify-center p-8">
               <MotionWrapper animation="scaleIn" delay={0.2}>
-                <Card className="neumorphic-card p-8 text-center max-w-md glass">
+                <Card className="neumorphic-card p-8 text-center max-w-2xl w-full glass">
                   <h2 className="text-xl font-semibold mb-4">Welcome to Owners Cockpit</h2>
                   <p className="text-muted-foreground mb-6">
                     Select a project to start chatting with your AI construction assistant.
                   </p>
-                  <ProjectSwitcher 
-                    selectedProject={selectedProject}
-                    onProjectChange={setSelectedProject}
-                    variant="expanded"
-                  />
+                  <div className="w-full">
+                    <ProjectSwitcher 
+                      selectedProject={selectedProject}
+                      onProjectChange={setSelectedProject}
+                      variant="expanded"
+                    />
+                  </div>
                 </Card>
               </MotionWrapper>
             </div>
