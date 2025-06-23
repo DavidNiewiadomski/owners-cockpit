@@ -47,10 +47,10 @@ const SourceModal: React.FC<SourceModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize Supabase client
+  // Initialize Supabase client with Vite environment variables
   const supabase = createClient(
-    process.env.REACT_APP_SUPABASE_URL || '',
-    process.env.REACT_APP_SUPABASE_ANON_KEY || ''
+    import.meta.env.VITE_SUPABASE_URL || '',
+    import.meta.env.VITE_SUPABASE_ANON_KEY || ''
   );
 
   useEffect(() => {
