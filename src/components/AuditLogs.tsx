@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,13 +25,13 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ projectId }) => {
   const [dateTo, setDateTo] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data: auditLogs, isLoading } = useAuditLogs(
+  const { data: auditLogs, isLoading } = useAuditLogs({
     projectId,
-    dateFrom || undefined,
-    dateTo || undefined
-  );
+    dateFrom: dateFrom || undefined,
+    dateTo: dateTo || undefined
+  });
 
-  const getActionColor = (action: string) => {
+  function getActionColor(action: string) {
     switch (action.toLowerCase()) {
       case 'insert':
       case 'create':
@@ -46,16 +45,16 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ projectId }) => {
       default:
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
     }
-  };
+  }
 
-  const formatTableName = (tableName: string) => {
+  function formatTableName(tableName: string) {
     return tableName
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  };
+  }
 
-  const generateRecordLink = (tableName: string, recordId: string | null) => {
+  function generateRecordLink(tableName: string, recordId: string | null) {
     if (!recordId) return null;
     
     // Generate appropriate links based on table name
@@ -71,12 +70,12 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ projectId }) => {
       default:
         return null;
     }
-  };
+  }
 
-  const clearFilters = () => {
+  function clearFilters() {
     setDateFrom('');
     setDateTo('');
-  };
+  }
 
   if (isLoading) {
     return (
