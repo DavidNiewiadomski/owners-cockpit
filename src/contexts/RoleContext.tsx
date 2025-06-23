@@ -7,6 +7,12 @@ interface AgentMemory {
   conversationSummary: string;
   persona: string;
   context: Record<string, any>;
+  messageHistory: Array<{
+    id: string;
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
+  }>;
 }
 
 interface RoleContextType {
@@ -19,6 +25,9 @@ interface RoleContextType {
   getRoleConfig: (role: UserRole) => typeof ROLE_CONFIGS[UserRole];
   captureUIState: () => RoleState;
   restoreUIState: (state: RoleState) => void;
+  updateAgentMemory: (messages: any[]) => void;
+  getActiveAgentMemory: () => AgentMemory;
+  getRolePersona: (role: UserRole) => string;
 }
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -46,14 +55,51 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     Legal: {},
     Finance: {},
   });
+  
+  // Enhanced agent memories with conversation history
   const [agentMemories, setAgentMemories] = useState<Record<UserRole, AgentMemory>>({
-    Executive: { conversationSummary: '', persona: 'Executive', context: {} },
-    Preconstruction: { conversationSummary: '', persona: 'Preconstruction Manager', context: {} },
-    Construction: { conversationSummary: '', persona: 'Construction Manager', context: {} },
-    Facilities: { conversationSummary: '', persona: 'Facilities Manager', context: {} },
-    Sustainability: { conversationSummary: '', persona: 'Sustainability Manager', context: {} },
-    Legal: { conversationSummary: '', persona: 'Legal/Contracts Manager', context: {} },
-    Finance: { conversationSummary: '', persona: 'Finance Manager', context: {} },
+    Executive: { 
+      conversationSummary: '', 
+      persona: 'Executive Assistant focused on strategic insights and high-level summaries', 
+      context: {},
+      messageHistory: []
+    },
+    Preconstruction: { 
+      conversationSummary: '', 
+      persona: 'Preconstruction Manager Assistant specializing in project planning and feasibility', 
+      context: {},
+      messageHistory: []
+    },
+    Construction: { 
+      conversationSummary: '', 
+      persona: 'Construction Manager Assistant focused on operational controls and safety', 
+      context: {},
+      messageHistory: []
+    },
+    Facilities: { 
+      conversationSummary: '', 
+      persona: 'Facilities Manager Assistant for building operations and maintenance', 
+      context: {},
+      messageHistory: []
+    },
+    Sustainability: { 
+      conversationSummary: '', 
+      persona: 'Sustainability Manager Assistant for environmental metrics and ESG reporting', 
+      context: {},
+      messageHistory: []
+    },
+    Legal: { 
+      conversationSummary: '', 
+      persona: 'Legal/Contracts Assistant for compliance and contract management', 
+      context: {},
+      messageHistory: []
+    },
+    Finance: { 
+      conversationSummary: '', 
+      persona: 'Finance Manager Assistant for budgets, costs, and financial analysis', 
+      context: {},
+      messageHistory: []
+    },
   });
 
   // Load saved role from localStorage on mount
@@ -71,13 +117,33 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
         console.error('Failed to parse saved role state:', error);
       }
     }
+
+    const savedAgentMemories = localStorage.getItem('agentMemories');
+    if (savedAgentMemories) {
+      try {
+        const parsed = JSON.parse(savedAgentMemories);
+        // Convert timestamp strings back to Date objects
+        Object.keys(parsed).forEach(role => {
+          if (parsed[role].messageHistory) {
+            parsed[role].messageHistory = parsed[role].messageHistory.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp)
+            }));
+          }
+        });
+        setAgentMemories(parsed);
+      } catch (error) {
+        console.error('Failed to parse saved agent memories:', error);
+      }
+    }
   }, []);
 
-  // Save role state to localStorage when it changes
+  // Save role state and agent memories to localStorage when they change
   useEffect(() => {
     localStorage.setItem('selectedRole', currentRole);
     localStorage.setItem('roleState', JSON.stringify(roleState));
-  }, [currentRole, roleState]);
+    localStorage.setItem('agentMemories', JSON.stringify(agentMemories));
+  }, [currentRole, roleState, agentMemories]);
 
   const captureUIState = useCallback((): RoleState => {
     // Capture current UI state - this would be expanded based on actual UI components
@@ -95,8 +161,6 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   const restoreUIState = useCallback((state: RoleState) => {
     console.log('Restoring UI state:', state);
     // This would trigger UI updates based on the restored state
-    // For now, we'll just log it - in a real implementation, this would
-    // update various UI components through refs or additional context
   }, []);
 
   const updateRoleState = useCallback((updates: Partial<RoleState>) => {
@@ -109,6 +173,46 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     }));
   }, [currentRole]);
 
+  const updateAgentMemory = useCallback((messages: any[]) => {
+    setAgentMemories(prev => ({
+      ...prev,
+      [currentRole]: {
+        ...prev[currentRole],
+        messageHistory: messages.map(msg => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+          timestamp: msg.timestamp
+        })),
+        conversationSummary: messages.length > 0 ? 
+          `Last updated: ${new Date().toISOString()} with ${messages.length} messages` : 
+          prev[currentRole].conversationSummary
+      }
+    }));
+  }, [currentRole]);
+
+  const getActiveAgentMemory = useCallback(() => {
+    return agentMemories[currentRole];
+  }, [agentMemories, currentRole]);
+
+  const getRolePersona = useCallback((role: UserRole) => {
+    const roleConfig = ROLE_CONFIGS[role];
+    const basePersona = agentMemories[role].persona;
+    
+    // Enhanced persona based on role-specific context
+    const personaEnhancements = {
+      Executive: "Provide strategic, high-level insights with executive summaries. Focus on ROI, portfolio performance, and key decisions.",
+      Preconstruction: "Offer detailed planning assistance with feasibility analysis, cost estimation, and site evaluation expertise.",
+      Construction: "Deliver operational support with safety protocols, schedule management, and real-time construction monitoring.",
+      Facilities: "Focus on building operations, preventive maintenance, energy efficiency, and occupant comfort optimization.",
+      Sustainability: "Emphasize environmental metrics, ESG compliance, energy management, and sustainability best practices.",
+      Legal: "Concentrate on contract management, compliance requirements, risk mitigation, and regulatory adherence.",
+      Finance: "Provide financial analysis, budget tracking, cost control insights, and investment performance metrics."
+    };
+
+    return `${basePersona}. ${personaEnhancements[role]} Use ${roleConfig.displayName} terminology and focus on ${roleConfig.description}.`;
+  }, [agentMemories]);
+
   const switchRole = useCallback((newRole: UserRole) => {
     console.log('Switching from', currentRole, 'to', newRole);
     
@@ -119,16 +223,6 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
       [currentRole]: currentState,
     }));
 
-    // Update agent memory for current role
-    setAgentMemories(prev => ({
-      ...prev,
-      [currentRole]: {
-        ...prev[currentRole],
-        conversationSummary: `Role context saved at ${new Date().toISOString()}`,
-        context: { lastActiveProject: currentState.selectedProject },
-      }
-    }));
-
     // Switch to new role
     setCurrentRole(newRole);
 
@@ -136,8 +230,8 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     const newRoleState = roleState[newRole] || {};
     restoreUIState(newRoleState);
 
-    console.log('Role switched to:', newRole, 'with permissions:', ROLE_CONFIGS[newRole].permissions);
-  }, [currentRole, captureUIState, restoreUIState, roleState]);
+    console.log('Role switched to:', newRole, 'with persona:', getRolePersona(newRole));
+  }, [currentRole, captureUIState, restoreUIState, roleState, getRolePersona]);
 
   const getRoleConfig = useCallback((role: UserRole) => {
     return ROLE_CONFIGS[role];
@@ -155,6 +249,9 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     getRoleConfig,
     captureUIState,
     restoreUIState,
+    updateAgentMemory,
+    getActiveAgentMemory,
+    getRolePersona,
   };
 
   return (

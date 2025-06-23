@@ -1,10 +1,13 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User, RotateCcw } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Send, Bot, User, RotateCcw, Brain } from 'lucide-react';
 import { useChatRag, Citation } from '@/hooks/useChatRag';
+import { useRole } from '@/contexts/RoleContext';
 import CitationChip from '@/components/CitationChip';
 import SourceModal from '@/components/SourceModal';
 
@@ -18,6 +21,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(undefined);
   const [isSourceModalOpen, setIsSourceModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { currentRole, getRoleConfig, getActiveAgentMemory } = useRole();
+  const roleConfig = getRoleConfig(currentRole);
+  const agentMemory = getActiveAgentMemory();
   
   const {
     messages,
@@ -78,10 +85,23 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Chat Header */}
+      {/* Chat Header with Role Context */}
       <div className="border-b border-border/40 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">AI Assistant</h2>
+          <div className="flex items-center gap-3">
+            <Brain className="w-5 h-5 text-primary" />
+            <div>
+              <h2 className="text-lg font-semibold">AI Assistant</h2>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="outline" className="text-xs">
+                  {roleConfig.displayName} Mode
+                </Badge>
+                <span className="text-xs text-muted-foreground">
+                  {agentMemory.messageHistory.length} messages in context
+                </span>
+              </div>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 
@@ -103,10 +123,35 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
             </Button>
           </div>
         </div>
+        
+        {/* Role Context Banner */}
+        <div className="mt-3 p-2 bg-muted/30 rounded-lg">
+          <p className="text-xs text-muted-foreground">
+            <strong>Context:</strong> {agentMemory.persona}
+          </p>
+        </div>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* Role Switch Indicator */}
+        {messages.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-8"
+          >
+            <Brain className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium mb-2">
+              {roleConfig.displayName} Assistant Ready
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              I'm your AI assistant specialized for {roleConfig.description.toLowerCase()}. 
+              Ask me anything related to your {currentRole.toLowerCase()} responsibilities.
+            </p>
+          </motion.div>
+        )}
+
         <AnimatePresence>
           {messages.map((message) => (
             <motion.div
@@ -177,7 +222,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask about your project..."
+            placeholder={`Ask your ${roleConfig.displayName} assistant...`}
             className="flex-1 bg-background/50 border-border/40 focus:border-primary/50 font-mono"
             disabled={isLoading || isStreaming}
           />
