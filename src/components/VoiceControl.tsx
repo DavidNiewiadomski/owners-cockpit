@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -262,25 +261,28 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
         )}
       </AnimatePresence>
 
-      {error && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="absolute top-12 right-0 z-50"
-        >
-          <Card className="w-80 shadow-lg border-destructive">
-            <CardContent className="p-4">
-              <p className="text-sm text-destructive">{error}</p>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowTranscript(false)}
-                className="w-full mt-2"
-              >
-                Close
-              </Button>
-            </CardContent>
-          </Card>
+      {/* Error Display */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute top-12 right-0 z-50"
+          >
+            <Card className="w-80 shadow-lg border-destructive">
+              <CardContent className="p-4">
+                <p className="text-sm text-destructive">{error}</p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowTranscript(false)}
+                  className="w-full mt-2"
+                >
+                  Close
+                </Button>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
