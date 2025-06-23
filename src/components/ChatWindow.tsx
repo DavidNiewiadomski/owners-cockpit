@@ -1,5 +1,4 @@
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { useChatRag, Citation } from '@/hooks/useChatRag';
 import { useRole } from '@/contexts/RoleContext';
 import CitationChip from '@/components/CitationChip';
 import SourceModal from '@/components/SourceModal';
+import VoiceControl from '@/components/VoiceControl';
 
 interface ChatWindowProps {
   projectId: string;
@@ -82,6 +82,16 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
       </Card>
     </motion.div>
   );
+
+  const handleVoiceMessage = useCallback((message: string) => {
+    if (!message.trim()) return;
+    sendMessage(message);
+  }, [sendMessage]);
+
+  const handleVoiceResponse = useCallback((text: string) => {
+    // This could be used to speak AI responses
+    console.log('AI response for voice:', text);
+  }, []);
 
   return (
     <div className="flex flex-col h-full">
@@ -215,17 +225,26 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
+      {/* Input Area with Voice Control */}
       <div className="border-t border-border/40 p-4">
-        <div className="flex gap-2">
-          <Input
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={`Ask your ${roleConfig.displayName} assistant...`}
-            className="flex-1 bg-background/50 border-border/40 focus:border-primary/50 font-mono"
-            disabled={isLoading || isStreaming}
-          />
+        <div className="flex gap-2 items-end">
+          <div className="flex-1 relative">
+            <Input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={`Ask your ${roleConfig.displayName} assistant...`}
+              className="bg-background/50 border-border/40 focus:border-primary/50 font-mono pr-20"
+              disabled={isLoading || isStreaming}
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <VoiceControl
+                onSendMessage={handleVoiceMessage}
+                onVoiceResponse={handleVoiceResponse}
+                disabled={isLoading || isStreaming}
+              />
+            </div>
+          </div>
           <Button
             onClick={handleSend}
             disabled={!inputValue.trim() || isLoading || isStreaming}
