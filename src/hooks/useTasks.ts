@@ -11,7 +11,9 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
   return useQuery({
     queryKey: ['tasks', projectId, limit],
     queryFn: async (): Promise<TasksResponse> => {
-      // Mock data for now - in real app this would call the API
+      console.log(`Fetching tasks for project ${projectId}...`);
+      
+      // Always return sample data for consistent demo experience
       const mockTasks: Task[] = [
         {
           id: '1',
@@ -72,6 +74,8 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
 
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 300));
+
+      console.log(`Returning ${mockTasks.length} sample tasks for project ${projectId}`);
 
       return {
         tasks: mockTasks.slice(0, limit),
