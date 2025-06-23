@@ -9,16 +9,672 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          project_id: string
+          resolved: boolean | null
+          resolved_at: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity?: string
+          title: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string
+          resolved?: boolean | null
+          resolved_at?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alerts_sent: {
+        Row: {
+          alert_id: string
+          channel: string
+          id: string
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          alert_id: string
+          channel: string
+          id?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          alert_id?: string
+          channel?: string
+          id?: string
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alerts_sent_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "alerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      budget_items: {
+        Row: {
+          actual_amount: number | null
+          budgeted_amount: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          external_id: string | null
+          id: string
+          project_id: string
+          source: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_amount?: number | null
+          budgeted_amount?: number | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          project_id: string
+          source?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_amount?: number | null
+          budgeted_amount?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          external_id?: string | null
+          id?: string
+          project_id?: string
+          source?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string | null
+          doc_type: Database["public"]["Enums"]["document_type"] | null
+          external_id: string | null
+          file_path: string | null
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          processed: boolean | null
+          project_id: string
+          source: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          doc_type?: Database["public"]["Enums"]["document_type"] | null
+          external_id?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          processed?: boolean | null
+          project_id: string
+          source?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          doc_type?: Database["public"]["Enums"]["document_type"] | null
+          external_id?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          processed?: boolean | null
+          project_id?: string
+          source?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      images: {
+        Row: {
+          created_at: string | null
+          document_id: string | null
+          external_id: string | null
+          file_path: string
+          file_size: number | null
+          height: number | null
+          id: string
+          ocr_text: string | null
+          processed: boolean | null
+          project_id: string
+          source: string | null
+          title: string | null
+          updated_at: string | null
+          width: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_id?: string | null
+          external_id?: string | null
+          file_path: string
+          file_size?: number | null
+          height?: number | null
+          id?: string
+          ocr_text?: string | null
+          processed?: boolean | null
+          project_id: string
+          source?: string | null
+          title?: string | null
+          updated_at?: string | null
+          width?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          document_id?: string | null
+          external_id?: string | null
+          file_path?: string
+          file_size?: number | null
+          height?: number | null
+          id?: string
+          ocr_text?: string | null
+          processed?: boolean | null
+          project_id?: string
+          source?: string | null
+          title?: string | null
+          updated_at?: string | null
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "images_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_logs: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          operation: string
+          project_id: string
+          records_processed: number | null
+          source: string
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          operation: string
+          project_id: string
+          records_processed?: number | null
+          source: string
+          started_at?: string | null
+          status: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          operation?: string
+          project_id?: string
+          records_processed?: number | null
+          source?: string
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          external_id: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          source: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          external_id?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          source?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          external_id?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          source?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          project_id: string
+          report_type: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id: string
+          report_type?: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string
+          report_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rfi: {
+        Row: {
+          assigned_to: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          external_id: string | null
+          id: string
+          project_id: string
+          source: string | null
+          status: Database["public"]["Enums"]["rfi_status"] | null
+          submitted_by: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          external_id?: string | null
+          id?: string
+          project_id: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["rfi_status"] | null
+          submitted_by?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          external_id?: string | null
+          id?: string
+          project_id?: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["rfi_status"] | null
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rfi_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assigned_to: string | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          external_id: string | null
+          id: string
+          name: string
+          priority: number | null
+          project_id: string
+          source: string | null
+          status: Database["public"]["Enums"]["task_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          external_id?: string | null
+          id?: string
+          name: string
+          priority?: number | null
+          project_id: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          external_id?: string | null
+          id?: string
+          name?: string
+          priority?: number | null
+          project_id?: string
+          source?: string | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vector_index: {
+        Row: {
+          chunk_id: string
+          content: string
+          created_at: string | null
+          doc_id: string | null
+          embedding: string | null
+          image_id: string | null
+          metadata: Json | null
+          project_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          chunk_id?: string
+          content: string
+          created_at?: string | null
+          doc_id?: string | null
+          embedding?: string | null
+          image_id?: string | null
+          metadata?: Json | null
+          project_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          chunk_id?: string
+          content?: string
+          created_at?: string | null
+          doc_id?: string | null
+          embedding?: string | null
+          image_id?: string | null
+          metadata?: Json | null
+          project_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vector_index_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vector_index_image_id_fkey"
+            columns: ["image_id"]
+            isOneToOne: false
+            referencedRelation: "images"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vector_index_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      binary_quantize: {
+        Args: { "": string } | { "": unknown }
+        Returns: unknown
+      }
+      halfvec_avg: {
+        Args: { "": number[] }
+        Returns: unknown
+      }
+      halfvec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      halfvec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      halfvec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      hnsw_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnsw_sparsevec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      hnswhandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_bit_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflat_halfvec_support: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      ivfflathandler: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      l2_norm: {
+        Args: { "": unknown } | { "": unknown }
+        Returns: number
+      }
+      l2_normalize: {
+        Args: { "": string } | { "": unknown } | { "": unknown }
+        Returns: unknown
+      }
+      match_documents: {
+        Args: {
+          query_embedding: string
+          match_count?: number
+          filter_project_id?: string
+        }
+        Returns: {
+          chunk_id: string
+          project_id: string
+          content: string
+          similarity: number
+        }[]
+      }
+      sparsevec_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      sparsevec_send: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      sparsevec_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
+      vector_avg: {
+        Args: { "": number[] }
+        Returns: string
+      }
+      vector_dims: {
+        Args: { "": string } | { "": unknown }
+        Returns: number
+      }
+      vector_norm: {
+        Args: { "": string }
+        Returns: number
+      }
+      vector_out: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      vector_send: {
+        Args: { "": string }
+        Returns: string
+      }
+      vector_typmod_in: {
+        Args: { "": unknown[] }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      document_type:
+        | "drawing"
+        | "specification"
+        | "report"
+        | "photo"
+        | "contract"
+        | "other"
+      project_status:
+        | "planning"
+        | "active"
+        | "on_hold"
+        | "completed"
+        | "cancelled"
+      rfi_status: "open" | "pending_response" | "responded" | "closed"
+      task_status: "not_started" | "in_progress" | "completed" | "blocked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +789,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      document_type: [
+        "drawing",
+        "specification",
+        "report",
+        "photo",
+        "contract",
+        "other",
+      ],
+      project_status: [
+        "planning",
+        "active",
+        "on_hold",
+        "completed",
+        "cancelled",
+      ],
+      rfi_status: ["open", "pending_response", "responded", "closed"],
+      task_status: ["not_started", "in_progress", "completed", "blocked"],
+    },
   },
 } as const
