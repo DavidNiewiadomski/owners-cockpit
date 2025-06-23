@@ -3,24 +3,26 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { Zap } from 'lucide-react';
+import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 
 interface EnergyUsageProps {
   projectId?: string;
 }
 
 const EnergyUsage: React.FC<EnergyUsageProps> = ({ projectId }) => {
+  const { energy } = generateFacilitiesDemoData();
+
   const energyData = [
-    { month: 'Jan', usage: 120 },
-    { month: 'Feb', usage: 115 },
-    { month: 'Mar', usage: 110 },
-    { month: 'Apr', usage: 105 },
-    { month: 'May', usage: 98 },
-    { month: 'Jun', usage: 95 }
+    { month: 'Jan', usage: 45000 },
+    { month: 'Feb', usage: 42000 },
+    { month: 'Mar', usage: 41000 },
+    { month: 'Apr', usage: 43000 },
+    { month: 'May', usage: 48000 },
+    { month: 'Jun', usage: 52000 }
   ];
 
-  const currentUsage = energyData[energyData.length - 1].usage;
-  const previousUsage = energyData[energyData.length - 2].usage;
-  const efficiency = ((previousUsage - currentUsage) / previousUsage * 100).toFixed(1);
+  const currentUsage = energy.electricity.currentMonth;
+  const efficiency = -energy.electricity.percentChange;
 
   return (
     <Card className="p-4 h-full">
@@ -29,8 +31,8 @@ const EnergyUsage: React.FC<EnergyUsageProps> = ({ projectId }) => {
           <Zap className="w-4 h-4 text-yellow-600" />
           <h3 className="text-sm font-medium text-muted-foreground">Energy Usage</h3>
         </div>
-        <div className="text-xs text-green-600">
-          -{efficiency}% vs last month
+        <div className={`text-xs ${efficiency > 0 ? 'text-green-600' : 'text-red-600'}`}>
+          {efficiency > 0 ? '+' : ''}{efficiency.toFixed(1)}% vs target
         </div>
       </div>
       
@@ -53,11 +55,11 @@ const EnergyUsage: React.FC<EnergyUsageProps> = ({ projectId }) => {
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div>
           <span className="text-muted-foreground">Current</span>
-          <div className="font-medium">{currentUsage} kWh</div>
+          <div className="font-medium">{(currentUsage / 1000).toFixed(0)}k kWh</div>
         </div>
         <div>
           <span className="text-muted-foreground">Target</span>
-          <div className="font-medium">90 kWh</div>
+          <div className="font-medium">{(energy.electricity.target / 1000).toFixed(0)}k kWh</div>
         </div>
       </div>
     </Card>
