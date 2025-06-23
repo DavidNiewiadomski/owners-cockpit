@@ -1,4 +1,3 @@
-
 import { useCallback } from 'react';
 import { useRole } from '@/contexts/RoleContext';
 
@@ -68,6 +67,54 @@ export const useVoiceCommands = () => {
       action: 'navigate',
       description: 'Navigate to a specific page or section',
     },
+    {
+      pattern: /draft\s+(a\s+)?(.+?)\s+contract\s+with\s+(.+)/i,
+      action: 'draft_contract',
+      description: 'Draft a contract with a specific party',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /review\s+contract\s+(.+)/i,
+      action: 'review_contract',
+      description: 'Review a specific contract',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /analyze\s+contract\s+risks?\s+for\s+(.+)/i,
+      action: 'analyze_contract_risks',
+      description: 'Analyze contract risks',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /check\s+contract\s+(.+?)\s+expir(ation|y)/i,
+      action: 'check_contract_expiry',
+      description: 'Check contract expiration date',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /renew\s+contract\s+(.+)/i,
+      action: 'renew_contract',
+      description: 'Initiate contract renewal process',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /generate\s+(a\s+)?(.+?)\s+agreement/i,
+      action: 'generate_agreement',
+      description: 'Generate a new agreement from template',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /show\s+me\s+contracts?\s+(expiring|due)\s+(this\s+)?(month|week)/i,
+      action: 'show_expiring_contracts',
+      description: 'Show contracts expiring soon',
+      roleSpecific: ['Legal'],
+    },
+    {
+      pattern: /compare\s+contract\s+(.+?)\s+(with|to)\s+(.+)/i,
+      action: 'compare_contracts',
+      description: 'Compare two contracts',
+      roleSpecific: ['Legal'],
+    },
   ];
 
   const processVoiceCommand = useCallback((transcript: string): ProcessedCommand | null => {
@@ -130,6 +177,43 @@ export const useVoiceCommands = () => {
             
           case 'navigate':
             parameters.destination = match[1]?.trim();
+            break;
+            
+          case 'draft_contract':
+            parameters.contractType = match[2]?.trim();
+            parameters.counterparty = match[3]?.trim();
+            needsConfirmation = true;
+            break;
+            
+          case 'review_contract':
+            parameters.contractId = match[1]?.trim();
+            break;
+            
+          case 'analyze_contract_risks':
+            parameters.contractId = match[1]?.trim();
+            break;
+            
+          case 'check_contract_expiry':
+            parameters.contractId = match[1]?.trim();
+            break;
+            
+          case 'renew_contract':
+            parameters.contractId = match[1]?.trim();
+            needsConfirmation = true;
+            break;
+            
+          case 'generate_agreement':
+            parameters.agreementType = match[2]?.trim();
+            needsConfirmation = true;
+            break;
+            
+          case 'show_expiring_contracts':
+            parameters.timeframe = match[3]?.trim() || 'month';
+            break;
+            
+          case 'compare_contracts':
+            parameters.contract1 = match[1]?.trim();
+            parameters.contract2 = match[3]?.trim();
             break;
         }
 
@@ -224,6 +308,62 @@ export const useVoiceCommands = () => {
             });
           }
           // TODO: Implement navigation logic
+          break;
+          
+        case 'draft_contract':
+          if (onSendMessage) {
+            const message = `I need to draft a ${command.parameters.contractType} contract with ${command.parameters.counterparty}. Please help me create this contract using our AI drafting tools.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'review_contract':
+          if (onSendMessage) {
+            const message = `Please review contract ${command.parameters.contractId} and analyze it for risks, compliance issues, and improvement opportunities.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'analyze_contract_risks':
+          if (onSendMessage) {
+            const message = `Analyze the risk profile of contract ${command.parameters.contractId} and highlight any potential issues or concerns.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'check_contract_expiry':
+          if (onSendMessage) {
+            const message = `When does contract ${command.parameters.contractId} expire? Please check the expiration date and alert me if renewal action is needed.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'renew_contract':
+          if (onSendMessage) {
+            const message = `I need to renew contract ${command.parameters.contractId}. Please help me initiate the renewal process and prepare the necessary documentation.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'generate_agreement':
+          if (onSendMessage) {
+            const message = `Generate a ${command.parameters.agreementType} agreement using our contract templates and AI assistance.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'show_expiring_contracts':
+          if (onSendMessage) {
+            const message = `Show me all contracts expiring this ${command.parameters.timeframe} and help me prioritize renewal actions.`;
+            onSendMessage(message);
+          }
+          break;
+          
+        case 'compare_contracts':
+          if (onSendMessage) {
+            const message = `Compare contract ${command.parameters.contract1} with ${command.parameters.contract2} and highlight the key differences and risk implications.`;
+            onSendMessage(message);
+          }
           break;
           
         case 'general_query':
