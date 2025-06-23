@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -38,7 +37,7 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
   const [newProjectName, setNewProjectName] = useState('');
   const [newProjectDescription, setNewProjectDescription] = useState('');
   const { data: projects = [], isLoading, error } = useProjects();
-  const createProject = useCreateProject();
+  const createProjectMutation = useCreateProject();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -48,7 +47,7 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
     if (!newProjectName.trim()) return;
 
     try {
-      const newProject = await createProject({
+      const newProject = await createProjectMutation.mutateAsync({
         name: newProjectName.trim(),
         description: newProjectDescription.trim() || undefined,
         status: 'planning' as const,
