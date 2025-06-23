@@ -136,7 +136,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">{kpis.delayedPermits}</div>
             <p className="text-xs text-muted-foreground">
-              Projects with delays > 14 days
+              Projects with delays {'>'}14 days
             </p>
           </CardContent>
         </Card>
