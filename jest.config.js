@@ -21,9 +21,4 @@ export default {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
-  globals: {
-    'ts-jest': {
-      isolatedModules: true
-    }
-  }
 };
