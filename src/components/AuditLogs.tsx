@@ -13,15 +13,28 @@ const AuditLogs: React.FC<AuditLogsProps> = ({ projectId }) => {
   const [dateTo, setDateTo] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data: auditLogs, isLoading } = useAuditLogs({
+  const { data: auditLogs, isLoading, error } = useAuditLogs({
     projectId,
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined
   });
 
+  console.log('AuditLogs render:', { projectId, isLoading, error, auditLogs });
+
   function clearFilters() {
     setDateFrom('');
     setDateTo('');
+  }
+
+  if (error) {
+    console.error('AuditLogs error:', error);
+    return (
+      <div className="space-y-6">
+        <div className="p-4 text-red-600 bg-red-50 rounded-lg">
+          Error loading audit logs: {error.message}
+        </div>
+      </div>
+    );
   }
 
   if (isLoading) {

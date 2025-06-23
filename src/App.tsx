@@ -53,12 +53,14 @@ function App() {
             <TooltipProvider>
               <Toaster />
               <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
-                  <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <EnhancedErrorBoundary>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
+                    <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </EnhancedErrorBoundary>
               </BrowserRouter>
             </TooltipProvider>
           </SettingsProvider>
