@@ -1,3 +1,4 @@
+
 import React, { useState, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
@@ -12,6 +13,7 @@ import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
 import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 import RoleToggle from '@/components/RoleToggle';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
+import Dashboard from '@/components/Dashboard';
 
 // Lazy load heavy components
 const ChatWindow = lazy(() => import('@/components/ChatWindow'));
@@ -47,6 +49,7 @@ const Index = React.memo(() => {
   const [showUpload, setShowUpload] = useState(false);
   const [showHero, setShowHero] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
 
   // Performance monitoring
   React.useEffect(() => {
@@ -55,6 +58,7 @@ const Index = React.memo(() => {
 
   const handleProjectChange = React.useCallback((projectId: string | null) => {
     setSelectedProject(projectId);
+    setActiveView('dashboard'); // Switch to dashboard when project is selected
   }, []);
 
   const handleUploadToggle = React.useCallback(() => {
@@ -169,16 +173,42 @@ const Index = React.memo(() => {
         </p>
       </div>
 
+      {/* View Toggle */}
+      {selectedProject && (
+        <div className="border-b border-border/40 px-6 py-2">
+          <div className="flex items-center gap-2">
+            <Button
+              variant={activeView === 'dashboard' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveView('dashboard')}
+            >
+              Dashboard
+            </Button>
+            <Button
+              variant={activeView === 'chat' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setActiveView('chat')}
+            >
+              AI Chat
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
-      <div className="flex h-[calc(100vh-114px)]">
-        {/* Chat Area */}
+      <div className="flex h-[calc(100vh-154px)]">
+        {/* Primary Content Area */}
         <div className="flex-1 flex flex-col">
           {selectedProject ? (
             <MotionWrapper animation="fadeIn" className="flex-1">
               <EnhancedErrorBoundary>
-                <Suspense fallback={<ChatWindowSkeleton />}>
-                  <ChatWindow projectId={selectedProject} />
-                </Suspense>
+                {activeView === 'dashboard' ? (
+                  <Dashboard projectId={selectedProject} />
+                ) : (
+                  <Suspense fallback={<ChatWindowSkeleton />}>
+                    <ChatWindow projectId={selectedProject} />
+                  </Suspense>
+                )}
               </EnhancedErrorBoundary>
             </MotionWrapper>
           ) : (
@@ -222,8 +252,8 @@ const Index = React.memo(() => {
           </MotionWrapper>
         )}
 
-        {/* Insights Sidebar */}
-        {selectedProject && (
+        {/* Insights Sidebar - only show in chat view */}
+        {selectedProject && activeView === 'chat' && (
           <MotionWrapper animation="slideUp" delay={0.1}>
             <EnhancedErrorBoundary>
               <Suspense fallback={<SidebarSkeleton />}>
