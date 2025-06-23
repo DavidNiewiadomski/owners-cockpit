@@ -135,6 +135,56 @@ export type Database = {
           },
         ]
       }
+      change_orders: {
+        Row: {
+          amount: number | null
+          approved_date: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          project_id: string
+          status: string | null
+          submitted_by: string | null
+          submitted_date: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number | null
+          approved_date?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          project_id: string
+          status?: string | null
+          submitted_by?: string | null
+          submitted_date?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number | null
+          approved_date?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          project_id?: string
+          status?: string | null
+          submitted_by?: string | null
+          submitted_date?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "change_orders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string | null
@@ -494,6 +544,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "rfi_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safety_incidents: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          incident_date: string | null
+          location: string | null
+          project_id: string
+          reported_by: string | null
+          severity: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          incident_date?: string | null
+          location?: string | null
+          project_id: string
+          reported_by?: string | null
+          severity?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          incident_date?: string | null
+          location?: string | null
+          project_id?: string
+          reported_by?: string | null
+          severity?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safety_incidents_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
