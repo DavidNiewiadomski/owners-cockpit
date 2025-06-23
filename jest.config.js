@@ -3,6 +3,9 @@ export default {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  moduleNameMapping: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
@@ -18,7 +21,4 @@ export default {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
 };

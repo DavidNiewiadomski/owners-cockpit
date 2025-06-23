@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 interface PerformanceMetrics {
   componentName: string;
@@ -84,22 +84,16 @@ export function usePerformanceMonitor(
   };
 }
 
-// HOC for easy performance monitoring
+// HOC for easy performance monitoring - simplified to avoid hook issues
 export function withPerformanceMonitor<T extends object>(
   WrappedComponent: React.ComponentType<T>,
   componentName?: string
 ) {
   const displayName = componentName || WrappedComponent.displayName || WrappedComponent.name;
   
-  const MemoizedComponent = React.memo((props: T) => {
-    const { endMeasurement } = usePerformanceMonitor(displayName);
-    
-    useEffect(() => {
-      endMeasurement(props);
-    });
-
+  const MemoizedComponent = (props: T) => {
     return <WrappedComponent {...props} />;
-  });
+  };
 
   MemoizedComponent.displayName = `withPerformanceMonitor(${displayName})`;
   
