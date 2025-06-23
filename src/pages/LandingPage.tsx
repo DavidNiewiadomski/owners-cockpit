@@ -20,7 +20,7 @@ const LandingPage: React.FC = () => {
         <MotionWrapper animation="fadeIn">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Construction Intelligence Platform
+              Building Intelligence Platform
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
               Streamline your construction projects with AI-powered insights, real-time collaboration, 
