@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Building2, Calendar, User, LogOut } from 'lucide-react';
-import { ChatWindow } from '@/components/ChatWindow';
-import { GanttChart } from '@/components/GanttChart';
+import ChatWindow from '@/components/ChatWindow';
+import GanttChart from '@/components/GanttChart';
 import { useTasks } from '@/hooks/useTasks';
 import { format } from 'date-fns';
 
