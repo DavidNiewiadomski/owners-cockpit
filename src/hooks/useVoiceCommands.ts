@@ -1,7 +1,6 @@
 
 import { useCallback } from 'react';
 import { useRole } from '@/contexts/RoleContext';
-import { useToast } from '@/hooks/use-toast';
 
 interface VoiceCommand {
   pattern: RegExp;
@@ -19,7 +18,6 @@ interface ProcessedCommand {
 
 export const useVoiceCommands = () => {
   const { currentRole, getRoleConfig } = useRole();
-  const { toast } = useToast();
 
   // Define voice command patterns
   const commands: VoiceCommand[] = [
@@ -155,7 +153,8 @@ export const useVoiceCommands = () => {
 
   const executeVoiceCommand = useCallback(async (
     command: ProcessedCommand,
-    onSendMessage?: (message: string) => void
+    onSendMessage?: (message: string) => void,
+    toast?: (options: any) => void
   ) => {
     const roleConfig = getRoleConfig(currentRole);
     
@@ -218,10 +217,12 @@ export const useVoiceCommands = () => {
           break;
           
         case 'navigate':
-          toast({
-            title: "Navigation",
-            description: `Opening ${command.parameters.destination}...`,
-          });
+          if (toast) {
+            toast({
+              title: "Navigation",
+              description: `Opening ${command.parameters.destination}...`,
+            });
+          }
           // TODO: Implement navigation logic
           break;
           
@@ -232,21 +233,25 @@ export const useVoiceCommands = () => {
           break;
           
         default:
-          toast({
-            title: "Unknown Command",
-            description: "I didn't understand that command. Please try again.",
-            variant: "destructive",
-          });
+          if (toast) {
+            toast({
+              title: "Unknown Command",
+              description: "I didn't understand that command. Please try again.",
+              variant: "destructive",
+            });
+          }
       }
     } catch (error) {
       console.error('Voice command execution error:', error);
-      toast({
-        title: "Command Execution Error",
-        description: "Failed to execute the voice command. Please try again.",
-        variant: "destructive",
-      });
+      if (toast) {
+        toast({
+          title: "Command Execution Error",
+          description: "Failed to execute the voice command. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
-  }, [currentRole, getRoleConfig, toast]);
+  }, [currentRole, getRoleConfig]);
 
   const getAvailableCommands = useCallback(() => {
     return commands.filter(cmd => 

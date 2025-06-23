@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Mic, MicOff, Volume2, VolumeX, Settings } from 'lucide-react';
 import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { useVoiceCommands } from '@/hooks/useVoiceCommands';
+import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface VoiceControlProps {
@@ -23,6 +24,8 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
   const [showTranscript, setShowTranscript] = useState(false);
   const [pendingCommand, setPendingCommand] = useState<any>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  
+  const { toast } = useToast();
 
   const {
     isListening,
@@ -65,7 +68,7 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
           speak(confirmationText);
           setShowTranscript(true);
         } else {
-          await executeVoiceCommand(command, onSendMessage);
+          await executeVoiceCommand(command, onSendMessage, toast);
           setPendingCommand(null);
         }
       } else {
@@ -78,7 +81,7 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
       console.error('Voice input processing error:', error);
       speak("Sorry, I had trouble processing that command. Please try again.");
     }
-  }, [processVoiceCommand, executeVoiceCommand, onSendMessage, speak]);
+  }, [processVoiceCommand, executeVoiceCommand, onSendMessage, speak, toast]);
 
   const handleMicrophoneClick = useCallback(() => {
     if (disabled) return;
@@ -96,12 +99,12 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
 
   const handleConfirmCommand = useCallback(async () => {
     if (pendingCommand) {
-      await executeVoiceCommand(pendingCommand, onSendMessage);
+      await executeVoiceCommand(pendingCommand, onSendMessage, toast);
       setPendingCommand(null);
       setShowTranscript(false);
       speak("Command executed successfully.");
     }
-  }, [pendingCommand, executeVoiceCommand, onSendMessage, speak]);
+  }, [pendingCommand, executeVoiceCommand, onSendMessage, speak, toast]);
 
   const handleCancelCommand = useCallback(() => {
     setPendingCommand(null);
@@ -278,8 +281,8 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
               </Button>
             </CardContent>
           </Card>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };
