@@ -259,7 +259,7 @@ const Index = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ChatWindow selectedProject={selectedProject} />
+                    <ChatWindow projectId={selectedProject} />
                   </CardContent>
                 </Card>
               </TabsContent>
