@@ -58,7 +58,7 @@ export function useGrantProjectAccess() {
       const { data, error } = await supabase
         .from('user_projects')
         .insert([{
-          user_id: userId || 'demo-user-123',
+          user_id: userId || '12345678-1234-1234-1234-123456789012',
           project_id: projectId,
           role,
         }])

@@ -11,9 +11,9 @@ export interface UseAuthReturn {
 export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(false);
 
-  // Return mock user data for demo mode
+  // Return mock user data for demo mode with a proper UUID format
   const mockUser = {
-    id: 'demo-user-123',
+    id: '12345678-1234-1234-1234-123456789012',
     email: 'demo@example.com'
   };
 
