@@ -9,8 +9,7 @@ export default {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', {
       tsconfig: {
-        jsx: 'react-jsx',
-        types: ['jest', 'testing-library__jest-dom']
+        jsx: 'react-jsx'
       },
     }],
   },
