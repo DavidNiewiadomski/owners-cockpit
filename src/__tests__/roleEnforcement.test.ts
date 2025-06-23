@@ -20,7 +20,7 @@ describe('Role Enforcement', () => {
   });
 
   test('should allow admin users to access all project data', async () => {
-    const mockSingle = jest.fn().mockResolvedValue({
+    const mockSingle = jest.fn<() => Promise<{ data: { role: string } | null; error: null }>>().mockResolvedValue({
       data: { role: 'admin' },
       error: null,
     });
@@ -51,7 +51,7 @@ describe('Role Enforcement', () => {
   });
 
   test('should restrict viewer access to read-only operations', async () => {
-    const mockSingle = jest.fn().mockResolvedValue({
+    const mockSingle = jest.fn<() => Promise<{ data: { role: string } | null; error: null }>>().mockResolvedValue({
       data: { role: 'viewer' },
       error: null,
     });
@@ -81,7 +81,7 @@ describe('Role Enforcement', () => {
   });
 
   test('should allow GC users to manage project resources', async () => {
-    const mockSingle = jest.fn().mockResolvedValue({
+    const mockSingle = jest.fn<() => Promise<{ data: { role: string } | null; error: null }>>().mockResolvedValue({
       data: { role: 'gc' },
       error: null,
     });
@@ -111,7 +111,7 @@ describe('Role Enforcement', () => {
   });
 
   test('should handle vendor role permissions correctly', async () => {
-    const mockSingle = jest.fn().mockResolvedValue({
+    const mockSingle = jest.fn<() => Promise<{ data: { role: string } | null; error: null }>>().mockResolvedValue({
       data: { role: 'vendor' },
       error: null,
     });
