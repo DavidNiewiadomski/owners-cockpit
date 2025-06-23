@@ -1,44 +1,28 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useRouter } from '@/hooks/useRouter';
 import { Building2, BarChart3, Users, Shield } from 'lucide-react';
 import MotionWrapper from '@/components/MotionWrapper';
+import HeroContent from '@/components/hero/HeroContent';
 
 const LandingPage: React.FC = () => {
-  const router = useRouter();
-
-  const handleGetStarted = () => {
-    router.push('/app');
+  const handleLearnMore = () => {
+    // Scroll to features section
+    const featuresSection = document.getElementById('features');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {/* Hero Section */}
       <div className="container mx-auto px-6 py-20">
-        <MotionWrapper animation="fadeIn">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Building Intelligence Platform
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              Streamline your construction projects with AI-powered insights, real-time collaboration, 
-              and comprehensive project management tools designed for modern construction teams.
-            </p>
-            <Button 
-              onClick={handleGetStarted} 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg"
-            >
-              Get Started
-            </Button>
-          </div>
-        </MotionWrapper>
+        <HeroContent onLearnMore={handleLearnMore} />
 
         {/* Features Grid */}
         <MotionWrapper animation="slideUp" delay={0.3}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+          <div id="features" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
