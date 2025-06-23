@@ -1,3 +1,4 @@
+
 # Owners Cockpit Database Schema
 
 ## Applying Migrations
@@ -12,6 +13,7 @@ supabase db push --file supabase/migrations/000_init.sql
 supabase db push --file supabase/migrations/001_pgvector.sql  
 supabase db push --file supabase/migrations/002_tables.sql
 supabase db push --file supabase/migrations/003_integration_logs.sql
+supabase db push --file supabase/migrations/004_vector_search.sql
 ```
 
 ### Manual Application
@@ -24,6 +26,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 \i supabase/migrations/001_pgvector.sql
 \i supabase/migrations/002_tables.sql
 \i supabase/migrations/003_integration_logs.sql
+\i supabase/migrations/004_vector_search.sql
 ```
 
 ## Schema Overview
@@ -91,8 +94,41 @@ curl -X POST 'https://your-project.supabase.co/functions/v1/ingestUpload' \
 - Images (JPEG/PNG): OpenAI Vision + Tesseract OCR
 - Document types: `drawing`, `specification`, `report`, `photo`, `contract`, `other`
 
+### Chat RAG (`/functions/v1/chatRag`)
+AI-powered question answering using Retrieval-Augmented Generation.
+
+**Usage:**
+```bash
+curl -X POST 'https://your-project.supabase.co/functions/v1/chatRag' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "project_id": "your-project-uuid",
+    "question": "What is the current budget status?",
+    "conversation_id": "optional-conversation-uuid"
+  }'
+```
+
+**Response:**
+```json
+{
+  "answer": "Based on the project data, your current budget status shows...",
+  "citations": [
+    {
+      "id": "chunk-uuid",
+      "snippet": "Budget document excerpt..."
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 150,
+    "completion_tokens": 25,
+    "total_tokens": 175
+  }
+}
+```
+
 **Environment Variables Required:**
-- `OPENAI_KEY`: OpenAI API key for embeddings and vision processing
+- `OPENAI_KEY`: OpenAI API key for embeddings and chat completions
 
 ## Security
 
@@ -103,10 +139,13 @@ All tables have Row Level Security (RLS) enabled with project-based access contr
 - Optimized indexes on foreign keys and status fields
 - HNSW index on vector embeddings for fast similarity search
 - Automatic `updated_at` timestamp triggers
+- Vector similarity search function for efficient RAG queries
 
 ## Testing
 
 Run Edge Function tests:
 ```bash
 deno test tests/procoreSync.test.ts
+deno test tests/ingestUpload.test.ts
+deno test tests/chatRag.test.ts
 ```
