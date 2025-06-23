@@ -47,7 +47,14 @@ export function useAuditLogs(projectId?: string, dateFrom?: string, dateTo?: str
       }
 
       console.log('Audit logs fetched:', data?.length || 0);
-      return data || [];
+      
+      // Transform the data to match our interface, handling the ip_address type
+      const transformedData: AuditLog[] = (data || []).map(log => ({
+        ...log,
+        ip_address: log.ip_address ? String(log.ip_address) : null
+      }));
+      
+      return transformedData;
     },
     enabled: !!projectId,
   });
