@@ -23,6 +23,7 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState<any>(null);
@@ -56,6 +57,7 @@ const Index = () => {
       <AppHeader 
         selectedProject={selectedProject}
         onProjectChange={handleProjectChange}
+        onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
         onHeroExit={handleHeroExit}
       />
