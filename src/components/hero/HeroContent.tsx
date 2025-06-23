@@ -12,8 +12,8 @@ const HeroContent: React.FC<HeroContentProps> = ({ onLearnMore }) => {
   const router = useRouter();
 
   const handleGetStarted = useCallback(() => {
-    console.log('Get Started clicked - navigating to /app');
-    router.push('/app');
+    console.log('Get Started clicked - navigating to /dashboard');
+    router.push('/dashboard');
   }, [router]);
 
   const containerVariants = {
