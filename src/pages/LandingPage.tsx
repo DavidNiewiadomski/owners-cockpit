@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Building2, BarChart3, Users, Shield } from 'lucide-react';
@@ -23,6 +22,7 @@ const LandingPage: React.FC = () => {
         {/* Features Grid */}
         <MotionWrapper animation="slideUp" delay={0.3}>
           <div id="features" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+            
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />

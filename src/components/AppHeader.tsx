@@ -51,38 +51,42 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={onUploadToggle}
-                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
+                className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
                 title={t('navigation.upload')}
               >
                 <Plus className="h-4 w-4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
+                className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
                 title={t('navigation.projects')}
               >
                 <FolderOpen className="h-4 w-4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
               {selectedProject && access.canManageUsers && (
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
                   onClick={() => window.open(`/settings/access/${selectedProject}`, '_blank')}
                   title="Project Access Settings"
                 >
                   <Users className="h-4 w-4" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
               )}
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="futuristic-card hover:scale-105 transition-all duration-300 border border-primary/20 hover:border-primary/40 hover:shadow-glow-sm"
+                className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
                 onClick={onSettingsToggle}
                 title={t('navigation.settings')}
               >
                 <Settings className="h-4 w-4" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
               <ThemeToggle />
             </div>
