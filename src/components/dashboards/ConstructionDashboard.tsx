@@ -119,11 +119,11 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'on_track': return 'bg-green-100 text-green-800';
-      case 'ahead': return 'bg-blue-100 text-blue-800';
-      case 'delayed': return 'bg-red-100 text-red-800';
-      case 'at_risk': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'on_track': return 'linear-badge-success';
+      case 'ahead': return 'linear-badge-default';
+      case 'delayed': return 'linear-badge-destructive';
+      case 'at_risk': return 'linear-badge-warning';
+      default: return 'linear-badge-secondary';
     }
   };
 
@@ -134,16 +134,16 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
   return (
     <div className="space-y-6">
       {/* AI Insights Summary */}
-      <Card className="bg-gradient-to-r from-orange-50 to-red-50">
+      <Card className="linear-insight-panel">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="linear-chart-title">
             <AlertTriangle className="h-5 w-5 text-amber-500" />
             AI Construction Insights - {projectData.name}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-            <p className="text-sm text-blue-800">
+          <div className="bg-accent/50 border border-border rounded-lg p-4 mb-4">
+            <p className="text-sm text-foreground">
               <strong>Project Status:</strong> {projectData.name} is {projectData.progressPercent}% complete and {projectData.status === 'on_track' ? 'on track' : projectData.daysAheadBehind > 0 ? `${projectData.daysAheadBehind} days ahead` : `${Math.abs(projectData.daysAheadBehind)} days behind`}. 
               Budget utilization is {((projectData.budgetSpent / projectData.budgetTotal) * 100).toFixed(1)}% with {projectData.changeOrders} change orders totaling {formatCurrency(projectData.changeOrderValue)}. 
               Safety metrics show {projectData.safetyIncidents} incidents with productivity at {projectData.productivity}%.
@@ -151,33 +151,33 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-start gap-3">
-              <Badge variant={projectData.overdueRFIs > 0 ? "destructive" : "secondary"}>
+              <Badge className={projectData.overdueRFIs > 0 ? "linear-badge-destructive" : "linear-badge-secondary"}>
                 {projectData.overdueRFIs > 0 ? "High Priority" : "Normal"}
               </Badge>
               <div>
-                <h4 className="font-medium">{projectData.overdueRFIs} Overdue RFIs</h4>
+                <h4 className="font-medium text-foreground">{projectData.overdueRFIs} Overdue RFIs</h4>
                 <p className="text-sm text-muted-foreground">
                   {projectData.openRFIs} total RFIs - resolving overdue items critical for schedule
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Badge variant={projectData.productivity >= 90 ? "secondary" : "default"}>
+              <Badge className={projectData.productivity >= 90 ? "linear-badge-success" : "linear-badge-default"}>
                 {projectData.productivity >= 90 ? "Success" : "Monitor"}
               </Badge>
               <div>
-                <h4 className="font-medium">Productivity at {projectData.productivity}%</h4>
+                <h4 className="font-medium text-foreground">Productivity at {projectData.productivity}%</h4>
                 <p className="text-sm text-muted-foreground">
                   {projectData.workforce} workers on site with {projectData.weatherDelays} weather delays
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Badge variant={projectData.qualityMetrics.defectRate <= 2.5 ? "secondary" : "default"}>
+              <Badge className={projectData.qualityMetrics.defectRate <= 2.5 ? "linear-badge-success" : "linear-badge-default"}>
                 {projectData.qualityMetrics.defectRate <= 2.5 ? "Success" : "Monitor"}
               </Badge>
               <div>
-                <h4 className="font-medium">Quality Score</h4>
+                <h4 className="font-medium text-foreground">Quality Score</h4>
                 <p className="text-sm text-muted-foreground">
                   {projectData.qualityMetrics.defectRate}% defect rate, {projectData.qualityMetrics.inspectionPass}% pass rate
                 </p>
@@ -189,27 +189,27 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
 
       {/* Enhanced KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Project Budget</p>
-                <p className="text-2xl font-bold text-emerald-700">{formatCurrency(projectData.budgetTotal)}</p>
-                <p className="text-xs text-emerald-600">{formatCurrency(projectData.budgetSpent)} spent</p>
+                <p className="linear-kpi-label">Project Budget</p>
+                <p className="linear-kpi-value text-green-700">{formatCurrency(projectData.budgetTotal)}</p>
+                <p className="linear-kpi-trend text-green-600">{formatCurrency(projectData.budgetSpent)} spent</p>
               </div>
-              <DollarSign className="h-8 w-8 text-emerald-600" />
+              <DollarSign className="h-8 w-8 text-green-600" />
             </div>
             <Progress value={(projectData.budgetSpent / projectData.budgetTotal) * 100} className="mt-2" />
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-50 to-cyan-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Progress</p>
-                <p className="text-2xl font-bold text-blue-700">{projectData.progressPercent}%</p>
-                <p className="text-xs text-blue-600">Due: {projectData.dueDate}</p>
+                <p className="linear-kpi-label">Progress</p>
+                <p className="linear-kpi-value text-blue-700">{projectData.progressPercent}%</p>
+                <p className="linear-kpi-trend text-blue-600">Due: {projectData.dueDate}</p>
               </div>
               <TrendingUp className="h-8 w-8 text-blue-600" />
             </div>
@@ -217,26 +217,26 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Workforce</p>
-                <p className="text-2xl font-bold text-purple-700">{projectData.workforce}</p>
-                <p className="text-xs text-purple-600">{projectData.productivity}% productivity</p>
+                <p className="linear-kpi-label">Workforce</p>
+                <p className="linear-kpi-value text-purple-700">{projectData.workforce}</p>
+                <p className="linear-kpi-trend text-purple-600">{projectData.productivity}% productivity</p>
               </div>
               <Users className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-orange-50 to-red-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Safety Score</p>
-                <p className="text-2xl font-bold text-orange-700">{projectData.safetyIncidents}</p>
-                <p className="text-xs text-orange-600">incidents this quarter</p>
+                <p className="linear-kpi-label">Safety Score</p>
+                <p className="linear-kpi-value text-orange-700">{projectData.safetyIncidents}</p>
+                <p className="linear-kpi-trend text-orange-600">incidents this quarter</p>
               </div>
               <Shield className="h-8 w-8 text-orange-600" />
             </div>
@@ -247,9 +247,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Advanced Construction Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Construction Phase Progress */}
-        <Card>
+        <Card className="linear-chart-container">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="linear-chart-title">
               <Wrench className="h-5 w-5 text-blue-600" />
               Construction Phase Progress
             </CardTitle>
@@ -257,29 +257,29 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={projectData.constructionProgress} layout="horizontal">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" domain={[0, 100]} />
-                <YAxis dataKey="phase" type="category" width={80} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis type="number" domain={[0, 100]} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <YAxis dataKey="phase" type="category" width={80} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e5e5',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
                   }}
                   formatter={(value, name) => [`${value}%`, name === 'planned' ? 'Planned' : 'Actual']}
                 />
-                <Bar dataKey="planned" fill="#e5e7eb" name="Planned" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="actual" fill="#3b82f6" name="Actual" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="planned" fill="hsl(var(--muted))" name="Planned" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="actual" fill="hsl(var(--primary))" name="Actual" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Material Delivery Trends */}
-        <Card>
+        <Card className="linear-chart-container">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="linear-chart-title">
               <Calendar className="h-5 w-5 text-green-600" />
               Material Delivery Performance
             </CardTitle>
@@ -293,23 +293,23 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
                   </linearGradient>
                   <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
-                <YAxis />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="week" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e5e5',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
                   }}
                 />
                 <Area type="monotone" dataKey="planned" stroke="#10b981" fillOpacity={0.6} fill="url(#plannedGradient)" />
-                <Area type="monotone" dataKey="actual" stroke="#3b82f6" fillOpacity={0.6} fill="url(#actualGradient)" />
+                <Area type="monotone" dataKey="actual" stroke="hsl(var(--primary))" fillOpacity={0.6} fill="url(#actualGradient)" />
                 <Line type="monotone" dataKey="delayed" stroke="#ef4444" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
@@ -318,9 +318,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       </div>
 
       {/* Safety Trends */}
-      <Card>
+      <Card className="linear-chart-container">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="linear-chart-title">
             <Shield className="h-5 w-5 text-orange-600" />
             Safety Performance Trends
           </CardTitle>
@@ -328,15 +328,15 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={projectData.safetyTrends}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
               <Tooltip 
                 contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                  backgroundColor: 'hsl(var(--popover))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px',
+                  color: 'hsl(var(--popover-foreground))'
                 }}
               />
               <Line type="monotone" dataKey="incidents" stroke="#ef4444" strokeWidth={3} name="Incidents" />
@@ -349,43 +349,43 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
 
       {/* Quality Metrics Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-red-50 to-pink-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-700">{projectData.qualityMetrics.defectRate}%</div>
-            <p className="text-sm text-red-600">Defect Rate</p>
+            <div className="linear-kpi-value text-red-700">{projectData.qualityMetrics.defectRate}%</div>
+            <p className="linear-kpi-label">Defect Rate</p>
             <p className="text-xs text-muted-foreground mt-1">Target: &lt;2.5%</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-yellow-50 to-orange-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-700">{projectData.qualityMetrics.reworkHours}</div>
-            <p className="text-sm text-yellow-600">Rework Hours</p>
+            <div className="linear-kpi-value text-yellow-700">{projectData.qualityMetrics.reworkHours}</div>
+            <p className="linear-kpi-label">Rework Hours</p>
             <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-700">{projectData.qualityMetrics.inspectionPass}%</div>
-            <p className="text-sm text-green-600">Inspection Pass</p>
+            <div className="linear-kpi-value text-green-700">{projectData.qualityMetrics.inspectionPass}%</div>
+            <p className="linear-kpi-label">Inspection Pass</p>
             <p className="text-xs text-muted-foreground mt-1">First time right</p>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-blue-50 to-cyan-100">
+        <Card className="linear-kpi-card">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-700">{projectData.qualityMetrics.punchListItems}</div>
-            <p className="text-sm text-blue-600">Open Punch Items</p>
+            <div className="linear-kpi-value text-blue-700">{projectData.qualityMetrics.punchListItems}</div>
+            <p className="linear-kpi-label">Open Punch Items</p>
             <p className="text-xs text-muted-foreground mt-1">Pending completion</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Documents & Critical Items */}
-      <Card>
+      <Card className="linear-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="linear-chart-title">
             <FileText className="h-5 w-5" />
             Critical Documents & Actions
           </CardTitle>
@@ -393,15 +393,15 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-3">
-              <h4 className="font-medium">Overdue Items</h4>
+              <h4 className="font-medium text-foreground">Overdue Items</h4>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start text-left h-auto p-3">
+                <Button variant="outline" className="w-full justify-start text-left h-auto p-3 hover:bg-accent/50">
                   <div className="flex flex-col items-start">
                     <span className="font-medium text-red-600">RFI #456 - MEP Coordination</span>
                     <span className="text-sm text-muted-foreground">{projectData.name} • Opened 3 days ago</span>
                   </div>
                 </Button>
-                <Button variant="outline" className="w-full justify-start text-left h-auto p-3">
+                <Button variant="outline" className="w-full justify-start text-left h-auto p-3 hover:bg-accent/50">
                   <div className="flex flex-col items-start">
                     <span className="font-medium text-amber-600">Submittal #789 - Elevator specs</span>
                     <span className="text-sm text-muted-foreground">{projectData.name} • Pending approval</span>
@@ -411,17 +411,17 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             </div>
             
             <div className="space-y-3">
-              <h4 className="font-medium">Today's Reports</h4>
+              <h4 className="font-medium text-foreground">Today's Reports</h4>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start text-left h-auto p-3">
+                <Button variant="outline" className="w-full justify-start text-left h-auto p-3 hover:bg-accent/50">
                   <div className="flex flex-col items-start">
-                    <span className="font-medium">Daily Field Report - {projectData.name}</span>
+                    <span className="font-medium text-foreground">Daily Field Report - {projectData.name}</span>
                     <span className="text-sm text-muted-foreground">Updated 1 hour ago</span>
                   </div>
                 </Button>
-                <Button variant="outline" className="w-full justify-start text-left h-auto p-3">
+                <Button variant="outline" className="w-full justify-start text-left h-auto p-3 hover:bg-accent/50">
                   <div className="flex flex-col items-start">
-                    <span className="font-medium">Weekly Safety Report</span>
+                    <span className="font-medium text-foreground">Weekly Safety Report</span>
                     <span className="text-sm text-muted-foreground">Generated this morning</span>
                   </div>
                 </Button>

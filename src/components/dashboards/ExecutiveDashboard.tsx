@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -98,20 +97,18 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
   return (
     <div className="space-y-6">
       {/* AI Insights */}
-      <Card className="border border-border/50 bg-gradient-to-r from-blue-50 to-purple-50">
+      <Card className="linear-insight-panel">
         <CardHeader>
-          <CardTitle className="text-lg font-medium text-foreground flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              AI Executive Insights - {projectData.name}
-            </span>
+          <CardTitle className="linear-chart-title">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            AI Executive Insights - {projectData.name}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <Button
               variant="ghost"
-              className="w-full justify-start p-3 h-auto text-left hover:bg-white/80 backdrop-blur-sm"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-accent/50"
               onClick={() => handleInsightClick("Project Performance Analysis")}
             >
               <div className="flex items-start gap-3 w-full">
@@ -129,7 +126,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
             
             <Button
               variant="ghost"
-              className="w-full justify-start p-3 h-auto text-left hover:bg-white/80 backdrop-blur-sm"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-accent/50"
               onClick={() => handleInsightClick("Financial Forecast")}
             >
               <div className="flex items-start gap-3 w-full">
@@ -146,7 +143,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
             
             <Button
               variant="ghost"
-              className="w-full justify-start p-3 h-auto text-left hover:bg-white/80 backdrop-blur-sm"
+              className="w-full justify-start p-3 h-auto text-left hover:bg-accent/50"
               onClick={() => handleInsightClick("Milestone Achievement")}
             >
               <div className="flex items-start gap-3 w-full">
@@ -165,71 +162,71 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
         </CardContent>
       </Card>
 
-      {/* Enhanced KPI Cards with Gradients */}
+      {/* Enhanced KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-border/50 bg-gradient-to-br from-green-50 to-emerald-100">
+        <Card className="linear-kpi-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Project Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-emerald-600" />
+            <CardTitle className="linear-kpi-label">Project Value</CardTitle>
+            <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-semibold text-emerald-700">
+            <div className="linear-kpi-value text-green-700">
               ${(projectData.totalBudget / 1000000).toFixed(1)}M
             </div>
-            <p className="text-xs text-emerald-600 flex items-center mt-1">
+            <p className="linear-kpi-trend text-green-600">
               <TrendingUp className="h-3 w-3 mr-1" />
               +{projectData.roi}% ROI projected
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/50 bg-gradient-to-br from-blue-50 to-cyan-100">
+        <Card className="linear-kpi-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Budget Utilization</CardTitle>
+            <CardTitle className="linear-kpi-label">Budget Utilization</CardTitle>
             <BarChart3 className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-semibold text-blue-700">
+            <div className="linear-kpi-value text-blue-700">
               {Math.round((projectData.spentBudget / projectData.totalBudget) * 100)}%
             </div>
             <div className="mt-2">
               <Progress value={(projectData.spentBudget / projectData.totalBudget) * 100} className="h-2" />
             </div>
-            <p className="text-xs text-blue-600 mt-2">
+            <p className="linear-kpi-trend text-blue-600 mt-2">
               ${(projectData.spentBudget / 1000000).toFixed(1)}M utilized
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/50 bg-gradient-to-br from-purple-50 to-pink-100">
+        <Card className="linear-kpi-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Progress Status</CardTitle>
+            <CardTitle className="linear-kpi-label">Progress Status</CardTitle>
             <Target className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-semibold text-purple-700">{projectData.progress}%</div>
+            <div className="linear-kpi-value text-purple-700">{projectData.progress}%</div>
             <div className="mt-2">
               <Progress value={projectData.progress} className="h-2" />
             </div>
-            <p className="text-xs text-purple-600 mt-2">
+            <p className="linear-kpi-trend text-purple-600 mt-2">
               {projectData.timeline} - {projectData.milestonesCompleted}/{projectData.totalMilestones} milestones
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border border-border/50 bg-gradient-to-br from-orange-50 to-red-100">
+        <Card className="linear-kpi-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Risk Assessment</CardTitle>
+            <CardTitle className="linear-kpi-label">Risk Assessment</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-semibold ${getRiskColor(projectData.riskScore)}`}>
+            <div className={`linear-kpi-value ${getRiskColor(projectData.riskScore)}`}>
               {projectData.riskScore}/100
             </div>
             <div className="mt-2">
               <Progress value={projectData.riskScore} className="h-2" />
             </div>
-            <p className="text-xs text-orange-600 mt-2">
+            <p className="linear-kpi-trend text-orange-600 mt-2">
               {projectData.stakeholders} stakeholders monitored
             </p>
           </CardContent>
@@ -239,9 +236,9 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
       {/* Advanced Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Financial Performance with Forecast */}
-        <Card className="border border-border/50">
+        <Card className="linear-chart-container">
           <CardHeader>
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
+            <CardTitle className="linear-chart-title">
               <DollarSign className="h-5 w-5 text-blue-600" />
               Financial Performance & Forecast
             </CardTitle>
@@ -251,34 +248,33 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
               <AreaChart data={projectData.monthlySpend}>
                 <defs>
                   <linearGradient id="budgetGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
                   </linearGradient>
                   <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <YAxis 
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                   tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
                 />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e5e5',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-                    backdropFilter: 'blur(10px)'
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
                   }}
                   formatter={(value: any, name: string) => [
                     `$${(value / 1000000).toFixed(1)}M`,
                     name === 'budget' ? 'Budget' : name === 'actual' ? 'Actual' : 'Forecast'
                   ]}
                 />
-                <Area type="monotone" dataKey="budget" stroke="#3b82f6" fillOpacity={0.6} fill="url(#budgetGradient)" />
+                <Area type="monotone" dataKey="budget" stroke="hsl(var(--primary))" fillOpacity={0.6} fill="url(#budgetGradient)" />
                 <Area type="monotone" dataKey="actual" stroke="#10b981" fillOpacity={0.6} fill="url(#actualGradient)" />
                 <Line type="monotone" dataKey="forecast" stroke="#f59e0b" strokeDasharray="5 5" strokeWidth={2} />
               </AreaChart>
@@ -287,9 +283,9 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
         </Card>
 
         {/* Risk Distribution Radar */}
-        <Card className="border border-border/50">
+        <Card className="linear-chart-container">
           <CardHeader>
-            <CardTitle className="text-lg font-medium flex items-center gap-2">
+            <CardTitle className="linear-chart-title">
               <AlertTriangle className="h-5 w-5 text-orange-600" />
               Risk Distribution Analysis
             </CardTitle>
@@ -297,13 +293,13 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={projectData.riskBreakdown}>
-                <RadialBar dataKey="value" cornerRadius={10} fill="#8884d8" />
+                <RadialBar dataKey="value" cornerRadius={10} fill="hsl(var(--primary))" />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e5e5',
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
                   }}
                 />
               </RadialBarChart>
@@ -315,7 +311,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
                     className="w-3 h-3 rounded-full" 
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-xs font-medium">{item.category}: {item.value}%</span>
+                  <span className="text-xs font-medium text-foreground">{item.category}: {item.value}%</span>
                 </div>
               ))}
             </div>
@@ -324,9 +320,9 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
       </div>
 
       {/* KPI Trends */}
-      <Card className="border border-border/50">
+      <Card className="linear-chart-container">
         <CardHeader>
-          <CardTitle className="text-lg font-medium flex items-center gap-2">
+          <CardTitle className="linear-chart-title">
             <TrendingUp className="h-5 w-5 text-green-600" />
             Performance Trends (Last 4 Weeks)
           </CardTitle>
@@ -334,18 +330,18 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={projectData.kpiTrends}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis dataKey="week" tick={{ fill: '#6b7280', fontSize: 12 }} />
-              <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis dataKey="week" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+              <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
               <Tooltip 
                 contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                  backgroundColor: 'hsl(var(--popover))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px',
+                  color: 'hsl(var(--popover-foreground))'
                 }}
               />
-              <Line type="monotone" dataKey="efficiency" stroke="#3b82f6" strokeWidth={3} dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }} />
+              <Line type="monotone" dataKey="efficiency" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }} />
               <Line type="monotone" dataKey="quality" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }} />
               <Line type="monotone" dataKey="safety" stroke="#f59e0b" strokeWidth={3} dot={{ fill: '#f59e0b', strokeWidth: 2, r: 4 }} />
             </LineChart>
