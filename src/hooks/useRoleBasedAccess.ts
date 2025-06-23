@@ -1,4 +1,3 @@
-
 import { useRole } from '@/contexts/RoleContext';
 import { useMemo } from 'react';
 
@@ -16,6 +15,9 @@ export function useRoleBasedAccess() {
     canViewReports: permissions.canViewReports,
     canManageUsers: permissions.canManageUsers,
     canEditData: permissions.canEditData,
+
+    // Project management permissions
+    canCreateProjects: permissions.canManageUsers || currentRole === 'Executive',
 
     // Derived permissions
     canAccessFinancials: permissions.canViewBudgets || currentRole === 'Finance',

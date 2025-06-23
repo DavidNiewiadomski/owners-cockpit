@@ -30,7 +30,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             <ProjectSwitcher 
               selectedProject={selectedProject}
               onProjectChange={onProjectChange}
-              variant="expanded"
             />
           </div>
         </Card>
