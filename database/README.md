@@ -15,6 +15,7 @@ supabase db push --file supabase/migrations/002_tables.sql
 supabase db push --file supabase/migrations/003_integration_logs.sql
 supabase db push --file supabase/migrations/004_vector_search.sql
 supabase db push --file supabase/migrations/005_reports_table.sql
+supabase db push --file supabase/migrations/006_alerts_table.sql
 ```
 
 ### Manual Application
@@ -29,6 +30,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 \i supabase/migrations/003_integration_logs.sql
 \i supabase/migrations/004_vector_search.sql
 \i supabase/migrations/005_reports_table.sql
+\i supabase/migrations/006_alerts_table.sql
 ```
 
 ## Schema Overview
@@ -42,6 +44,7 @@ psql "postgresql://user:pass@host:5432/dbname"
 - **Vector Index**: Embeddings for RAG with 1536-dim vectors
 - **Integration Logs**: ETL operation tracking and audit trail
 - **Reports**: AI-generated summaries and insights
+- **Alerts**: Risk alerts and notifications with deduplication tracking
 
 ## Edge Functions
 
@@ -163,6 +166,50 @@ curl -X POST 'https://your-project.supabase.co/functions/v1/weeklySummary' \
 
 **CRON Schedule**: Runs every Friday at 17:00 UTC for automatic weekly reports.
 
+### Risk Alert (`/functions/v1/riskAlert`)
+Monitors project risks and sends Slack notifications for critical issues.
+
+**Usage:**
+```bash
+curl -X POST 'https://your-project.supabase.co/functions/v1/riskAlert' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "project_id": "your-project-uuid"
+  }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "alerts_found": 3,
+  "alerts_saved": 3,
+  "alerts": [
+    {
+      "id": "alert-uuid",
+      "type": "overdue_tasks",
+      "severity": "high",
+      "title": "Overdue Task: Install Plumbing"
+    }
+  ]
+}
+```
+
+**Risk Detection Rules:**
+- **Overdue Tasks**: Tasks past their due date (severity based on days overdue)
+- **Budget Variance**: >5% variance from budgeted amounts (severity based on percentage)
+- **Overdue RFIs**: RFIs open >7 days or past due date (severity based on age)
+
+**Features:**
+- Automatic deduplication via `alerts_sent` table
+- Configurable severity levels (low, medium, high, critical)
+- Slack notifications with rich formatting
+- Stores all alerts in database for tracking
+- Metadata capture for detailed analysis
+
+**CRON Schedule**: Runs every hour for continuous monitoring.
+
 **Environment Variables Required:**
 - `OPENAI_KEY`: OpenAI API key for embeddings and chat completions
 - `SLACK_WEBHOOK_URL`: Optional Slack webhook for automatic posting
@@ -186,4 +233,5 @@ deno test tests/procoreSync.test.ts
 deno test tests/ingestUpload.test.ts
 deno test tests/chatRag.test.ts
 deno test tests/weeklySummary.test.ts
+deno test tests/riskAlert.test.ts
 ```

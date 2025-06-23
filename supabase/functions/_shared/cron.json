@@ -26,6 +26,18 @@
         "scheduled": true,
         "project_id": "all"
       }
+    },
+    {
+      "name": "risk-alert-hourly",
+      "cron": "0 * * * *",
+      "method": "POST",
+      "url": "/functions/v1/riskAlert",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "scheduled": true
+      }
     }
   ]
 }
