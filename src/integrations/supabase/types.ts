@@ -810,6 +810,66 @@ export type Database = {
         }
         Relationships: []
       }
+      project_integrations: {
+        Row: {
+          api_key: string | null
+          config: Json | null
+          created_at: string | null
+          id: string
+          last_sync: string | null
+          oauth_data: Json | null
+          project_id: string
+          provider: string
+          refresh_token: string | null
+          status: string
+          sync_error: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          last_sync?: string | null
+          oauth_data?: Json | null
+          project_id: string
+          provider: string
+          refresh_token?: string | null
+          status?: string
+          sync_error?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          last_sync?: string | null
+          oauth_data?: Json | null
+          project_id?: string
+          provider?: string
+          refresh_token?: string | null
+          status?: string
+          sync_error?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_integrations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "project_integrations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string | null
