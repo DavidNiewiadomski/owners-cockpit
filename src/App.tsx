@@ -8,7 +8,6 @@ import { SettingsProvider } from "@/contexts/SettingsContext";
 import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
 import { RoleProvider } from "@/contexts/RoleContext";
 import "@/lib/i18n";
-import LandingPage from "./pages/LandingPage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
@@ -60,7 +59,7 @@ function App() {
                 <BrowserRouter>
                   <EnhancedErrorBoundary>
                     <Routes>
-                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<Index />} />
                       <Route path="/app" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
