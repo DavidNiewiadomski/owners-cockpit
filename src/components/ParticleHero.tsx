@@ -5,7 +5,7 @@ import { Stars, Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Building2, Brain, Mic } from 'lucide-react';
-import { useRouter } from 'react-router-dom';
+import { useRouter } from '@/hooks/useRouter';
 import * as THREE from 'three';
 
 // Animated particle system component
@@ -52,7 +52,7 @@ function InteractiveBackground() {
     <mesh ref={meshRef}>
       <primitive object={geometry} />
       <meshBasicMaterial 
-        color="#1e293b" 
+        color={new THREE.Color("#1e293b")}
         wireframe 
         transparent 
         opacity={0.1}
