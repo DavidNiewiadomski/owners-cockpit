@@ -2,15 +2,17 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { jest } from '@jest/globals';
 import ParticleHero from '@/components/ParticleHero';
 
 // Mock react-router-dom
 const mockPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockPush
-}));
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockPush
+  };
+});
 
 // Mock @react-three/fiber and @react-three/drei
 jest.mock('@react-three/fiber', () => ({

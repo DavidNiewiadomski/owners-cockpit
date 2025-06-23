@@ -52,7 +52,7 @@ function InteractiveBackground() {
     <mesh ref={meshRef}>
       <primitive object={geometry} />
       <meshBasicMaterial 
-        color={new THREE.Color("#1e293b")}
+        color="#1e293b"
         wireframe 
         transparent 
         opacity={0.1}
@@ -84,7 +84,7 @@ const HeroContent: React.FC<{ onLearnMore: () => void }> = ({ onLearnMore }) => 
     visible: { 
       y: 0, 
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }
     }
   };
 
