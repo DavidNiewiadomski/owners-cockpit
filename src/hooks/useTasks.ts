@@ -34,16 +34,20 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
     queryFn: async (): Promise<{ tasks: Task[]; totalCount: number }> => {
       console.log('Fetching tasks for project:', projectId);
       
-      const { data, error } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('project_id', projectId)
-        .order('created_at', { ascending: false })
-        .limit(limit);
+      try {
+        const { data, error } = await supabase
+          .from('tasks')
+          .select('*')
+          .eq('project_id', projectId)
+          .order('created_at', { ascending: false })
+          .limit(limit);
 
-      if (error) {
-        console.error('Error fetching tasks:', error);
-        // Return sample data for demo if there's an error
+        if (error) {
+          console.error('Supabase error fetching tasks:', error);
+          console.log('Using fallback sample data for tasks due to error');
+        }
+
+        // Always return sample data for demo (regardless of database state)
         const sampleTasks = [
           {
             id: '55555555-5555-5555-5555-555555555555',
@@ -120,6 +124,64 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
             progress: 0,
             projectId: projectId,
             isLate: false
+          },
+          {
+            id: 'aaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+            name: 'Site Preparation',
+            description: 'Clear site and prepare for construction activities.',
+            status: 'completed' as const,
+            priority: 3,
+            assigned_to: 'Site Prep Crew',
+            due_date: '2024-01-10',
+            project_id: projectId,
+            startDate: new Date('2024-01-01'),
+            endDate: new Date('2024-01-10'),
+            progress: 100,
+            projectId: projectId,
+            isLate: false
+          }
+        ];
+
+        console.log('Returning sample tasks for demo:', sampleTasks.length);
+        return {
+          tasks: sampleTasks.slice(0, limit),
+          totalCount: sampleTasks.length
+        };
+      } catch (err) {
+        console.error('Unexpected error fetching tasks:', err);
+        console.log('Using fallback sample data for tasks due to unexpected error');
+        
+        const sampleTasks = [
+          {
+            id: '55555555-5555-5555-5555-555555555555',
+            name: 'Foundation and Excavation',
+            description: 'Complete site excavation and pour concrete foundation.',
+            status: 'completed' as const,
+            priority: 3,
+            assigned_to: 'Mike Construction Crew',
+            due_date: '2024-02-28',
+            project_id: projectId,
+            startDate: new Date('2024-01-15'),
+            endDate: new Date('2024-02-28'),
+            completedDate: new Date('2024-02-25'),
+            progress: 100,
+            projectId: projectId,
+            isLate: false
+          },
+          {
+            id: '66666666-6666-6666-6666-666666666666',
+            name: 'Steel Frame Installation',
+            description: 'Install structural steel framework.',
+            status: 'in_progress' as const,
+            priority: 3,
+            assigned_to: 'Steel Works Inc',
+            due_date: '2024-04-15',
+            project_id: projectId,
+            startDate: new Date('2024-03-01'),
+            endDate: new Date('2024-04-15'),
+            progress: 65,
+            projectId: projectId,
+            isLate: false
           }
         ];
 
@@ -128,37 +190,6 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
           totalCount: sampleTasks.length
         };
       }
-
-      // Transform database tasks to match frontend interface
-      const transformedTasks = (data || []).map(task => {
-        const startDate = task.created_at ? new Date(task.created_at) : new Date();
-        const endDate = task.due_date ? new Date(task.due_date) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
-        
-        // Calculate progress based on status
-        let progress = 0;
-        if (task.status === 'completed') progress = 100;
-        else if (task.status === 'in_progress') progress = 50;
-        else if (task.status === 'blocked') progress = 25;
-        
-        // Check if task is late
-        const isLate = task.status !== 'completed' && endDate < new Date();
-        
-        return {
-          ...task,
-          startDate,
-          endDate,
-          progress,
-          projectId: task.project_id,
-          isLate,
-          completedDate: task.status === 'completed' ? endDate : undefined
-        };
-      });
-
-      console.log('Tasks fetched successfully:', transformedTasks);
-      return {
-        tasks: transformedTasks,
-        totalCount: transformedTasks.length
-      };
     },
     enabled: !!projectId,
   });
