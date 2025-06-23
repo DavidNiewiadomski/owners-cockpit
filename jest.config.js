@@ -24,7 +24,8 @@ export default {
   globals: {
     'ts-jest': {
       tsconfig: {
-        jsx: 'react-jsx'
+        jsx: 'react-jsx',
+        types: []
       }
     }
   }

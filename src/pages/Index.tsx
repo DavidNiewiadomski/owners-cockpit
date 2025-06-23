@@ -9,7 +9,6 @@ import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
 import MotionWrapper from '@/components/MotionWrapper';
 import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
-import { usePerformanceMonitor } from '@/hooks/usePerformanceMonitor';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useTranslation } from 'react-i18next';
@@ -31,17 +30,11 @@ const SidebarSkeleton = () => (
 const Index = React.memo(() => {
   const { t } = useTranslation();
   const location = useLocation();
-  const { endMeasurement } = usePerformanceMonitor('Index', { threshold: 20 });
   
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [showUpload, setShowUpload] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [activeView, setActiveView] = useState<'dashboard' | 'chat'>('dashboard');
-
-  // Performance monitoring
-  React.useEffect(() => {
-    endMeasurement({ selectedProject, showUpload, showSettings });
-  });
 
   const handleProjectChange = React.useCallback((projectId: string | null) => {
     setSelectedProject(projectId);

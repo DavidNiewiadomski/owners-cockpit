@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   DndContext,
   DragEndEvent,
@@ -48,6 +48,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ projectId }) => {
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -62,11 +63,22 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ projectId }) => {
 
   const layout = user ? getLayout(user.id, currentRole, projectId) : [];
 
-  useEffect(() => {
-    if (user) {
-      loadLayout(user.id, currentRole, projectId);
+  // Memoize the load function to prevent infinite loops
+  const loadLayoutOnce = useCallback(async () => {
+    if (user && !hasLoaded) {
+      await loadLayout(user.id, currentRole, projectId);
+      setHasLoaded(true);
     }
-  }, [user, currentRole, projectId, loadLayout]);
+  }, [user, currentRole, projectId, hasLoaded, loadLayout]);
+
+  useEffect(() => {
+    loadLayoutOnce();
+  }, [loadLayoutOnce]);
+
+  // Reset hasLoaded when user, role, or project changes
+  useEffect(() => {
+    setHasLoaded(false);
+  }, [user?.id, currentRole, projectId]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
