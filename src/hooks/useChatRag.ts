@@ -58,14 +58,14 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
       if (error) {
         console.error('Supabase function error:', error);
         
-        // Check for specific OpenAI quota error
-        if (error.message && error.message.includes('insufficient_quota')) {
-          throw new Error('OpenAI API quota exceeded. Please check your OpenAI billing and usage at https://platform.openai.com/account/billing');
+        // Check for specific Gemini API errors
+        if (error.message && error.message.includes('API key')) {
+          throw new Error('Gemini API key issue. Please check your API key configuration.');
         }
         
-        // Check for other OpenAI API errors
-        if (error.message && error.message.includes('Embedding API error')) {
-          throw new Error('OpenAI API error. Please check your API key and quota.');
+        // Check for quota errors
+        if (error.message && error.message.includes('quota') || error.message.includes('rate limit')) {
+          throw new Error('Gemini API quota exceeded. Please try again later or check your quota limits.');
         }
         
         throw new Error(error.message || 'Failed to send message');
@@ -106,10 +106,10 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
       // Add error message with more specific information
       let errorContent = `Sorry, I encountered an error: ${error.message}`;
       
-      if (error.message.includes('quota exceeded')) {
-        errorContent = `⚠️ OpenAI API quota exceeded. Please check your billing at https://platform.openai.com/account/billing and ensure you have sufficient credits.`;
+      if (error.message.includes('quota') || error.message.includes('rate limit')) {
+        errorContent = `⚠️ Gemini API quota exceeded. Please try again later.`;
       } else if (error.message.includes('API key')) {
-        errorContent = `🔑 OpenAI API key issue. Please verify your API key is valid and has quota available.`;
+        errorContent = `🔑 Gemini API key issue. Please verify your API key is configured correctly.`;
       }
       
       const errorMessage: ChatMessage = {

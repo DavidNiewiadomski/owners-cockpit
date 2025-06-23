@@ -41,10 +41,10 @@ serve(async (req) => {
     });
   }
 
-  const openaiKey = Deno.env.get('OPENAI_API_KEY');
-  if (!openaiKey) {
-    console.error('OPENAI_API_KEY environment variable is missing');
-    return new Response(JSON.stringify({ error: 'OPENAI_API_KEY environment variable is required' }), { 
+  const geminiKey = Deno.env.get('GEMINI_API_KEY');
+  if (!geminiKey) {
+    console.error('GEMINI_API_KEY environment variable is missing');
+    return new Response(JSON.stringify({ error: 'GEMINI_API_KEY environment variable is required' }), { 
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
@@ -66,28 +66,29 @@ serve(async (req) => {
 
     console.log(`Processing chat question for project: ${project_id}`);
 
-    // Step 1: Embed the question
+    // Step 1: Embed the question using Gemini
     console.log('Creating embedding for question...');
-    const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
+    const embeddingResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${geminiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'text-embedding-3-large',
-        input: question,
+        model: 'models/text-embedding-004',
+        content: {
+          parts: [{ text: question }]
+        }
       }),
     });
 
     if (!embeddingResponse.ok) {
       const errorText = await embeddingResponse.text();
-      console.error('Embedding API error:', errorText);
+      console.error('Gemini embedding API error:', errorText);
       throw new Error(`Embedding API error: ${embeddingResponse.statusText}`);
     }
 
     const embeddingData = await embeddingResponse.json();
-    const questionEmbedding = embeddingData.data[0].embedding;
+    const questionEmbedding = embeddingData.embedding.values;
 
     // Step 2: Similarity search in vector_index
     console.log('Searching for relevant documents...');
@@ -159,33 +160,34 @@ Instructions:
 - Focus on actionable insights for project owners
 - Use professional construction industry terminology`;
 
-    // Step 5: Call GPT-4
-    console.log('Calling OpenAI chat completion...');
-    const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Step 5: Call Gemini
+    console.log('Calling Gemini chat completion...');
+    const chatResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: question }
+        contents: [
+          {
+            parts: [{ text: systemPrompt + '\n\nUser question: ' + question }]
+          }
         ],
-        temperature: 0.1,
-        max_tokens: 1000,
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 1000,
+        },
       }),
     });
 
     if (!chatResponse.ok) {
       const errorText = await chatResponse.text();
-      console.error('Chat API error:', errorText);
+      console.error('Gemini chat API error:', errorText);
       throw new Error(`Chat API error: ${chatResponse.statusText}`);
     }
 
     const chatData = await chatResponse.json();
-    const answer = chatData.choices[0].message.content;
+    const answer = chatData.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated';
 
     // Step 6: Prepare citations
     const citations: Citation[] = chunks.slice(0, 5).map((chunk, index) => ({
@@ -197,9 +199,9 @@ Instructions:
       answer,
       citations,
       usage: {
-        prompt_tokens: chatData.usage?.prompt_tokens || 0,
-        completion_tokens: chatData.usage?.completion_tokens || 0,
-        total_tokens: chatData.usage?.total_tokens || 0,
+        prompt_tokens: chatData.usageMetadata?.promptTokenCount || 0,
+        completion_tokens: chatData.usageMetadata?.candidatesTokenCount || 0,
+        total_tokens: chatData.usageMetadata?.totalTokenCount || 0,
       }
     };
 
