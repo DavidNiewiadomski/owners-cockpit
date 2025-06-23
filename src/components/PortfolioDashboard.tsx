@@ -21,24 +21,27 @@ const PortfolioDashboard: React.FC = () => {
   const renderDashboard = () => {
     console.log('PortfolioDashboard: Rendering dashboard for role:', currentRole);
     
+    // Use a portfolio project ID for portfolio-level views
+    const portfolioProjectId = 'portfolio';
+    
     switch (currentRole) {
       case 'Executive':
-        return <ExecutiveDashboard />;
+        return <ExecutiveDashboard projectId={portfolioProjectId} />;
       case 'Preconstruction':
-        return <PreconstructionDashboard />;
+        return <PreconstructionDashboard projectId={portfolioProjectId} />;
       case 'Construction':
-        return <ConstructionDashboard />;
+        return <ConstructionDashboard projectId={portfolioProjectId} />;
       case 'Facilities':
-        return <FacilitiesDashboard />;
+        return <FacilitiesDashboard projectId={portfolioProjectId} />;
       case 'Sustainability':
-        return <SustainabilityDashboard />;
+        return <SustainabilityDashboard projectId={portfolioProjectId} />;
       case 'Legal':
-        return <LegalDashboard />;
+        return <LegalDashboard projectId={portfolioProjectId} />;
       case 'Finance':
-        return <FinanceDashboard />;
+        return <FinanceDashboard projectId={portfolioProjectId} />;
       default:
         console.warn('Unknown role:', currentRole, 'falling back to Executive');
-        return <ExecutiveDashboard />;
+        return <ExecutiveDashboard projectId={portfolioProjectId} />;
     }
   };
 
