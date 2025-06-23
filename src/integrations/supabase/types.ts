@@ -304,6 +304,59 @@ export type Database = {
           },
         ]
       }
+      org_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          org_id: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          org_id: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          org_id?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_members_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           created_at: string | null
@@ -312,6 +365,7 @@ export type Database = {
           external_id: string | null
           id: string
           name: string
+          org_id: string | null
           owner_id: string | null
           source: string | null
           start_date: string | null
@@ -325,6 +379,7 @@ export type Database = {
           external_id?: string | null
           id?: string
           name: string
+          org_id?: string | null
           owner_id?: string | null
           source?: string | null
           start_date?: string | null
@@ -338,13 +393,22 @@ export type Database = {
           external_id?: string | null
           id?: string
           name?: string
+          org_id?: string | null
           owner_id?: string | null
           source?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["project_status"] | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {
@@ -490,6 +554,38 @@ export type Database = {
           },
         ]
       }
+      user_projects: {
+        Row: {
+          created_at: string | null
+          id: string
+          project_id: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          project_id: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          project_id?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_projects_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vector_index: {
         Row: {
           chunk_id: string
@@ -573,6 +669,10 @@ export type Database = {
         Args: { "": unknown[] }
         Returns: number
       }
+      has_project_access: {
+        Args: { project_uuid: string }
+        Returns: boolean
+      }
       hnsw_bit_support: {
         Args: { "": unknown }
         Returns: unknown
@@ -588,6 +688,10 @@ export type Database = {
       hnswhandler: {
         Args: { "": unknown }
         Returns: unknown
+      }
+      is_org_member: {
+        Args: { org_uuid: string }
+        Returns: boolean
       }
       ivfflat_bit_support: {
         Args: { "": unknown }

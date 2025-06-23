@@ -1,6 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Task, TasksResponse } from '@/types/tasks';
+import { useAuth } from './useAuth';
 
 interface UseTasksOptions {
   projectId: string;
@@ -8,9 +9,16 @@ interface UseTasksOptions {
 }
 
 export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
+  const { user } = useAuth();
+  
   return useQuery({
-    queryKey: ['tasks', projectId, limit],
+    queryKey: ['tasks', projectId, limit, user?.id],
     queryFn: async (): Promise<TasksResponse> => {
+      if (!user) {
+        console.log('No authenticated user, returning empty tasks');
+        return { tasks: [], totalCount: 0 };
+      }
+
       console.log(`Fetching tasks for project ${projectId}...`);
       
       // Always return sample data for consistent demo experience
@@ -82,6 +90,6 @@ export function useTasks({ projectId, limit = 10 }: UseTasksOptions) {
         totalCount: mockTasks.length,
       };
     },
-    enabled: !!projectId,
+    enabled: !!projectId && !!user,
   });
 }

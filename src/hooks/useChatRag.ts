@@ -1,7 +1,7 @@
-
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
 
 interface ChatMessage {
   id: string;
@@ -39,9 +39,14 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
   const [isLoading, setIsLoading] = useState(false);
   const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const sendMessage = useMutation({
     mutationFn: async (question: string): Promise<void> => {
+      if (!user) {
+        throw new Error('You must be signed in to use the chat feature');
+      }
+
       console.log('Sending message to chatRag function...');
       
       const { data, error } = await supabase.functions.invoke('chatRag', {
@@ -110,6 +115,8 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
         errorContent = `⚠️ Gemini API quota exceeded. Please try again later.`;
       } else if (error.message.includes('API key')) {
         errorContent = `🔑 Gemini API key issue. Please verify your API key is configured correctly.`;
+      } else if (error.message.includes('signed in')) {
+        errorContent = `🔐 Please sign in to use the chat feature.`;
       }
       
       const errorMessage: ChatMessage = {
