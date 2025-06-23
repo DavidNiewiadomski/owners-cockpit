@@ -18,12 +18,12 @@ export interface LayoutItem extends WidgetPosition, WidgetSize {
 
 export interface WidgetDefinition {
   id: string;
-  title: string;
-  description: string;
-  defaultSize: WidgetSize;
+  name: string;
+  description?: string;
   component: React.ComponentType<any>;
-  category: 'kpi' | 'chart' | 'table' | 'insights';
-  roles?: UserRole[];
+  category: 'construction' | 'facilities' | 'other';
+  roles: readonly UserRole[];
+  defaultSize: WidgetSize;
 }
 
 export interface DashboardLayout {

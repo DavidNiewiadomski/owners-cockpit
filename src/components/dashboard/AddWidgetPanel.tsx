@@ -27,7 +27,7 @@ const AddWidgetPanel: React.FC<AddWidgetPanelProps> = ({
 
   // Filter widgets that are available for current role and not already added
   const availableWidgets = WIDGET_REGISTRY.filter(widget => {
-    const isRoleAllowed = !widget.roles || widget.roles.includes(currentRole);
+    const isRoleAllowed = !widget.roles || widget.roles.includes(currentRole as any);
     const isNotAdded = !currentLayout.some(item => item.widgetId === widget.id);
     return isRoleAllowed && isNotAdded;
   });
@@ -40,10 +40,9 @@ const AddWidgetPanel: React.FC<AddWidgetPanelProps> = ({
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'kpi': return 'bg-blue-100 text-blue-800';
-      case 'chart': return 'bg-green-100 text-green-800';
-      case 'table': return 'bg-yellow-100 text-yellow-800';
-      case 'insights': return 'bg-purple-100 text-purple-800';
+      case 'construction': return 'bg-blue-100 text-blue-800';
+      case 'facilities': return 'bg-green-100 text-green-800';
+      case 'other': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -67,7 +66,7 @@ const AddWidgetPanel: React.FC<AddWidgetPanelProps> = ({
             <Card key={widget.id} className="p-3 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
-                  <h4 className="text-sm font-medium">{widget.title}</h4>
+                  <h4 className="text-sm font-medium">{widget.name}</h4>
                   <p className="text-xs text-muted-foreground mt-1">
                     {widget.description}
                   </p>
