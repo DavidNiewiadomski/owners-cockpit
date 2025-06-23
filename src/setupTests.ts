@@ -1,6 +1,4 @@
 
-import '@testing-library/jest-dom';
-
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
@@ -31,3 +29,7 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
+
+// Import jest-dom matchers without TypeScript checking
+// @ts-ignore
+import '@testing-library/jest-dom';
