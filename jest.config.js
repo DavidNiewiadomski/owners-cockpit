@@ -23,7 +23,8 @@ export default {
   ],
   globals: {
     'ts-jest': {
-      isolatedModules: true
+      isolatedModules: true,
+      useESM: true
     }
   }
 };

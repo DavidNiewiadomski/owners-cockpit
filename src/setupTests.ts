@@ -30,6 +30,5 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Import jest-dom matchers without TypeScript checking
-// @ts-ignore
+// Import jest-dom matchers
 import '@testing-library/jest-dom';
