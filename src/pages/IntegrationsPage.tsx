@@ -13,12 +13,17 @@ const AVAILABLE_PROVIDERS = ['procore', 'primavera', 'box', 'iot_sensors', 'smar
 
 const IntegrationsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const { data: integrations, isLoading, error } = useProjectIntegrations(projectId || '');
   const queryClient = useQueryClient();
+  
+  // Handle portfolio case - don't load integrations for portfolio view
+  const isPortfolioView = projectId === 'portfolio';
+  const actualProjectId = isPortfolioView ? '' : (projectId || '');
+  
+  const { data: integrations, isLoading, error } = useProjectIntegrations(actualProjectId);
 
-  // Set up realtime subscription for live updates
+  // Set up realtime subscription for live updates (only for actual projects)
   useEffect(() => {
-    if (!projectId) return;
+    if (!actualProjectId || isPortfolioView) return;
 
     console.log('🔄 Setting up realtime subscription for integrations');
 
@@ -30,12 +35,12 @@ const IntegrationsPage: React.FC = () => {
           event: '*',
           schema: 'public',
           table: 'project_integrations',
-          filter: `project_id=eq.${projectId}`
+          filter: `project_id=eq.${actualProjectId}`
         },
         (payload) => {
           console.log('📡 Integration realtime update:', payload);
           // Invalidate queries to refetch data
-          queryClient.invalidateQueries({ queryKey: ['project-integrations', projectId] });
+          queryClient.invalidateQueries({ queryKey: ['project-integrations', actualProjectId] });
         }
       )
       .subscribe((status) => {
@@ -46,7 +51,29 @@ const IntegrationsPage: React.FC = () => {
       console.log('🔌 Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
-  }, [projectId, queryClient]);
+  }, [actualProjectId, queryClient, isPortfolioView]);
+
+  if (isPortfolioView) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold">Portfolio Integrations</h1>
+          <p className="text-muted-foreground">
+            Select a specific project to view and manage integrations for that project.
+          </p>
+        </div>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Integration Management</CardTitle>
+            <CardDescription>
+              Integrations are managed at the project level. Please navigate to a specific project to view and configure integrations.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
   if (!projectId) {
     return (
@@ -113,7 +140,7 @@ const IntegrationsPage: React.FC = () => {
           <IntegrationCard
             key={provider}
             provider={provider}
-            projectId={projectId}
+            projectId={actualProjectId}
             integration={integrationMap.get(provider)}
           />
         ))}
