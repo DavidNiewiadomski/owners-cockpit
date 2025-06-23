@@ -1,46 +1,71 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Thermometer, Zap, Wrench, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Thermometer, Zap, Wrench, AlertCircle, CheckCircle, Clock, Plus } from 'lucide-react';
+import { useBuildingSystems, useWorkOrders, useEquipment } from '@/hooks/useFacilitiesData';
+import SystemStatusCard from '@/components/facilities/SystemStatusCard';
+import WorkOrderCard from '@/components/facilities/WorkOrderCard';
+import WorkOrderForm from '@/components/facilities/WorkOrderForm';
 
 interface FacilitiesDashboardProps {
   projectId: string;
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) => {
-  const buildingMetrics = {
-    energyEfficiency: 92,
-    systemUptime: 99.2,
-    openWorkOrders: 7,
-    completedToday: 12,
-    nextMaintenance: '3 days',
-    occupancySatisfaction: 4.2
-  };
+  const [showWorkOrderForm, setShowWorkOrderForm] = useState(false);
+  
+  const { data: buildingSystems = [], isLoading: systemsLoading } = useBuildingSystems(projectId);
+  const { data: workOrders = [], isLoading: workOrdersLoading } = useWorkOrders(projectId);
+  const { data: equipment = [], isLoading: equipmentLoading } = useEquipment(projectId);
 
-  const systemStatus = [
-    { system: 'HVAC Zone A', status: 'operational', temp: 72, target: 72 },
-    { system: 'HVAC Zone B', status: 'maintenance', temp: 75, target: 72 },
-    { system: 'Elevator Bank 1', status: 'operational', uptime: 100 },
-    { system: 'Elevator Bank 2', status: 'operational', uptime: 98 },
-    { system: 'Fire Safety', status: 'operational', lastTest: '2 weeks ago' },
-    { system: 'Security System', status: 'operational', uptime: 100 }
-  ];
+  // Calculate KPIs from real data
+  const activeWorkOrders = workOrders.filter(wo => wo.status !== 'completed' && wo.status !== 'cancelled');
+  const completedToday = workOrders.filter(wo => {
+    if (!wo.completed_date) return false;
+    const today = new Date().toDateString();
+    return new Date(wo.completed_date).toDateString() === today;
+  });
 
-  const workOrders = [
-    { id: 'WO-001', type: 'HVAC', priority: 'High', description: 'Zone B temperature control issue', assignee: 'Tech A' },
-    { id: 'WO-002', type: 'Electrical', priority: 'Medium', description: 'Lobby lighting flickering', assignee: 'Tech B' },
-    { id: 'WO-003', type: 'Plumbing', priority: 'Low', description: 'Restroom faucet replacement', assignee: 'Tech C' }
-  ];
+  const operationalSystems = buildingSystems.filter(sys => sys.status === 'operational');
+  const avgUptime = buildingSystems.length > 0 
+    ? buildingSystems.reduce((sum, sys) => sum + (sys.uptime_percentage || 0), 0) / buildingSystems.length 
+    : 100;
 
+  const avgEfficiency = buildingSystems.length > 0
+    ? buildingSystems.reduce((sum, sys) => sum + (sys.efficiency_rating || 0), 0) / buildingSystems.length
+    : 92;
+
+  // Sample maintenance schedule (this could come from maintenance_schedules table)
   const maintenanceSchedule = [
     { item: 'HVAC Filter Change', due: '2024-06-25', status: 'upcoming' },
     { item: 'Elevator Inspection', due: '2024-06-28', status: 'scheduled' },
     { item: 'Fire Alarm Test', due: '2024-07-01', status: 'upcoming' },
     { item: 'Generator Service', due: '2024-07-05', status: 'scheduled' }
   ];
+
+  if (systemsLoading || workOrdersLoading || equipmentLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+                <div className="h-2 bg-gray-200 rounded"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -52,10 +77,10 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{buildingMetrics.systemUptime}%</div>
-            <Progress value={buildingMetrics.systemUptime} className="mt-2" />
+            <div className="text-2xl font-bold">{avgUptime.toFixed(1)}%</div>
+            <Progress value={avgUptime} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
-              Critical systems operational
+              {operationalSystems.length}/{buildingSystems.length} systems operational
             </p>
           </CardContent>
         </Card>
@@ -66,8 +91,8 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
             <Zap className="h-4 w-4 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{buildingMetrics.energyEfficiency}%</div>
-            <Progress value={buildingMetrics.energyEfficiency} className="mt-2" />
+            <div className="text-2xl font-bold">{avgEfficiency.toFixed(0)}%</div>
+            <Progress value={avgEfficiency} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
               vs. building baseline
             </p>
@@ -80,51 +105,32 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
             <Wrench className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{buildingMetrics.openWorkOrders}</div>
+            <div className="text-2xl font-bold">{activeWorkOrders.length}</div>
             <p className="text-xs text-muted-foreground">
-              Open • {buildingMetrics.completedToday} completed today
+              Open • {completedToday.length} completed today
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* System Status Grid */}
+      {/* Building Systems Status */}
       <Card>
         <CardHeader>
           <CardTitle>Building Systems Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {systemStatus.map((system, index) => (
-              <div key={index} className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium">{system.system}</h4>
-                  <Badge 
-                    variant={system.status === 'operational' ? 'default' : 'destructive'}
-                    className={system.status === 'operational' ? 'bg-green-100 text-green-800' : ''}
-                  >
-                    {system.status}
-                  </Badge>
-                </div>
-                {'temp' in system && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <Thermometer className="h-4 w-4" />
-                    <span>{system.temp}°F (Target: {system.target}°F)</span>
-                  </div>
-                )}
-                {'uptime' in system && (
-                  <div className="text-sm text-muted-foreground">
-                    Uptime: {system.uptime}%
-                  </div>
-                )}
-                {'lastTest' in system && (
-                  <div className="text-sm text-muted-foreground">
-                    Last test: {system.lastTest}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          {buildingSystems.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No building systems configured yet.</p>
+              <p className="text-sm">Connect your building automation systems to see real-time status.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {buildingSystems.map((system) => (
+                <SystemStatusCard key={system.id} system={system} />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -132,37 +138,53 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-500" />
-              Active Work Orders
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-amber-500" />
+                Active Work Orders
+              </CardTitle>
+              <Dialog open={showWorkOrderForm} onOpenChange={setShowWorkOrderForm}>
+                <DialogTrigger asChild>
+                  <Button size="sm">
+                    <Plus className="h-4 w-4 mr-1" />
+                    Create
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Create New Work Order</DialogTitle>
+                  </DialogHeader>
+                  <WorkOrderForm
+                    projectId={projectId}
+                    onSuccess={() => setShowWorkOrderForm(false)}
+                    onCancel={() => setShowWorkOrderForm(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {workOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between p-3 border rounded">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{order.id}</span>
-                      <Badge 
-                        variant={order.priority === 'High' ? 'destructive' : order.priority === 'Medium' ? 'default' : 'secondary'}
-                        className="text-xs"
-                      >
-                        {order.priority}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">{order.description}</p>
-                    <p className="text-xs text-muted-foreground">Assigned to: {order.assignee}</p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    View
+            {activeWorkOrders.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No active work orders.</p>
+                <p className="text-sm">Create a work order to get started.</p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {activeWorkOrders.slice(0, 5).map((order) => (
+                  <WorkOrderCard
+                    key={order.id}
+                    workOrder={order}
+                    onView={(wo) => console.log('View work order:', wo)}
+                  />
+                ))}
+                {activeWorkOrders.length > 5 && (
+                  <Button variant="outline" className="w-full">
+                    View All {activeWorkOrders.length} Work Orders
                   </Button>
-                </div>
-              ))}
-            </div>
-            <Button className="w-full mt-4">
-              Create Work Order
-            </Button>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -197,22 +219,39 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
       {/* Real-time Alerts */}
       <Card>
         <CardHeader>
-          <CardTitle>Real-time Building Alerts</CardTitle>
+          <CardTitle>System Alerts & Notifications</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="border-l-4 border-amber-500 pl-4 bg-amber-50 dark:bg-amber-950 p-3 rounded-r">
-              <h4 className="font-medium text-amber-900 dark:text-amber-100">Temperature Alert</h4>
-              <p className="text-sm text-amber-800 dark:text-amber-200">HVAC Zone B running 3°F above target. Maintenance scheduled.</p>
-            </div>
-            <div className="border-l-4 border-green-500 pl-4 bg-green-50 dark:bg-green-950 p-3 rounded-r">
-              <h4 className="font-medium text-green-900 dark:text-green-100">Energy Optimization</h4>
-              <p className="text-sm text-green-800 dark:text-green-200">Building consuming 12% less energy than projected for this period.</p>
-            </div>
-            <div className="border-l-4 border-blue-500 pl-4 bg-blue-50 dark:bg-blue-950 p-3 rounded-r">
-              <h4 className="font-medium text-blue-900 dark:text-blue-100">Preventive Maintenance</h4>
-              <p className="text-sm text-blue-800 dark:text-blue-200">HVAC filter change due in 3 days. Parts inventory confirmed.</p>
-            </div>
+            {buildingSystems.some(sys => sys.alerts_count && sys.alerts_count > 0) ? (
+              buildingSystems
+                .filter(sys => sys.alerts_count && sys.alerts_count > 0)
+                .map((system) => (
+                  <div key={system.id} className="border-l-4 border-amber-500 pl-4 bg-amber-50 dark:bg-amber-950 p-3 rounded-r">
+                    <h4 className="font-medium text-amber-900 dark:text-amber-100">
+                      {system.system_name} Alert
+                    </h4>
+                    <p className="text-sm text-amber-800 dark:text-amber-200">
+                      {system.alerts_count} active alert{system.alerts_count > 1 ? 's' : ''} - Check system status
+                    </p>
+                  </div>
+                ))
+            ) : (
+              <>
+                <div className="border-l-4 border-green-500 pl-4 bg-green-50 dark:bg-green-950 p-3 rounded-r">
+                  <h4 className="font-medium text-green-900 dark:text-green-100">All Systems Operational</h4>
+                  <p className="text-sm text-green-800 dark:text-green-200">
+                    All building systems are running normally with no active alerts.
+                  </p>
+                </div>
+                <div className="border-l-4 border-blue-500 pl-4 bg-blue-50 dark:bg-blue-950 p-3 rounded-r">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100">Predictive Maintenance</h4>
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    AI-powered maintenance scheduling is monitoring equipment performance for optimal efficiency.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>

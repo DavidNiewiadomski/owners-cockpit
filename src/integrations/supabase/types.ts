@@ -185,6 +185,62 @@ export type Database = {
           },
         ]
       }
+      building_systems: {
+        Row: {
+          alerts_count: number | null
+          created_at: string | null
+          efficiency_rating: number | null
+          energy_consumption: number | null
+          id: string
+          last_maintenance: string | null
+          next_maintenance: string | null
+          project_id: string
+          status: string
+          system_name: string
+          system_type: string
+          updated_at: string | null
+          uptime_percentage: number | null
+        }
+        Insert: {
+          alerts_count?: number | null
+          created_at?: string | null
+          efficiency_rating?: number | null
+          energy_consumption?: number | null
+          id?: string
+          last_maintenance?: string | null
+          next_maintenance?: string | null
+          project_id: string
+          status?: string
+          system_name: string
+          system_type: string
+          updated_at?: string | null
+          uptime_percentage?: number | null
+        }
+        Update: {
+          alerts_count?: number | null
+          created_at?: string | null
+          efficiency_rating?: number | null
+          energy_consumption?: number | null
+          id?: string
+          last_maintenance?: string | null
+          next_maintenance?: string | null
+          project_id?: string
+          status?: string
+          system_name?: string
+          system_type?: string
+          updated_at?: string | null
+          uptime_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "building_systems_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_orders: {
         Row: {
           amount: number | null
@@ -281,6 +337,112 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "documents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      energy_consumption: {
+        Row: {
+          baseline: number | null
+          consumption: number
+          cost: number | null
+          created_at: string | null
+          efficiency_score: number | null
+          id: string
+          meter_type: string
+          project_id: string
+          reading_date: string
+          unit: string
+        }
+        Insert: {
+          baseline?: number | null
+          consumption: number
+          cost?: number | null
+          created_at?: string | null
+          efficiency_score?: number | null
+          id?: string
+          meter_type: string
+          project_id: string
+          reading_date: string
+          unit: string
+        }
+        Update: {
+          baseline?: number | null
+          consumption?: number
+          cost?: number | null
+          created_at?: string | null
+          efficiency_score?: number | null
+          id?: string
+          meter_type?: string
+          project_id?: string
+          reading_date?: string
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "energy_consumption_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment: {
+        Row: {
+          created_at: string | null
+          equipment_type: string
+          id: string
+          installation_date: string | null
+          location: string
+          manufacturer: string | null
+          model: string | null
+          name: string
+          project_id: string
+          serial_number: string | null
+          specifications: Json | null
+          status: string
+          updated_at: string | null
+          warranty_expiration: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          equipment_type: string
+          id?: string
+          installation_date?: string | null
+          location: string
+          manufacturer?: string | null
+          model?: string | null
+          name: string
+          project_id: string
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string
+          updated_at?: string | null
+          warranty_expiration?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          equipment_type?: string
+          id?: string
+          installation_date?: string | null
+          location?: string
+          manufacturer?: string | null
+          model?: string | null
+          name?: string
+          project_id?: string
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string
+          updated_at?: string | null
+          warranty_expiration?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -438,6 +600,72 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "integration_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_schedules: {
+        Row: {
+          auto_generate_wo: boolean | null
+          checklist: Json | null
+          created_at: string | null
+          description: string | null
+          equipment_id: string
+          estimated_duration: number | null
+          frequency_interval: number | null
+          frequency_type: string
+          id: string
+          last_performed: string | null
+          next_due: string
+          project_id: string
+          schedule_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          auto_generate_wo?: boolean | null
+          checklist?: Json | null
+          created_at?: string | null
+          description?: string | null
+          equipment_id: string
+          estimated_duration?: number | null
+          frequency_interval?: number | null
+          frequency_type: string
+          id?: string
+          last_performed?: string | null
+          next_due: string
+          project_id: string
+          schedule_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          auto_generate_wo?: boolean | null
+          checklist?: Json | null
+          created_at?: string | null
+          description?: string | null
+          equipment_id?: string
+          estimated_duration?: number | null
+          frequency_interval?: number | null
+          frequency_type?: string
+          id?: string
+          last_performed?: string | null
+          next_due?: string
+          project_id?: string
+          schedule_name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_schedules_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_schedules_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -813,6 +1041,101 @@ export type Database = {
           },
         ]
       }
+      sensor_readings: {
+        Row: {
+          id: string
+          metadata: Json | null
+          sensor_id: string
+          status: string | null
+          timestamp: string
+          value: number
+        }
+        Insert: {
+          id?: string
+          metadata?: Json | null
+          sensor_id: string
+          status?: string | null
+          timestamp?: string
+          value: number
+        }
+        Update: {
+          id?: string
+          metadata?: Json | null
+          sensor_id?: string
+          status?: string | null
+          timestamp?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_sensor_id_fkey"
+            columns: ["sensor_id"]
+            isOneToOne: false
+            referencedRelation: "sensors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sensors: {
+        Row: {
+          created_at: string | null
+          equipment_id: string | null
+          id: string
+          location: string
+          max_threshold: number | null
+          min_threshold: number | null
+          name: string
+          project_id: string
+          sensor_type: string
+          status: string
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          equipment_id?: string | null
+          id?: string
+          location: string
+          max_threshold?: number | null
+          min_threshold?: number | null
+          name: string
+          project_id: string
+          sensor_type: string
+          status?: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          equipment_id?: string | null
+          id?: string
+          location?: string
+          max_threshold?: number | null
+          min_threshold?: number | null
+          name?: string
+          project_id?: string
+          sensor_type?: string
+          status?: string
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sensors_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sensors_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assigned_to: string | null
@@ -984,6 +1307,84 @@ export type Database = {
           },
           {
             foreignKeyName: "vector_index_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      work_orders: {
+        Row: {
+          actual_hours: number | null
+          assigned_to: string | null
+          completed_date: string | null
+          cost: number | null
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          equipment_id: string | null
+          estimated_hours: number | null
+          id: string
+          notes: string | null
+          priority: string
+          project_id: string
+          requested_by: string | null
+          status: string
+          title: string
+          updated_at: string | null
+          work_type: string
+        }
+        Insert: {
+          actual_hours?: number | null
+          assigned_to?: string | null
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          equipment_id?: string | null
+          estimated_hours?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          project_id: string
+          requested_by?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+          work_type: string
+        }
+        Update: {
+          actual_hours?: number | null
+          assigned_to?: string | null
+          completed_date?: string | null
+          cost?: number | null
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          equipment_id?: string | null
+          estimated_hours?: number | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          project_id?: string
+          requested_by?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+          work_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_orders_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
