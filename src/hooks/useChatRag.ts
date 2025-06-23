@@ -41,102 +41,54 @@ export function useChatRag({ projectId, conversationId }: UseChatRagOptions) {
 
   const sendMessage = useMutation({
     mutationFn: async (question: string): Promise<void> => {
+      console.log('Sending message to chatRag function...');
+      
       const response = await fetch('/functions/v1/chatRag', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('supabase-token')}`,
-          'Accept': 'text/event-stream',
         },
         body: JSON.stringify({
           project_id: projectId,
           question,
           conversation_id: conversationId,
-          stream: true,
         }),
       });
 
+      console.log('Response status:', response.status);
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to send message');
-      }
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-
-      if (!reader) {
-        throw new Error('Failed to get response reader');
-      }
-
-      // Create assistant message for streaming
-      const assistantMessageId = `assistant-${Date.now()}`;
-      const assistantMessage: ChatMessage = {
-        id: assistantMessageId,
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-        isStreaming: true,
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-      setStreamingMessageId(assistantMessageId);
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          
-          if (done) break;
-
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              
-              if (data === '[DONE]') {
-                setStreamingMessageId(null);
-                setMessages(prev => 
-                  prev.map(msg => 
-                    msg.id === assistantMessageId 
-                      ? { ...msg, isStreaming: false }
-                      : msg
-                  )
-                );
-                return;
-              }
-
-              try {
-                const parsed = JSON.parse(data);
-                
-                if (parsed.content) {
-                  setMessages(prev =>
-                    prev.map(msg =>
-                      msg.id === assistantMessageId
-                        ? { ...msg, content: msg.content + parsed.content }
-                        : msg
-                    )
-                  );
-                }
-
-                if (parsed.citations) {
-                  setMessages(prev =>
-                    prev.map(msg =>
-                      msg.id === assistantMessageId
-                        ? { ...msg, citations: parsed.citations }
-                        : msg
-                    )
-                  );
-                }
-              } catch (e) {
-                console.warn('Failed to parse SSE data:', data);
-              }
-            }
-          }
+        let errorMessage = 'Failed to send message';
+        try {
+          const error = await response.json();
+          errorMessage = error.error || errorMessage;
+        } catch (e) {
+          console.error('Failed to parse error response:', e);
         }
-      } finally {
-        reader.releaseLock();
-        setStreamingMessageId(null);
+        throw new Error(errorMessage);
+      }
+
+      // Handle regular JSON response (not streaming)
+      try {
+        const data = await response.json();
+        console.log('Received response data:', data);
+
+        // Create assistant message for the response
+        const assistantMessageId = `assistant-${Date.now()}`;
+        const assistantMessage: ChatMessage = {
+          id: assistantMessageId,
+          role: 'assistant',
+          content: data.answer || 'No response received',
+          citations: data.citations || [],
+          timestamp: new Date(),
+          isStreaming: false,
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        throw new Error('Failed to parse server response');
       }
     },
     onMutate: async (question: string) => {
