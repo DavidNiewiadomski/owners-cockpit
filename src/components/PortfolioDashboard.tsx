@@ -51,9 +51,6 @@ const PortfolioDashboard: React.FC = () => {
         <h1 className="text-3xl font-bold">
           {currentRole} Dashboard
         </h1>
-        <p className="text-muted-foreground">
-          Current Role: {currentRole}
-        </p>
       </div>
       {renderDashboard()}
     </div>
