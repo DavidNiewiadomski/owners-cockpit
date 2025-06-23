@@ -1,121 +1,192 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import "https://deno.land/x/xhr@0.1.0/mod.ts"
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+interface ChatRequest {
+  project_id: string;
+  question: string;
+  conversation_id?: string;
+}
+
+interface Citation {
+  id: string;
+  snippet: string;
+}
+
+interface ChatResponse {
+  answer: string;
+  citations: Citation[];
+  usage: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
 }
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  const openaiKey = Deno.env.get('OPENAI_KEY');
+  if (!openaiKey) {
+    return new Response('OPENAI_KEY environment variable is required', { status: 400 });
   }
 
   try {
-    const { question, projectId } = await req.json()
-    
-    if (!question) {
-      throw new Error('Question is required')
+    const { project_id, question, conversation_id }: ChatRequest = await req.json();
+
+    if (!project_id || !question) {
+      return new Response('project_id and question are required', { status: 400 });
     }
 
-    // Get OpenAI API key from environment
-    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
-    if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured')
-    }
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Generate embedding for the question
+    console.log(`Processing chat question for project: ${project_id}`);
+
+    // Step 1: Embed the question
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+        'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'text-embedding-ada-002',
+        model: 'text-embedding-3-large',
         input: question,
       }),
-    })
+    });
 
     if (!embeddingResponse.ok) {
-      throw new Error('Failed to generate embedding')
+      throw new Error(`Embedding API error: ${embeddingResponse.statusText}`);
     }
 
-    const embeddingData = await embeddingResponse.json()
-    const embedding = embeddingData.data[0].embedding
+    const embeddingData = await embeddingResponse.json();
+    const questionEmbedding = embeddingData.data[0].embedding;
 
-    // Search for relevant documents using the vector similarity function
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    
-    const supabase = createClient(supabaseUrl, supabaseKey)
+    // Step 2: Similarity search in vector_index
+    const { data: vectorResults, error: vectorError } = await supabase.rpc('match_documents', {
+      query_embedding: questionEmbedding,
+      match_count: 12,
+      filter_project_id: project_id
+    });
 
-    // Search for similar content
-    const { data: documents, error: searchError } = await supabase.rpc('match_documents', {
-      query_embedding: embedding,
-      match_count: 5,
-      filter_project_id: projectId || null,
-    })
-
-    if (searchError) {
-      console.error('Search error:', searchError)
+    if (vectorError) {
+      console.error('Vector search error:', vectorError);
     }
 
-    // Create context from found documents
-    const context = documents?.map(doc => doc.content).join('\n\n') || ''
+    const chunks = vectorResults || [];
+    console.log(`Found ${chunks.length} relevant chunks`);
 
-    // Generate response using GPT-4
-    const systemPrompt = `You are an AI assistant specialized in construction project management. You help project owners understand their data and make informed decisions.
+    // Step 3: Quick metrics SQL for context
+    const { data: projectData } = await supabase
+      .from('projects')
+      .select('name, description, status, start_date, end_date')
+      .eq('id', project_id)
+      .single();
 
-Context from project documents:
-${context}
+    const { data: taskStats } = await supabase
+      .from('tasks')
+      .select('status')
+      .eq('project_id', project_id);
 
-If no relevant context is found, provide general construction project guidance based on best practices. Always be helpful and professional.`
+    const { data: budgetStats } = await supabase
+      .from('budget_items')
+      .select('budgeted_amount, actual_amount')
+      .eq('project_id', project_id);
 
+    // Compile project context
+    const taskSummary = taskStats?.reduce((acc, task) => {
+      acc[task.status] = (acc[task.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>) || {};
+
+    const budgetSummary = budgetStats?.reduce((acc, item) => {
+      acc.budgeted += item.budgeted_amount || 0;
+      acc.actual += item.actual_amount || 0;
+      return acc;
+    }, { budgeted: 0, actual: 0 }) || { budgeted: 0, actual: 0 };
+
+    // Step 4: Compose system prompt with injected chunks
+    const contextChunks = chunks.map((chunk, index) => 
+      `[Document ${index + 1}]: ${chunk.content}`
+    ).join('\n\n');
+
+    const systemPrompt = `You are an AI assistant for the Owners Cockpit construction management platform. 
+You help project owners understand their construction projects by analyzing documents, schedules, budgets, and other project data.
+
+PROJECT CONTEXT:
+- Project: ${projectData?.name || 'Unknown'}
+- Status: ${projectData?.status || 'Unknown'}
+- Description: ${projectData?.description || 'No description'}
+- Tasks Summary: ${JSON.stringify(taskSummary)}
+- Budget Summary: Budgeted: $${budgetSummary.budgeted.toLocaleString()}, Actual: $${budgetSummary.actual.toLocaleString()}
+
+RELEVANT DOCUMENTS:
+${contextChunks}
+
+Instructions:
+- Answer based on the provided project context and documents
+- Always cite specific documents when referencing information
+- If information is not available in the context, clearly state that
+- Be concise but thorough
+- Focus on actionable insights for project owners
+- Use professional construction industry terminology`;
+
+    // Step 5: Call GPT-4
     const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
+        'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: question },
+          { role: 'user', content: question }
         ],
-        temperature: 0.7,
+        temperature: 0.1,
         max_tokens: 1000,
       }),
-    })
+    });
 
     if (!chatResponse.ok) {
-      throw new Error('Failed to generate response')
+      throw new Error(`Chat API error: ${chatResponse.statusText}`);
     }
 
-    const chatData = await chatResponse.json()
-    const answer = chatData.choices[0].message.content
+    const chatData = await chatResponse.json();
+    const answer = chatData.choices[0].message.content;
 
-    return new Response(
-      JSON.stringify({
-        answer,
-        sources: documents || [],
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      },
-    )
+    // Step 6: Prepare citations
+    const citations: Citation[] = chunks.slice(0, 5).map((chunk, index) => ({
+      id: chunk.chunk_id,
+      snippet: chunk.content.substring(0, 150) + '...'
+    }));
+
+    const response: ChatResponse = {
+      answer,
+      citations,
+      usage: {
+        prompt_tokens: chatData.usage?.prompt_tokens || 0,
+        completion_tokens: chatData.usage?.completion_tokens || 0,
+        total_tokens: chatData.usage?.total_tokens || 0,
+      }
+    };
+
+    console.log(`Chat completed. Tokens used: ${response.usage.total_tokens}`);
+
+    return new Response(JSON.stringify(response), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
   } catch (error) {
-    console.error('Error in chatRag function:', error)
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400,
-      },
-    )
+    console.error('Chat RAG error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
-})
+});
