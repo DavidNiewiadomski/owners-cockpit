@@ -54,7 +54,7 @@ const HeroContent: React.FC<HeroContentProps> = ({ onLearnMore }) => {
           variants={itemVariants}
           className="text-xl md:text-2xl text-neutral-400 mb-12 leading-relaxed max-w-3xl mx-auto font-light"
         >
-          Your AI-powered construction management platform.
+          Your AI-powered building management platform.
           <br />
           Streamline projects, manage risks, and drive success.
         </motion.p>
