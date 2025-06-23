@@ -23,21 +23,41 @@ interface ChatResponse {
   };
 }
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
 serve(async (req) => {
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
   }
 
-  const openaiKey = Deno.env.get('OPENAI_KEY');
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { 
+      status: 405,
+      headers: corsHeaders
+    });
+  }
+
+  const openaiKey = Deno.env.get('OPENAI_API_KEY');
   if (!openaiKey) {
-    return new Response('OPENAI_KEY environment variable is required', { status: 400 });
+    console.error('OPENAI_API_KEY environment variable is missing');
+    return new Response(JSON.stringify({ error: 'OPENAI_API_KEY environment variable is required' }), { 
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 
   try {
     const { project_id, question, conversation_id }: ChatRequest = await req.json();
 
     if (!project_id || !question) {
-      return new Response('project_id and question are required', { status: 400 });
+      return new Response(JSON.stringify({ error: 'project_id and question are required' }), { 
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -47,6 +67,7 @@ serve(async (req) => {
     console.log(`Processing chat question for project: ${project_id}`);
 
     // Step 1: Embed the question
+    console.log('Creating embedding for question...');
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -60,6 +81,8 @@ serve(async (req) => {
     });
 
     if (!embeddingResponse.ok) {
+      const errorText = await embeddingResponse.text();
+      console.error('Embedding API error:', errorText);
       throw new Error(`Embedding API error: ${embeddingResponse.statusText}`);
     }
 
@@ -67,6 +90,7 @@ serve(async (req) => {
     const questionEmbedding = embeddingData.data[0].embedding;
 
     // Step 2: Similarity search in vector_index
+    console.log('Searching for relevant documents...');
     const { data: vectorResults, error: vectorError } = await supabase.rpc('match_documents', {
       query_embedding: questionEmbedding,
       match_count: 12,
@@ -136,6 +160,7 @@ Instructions:
 - Use professional construction industry terminology`;
 
     // Step 5: Call GPT-4
+    console.log('Calling OpenAI chat completion...');
     const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -143,7 +168,7 @@ Instructions:
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: question }
@@ -154,6 +179,8 @@ Instructions:
     });
 
     if (!chatResponse.ok) {
+      const errorText = await chatResponse.text();
+      console.error('Chat API error:', errorText);
       throw new Error(`Chat API error: ${chatResponse.statusText}`);
     }
 
@@ -179,14 +206,14 @@ Instructions:
     console.log(`Chat completed. Tokens used: ${response.usage.total_tokens}`);
 
     return new Response(JSON.stringify(response), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('Chat RAG error:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
