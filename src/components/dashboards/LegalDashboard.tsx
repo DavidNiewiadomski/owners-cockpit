@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, Scale, Calendar, Clock, CheckCircle, MessageSquare, AlertTriangle, Shield, DollarSign, FileCheck } from 'lucide-react';
 import ContractsDashboard from '@/components/contracts/ContractsDashboard';
+import { generateLegalDemoData, LegalDemoData } from '@/utils/legalDemoData';
 
 interface LegalDashboardProps {
   projectId: string;
@@ -14,137 +15,17 @@ interface LegalDashboardProps {
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
   const [selectedTab, setSelectedTab] = useState('overview');
+  const [demoData, setDemoData] = useState<LegalDemoData | null>(null);
 
-  // Sample contract data
-  const contracts = [
-    {
-      id: 'C001',
-      name: 'GC Contract – Tower Alpha',
-      contractor: 'ABC Construction Corp',
-      value: 50000000,
-      spent: 40000000,
-      percentComplete: 80,
-      endDate: '2024-12-31',
-      status: 'active',
-      type: 'construction'
-    },
-    {
-      id: 'C002',
-      name: 'MEP Services – Tower Alpha',
-      contractor: 'ElectroMech Systems',
-      value: 8500000,
-      spent: 7200000,
-      percentComplete: 85,
-      endDate: '2024-11-15',
-      status: 'nearing_completion',
-      type: 'service'
-    },
-    {
-      id: 'C003',
-      name: 'Architect Agreement – Project Beta',
-      contractor: 'Design Partners LLC',
-      value: 2500000,
-      spent: 2100000,
-      percentComplete: 84,
-      endDate: '2025-02-10',
-      status: 'active',
-      type: 'professional'
-    },
-    {
-      id: 'C004',
-      name: 'Site Security Services',
-      contractor: 'SecureGuard Inc',
-      value: 450000,
-      spent: 475000,
-      percentComplete: 105,
-      endDate: '2025-01-31',
-      status: 'over_budget',
-      type: 'service'
-    }
-  ];
+  useEffect(() => {
+    // Generate demo data on component mount
+    const data = generateLegalDemoData();
+    setDemoData(data);
+  }, []);
 
-  // Insurance and compliance data
-  const insuranceData = {
-    cois: {
-      total: 12,
-      current: 10,
-      expiring: 2,
-      expired: 0
-    },
-    bonds: {
-      total: 4,
-      current: 4,
-      expiring: 0
-    },
-    expiringInsurance: [
-      { contractor: 'ACME Concrete', type: 'General Liability', expires: '2024-07-15', daysRemaining: 22 },
-      { contractor: 'Steel Solutions', type: 'Workers Comp', expires: '2024-07-28', daysRemaining: 35 }
-    ]
-  };
-
-  // Claims and disputes
-  const claims = [
-    {
-      id: 'CL001',
-      project: 'Tower Alpha',
-      claimant: 'ABC Construction Corp',
-      type: 'Delay Claim',
-      value: 200000,
-      status: 'negotiation',
-      filedDate: '2024-05-15',
-      description: 'Weather delays extending project timeline'
-    }
-  ];
-
-  // Change orders
-  const changeOrders = [
-    {
-      project: 'Tower Alpha',
-      number: 'CO-005',
-      description: 'Additional HVAC capacity',
-      value: 125000,
-      status: 'signed',
-      cumulativeValue: 1200000
-    },
-    {
-      project: 'Project Beta',
-      number: 'CO-002',
-      description: 'Electrical system upgrade',
-      value: 75000,
-      status: 'pending_signature',
-      cumulativeValue: 150000
-    }
-  ];
-
-  // Upcoming deadlines and alerts
-  const alerts = [
-    {
-      type: 'contract_expiration',
-      message: 'Architect Agreement for Project Beta ends in 45 days',
-      priority: 'medium',
-      dueDate: '2025-02-10'
-    },
-    {
-      type: 'lien_release',
-      message: 'Lien release needed for Tower Alpha final payment',
-      priority: 'high',
-      dueDate: '2024-07-20'
-    },
-    {
-      type: 'insurance_expiring',
-      message: 'ACME Concrete insurance expires in 22 days',
-      priority: 'medium',
-      dueDate: '2024-07-15'
-    }
-  ];
-
-  const legalMetrics = {
-    activeContracts: contracts.filter(c => c.status === 'active').length,
-    totalContractValue: contracts.reduce((sum, c) => sum + c.value, 0),
-    pendingChangeOrders: changeOrders.filter(co => co.status === 'pending_signature').length,
-    activeClaims: claims.length,
-    complianceScore: 94
-  };
+  if (!demoData) {
+    return <div>Loading...</div>;
+  }
 
   const handleInsightClick = (insight: string) => {
     console.log('Opening chat with insight:', insight);
@@ -158,6 +39,8 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
         return <Badge variant="secondary">Nearing Completion</Badge>;
       case 'over_budget':
         return <Badge variant="destructive">Over Budget</Badge>;
+      case 'completed':
+        return <Badge variant="outline">Completed</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -171,6 +54,8 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
         return <Badge variant="default">Pending</Badge>;
       case 'resolved':
         return <Badge variant="outline">Resolved</Badge>;
+      case 'active':
+        return <Badge variant="destructive">Active</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -186,6 +71,19 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
         return <Badge variant="outline">Low</Badge>;
       default:
         return <Badge variant="outline">{priority}</Badge>;
+    }
+  };
+
+  const getInsuranceStatusBadge = (status: string) => {
+    switch (status) {
+      case 'valid':
+        return <Badge variant="default">Valid</Badge>;
+      case 'expiring':
+        return <Badge variant="secondary">Expiring Soon</Badge>;
+      case 'expired':
+        return <Badge variant="destructive">Expired</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
@@ -209,7 +107,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                 <Badge variant="default" className="mt-0.5">Insight</Badge>
                 <div className="flex-1">
                   <h4 className="font-medium text-sm">Contract Compliance Status</h4>
-                  <p className="text-xs text-muted-foreground mt-1">All contracts are on track with no major issues. Tower Alpha GC contract is 6 months from completion – start reviewing close-out terms.</p>
+                  <p className="text-xs text-muted-foreground mt-1">{demoData.insights.contractCompliance}</p>
                 </div>
                 <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
@@ -224,7 +122,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                 <Badge variant="secondary" className="mt-0.5">Alert</Badge>
                 <div className="flex-1">
                   <h4 className="font-medium text-sm">Insurance Compliance</h4>
-                  <p className="text-xs text-muted-foreground mt-1">Insurance compliance is strong; 2 vendor insurances expire next month (reminders sent). Overall risk exposure is minimal.</p>
+                  <p className="text-xs text-muted-foreground mt-1">{demoData.insights.insuranceCompliance}</p>
                 </div>
                 <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
@@ -239,7 +137,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                 <Badge variant="outline" className="mt-0.5">Update</Badge>
                 <div className="flex-1">
                   <h4 className="font-medium text-sm">Claims & Disputes</h4>
-                  <p className="text-xs text-muted-foreground mt-1">1 active delay claim ($200K) in negotiation. No new claims this quarter. Legal risk remains low.</p>
+                  <p className="text-xs text-muted-foreground mt-1">{demoData.insights.claimsStatus}</p>
                 </div>
                 <MessageSquare className="w-4 h-4 text-muted-foreground" />
               </div>
@@ -256,9 +154,9 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{legalMetrics.activeContracts}</div>
+            <div className="text-2xl font-bold">{demoData.summary.activeContracts}</div>
             <p className="text-xs text-muted-foreground">
-              ${(legalMetrics.totalContractValue / 1000000).toFixed(1)}M total value
+              ${(demoData.summary.totalContractValue / 1000000).toFixed(1)}M total value
             </p>
           </CardContent>
         </Card>
@@ -269,7 +167,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <FileCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{legalMetrics.pendingChangeOrders}</div>
+            <div className="text-2xl font-bold text-amber-600">{demoData.summary.pendingChangeOrders}</div>
             <p className="text-xs text-muted-foreground">
               Awaiting signature
             </p>
@@ -282,9 +180,9 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{legalMetrics.activeClaims}</div>
+            <div className="text-2xl font-bold text-orange-600">{demoData.summary.activeClaims}</div>
             <p className="text-xs text-muted-foreground">
-              $200K total exposure
+              ${demoData.claims.reduce((sum, c) => sum + c.amount, 0).toLocaleString()} total exposure
             </p>
           </CardContent>
         </Card>
@@ -295,7 +193,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{insuranceData.cois.current}/{insuranceData.cois.total}</div>
+            <div className="text-2xl font-bold text-green-600">{demoData.summary.compliantCOIs}/{demoData.summary.totalCOIs}</div>
             <p className="text-xs text-muted-foreground">
               COIs current
             </p>
@@ -308,10 +206,10 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <Scale className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{legalMetrics.complianceScore}%</div>
+            <div className="text-2xl font-bold text-green-600">{demoData.summary.complianceScore}%</div>
             <p className="text-xs text-muted-foreground">
               <CheckCircle className="h-3 w-3 inline mr-1" />
-              Above target
+              {demoData.summary.complianceScore >= 90 ? 'Excellent' : demoData.summary.complianceScore >= 75 ? 'Good' : 'Needs Attention'}
             </p>
           </CardContent>
         </Card>
@@ -344,10 +242,10 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {contracts.map((contract) => (
+                  {demoData.contracts.map((contract) => (
                     <TableRow key={contract.id}>
-                      <TableCell className="font-medium">{contract.name}</TableCell>
-                      <TableCell>{contract.contractor}</TableCell>
+                      <TableCell className="font-medium">{contract.projectOrScope}</TableCell>
+                      <TableCell>{contract.vendor}</TableCell>
                       <TableCell>${(contract.value / 1000000).toFixed(1)}M</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -377,24 +275,20 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span>Certificates of Insurance (COIs)</span>
-                    <Badge variant="default">{insuranceData.cois.current}/{insuranceData.cois.total}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Surety Bonds</span>
-                    <Badge variant="default">{insuranceData.bonds.current}/{insuranceData.bonds.total}</Badge>
+                    <Badge variant="default">{demoData.summary.compliantCOIs}/{demoData.summary.totalCOIs}</Badge>
                   </div>
                   
                   <div className="mt-4">
-                    <h4 className="font-medium mb-2">Expiring Soon</h4>
-                    {insuranceData.expiringInsurance.map((insurance, index) => (
+                    <h4 className="font-medium mb-2">Insurance Details</h4>
+                    {demoData.insuranceStatuses.map((insurance, index) => (
                       <div key={index} className="flex justify-between items-center py-2 border-b last:border-b-0">
                         <div>
-                          <div className="font-medium">{insurance.contractor}</div>
-                          <div className="text-sm text-muted-foreground">{insurance.type}</div>
+                          <div className="font-medium">{insurance.vendorName}</div>
+                          <div className="text-sm text-muted-foreground">{insurance.policyType}</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm">{insurance.expires}</div>
-                          <Badge variant="secondary">{insurance.daysRemaining} days</Badge>
+                          <div className="text-sm">{insurance.expiryDate}</div>
+                          {getInsuranceStatusBadge(insurance.status)}
                         </div>
                       </div>
                     ))}
@@ -409,8 +303,8 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {alerts.map((alert, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
+                  {demoData.alerts.map((alert) => (
+                    <div key={alert.id} className="flex items-start gap-3 p-3 border rounded-lg">
                       <AlertTriangle className="h-4 w-4 text-orange-500 mt-0.5" />
                       <div className="flex-1">
                         <div className="font-medium text-sm">{alert.message}</div>
@@ -432,9 +326,9 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                 <CardTitle>Active Claims & Disputes</CardTitle>
               </CardHeader>
               <CardContent>
-                {claims.length > 0 ? (
+                {demoData.claims.length > 0 ? (
                   <div className="space-y-4">
-                    {claims.map((claim) => (
+                    {demoData.claims.map((claim) => (
                       <div key={claim.id} className="border rounded-lg p-4">
                         <div className="flex justify-between items-start mb-2">
                           <h4 className="font-medium">{claim.type}</h4>
@@ -443,7 +337,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
                         <div className="space-y-1 text-sm text-muted-foreground">
                           <div>Project: {claim.project}</div>
                           <div>Claimant: {claim.claimant}</div>
-                          <div>Value: ${claim.value.toLocaleString()}</div>
+                          <div>Value: ${claim.amount.toLocaleString()}</div>
                           <div>Filed: {claim.filedDate}</div>
                         </div>
                         <p className="text-sm mt-2">{claim.description}</p>
@@ -465,8 +359,8 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {changeOrders.map((co, index) => (
-                    <div key={index} className="border rounded-lg p-4">
+                  {demoData.changeOrders.map((co) => (
+                    <div key={co.id} className="border rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-medium">{co.number}</h4>
                         <Badge variant={co.status === 'signed' ? 'default' : 'secondary'}>
