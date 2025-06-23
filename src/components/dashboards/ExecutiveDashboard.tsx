@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -37,6 +36,41 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
 
   return (
     <div className="space-y-6">
+      {/* AI Insights - moved to top */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            AI Executive Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <Badge variant="destructive">High Priority</Badge>
+              <div>
+                <h4 className="font-medium">Office Complex A Budget Alert</h4>
+                <p className="text-sm text-muted-foreground">Project is 75% complete but has used 83% of budget. Recommend immediate cost review.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="default">Medium Priority</Badge>
+              <div>
+                <h4 className="font-medium">Q3 Portfolio Performance</h4>
+                <p className="text-sm text-muted-foreground">6 of 8 active projects are on schedule. Overall portfolio ROI projected at 14.2%.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Badge variant="secondary">Opportunity</Badge>
+              <div>
+                <h4 className="font-medium">Sustainability Investment</h4>
+                <p className="text-sm text-muted-foreground">Solar installation across 3 properties could reduce operational costs by $180K annually.</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
@@ -141,41 +175,6 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
           </CardContent>
         </Card>
       </div>
-
-      {/* AI Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
-            AI Executive Summary
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <Badge variant="destructive">High Priority</Badge>
-              <div>
-                <h4 className="font-medium">Office Complex A Budget Alert</h4>
-                <p className="text-sm text-muted-foreground">Project is 75% complete but has used 83% of budget. Recommend immediate cost review.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="default">Medium Priority</Badge>
-              <div>
-                <h4 className="font-medium">Q3 Portfolio Performance</h4>
-                <p className="text-sm text-muted-foreground">6 of 8 active projects are on schedule. Overall portfolio ROI projected at 14.2%.</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <Badge variant="secondary">Opportunity</Badge>
-              <div>
-                <h4 className="font-medium">Sustainability Investment</h4>
-                <p className="text-sm text-muted-foreground">Solar installation across 3 properties could reduce operational costs by $180K annually.</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
