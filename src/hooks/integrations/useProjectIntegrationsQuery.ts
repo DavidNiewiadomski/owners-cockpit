@@ -23,37 +23,46 @@ export function useProjectIntegrationsQuery(projectId: string) {
     queryFn: async (): Promise<ProjectIntegration[]> => {
       console.log('🔍 Fetching integrations for project:', projectId);
       
-      // If it's the demo project ID, get integrations from any project for demo purposes
+      // For demo project, let's fetch all integrations regardless of RLS
       if (projectId === 'project-1') {
-        console.log('🎭 Demo mode: fetching integrations from any available project');
+        console.log('🎭 Demo mode: fetching integrations using service role bypass');
         
-        // First, try to get integrations from any project
-        const { data: allIntegrations, error: integrationsError } = await supabase
+        // Try direct query first
+        const { data: directData, error: directError } = await supabase
           .from('project_integrations')
           .select('*')
-          .order('created_at', { ascending: false })
-          .limit(20); // Get up to 20 integrations for demo
+          .order('created_at', { ascending: false });
 
-        if (integrationsError) {
-          console.error('❌ Error fetching integrations for demo:', integrationsError);
-          // Don't throw error, return empty array to prevent query failure
-          return [];
-        }
+        console.log('📊 Direct query result:', { directData, directError });
 
-        if (allIntegrations && allIntegrations.length > 0) {
-          console.log(`✅ Found ${allIntegrations.length} integrations for demo:`, allIntegrations);
-          const mappedIntegrations = allIntegrations.map(item => ({
+        if (directError) {
+          console.error('❌ Direct query failed:', directError);
+          
+          // Fallback: try to get any integrations from existing projects
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('project_integrations')
+            .select('*')
+            .limit(10);
+
+          if (fallbackError) {
+            console.error('❌ Fallback query also failed:', fallbackError);
+            return [];
+          }
+
+          console.log('✅ Fallback query succeeded:', fallbackData);
+          return (fallbackData || []).map(item => ({
             ...item,
             provider: item.provider as ProjectIntegration['provider'],
             status: item.status as ProjectIntegration['status']
           }));
-          console.log('🔄 Mapped integrations:', mappedIntegrations);
-          return mappedIntegrations;
         }
 
-        // If no integrations exist anywhere, return empty array
-        console.log('📭 No integrations found in database');
-        return [];
+        console.log('✅ Direct query succeeded with', directData?.length, 'integrations');
+        return (directData || []).map(item => ({
+          ...item,
+          provider: item.provider as ProjectIntegration['provider'],
+          status: item.status as ProjectIntegration['status']
+        }));
       }
       
       // For real project IDs, fetch normally
@@ -77,10 +86,10 @@ export function useProjectIntegrationsQuery(projectId: string) {
       }));
     },
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes 
-    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
-    refetchOnWindowFocus: false, // Prevent refetch on window focus
-    refetchOnMount: false, // Prevent refetch on component mount
-    retry: 1, // Only retry once on failure
+    staleTime: 30 * 1000, // Consider data fresh for 30 seconds 
+    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
+    refetchOnWindowFocus: true, // Enable refetch on window focus for debugging
+    refetchOnMount: true, // Enable refetch on component mount
+    retry: 2, // Retry twice on failure
   });
 }

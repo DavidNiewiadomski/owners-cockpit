@@ -50,8 +50,18 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     integrationsCount: integrations?.length, 
     isLoading, 
     hasError: !!error,
-    integrations: integrations 
+    integrations: integrations,
+    timestamp: new Date().toISOString()
   });
+
+  // Add effect to log when integrations change
+  React.useEffect(() => {
+    console.log('🔄 ConnectedServices integrations changed:', {
+      integrations,
+      count: integrations?.length,
+      timestamp: new Date().toISOString()
+    });
+  }, [integrations]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -115,9 +125,11 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
       <p>Unable to load integrations</p>
       <p className="text-sm">Click "Open Integrations" to get started</p>
       {error && (
-        <p className="text-xs text-red-500 mt-2">
-          Error: {error.message || 'Unknown error'}
-        </p>
+        <div className="text-xs text-red-500 mt-2 space-y-1">
+          <p>Error: {error.message || 'Unknown error'}</p>
+          <p>Code: {error.code || 'N/A'}</p>
+          <p>Details: {error.details || 'N/A'}</p>
+        </div>
       )}
     </div>
   );
@@ -131,6 +143,8 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
   );
 
   const renderIntegrations = () => {
+    console.log('🎨 renderIntegrations called with:', { integrations, count: integrations?.length });
+    
     if (!integrations || integrations.length === 0) {
       console.log('🚨 No integrations to render, showing empty state');
       return renderEmptyState();
@@ -140,36 +154,39 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     
     return (
       <div className="space-y-4">
-        {integrations.map((integration) => (
-          <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
-            <div className="flex items-center gap-3">
-              {getStatusIcon(integration.status)}
-              <div>
-                <h4 className="text-sm font-medium">
-                  {PROVIDER_NAMES[integration.provider] || integration.provider}
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {PROVIDER_DESCRIPTIONS[integration.provider] || 'External service integration'}
-                </p>
-                {integration.sync_error && (
-                  <p className="text-xs text-red-500 mt-1">{integration.sync_error}</p>
-                )}
+        {integrations.map((integration) => {
+          console.log('🔧 Rendering integration:', integration);
+          return (
+            <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
+              <div className="flex items-center gap-3">
+                {getStatusIcon(integration.status)}
+                <div>
+                  <h4 className="text-sm font-medium">
+                    {PROVIDER_NAMES[integration.provider] || integration.provider}
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    {PROVIDER_DESCRIPTIONS[integration.provider] || 'External service integration'}
+                  </p>
+                  {integration.sync_error && (
+                    <p className="text-xs text-red-500 mt-1">{integration.sync_error}</p>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  {getStatusBadge(integration.status)}
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Last sync: {getLastSyncText(integration.last_sync)}
+                  </p>
+                </div>
+                <Switch checked={integration.status === 'connected'} />
+                <Button variant="ghost" size="sm">
+                  <SettingsIcon className="h-4 w-4" />
+                </Button>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                {getStatusBadge(integration.status)}
-                <p className="text-xs text-muted-foreground mt-1">
-                  Last sync: {getLastSyncText(integration.last_sync)}
-                </p>
-              </div>
-              <Switch checked={integration.status === 'connected'} />
-              <Button variant="ghost" size="sm">
-                <SettingsIcon className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -183,7 +200,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     }
     
     if (error) {
-      console.log('❌ Showing error state');
+      console.log('❌ Showing error state:', error);
       return renderErrorState();
     }
     
