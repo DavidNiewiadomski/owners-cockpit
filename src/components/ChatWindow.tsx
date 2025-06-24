@@ -96,8 +96,20 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
 
   console.log('🟢 ChatWindow about to render JSX');
 
+  // Add error boundary and fallback UI
+  if (!roleConfig || !agentMemory) {
+    console.log('🔴 ChatWindow: Missing roleConfig or agentMemory');
+    return (
+      <div className="flex flex-col h-full p-4">
+        <div className="text-center">
+          <p>Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background">
       <ChatHeader
         roleConfig={roleConfig}
         agentMemory={agentMemory}
