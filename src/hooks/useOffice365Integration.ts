@@ -34,7 +34,11 @@ export function useOffice365Tokens(projectId: string) {
       }
 
       console.log(`✅ Found ${data?.length || 0} Office 365 tokens:`, data);
-      return data || [];
+      // Type cast the data to ensure provider matches our union type
+      return (data || []).map(token => ({
+        ...token,
+        provider: token.provider as 'outlook' | 'teams'
+      }));
     },
     enabled: !!projectId,
   });
