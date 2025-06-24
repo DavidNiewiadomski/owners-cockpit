@@ -42,7 +42,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     isLoading, 
     isStreaming, 
     currentRole,
-    projectId 
+    projectId,
+    roleConfig: !!roleConfig,
+    agentMemory: !!agentMemory 
   });
 
   // Speak AI responses when they arrive with more natural settings
@@ -96,20 +98,72 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
 
   console.log('🟢 ChatWindow about to render JSX');
 
-  // Add error boundary and fallback UI
+  // Simple fallback if role context is missing
   if (!roleConfig || !agentMemory) {
-    console.log('🔴 ChatWindow: Missing roleConfig or agentMemory');
+    console.log('🔴 ChatWindow: Missing roleConfig or agentMemory, using defaults');
+    const defaultRoleConfig = {
+      displayName: 'AI Assistant',
+      description: 'General AI Assistant'
+    };
+    const defaultAgentMemory = {
+      messageHistory: [],
+      persona: 'I am a helpful AI assistant ready to answer your questions.'
+    };
+    
     return (
-      <div className="flex flex-col h-full p-4">
-        <div className="text-center">
-          <p>Loading chat...</p>
-        </div>
+      <div className="flex flex-col h-full bg-background border border-border">
+        <ChatHeader
+          roleConfig={defaultRoleConfig}
+          agentMemory={defaultAgentMemory}
+          isSpeaking={isSpeaking}
+          voiceResponseEnabled={voiceResponseEnabled}
+          ttsSupported={ttsSupported}
+          getBestVoice={getBestVoice}
+          messagesLength={messages.length}
+          isLoading={isLoading}
+          isStreaming={isStreaming}
+          onRetry={resendLastMessage}
+          onClear={clearConversation}
+          onToggleVoice={toggleVoiceResponse}
+          onStopSpeaking={handleStopSpeaking}
+        />
+
+        <ChatMessages
+          messages={messages}
+          isLoading={isLoading}
+          isStreaming={isStreaming}
+          roleConfig={defaultRoleConfig}
+          currentRole={currentRole}
+          voiceResponseEnabled={voiceResponseEnabled}
+          ttsSupported={ttsSupported}
+          getBestVoice={getBestVoice}
+          onCitationClick={handleCitationClick}
+        />
+
+        <ChatInput
+          roleConfig={defaultRoleConfig}
+          isLoading={isLoading}
+          isStreaming={isStreaming}
+          error={error}
+          onSendMessage={handleSendMessage}
+        />
+
+        <SourceModal
+          citation={selectedCitation}
+          sourceId={selectedSourceId}
+          isOpen={isSourceModalOpen}
+          onClose={() => {
+            setIsSourceModalOpen(false);
+            setSelectedCitation(null);
+            setSelectedSourceId(undefined);
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-background border border-border">
       <ChatHeader
         roleConfig={roleConfig}
         agentMemory={agentMemory}
