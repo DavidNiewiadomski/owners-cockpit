@@ -39,7 +39,7 @@ const Index = () => {
       if (event.ctrlKey || event.metaKey) {
         switch (event.key.toLowerCase()) {
           case 'c':
-            if (selectedProject && activeView !== 'communications') {
+            if (activeView !== 'communications') {
               event.preventDefault();
               setActiveView('communications');
             }
@@ -50,7 +50,7 @@ const Index = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedProject, activeView]);
+  }, [activeView]);
 
   const handleProjectChange = (projectId: string | null) => {
     if (projectId === 'portfolio') {
@@ -85,6 +85,12 @@ const Index = () => {
   };
 
   const renderMainContent = () => {
+    if (activeView === 'communications') {
+      // Use portfolio project ID for portfolio-level communications, or selected project
+      const communicationsProjectId = selectedProject || 'portfolio';
+      return <CommunicationsIntegration projectId={communicationsProjectId} />;
+    }
+    
     if (activeView === 'portfolio') {
       return <PortfolioDashboard />;
     }
@@ -107,8 +113,6 @@ const Index = () => {
             </div>
           </div>
         );
-      case 'communications':
-        return <CommunicationsIntegration projectId={selectedProject} />;
       default:
         return <Dashboard projectId={selectedProject} />;
     }

@@ -14,46 +14,52 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
   selectedProject
 }) => {
   return (
-    <div className="border-b border-border/40 px-6 py-2">
-      <div className="flex items-center gap-2">
-        <Button
-          variant={activeView === 'portfolio' ? 'default' : 'ghost'}
-          size="sm"
-          onClick={() => onViewChange('portfolio')}
-        >
-          Portfolio
-        </Button>
-        {selectedProject && (
-          <>
-            <Button
-              variant={activeView === 'dashboard' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => onViewChange('dashboard')}
-            >
-              Dashboard
-            </Button>
-            <Button
-              variant={activeView === 'chat' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => onViewChange('chat')}
-            >
-              AI Chat
-            </Button>
-            <Button
-              variant={activeView === 'communications' ? 'default' : 'ghost'}
-              size="sm"
-              onClick={() => onViewChange('communications')}
-            >
-              Communications
-            </Button>
-          </>
+    <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-1">
+          <Button
+            variant={activeView === 'portfolio' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => onViewChange('portfolio')}
+            className="h-8 px-3 text-sm font-medium transition-all duration-200"
+          >
+            Portfolio
+          </Button>
+          {selectedProject && (
+            <>
+              <Button
+                variant={activeView === 'dashboard' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => onViewChange('dashboard')}
+                className="h-8 px-3 text-sm font-medium transition-all duration-200"
+              >
+                Dashboard
+              </Button>
+              <Button
+                variant={activeView === 'chat' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => onViewChange('chat')}
+                className="h-8 px-3 text-sm font-medium transition-all duration-200"
+              >
+                AI Chat
+              </Button>
+            </>
+          )}
+          <Button
+            variant={activeView === 'communications' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => onViewChange('communications')}
+            className="h-8 px-3 text-sm font-medium transition-all duration-200"
+          >
+            Communications
+          </Button>
+        </div>
+        {(selectedProject || activeView === 'communications') && (
+          <div className="text-xs text-muted-foreground">
+            Press <kbd className="inline-flex h-5 max-h-full items-center rounded border border-border px-1 font-mono text-[10px] font-medium text-muted-foreground opacity-100">Ctrl+C</kbd> for Communications
+          </div>
         )}
       </div>
-      {selectedProject && (
-        <div className="text-xs text-muted-foreground mt-1">
-          Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+C</kbd> for Communications
-        </div>
-      )}
     </div>
   );
 };
