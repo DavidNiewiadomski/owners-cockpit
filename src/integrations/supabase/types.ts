@@ -215,6 +215,66 @@ export type Database = {
           },
         ]
       }
+      bim_files: {
+        Row: {
+          created_at: string
+          file_path: string
+          file_size: number | null
+          file_type: string
+          filename: string
+          id: string
+          is_active: boolean
+          project_id: string
+          updated_at: string
+          upload_ts: string
+          uploaded_by: string | null
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string
+          filename: string
+          id?: string
+          is_active?: boolean
+          project_id: string
+          updated_at?: string
+          upload_ts?: string
+          uploaded_by?: string | null
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string
+          filename?: string
+          id?: string
+          is_active?: boolean
+          project_id?: string
+          updated_at?: string
+          upload_ts?: string
+          uploaded_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bim_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "bim_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       budget_items: {
         Row: {
           actual_amount: number | null
@@ -990,6 +1050,67 @@ export type Database = {
           },
           {
             foreignKeyName: "maintenance_schedules_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      model_bindings: {
+        Row: {
+          bim_file_id: string
+          binding_id: string
+          binding_type: string
+          created_at: string
+          element_id: string
+          element_type: string | null
+          id: string
+          metadata: Json | null
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          bim_file_id: string
+          binding_id: string
+          binding_type: string
+          created_at?: string
+          element_id: string
+          element_type?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          bim_file_id?: string
+          binding_id?: string
+          binding_type?: string
+          created_at?: string
+          element_id?: string
+          element_type?: string | null
+          id?: string
+          metadata?: Json | null
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "model_bindings_bim_file_id_fkey"
+            columns: ["bim_file_id"]
+            isOneToOne: false
+            referencedRelation: "bim_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "model_bindings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "model_bindings_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
