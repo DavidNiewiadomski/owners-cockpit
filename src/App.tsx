@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
+import CommunicationsPage from "./pages/CommunicationsPage";
 
 // Optimized QueryClient configuration
 const queryClient = new QueryClient({
@@ -65,6 +65,7 @@ function App() {
                       <Route path="/dashboard" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/projects/:projectId" element={<Index />} />
+                      <Route path="/projects/:id/communications" element={<CommunicationsPage />} />
                       <Route path="/projects/:projectId/integrations" element={<Navigate to="/projects/project-1" replace />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
