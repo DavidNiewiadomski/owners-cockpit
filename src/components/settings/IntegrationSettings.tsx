@@ -44,7 +44,10 @@ const PROVIDER_DESCRIPTIONS = {
 const IntegrationSettings: React.FC = () => {
   const router = useRouter();
   const [selectedProject] = useState('project-1'); // This would come from context
-  const { data: integrations, isLoading } = useProjectIntegrations(selectedProject);
+  
+  // Only fetch integrations if we have a valid UUID format
+  const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(selectedProject);
+  const { data: integrations, isLoading, error } = useProjectIntegrations(isValidUUID ? selectedProject : '');
 
   const handleViewIntegrations = () => {
     if (selectedProject) {
@@ -123,7 +126,13 @@ const IntegrationSettings: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
+          {!isValidUUID ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <PlugZap className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Demo mode - integrations require valid project ID</p>
+              <p className="text-sm">Click "Open Integrations" to view available providers</p>
+            </div>
+          ) : isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center justify-between p-4 border rounded-lg animate-pulse">
@@ -140,6 +149,12 @@ const IntegrationSettings: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50 text-red-500" />
+              <p>Unable to load integrations</p>
+              <p className="text-sm">Click "Open Integrations" to get started</p>
             </div>
           ) : (
             <div className="space-y-4">
