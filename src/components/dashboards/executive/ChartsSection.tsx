@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, AlertTriangle } from 'lucide-react';
-import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Line, RadialBarChart, RadialBar } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Line, RadialBarChart, RadialBar, Legend } from 'recharts';
 
 interface ChartsSectionProps {
   projectData: {
@@ -61,6 +61,12 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
                   `$${(value / 1000000).toFixed(1)}M`,
                   name === 'budget' ? 'Budget' : name === 'actual' ? 'Actual' : 'Forecast'
                 ]}
+              />
+              <Legend 
+                verticalAlign="bottom" 
+                height={36}
+                iconType="rect"
+                formatter={(value) => <span className="text-sm">{value === 'budget' ? 'Budget' : value === 'actual' ? 'Actual Spend' : 'Forecast'}</span>}
               />
               <Area type="monotone" dataKey="budget" stroke="hsl(var(--primary))" fillOpacity={0.6} fill="url(#budgetGradient)" />
               <Area type="monotone" dataKey="actual" stroke="#10b981" fillOpacity={0.6} fill="url(#actualGradient)" />

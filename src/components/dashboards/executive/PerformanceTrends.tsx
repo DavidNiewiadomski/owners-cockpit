@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
-import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 interface PerformanceTrendsProps {
   projectData: {
@@ -37,6 +37,12 @@ const PerformanceTrends: React.FC<PerformanceTrendsProps> = ({ projectData }) =>
                 borderRadius: '8px',
                 color: 'hsl(var(--popover-foreground))'
               }}
+            />
+            <Legend 
+              verticalAlign="bottom" 
+              height={36}
+              iconType="line"
+              formatter={(value) => <span className="text-sm capitalize">{value}</span>}
             />
             <Line type="monotone" dataKey="efficiency" stroke="hsl(var(--primary))" strokeWidth={3} dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }} />
             <Line type="monotone" dataKey="quality" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }} />
