@@ -1,12 +1,14 @@
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Send, Bot, User, RotateCcw, Brain } from 'lucide-react';
+import { Send, Bot, User, RotateCcw, Brain, Volume2, VolumeX } from 'lucide-react';
 import { useChatRag, Citation } from '@/hooks/useChatRag';
 import { useRole } from '@/contexts/RoleContext';
+import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import CitationChip from '@/components/CitationChip';
 import SourceModal from '@/components/SourceModal';
 import VoiceControl from '@/components/VoiceControl';
@@ -20,11 +22,14 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
   const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(undefined);
   const [isSourceModalOpen, setIsSourceModalOpen] = useState(false);
+  const [voiceResponseEnabled, setVoiceResponseEnabled] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const { currentRole, getRoleConfig, getActiveAgentMemory } = useRole();
   const roleConfig = getRoleConfig(currentRole);
   const agentMemory = getActiveAgentMemory();
+  
+  const { speak, stop, isSpeaking, isSupported: ttsSupported } = useTextToSpeech();
   
   const {
     messages,
@@ -44,8 +49,28 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     scrollToBottom();
   }, [messages]);
 
+  // Speak AI responses when they arrive
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && 
+        lastMessage.role === 'assistant' && 
+        !lastMessage.isStreaming && 
+        voiceResponseEnabled &&
+        ttsSupported) {
+      // Small delay to ensure the message is fully rendered
+      setTimeout(() => {
+        speak(lastMessage.content, { rate: 0.9, pitch: 1 });
+      }, 500);
+    }
+  }, [messages, speak, voiceResponseEnabled, ttsSupported]);
+
   const handleSend = () => {
     if (!inputValue.trim() || isLoading || isStreaming) return;
+    
+    // Stop any current speech when sending a new message
+    if (isSpeaking) {
+      stop();
+    }
     
     sendMessage(inputValue);
     setInputValue('');
@@ -85,13 +110,21 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
 
   const handleVoiceMessage = useCallback((message: string) => {
     if (!message.trim()) return;
+    
+    // Stop any current speech when sending a voice message
+    if (isSpeaking) {
+      stop();
+    }
+    
     sendMessage(message);
-  }, [sendMessage]);
+  }, [sendMessage, isSpeaking, stop]);
 
-  const handleVoiceResponse = useCallback((text: string) => {
-    // This could be used to speak AI responses
-    console.log('AI response for voice:', text);
-  }, []);
+  const toggleVoiceResponse = useCallback(() => {
+    setVoiceResponseEnabled(!voiceResponseEnabled);
+    if (isSpeaking && !voiceResponseEnabled) {
+      stop();
+    }
+  }, [voiceResponseEnabled, isSpeaking, stop]);
 
   return (
     <div className="flex flex-col h-full">
@@ -109,10 +142,30 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
                 <span className="text-xs text-muted-foreground">
                   {agentMemory.messageHistory.length} messages in context
                 </span>
+                {isSpeaking && (
+                  <Badge variant="secondary" className="text-xs animate-pulse">
+                    Speaking...
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {ttsSupported && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleVoiceResponse}
+                className={`text-muted-foreground hover:text-foreground ${voiceResponseEnabled ? 'text-primary' : ''}`}
+              >
+                {voiceResponseEnabled ? (
+                  <Volume2 className="w-4 h-4 mr-1" />
+                ) : (
+                  <VolumeX className="w-4 h-4 mr-1" />
+                )}
+                Voice
+              </Button>
+            )}
             <Button 
               variant="ghost" 
               size="sm" 
@@ -138,6 +191,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
         <div className="mt-3 p-2 bg-muted/30 rounded-lg">
           <p className="text-xs text-muted-foreground">
             <strong>Context:</strong> {agentMemory.persona}
+            {voiceResponseEnabled && ttsSupported && (
+              <span className="ml-2 text-primary">🔊 Voice responses enabled</span>
+            )}
           </p>
         </div>
       </div>
@@ -158,6 +214,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               I'm your AI assistant specialized for {roleConfig.description.toLowerCase()}. 
               Ask me anything related to your {currentRole.toLowerCase()} responsibilities.
+              {voiceResponseEnabled && ttsSupported && (
+                <span className="block mt-2 text-primary">🎤 Speak your questions and I'll respond with voice!</span>
+              )}
             </p>
           </motion.div>
         )}
@@ -240,7 +299,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
             <div className="absolute right-2 top-1/2 -translate-y-1/2">
               <VoiceControl
                 onSendMessage={handleVoiceMessage}
-                onVoiceResponse={handleVoiceResponse}
                 disabled={isLoading || isStreaming}
               />
             </div>
