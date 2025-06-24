@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,9 +44,9 @@ const IntegrationSettings: React.FC = () => {
   const router = useRouter();
   const [selectedProject] = useState('project-1'); // This would come from context
   
-  // Only fetch integrations if we have a valid UUID format
-  const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(selectedProject);
-  const { data: integrations, isLoading, error } = useProjectIntegrations(isValidUUID ? selectedProject : '');
+  // For demo purposes, let's try to get the first actual project from the database
+  // But still use the hook to fetch integrations - it should handle the demo case
+  const { data: integrations, isLoading, error } = useProjectIntegrations(selectedProject);
 
   const handleViewIntegrations = () => {
     if (selectedProject) {
@@ -126,13 +125,7 @@ const IntegrationSettings: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!isValidUUID ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <PlugZap className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Demo mode - integrations require valid project ID</p>
-              <p className="text-sm">Click "Open Integrations" to view available providers</p>
-            </div>
-          ) : isLoading ? (
+          {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center justify-between p-4 border rounded-lg animate-pulse">

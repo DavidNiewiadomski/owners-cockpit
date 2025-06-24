@@ -22,9 +22,9 @@ export interface ProjectIntegration {
 export function useProjectIntegrations(projectId: string) {
   const queryClient = useQueryClient();
 
-  // Set up realtime subscription
+  // Set up realtime subscription only for valid UUIDs
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId || projectId === 'project-1') return;
 
     const channel = supabase
       .channel('project-integrations-changes')
@@ -53,10 +53,29 @@ export function useProjectIntegrations(projectId: string) {
     queryFn: async (): Promise<ProjectIntegration[]> => {
       console.log('Fetching integrations for project:', projectId);
       
+      // If it's the demo project ID, get any project's integrations for demo purposes
+      let actualProjectId = projectId;
+      
+      if (projectId === 'project-1') {
+        // Get the first project from the database to use its integrations
+        const { data: projects } = await supabase
+          .from('projects')
+          .select('id')
+          .limit(1);
+        
+        if (projects && projects.length > 0) {
+          actualProjectId = projects[0].id;
+          console.log('Using actual project ID for demo:', actualProjectId);
+        } else {
+          // No projects exist, return empty array
+          return [];
+        }
+      }
+      
       const { data, error } = await supabase
         .from('project_integrations')
         .select('*')
-        .eq('project_id', projectId)
+        .eq('project_id', actualProjectId)
         .order('created_at', { ascending: false });
 
       if (error) {
