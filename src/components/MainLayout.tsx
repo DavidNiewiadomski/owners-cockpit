@@ -1,0 +1,83 @@
+
+import React, { useEffect } from 'react';
+import AppHeader from '@/components/AppHeader';
+import ViewToggle from '@/components/ViewToggle';
+import MainContent from '@/components/MainContent';
+import AIFloatingButton from '@/components/AIFloatingButton';
+import AIChatOverlay from '@/components/AIChatOverlay';
+import AppModals from '@/components/AppModals';
+import VoiceControl from '@/components/VoiceControl';
+import { useAppState } from '@/hooks/useAppState';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useRole } from '@/contexts/RoleContext';
+import { useRouter } from '@/hooks/useRouter';
+
+const MainLayout: React.FC = () => {
+  const { currentRole } = useRole();
+  const router = useRouter();
+  const appState = useAppState();
+
+  useEffect(() => {
+    console.log(`Current role: ${currentRole}`);
+  }, [currentRole]);
+
+  useKeyboardShortcuts({
+    activeView: appState.activeView,
+    setActiveView: appState.setActiveView,
+  });
+
+  const handleHeroExit = () => {
+    console.log('Hero exit called');
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <AppHeader 
+        selectedProject={appState.activeView === 'portfolio' ? 'portfolio' : appState.selectedProject}
+        onProjectChange={appState.handleProjectChange}
+        onUploadToggle={() => appState.setShowUpload(!appState.showUpload)}
+        onSettingsToggle={() => appState.setShowSettings(!appState.showSettings)}
+        onHeroExit={handleHeroExit}
+      />
+
+      <ViewToggle
+        activeView={appState.activeView}
+        onViewChange={appState.handleViewChange}
+        selectedProject={appState.selectedProject}
+      />
+
+      <main className="flex-1">
+        <MainContent 
+          activeView={appState.activeView}
+          selectedProject={appState.selectedProject}
+        />
+      </main>
+
+      {/* AI Floating Button */}
+      <AIFloatingButton onClick={appState.handleAIChat} />
+
+      {/* AI Chat Overlay */}
+      <AIChatOverlay 
+        isOpen={appState.showChatOverlay}
+        onClose={appState.handleCloseChatOverlay}
+        projectId={appState.selectedProject || 'portfolio'}
+      />
+
+      {/* Modals */}
+      <AppModals
+        showSettings={appState.showSettings}
+        setShowSettings={appState.setShowSettings}
+        showSourceModal={appState.showSourceModal}
+        setShowSourceModal={appState.setShowSourceModal}
+        showDocumentViewer={appState.showDocumentViewer}
+        setShowDocumentViewer={appState.setShowDocumentViewer}
+        selectedDocument={appState.selectedDocument}
+        setSelectedDocument={appState.setSelectedDocument}
+      />
+
+      <VoiceControl />
+    </div>
+  );
+};
+
+export default MainLayout;

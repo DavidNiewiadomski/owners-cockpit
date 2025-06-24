@@ -1,74 +1,60 @@
 
-import React, { lazy, Suspense } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
-import MotionWrapper from '@/components/MotionWrapper';
-import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
+import React from 'react';
 import Dashboard from '@/components/Dashboard';
-import WelcomeScreen from '@/components/WelcomeScreen';
+import PortfolioDashboard from '@/components/PortfolioDashboard';
+import ChatWindow from '@/components/ChatWindow';
+import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
 import ActionItemsPage from '@/pages/ActionItemsPage';
-
-const ChatWindow = lazy(() => import('@/components/ChatWindow'));
-const PortfolioDashboard = lazy(() => import('@/components/PortfolioDashboard'));
-
-const ChatWindowSkeleton = () => (
-  <div className="flex-1 p-4 space-y-4">
-    <Skeleton className="h-8 w-full" />
-    <Skeleton className="h-32 w-full" />
-    <Skeleton className="h-8 w-3/4" />
-    <Skeleton className="h-24 w-full" />
-  </div>
-);
+import ModelViewer from '@/components/ModelViewer';
+import { ActiveView } from '@/hooks/useAppState';
 
 interface MainContentProps {
+  activeView: ActiveView;
   selectedProject: string | null;
-  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items';
-  onProjectChange: (projectId: string | null) => void;
 }
 
-const MainContent: React.FC<MainContentProps> = ({
-  selectedProject,
-  activeView,
-  onProjectChange
-}) => {
-  // Portfolio view
+const MainContent: React.FC<MainContentProps> = ({ activeView, selectedProject }) => {
+  if (activeView === 'communications') {
+    const communicationsProjectId = selectedProject || 'portfolio';
+    return <CommunicationsIntegration projectId={communicationsProjectId} />;
+  }
+  
   if (activeView === 'portfolio') {
+    return <PortfolioDashboard />;
+  }
+
+  if (activeView === 'chat') {
+    const chatProjectId = selectedProject || 'portfolio';
     return (
-      <MotionWrapper animation="fadeIn" className="flex-1">
-        <EnhancedErrorBoundary>
-          <Suspense fallback={<ChatWindowSkeleton />}>
+      <div className="flex h-full">
+        <div className="flex-1">
+          {selectedProject ? (
+            <Dashboard projectId={selectedProject} />
+          ) : (
             <PortfolioDashboard />
-          </Suspense>
-        </EnhancedErrorBoundary>
-      </MotionWrapper>
+          )}
+        </div>
+        <div className="w-96 border-l border-border/40">
+          <ChatWindow projectId={chatProjectId} />
+        </div>
+      </div>
     );
   }
-
-  // No project selected
+  
   if (!selectedProject) {
-    return (
-      <WelcomeScreen 
-        selectedProject={selectedProject}
-        onProjectChange={onProjectChange}
-      />
-    );
+    return <PortfolioDashboard />;
   }
 
-  // Project-specific views
-  return (
-    <MotionWrapper animation="fadeIn" className="flex-1">
-      <EnhancedErrorBoundary>
-        {activeView === 'dashboard' ? (
-          <Dashboard projectId={selectedProject} />
-        ) : activeView === 'action-items' ? (
-          <ActionItemsPage />
-        ) : (
-          <Suspense fallback={<ChatWindowSkeleton />}>
-            <ChatWindow projectId={selectedProject} />
-          </Suspense>
-        )}
-      </EnhancedErrorBoundary>
-    </MotionWrapper>
-  );
+  switch (activeView) {
+    case 'dashboard':
+      return <Dashboard projectId={selectedProject} />;
+    case 'action-items':
+      return <ActionItemsPage />;
+    case 'model':
+      return <ModelViewer projectId={selectedProject} />;
+    default:
+      return <Dashboard projectId={selectedProject} />;
+  }
 };
 
 export default MainContent;
