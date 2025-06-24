@@ -10,13 +10,41 @@ import {
   Settings as SettingsIcon, 
   CheckCircle, 
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
 import { useRouter } from '@/hooks/useRouter';
+import { useProjectIntegrations } from '@/hooks/useProjectIntegrations';
+import { formatDistanceToNow } from 'date-fns';
+
+const PROVIDER_NAMES = {
+  procore: 'Procore',
+  primavera: 'Primavera P6',
+  box: 'Box',
+  iot_sensors: 'IoT Sensors',
+  smartsheet: 'Smartsheet',
+  green_badger: 'Green Badger',
+  billy: 'Billy',
+  clearstory: 'Clearstory',
+  track3d: 'Track3D'
+};
+
+const PROVIDER_DESCRIPTIONS = {
+  procore: 'Construction management platform',
+  primavera: 'Project scheduling and management',
+  box: 'Cloud storage and file sharing',
+  iot_sensors: 'Building sensors and monitoring',
+  smartsheet: 'Collaborative work management',
+  green_badger: 'Sustainability tracking and reporting',
+  billy: 'Insurance management for construction',
+  clearstory: 'Construction data analytics',
+  track3d: 'AI-powered construction progress tracking'
+};
 
 const IntegrationSettings: React.FC = () => {
   const router = useRouter();
   const [selectedProject] = useState('project-1'); // This would come from context
+  const { data: integrations, isLoading } = useProjectIntegrations(selectedProject);
 
   const handleViewIntegrations = () => {
     if (selectedProject) {
@@ -24,48 +52,14 @@ const IntegrationSettings: React.FC = () => {
     }
   };
 
-  const integrations = [
-    {
-      id: 'procore',
-      name: 'Procore',
-      description: 'Construction management platform',
-      status: 'connected',
-      lastSync: '2 hours ago',
-      enabled: true
-    },
-    {
-      id: 'primavera',
-      name: 'Primavera P6',
-      description: 'Project scheduling and management',
-      status: 'error',
-      lastSync: '1 day ago',
-      enabled: false,
-      error: 'Authentication failed'
-    },
-    {
-      id: 'box',
-      name: 'Box',
-      description: 'Cloud storage and file sharing',
-      status: 'connected',
-      lastSync: '30 minutes ago',
-      enabled: true
-    },
-    {
-      id: 'smartsheet',
-      name: 'Smartsheet',
-      description: 'Collaborative work management',
-      status: 'not_connected',
-      lastSync: 'Never',
-      enabled: false
-    }
-  ];
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'connected':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'error':
         return <XCircle className="h-4 w-4 text-red-500" />;
+      case 'syncing':
+        return <Clock className="h-4 w-4 text-blue-500" />;
       default:
         return <AlertCircle className="h-4 w-4 text-gray-400" />;
     }
@@ -77,8 +71,20 @@ const IntegrationSettings: React.FC = () => {
         return <Badge className="bg-green-100 text-green-800">Connected</Badge>;
       case 'error':
         return <Badge variant="destructive">Error</Badge>;
+      case 'syncing':
+        return <Badge className="bg-blue-100 text-blue-800">Syncing</Badge>;
       default:
         return <Badge variant="secondary">Not Connected</Badge>;
+    }
+  };
+
+  const getLastSyncText = (lastSync?: string) => {
+    if (!lastSync) return 'Never';
+    
+    try {
+      return formatDistanceToNow(new Date(lastSync), { addSuffix: true });
+    } catch {
+      return 'Unknown';
     }
   };
 
@@ -117,34 +123,66 @@ const IntegrationSettings: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {integrations.map((integration) => (
-              <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  {getStatusIcon(integration.status)}
-                  <div>
-                    <h4 className="text-sm font-medium">{integration.name}</h4>
-                    <p className="text-xs text-muted-foreground">{integration.description}</p>
-                    {integration.error && (
-                      <p className="text-xs text-red-500 mt-1">{integration.error}</p>
-                    )}
+          {isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-4 border rounded-lg animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                    <div>
+                      <div className="w-24 h-4 bg-gray-200 rounded mb-1"></div>
+                      <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-6 bg-gray-200 rounded"></div>
+                    <div className="w-8 h-6 bg-gray-200 rounded"></div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    {getStatusBadge(integration.status)}
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Last sync: {integration.lastSync}
-                    </p>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {integrations && integrations.length > 0 ? (
+                integrations.map((integration) => (
+                  <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      {getStatusIcon(integration.status)}
+                      <div>
+                        <h4 className="text-sm font-medium">
+                          {PROVIDER_NAMES[integration.provider] || integration.provider}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">
+                          {PROVIDER_DESCRIPTIONS[integration.provider] || 'External service integration'}
+                        </p>
+                        {integration.sync_error && (
+                          <p className="text-xs text-red-500 mt-1">{integration.sync_error}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        {getStatusBadge(integration.status)}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Last sync: {getLastSyncText(integration.last_sync)}
+                        </p>
+                      </div>
+                      <Switch checked={integration.status === 'connected'} />
+                      <Button variant="ghost" size="sm">
+                        <SettingsIcon className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <Switch checked={integration.enabled} />
-                  <Button variant="ghost" size="sm">
-                    <SettingsIcon className="h-4 w-4" />
-                  </Button>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <PlugZap className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>No integrations configured yet</p>
+                  <p className="text-sm">Click "Open Integrations" to get started</p>
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 
