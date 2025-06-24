@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface ProjectIntegration {
   id: string;
   project_id: string;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
+  provider: 'procore' | 'primavera' | 'onedrive' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d' | 'bim360' | 'microsoft_teams' | 'zoom' | 'outlook';
   status: 'connected' | 'error' | 'not_connected' | 'syncing';
   api_key?: string;
   refresh_token?: string;

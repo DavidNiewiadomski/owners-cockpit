@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 interface IntegrationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
+  provider: 'procore' | 'primavera' | 'onedrive' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d' | 'bim360' | 'microsoft_teams' | 'zoom' | 'outlook';
   projectId: string;
   existingIntegration?: ProjectIntegration;
 }
@@ -117,13 +117,17 @@ const IntegrationModal: React.FC<IntegrationModalProps> = ({
     const names = {
       procore: 'Procore',
       primavera: 'Primavera P6',
-      box: 'Box',
+      onedrive: 'OneDrive',
       iot_sensors: 'IoT Sensors',
       smartsheet: 'Smartsheet',
       green_badger: 'Green Badger',
       billy: 'Billy',
       clearstory: 'Clearstory',
       track3d: 'Track3D',
+      bim360: 'BIM 360',
+      microsoft_teams: 'Microsoft Teams',
+      zoom: 'Zoom',
+      outlook: 'Outlook',
     };
     return names[provider];
   };
@@ -132,13 +136,17 @@ const IntegrationModal: React.FC<IntegrationModalProps> = ({
     const instructions = {
       procore: 'Enter your Procore API credentials. You can find these in your Procore account settings under API Keys.',
       primavera: 'Enter your Primavera P6 API key and server configuration.',
-      box: 'Configure Box integration using OAuth or API key authentication.',
+      onedrive: 'Configure OneDrive integration using OAuth authentication for cloud file access.',
       iot_sensors: 'Enter your IoT sensor API credentials and endpoint configuration.',
       smartsheet: 'Enter your Smartsheet API token. You can generate this in your Smartsheet account settings.',
       green_badger: 'Enter your Green Badger API key. You can find this in your Green Badger account settings under API Access.',
       billy: 'Enter your Billy API credentials. Access these through your Billy dashboard under API Settings.',
       clearstory: 'Configure Clearstory integration using OAuth authentication. You\'ll need to authorize access to your Clearstory data.',
       track3d: 'Enter your Track3D API key and project configuration. Find your API credentials in the Track3D dashboard.',
+      bim360: 'Enter your Autodesk BIM 360 API credentials. You can find these in your Autodesk Developer Console.',
+      microsoft_teams: 'Configure Microsoft Teams integration using OAuth authentication for team collaboration.',
+      zoom: 'Enter your Zoom API credentials. You can generate these in your Zoom Marketplace developer account.',
+      outlook: 'Configure Outlook integration using OAuth authentication for email and calendar access.',
     };
     return instructions[provider];
   };

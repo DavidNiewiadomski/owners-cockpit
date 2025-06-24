@@ -14,7 +14,7 @@ import IntegrationModal from './IntegrationModal';
 
 interface IntegrationCardProps {
   integration?: ProjectIntegration;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
+  provider: 'procore' | 'primavera' | 'onedrive' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d' | 'bim360' | 'microsoft_teams' | 'zoom' | 'outlook';
   projectId: string;
 }
 
@@ -31,10 +31,10 @@ const PROVIDER_CONFIG = {
     description: 'Project portfolio management',
     authType: 'api_key' as const,
   },
-  box: {
-    name: 'Box',
-    logo: '📁',
-    description: 'Cloud file storage',
+  onedrive: {
+    name: 'OneDrive',
+    logo: '☁️',
+    description: 'Cloud file storage and sharing',
     authType: 'oauth' as const,
   },
   iot_sensors: {
@@ -72,6 +72,30 @@ const PROVIDER_CONFIG = {
     logo: '🎯',
     description: 'AI-powered construction progress tracking',
     authType: 'api_key' as const,
+  },
+  bim360: {
+    name: 'BIM 360',
+    logo: '🏢',
+    description: 'Building Information Modeling platform',
+    authType: 'oauth' as const,
+  },
+  microsoft_teams: {
+    name: 'Microsoft Teams',
+    logo: '💬',
+    description: 'Team collaboration and communication',
+    authType: 'oauth' as const,
+  },
+  zoom: {
+    name: 'Zoom',
+    logo: '📹',
+    description: 'Video conferencing and meetings',
+    authType: 'oauth' as const,
+  },
+  outlook: {
+    name: 'Outlook',
+    logo: '📧',
+    description: 'Email and calendar management',
+    authType: 'oauth' as const,
   },
 };
 

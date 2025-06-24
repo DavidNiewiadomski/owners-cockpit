@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -34,8 +33,8 @@ serve(async (req) => {
       case 'primavera':
         testResult = await testPrimaveraConnection(apiKey, config)
         break
-      case 'box':
-        testResult = await testBoxConnection(oauthData)
+      case 'onedrive':
+        testResult = await testOneDriveConnection(oauthData)
         break
       case 'iot_sensors':
         testResult = await testIoTConnection(apiKey, config)
@@ -54,6 +53,18 @@ serve(async (req) => {
         break
       case 'track3d':
         testResult = await testTrack3DConnection(apiKey, config)
+        break
+      case 'bim360':
+        testResult = await testBIM360Connection(apiKey, oauthData)
+        break
+      case 'microsoft_teams':
+        testResult = await testMicrosoftTeamsConnection(oauthData)
+        break
+      case 'zoom':
+        testResult = await testZoomConnection(oauthData)
+        break
+      case 'outlook':
+        testResult = await testOutlookConnection(oauthData)
         break
       default:
         testResult = { ok: false, error: `Unsupported provider: ${provider}` }
@@ -122,18 +133,18 @@ async function testPrimaveraConnection(apiKey?: string, config?: any) {
   }
 }
 
-async function testBoxConnection(oauthData?: any) {
+async function testOneDriveConnection(oauthData?: any) {
   try {
     if (!oauthData?.access_token) {
-      return { ok: false, error: 'OAuth token required for Box' }
+      return { ok: false, error: 'OAuth token required for OneDrive' }
     }
 
-    console.log('Testing Box connection')
+    console.log('Testing OneDrive connection')
     
     // Simulate successful connection for demo
-    return { ok: true, message: 'Box connection successful' }
+    return { ok: true, message: 'OneDrive connection successful' }
   } catch (error) {
-    return { ok: false, error: `Box connection failed: ${error.message}` }
+    return { ok: false, error: `OneDrive connection failed: ${error.message}` }
   }
 }
 
@@ -224,5 +235,65 @@ async function testTrack3DConnection(apiKey?: string, config?: any) {
     return { ok: true, message: 'Track3D connection successful' }
   } catch (error) {
     return { ok: false, error: `Track3D connection failed: ${error.message}` }
+  }
+}
+
+async function testBIM360Connection(apiKey?: string, oauthData?: any) {
+  try {
+    if (!apiKey && !oauthData?.access_token) {
+      return { ok: false, error: 'API key or OAuth token required for BIM 360' }
+    }
+
+    console.log('Testing BIM 360 connection')
+    
+    // Simulate successful connection for demo
+    return { ok: true, message: 'BIM 360 connection successful' }
+  } catch (error) {
+    return { ok: false, error: `BIM 360 connection failed: ${error.message}` }
+  }
+}
+
+async function testMicrosoftTeamsConnection(oauthData?: any) {
+  try {
+    if (!oauthData?.access_token) {
+      return { ok: false, error: 'OAuth token required for Microsoft Teams' }
+    }
+
+    console.log('Testing Microsoft Teams connection')
+    
+    // Simulate successful connection for demo
+    return { ok: true, message: 'Microsoft Teams connection successful' }
+  } catch (error) {
+    return { ok: false, error: `Microsoft Teams connection failed: ${error.message}` }
+  }
+}
+
+async function testZoomConnection(oauthData?: any) {
+  try {
+    if (!oauthData?.access_token) {
+      return { ok: false, error: 'OAuth token required for Zoom' }
+    }
+
+    console.log('Testing Zoom connection')
+    
+    // Simulate successful connection for demo
+    return { ok: true, message: 'Zoom connection successful' }
+  } catch (error) {
+    return { ok: false, error: `Zoom connection failed: ${error.message}` }
+  }
+}
+
+async function testOutlookConnection(oauthData?: any) {
+  try {
+    if (!oauthData?.access_token) {
+      return { ok: false, error: 'OAuth token required for Outlook' }
+    }
+
+    console.log('Testing Outlook connection')
+    
+    // Simulate successful connection for demo
+    return { ok: true, message: 'Outlook connection successful' }
+  } catch (error) {
+    return { ok: false, error: `Outlook connection failed: ${error.message}` }
   }
 }

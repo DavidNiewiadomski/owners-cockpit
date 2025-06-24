@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,25 +21,33 @@ import { supabase } from '@/integrations/supabase/client';
 const PROVIDER_NAMES = {
   procore: 'Procore',
   primavera: 'Primavera P6',
-  box: 'Box',
+  onedrive: 'OneDrive',
   iot_sensors: 'IoT Sensors',
   smartsheet: 'Smartsheet',
   green_badger: 'Green Badger',
   billy: 'Billy',
   clearstory: 'Clearstory',
-  track3d: 'Track3D'
+  track3d: 'Track3D',
+  bim360: 'BIM 360',
+  microsoft_teams: 'Microsoft Teams',
+  zoom: 'Zoom',
+  outlook: 'Outlook'
 };
 
 const PROVIDER_DESCRIPTIONS = {
   procore: 'Construction management platform',
   primavera: 'Project scheduling and management',
-  box: 'Cloud storage and file sharing',
+  onedrive: 'Cloud storage and file sharing',
   iot_sensors: 'Building sensors and monitoring',
   smartsheet: 'Collaborative work management',
   green_badger: 'Sustainability tracking and reporting',
   billy: 'Insurance management for construction',
   clearstory: 'Construction data analytics',
-  track3d: 'AI-powered construction progress tracking'
+  track3d: 'AI-powered construction progress tracking',
+  bim360: 'Building Information Modeling platform',
+  microsoft_teams: 'Team collaboration and communication',
+  zoom: 'Video conferencing and meetings',
+  outlook: 'Email and calendar management'
 };
 
 interface ConnectedServicesProps {
