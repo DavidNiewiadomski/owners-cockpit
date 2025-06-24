@@ -9,8 +9,28 @@ import { MeetingSummary } from './components/MeetingSummary';
 import WorkOrders from './components/WorkOrders';
 import EnergyUsage from './components/EnergyUsage';
 import SustainabilityMetrics from './components/SustainabilityMetrics';
+import BudgetKPI from './components/BudgetKPI';
+import TimelineChart from './components/TimelineChart';
 
 export const WIDGET_REGISTRY = [
+  {
+    id: 'budget-kpi',
+    name: 'Budget KPI',
+    description: 'Key budget performance indicators and variance tracking',
+    component: BudgetKPI,
+    category: 'construction',
+    roles: ['project_manager', 'executive', 'preconstruction'] as const,
+    defaultSize: { w: 1, h: 1 }
+  },
+  {
+    id: 'timeline-chart',
+    name: 'Timeline Chart',
+    description: 'Project timeline visualization with planned vs actual progress',
+    component: TimelineChart,
+    category: 'construction',
+    roles: ['project_manager', 'executive', 'preconstruction'] as const,
+    defaultSize: { w: 2, h: 1 }
+  },
   {
     id: 'project-timeline',
     name: 'Project Timeline',

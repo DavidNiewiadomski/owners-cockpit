@@ -48,7 +48,6 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ projectId }) => {
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -63,22 +62,13 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ projectId }) => {
 
   const layout = user ? getLayout(user.id, currentRole, projectId) : [];
 
-  // Memoize the load function to prevent infinite loops
-  const loadLayoutOnce = useCallback(async () => {
-    if (user && !hasLoaded) {
-      await loadLayout(user.id, currentRole, projectId);
-      setHasLoaded(true);
+  // Load layout only once when dependencies change
+  useEffect(() => {
+    if (user) {
+      console.log('Loading layout for:', { userId: user.id, role: currentRole, projectId });
+      loadLayout(user.id, currentRole, projectId);
     }
-  }, [user, currentRole, projectId, hasLoaded, loadLayout]);
-
-  useEffect(() => {
-    loadLayoutOnce();
-  }, [loadLayoutOnce]);
-
-  // Reset hasLoaded when user, role, or project changes
-  useEffect(() => {
-    setHasLoaded(false);
-  }, [user?.id, currentRole, projectId]);
+  }, [user?.id, currentRole, projectId]); // Removed loadLayout from dependencies to prevent infinite loop
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
