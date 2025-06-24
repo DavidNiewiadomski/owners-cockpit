@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
@@ -36,7 +35,10 @@ export function useInsights(projectId?: string) {
         throw error;
       }
 
-      return data || [];
+      return (data || []).map(item => ({
+        ...item,
+        severity: item.severity as 'low' | 'medium' | 'high' | 'critical'
+      }));
     },
   });
 }
@@ -62,7 +64,10 @@ export function useUnreadInsights(projectId?: string) {
         throw error;
       }
 
-      return data || [];
+      return (data || []).map(item => ({
+        ...item,
+        severity: item.severity as 'low' | 'medium' | 'high' | 'critical'
+      }));
     },
   });
 }

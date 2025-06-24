@@ -8,8 +8,10 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+type InsightFrequency = 'realtime' | 'daily' | 'weekly';
+
 interface NotificationPreferences {
-  insight_frequency: 'realtime' | 'daily' | 'weekly';
+  insight_frequency: InsightFrequency;
   email_notifications: boolean;
   push_notifications: boolean;
 }
@@ -109,7 +111,7 @@ const NotificationSettings: React.FC = () => {
             <Label>Insight Frequency</Label>
             <Select 
               value={preferences.insight_frequency} 
-              onValueChange={(value: 'realtime' | 'daily' | 'weekly') => 
+              onValueChange={(value: InsightFrequency) => 
                 updatePreference('insight_frequency', value)
               }
             >
