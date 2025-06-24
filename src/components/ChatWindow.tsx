@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
@@ -29,7 +28,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   const roleConfig = getRoleConfig(currentRole);
   const agentMemory = getActiveAgentMemory();
   
-  const { speak, stop, isSpeaking, isSupported: ttsSupported } = useTextToSpeech();
+  const { speak, stop, isSpeaking, isSupported: ttsSupported, getBestVoice } = useTextToSpeech();
   
   const {
     messages,
@@ -49,7 +48,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     scrollToBottom();
   }, [messages]);
 
-  // Speak AI responses when they arrive
+  // Speak AI responses when they arrive with more natural settings
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && 
@@ -59,7 +58,11 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
         ttsSupported) {
       // Small delay to ensure the message is fully rendered
       setTimeout(() => {
-        speak(lastMessage.content, { rate: 0.9, pitch: 1 });
+        speak(lastMessage.content, { 
+          rate: 0.85, // Slower, more conversational pace
+          pitch: 0.95, // Slightly lower pitch for warmth
+          volume: 0.9 
+        });
       }, 500);
     }
   }, [messages, speak, voiceResponseEnabled, ttsSupported]);
@@ -192,7 +195,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
           <p className="text-xs text-muted-foreground">
             <strong>Context:</strong> {agentMemory.persona}
             {voiceResponseEnabled && ttsSupported && (
-              <span className="ml-2 text-primary">🔊 Voice responses enabled</span>
+              <span className="ml-2 text-primary">
+                🔊 Voice: {getBestVoice()}
+              </span>
             )}
           </p>
         </div>
@@ -215,7 +220,9 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
               I'm your AI assistant specialized for {roleConfig.description.toLowerCase()}. 
               Ask me anything related to your {currentRole.toLowerCase()} responsibilities.
               {voiceResponseEnabled && ttsSupported && (
-                <span className="block mt-2 text-primary">🎤 Speak your questions and I'll respond with voice!</span>
+                <span className="block mt-2 text-primary">
+                  🎤 Speak your questions and I'll respond with natural voice using {getBestVoice()}!
+                </span>
               )}
             </p>
           </motion.div>
