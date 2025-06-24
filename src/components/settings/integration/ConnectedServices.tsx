@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,11 +10,14 @@ import {
   CheckCircle, 
   XCircle,
   AlertCircle,
-  Clock
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import { ProjectIntegration } from '@/hooks/useProjectIntegrations';
 import { formatDistanceToNow } from 'date-fns';
 import IntegrationModal from '@/components/integrations/IntegrationModal';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const PROVIDER_NAMES = {
   procore: 'Procore',
@@ -50,6 +54,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     integration: ProjectIntegration;
     provider: any;
   } | null>(null);
+  const [syncingIntegrations, setSyncingIntegrations] = useState<Set<string>>(new Set());
 
   console.log('🎯 ConnectedServices render:', { 
     integrationsCount: integrations?.length, 
@@ -67,6 +72,36 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
       timestamp: new Date().toISOString()
     });
   }, [integrations]);
+
+  const handleSync = async (integration: ProjectIntegration) => {
+    setSyncingIntegrations(prev => new Set(prev).add(integration.id));
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('mockSync', {
+        body: { 
+          project_id: integration.project_id,
+          provider: integration.provider 
+        }
+      });
+
+      if (error) {
+        console.error('Sync error:', error);
+        toast.error('Sync failed');
+      } else {
+        console.log('Sync result:', data);
+        toast.success(`${PROVIDER_NAMES[integration.provider]} synced successfully`);
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast.error('Sync failed');
+    } finally {
+      setSyncingIntegrations(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(integration.id);
+        return newSet;
+      });
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -174,6 +209,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
       <div className="space-y-4">
         {integrations.map((integration) => {
           console.log('🔧 Rendering integration:', integration);
+          const isSyncing = syncingIntegrations.has(integration.id);
           return (
             <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center gap-3">
@@ -197,6 +233,17 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
                     Last sync: {getLastSyncText(integration.last_sync)}
                   </p>
                 </div>
+                {integration.status === 'connected' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleSync(integration)}
+                    disabled={isSyncing}
+                  >
+                    <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
+                    {isSyncing ? 'Syncing...' : 'Sync Now'}
+                  </Button>
+                )}
                 <Switch checked={integration.status === 'connected'} />
                 <Button 
                   variant="ghost" 
@@ -267,7 +314,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
         <CardHeader>
           <CardTitle>Connected Services</CardTitle>
           <CardDescription>
-            Quick overview of your active integrations
+            Manage and sync your active integrations
           </CardDescription>
         </CardHeader>
         <CardContent>
