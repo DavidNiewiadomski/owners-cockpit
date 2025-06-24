@@ -13,7 +13,6 @@ import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
-import IntegrationsPage from "./pages/IntegrationsPage";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
 
 // Optimized QueryClient configuration
@@ -67,7 +66,6 @@ function App() {
                       <Route path="/projects" element={<Index />} />
                       <Route path="/projects/:projectId" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
-                      <Route path="/projects/:projectId/integrations" element={<IntegrationsPage />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                       <Route path="*" element={<NotFound />} />
