@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -22,6 +21,19 @@ export interface Communication {
   metadata: any;
   created_at: string;
   updated_at: string;
+}
+
+export interface CommunicationSearchResult {
+  id: string;
+  project_id: string;
+  provider: string;
+  comm_type: string;
+  subject?: string;
+  body?: string;
+  speaker: any;
+  message_ts: string;
+  url?: string;
+  similarity: number;
 }
 
 export function useCommunications(projectId: string) {
@@ -97,35 +109,24 @@ export function useSearchCommunications() {
     }) => {
       console.log('🔍 Searching communications:', { query, projectId });
 
-      // First, generate embedding for the query
-      const embeddingResponse = await fetch('/api/generate-embedding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: query })
+      // Call the chatRag function which includes communication search
+      const { data, error } = await supabase.functions.invoke('chatRag', {
+        body: {
+          question: query,
+          project_id: projectId,
+          search_only: true,
+          include_communications: true,
+          match_count: limit
+        }
       });
-
-      if (!embeddingResponse.ok) {
-        throw new Error('Failed to generate embedding');
-      }
-
-      const { embedding } = await embeddingResponse.json();
-
-      // Use the search function
-      const { data, error } = await supabase
-        .rpc('search_communications', {
-          query_embedding: embedding,
-          project_uuid: projectId,
-          match_count: limit,
-          similarity_threshold: 0.7
-        });
 
       if (error) {
         console.error('❌ Error searching communications:', error);
         throw error;
       }
 
-      console.log(`✅ Found ${data?.length || 0} matching communications:`, data);
-      return data || [];
+      console.log(`✅ Found ${data?.communications?.length || 0} matching communications:`, data?.communications);
+      return data?.communications || [];
     },
   });
 }
