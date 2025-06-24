@@ -50,38 +50,46 @@ export const useTextToSpeech = () => {
     if (options.voice) {
       utterance.voice = options.voice;
     } else {
-      // Priority order for natural-sounding voices
-      const preferredVoices = [
-        // High-quality English voices (often neural/premium)
+      // Priority order for natural-sounding voice names
+      const preferredVoiceNames = [
         'Google UK English Female',
         'Google US English',
         'Microsoft Zira - English (United States)',
         'Microsoft David - English (United States)',
-        'Alex', // macOS
-        'Samantha', // macOS
-        'Karen', // macOS
-        'Victoria', // macOS
-        // Look for any voice with "neural" or "premium" in the name
-        ...availableVoices.filter(v => 
-          v.name.toLowerCase().includes('neural') || 
-          v.name.toLowerCase().includes('premium')
-        ),
-        // Female voices tend to sound more natural
-        ...availableVoices.filter(v => 
-          v.name.toLowerCase().includes('female') ||
-          v.name.toLowerCase().includes('woman') ||
-          ['Samantha', 'Alex', 'Victoria', 'Allison', 'Ava', 'Susan', 'Vicki'].some(name => 
-            v.name.includes(name)
-          )
-        ),
-        // General English voices
-        ...availableVoices.filter(v => v.lang.startsWith('en'))
+        'Alex',
+        'Samantha',
+        'Karen',
+        'Victoria'
       ];
 
-      // Find the first available preferred voice
-      const selectedVoice = preferredVoices.find(voice => 
-        availableVoices.some(av => av.name === voice.name || av === voice)
+      // Find voices by preferred names first
+      let selectedVoice = availableVoices.find(voice => 
+        preferredVoiceNames.some(preferred => voice.name.includes(preferred))
       );
+
+      // If no preferred voice found, look for neural/premium voices
+      if (!selectedVoice) {
+        selectedVoice = availableVoices.find(voice => 
+          voice.name.toLowerCase().includes('neural') || 
+          voice.name.toLowerCase().includes('premium')
+        );
+      }
+
+      // If still no voice found, look for female voices
+      if (!selectedVoice) {
+        selectedVoice = availableVoices.find(voice => 
+          voice.name.toLowerCase().includes('female') ||
+          voice.name.toLowerCase().includes('woman') ||
+          ['Samantha', 'Alex', 'Victoria', 'Allison', 'Ava', 'Susan', 'Vicki'].some(name => 
+            voice.name.includes(name)
+          )
+        );
+      }
+
+      // If still no voice found, use any English voice
+      if (!selectedVoice) {
+        selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en'));
+      }
 
       if (selectedVoice) {
         utterance.voice = selectedVoice;
@@ -137,7 +145,7 @@ export const useTextToSpeech = () => {
   // Get the best available voice for display
   const getBestVoice = useCallback(() => {
     const availableVoices = loadVoices();
-    const preferredVoices = [
+    const preferredVoiceNames = [
       'Google UK English Female',
       'Google US English',
       'Microsoft Zira - English (United States)',
@@ -145,9 +153,11 @@ export const useTextToSpeech = () => {
       'Samantha'
     ];
 
-    return preferredVoices.find(name => 
-      availableVoices.some(v => v.name.includes(name))
-    ) || availableVoices.find(v => v.lang.startsWith('en'))?.name || 'Default';
+    const foundVoice = availableVoices.find(voice => 
+      preferredVoiceNames.some(preferred => voice.name.includes(preferred))
+    ) || availableVoices.find(voice => voice.lang.startsWith('en'));
+
+    return foundVoice?.name || 'Default';
   }, [loadVoices]);
 
   return {
