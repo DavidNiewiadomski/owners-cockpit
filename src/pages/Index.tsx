@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import SourceModal from '@/components/SourceModal';
 import DocumentViewer from '@/components/DocumentViewer';
 import VoiceControl from '@/components/VoiceControl';
 import AIFloatingButton from '@/components/AIFloatingButton';
+import AIChatOverlay from '@/components/AIChatOverlay';
 import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import ModelViewer from '@/components/ModelViewer';
@@ -25,6 +27,7 @@ const Index = () => {
   const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model'>('portfolio');
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showChatOverlay, setShowChatOverlay] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
@@ -87,7 +90,7 @@ const Index = () => {
   };
 
   const handleAIChat = () => {
-    setActiveView('chat');
+    setShowChatOverlay(true);
   };
 
   const renderMainContent = () => {
@@ -157,9 +160,14 @@ const Index = () => {
       </main>
 
       {/* AI Floating Button */}
-      {activeView !== 'chat' && (
-        <AIFloatingButton onClick={handleAIChat} />
-      )}
+      <AIFloatingButton onClick={handleAIChat} />
+
+      {/* AI Chat Overlay */}
+      <AIChatOverlay 
+        isOpen={showChatOverlay}
+        onClose={() => setShowChatOverlay(false)}
+        projectId={selectedProject || 'portfolio'}
+      />
 
       {/* Modals */}
       <SettingsModal 
