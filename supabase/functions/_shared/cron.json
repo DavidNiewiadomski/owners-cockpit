@@ -38,6 +38,45 @@
       "body": {
         "scheduled": true
       }
+    },
+    {
+      "name": "autopilot-daily-reports",
+      "cron": "0 8 * * *",
+      "method": "POST",
+      "url": "/functions/v1/autopilotEngine",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "action_type": "daily_report",
+        "scheduled": true
+      }
+    },
+    {
+      "name": "autopilot-weekly-summary",
+      "cron": "0 17 * * 5",
+      "method": "POST",
+      "url": "/functions/v1/autopilotEngine",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "action_type": "weekly_summary",
+        "scheduled": true
+      }
+    },
+    {
+      "name": "autopilot-next-actions",
+      "cron": "0 9 * * *",
+      "method": "POST",
+      "url": "/functions/v1/autopilotEngine",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": {
+        "action_type": "next_actions",
+        "scheduled": true
+      }
     }
   ]
 }
