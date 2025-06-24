@@ -22,6 +22,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
   error,
   onSendMessage
 }) => {
+  console.log('🟡 ChatInput rendering');
+  
   const [inputValue, setInputValue] = useState('');
 
   const handleSend = () => {

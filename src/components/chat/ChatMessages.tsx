@@ -32,6 +32,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
   getBestVoice,
   onCitationClick
 }) => {
+  console.log('🟡 ChatMessages rendering with messages count:', messages.length);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
