@@ -8,15 +8,15 @@ import SyncSettings from './integration/SyncSettings';
 
 const IntegrationSettings: React.FC = () => {
   const router = useRouter();
-  const [selectedProject] = useState('project-1'); // This would come from context
+  // Map the demo project to an actual project ID that exists in the database
+  const demoProjectId = '11111111-1111-1111-1111-111111111111';
+  const [selectedProject] = useState(demoProjectId);
   
-  // For demo purposes, let's try to get the first actual project from the database
-  // But still use the hook to fetch integrations - it should handle the demo case
   const { data: integrations, isLoading, error } = useProjectIntegrations(selectedProject);
 
   const handleViewIntegrations = () => {
     if (selectedProject) {
-      router.push(`/projects/${selectedProject}/integrations`);
+      router.push(`/projects/project-1/integrations`);
     }
   };
 

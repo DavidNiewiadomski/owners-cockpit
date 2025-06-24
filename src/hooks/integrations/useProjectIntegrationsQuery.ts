@@ -23,54 +23,19 @@ export function useProjectIntegrationsQuery(projectId: string) {
     queryFn: async (): Promise<ProjectIntegration[]> => {
       console.log('🔍 Fetching integrations for project:', projectId);
       
-      // For demo project, let's fetch all integrations regardless of RLS
+      // For demo project, map to actual project IDs that exist in the database
+      let actualProjectId = projectId;
       if (projectId === 'project-1') {
-        console.log('🎭 Demo mode: fetching integrations using service role bypass');
-        
-        // Try direct query first
-        const { data: directData, error: directError } = await supabase
-          .from('project_integrations')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        console.log('📊 Direct query result:', { directData, directError });
-
-        if (directError) {
-          console.error('❌ Direct query failed:', directError);
-          
-          // Fallback: try to get any integrations from existing projects
-          const { data: fallbackData, error: fallbackError } = await supabase
-            .from('project_integrations')
-            .select('*')
-            .limit(10);
-
-          if (fallbackError) {
-            console.error('❌ Fallback query also failed:', fallbackError);
-            return [];
-          }
-
-          console.log('✅ Fallback query succeeded:', fallbackData);
-          return (fallbackData || []).map(item => ({
-            ...item,
-            provider: item.provider as ProjectIntegration['provider'],
-            status: item.status as ProjectIntegration['status']
-          }));
-        }
-
-        console.log('✅ Direct query succeeded with', directData?.length, 'integrations');
-        return (directData || []).map(item => ({
-          ...item,
-          provider: item.provider as ProjectIntegration['provider'],
-          status: item.status as ProjectIntegration['status']
-        }));
+        // Use the first project ID from your database screenshots
+        actualProjectId = '11111111-1111-1111-1111-111111111111';
+        console.log('🎭 Demo mode: mapping project-1 to actual project ID:', actualProjectId);
       }
       
-      // For real project IDs, fetch normally
-      console.log('🏗️ Fetching integrations for real project:', projectId);
+      console.log('🏗️ Fetching integrations for mapped project:', actualProjectId);
       const { data, error } = await supabase
         .from('project_integrations')
         .select('*')
-        .eq('project_id', projectId)
+        .eq('project_id', actualProjectId)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -78,7 +43,7 @@ export function useProjectIntegrationsQuery(projectId: string) {
         throw error;
       }
 
-      console.log(`✅ Found ${data?.length || 0} integrations for project ${projectId}:`, data);
+      console.log(`✅ Found ${data?.length || 0} integrations for project ${actualProjectId}:`, data);
       return (data || []).map(item => ({
         ...item,
         provider: item.provider as ProjectIntegration['provider'],
