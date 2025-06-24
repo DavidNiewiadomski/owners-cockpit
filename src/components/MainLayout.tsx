@@ -19,7 +19,12 @@ const MainLayout: React.FC = () => {
 
   useEffect(() => {
     console.log(`Current role: ${currentRole}`);
-  }, [currentRole]);
+    console.log('MainLayout state:', { 
+      showChatOverlay: appState.showChatOverlay,
+      selectedProject: appState.selectedProject,
+      activeView: appState.activeView 
+    });
+  }, [currentRole, appState.showChatOverlay, appState.selectedProject, appState.activeView]);
 
   useKeyboardShortcuts({
     activeView: appState.activeView,
@@ -57,6 +62,7 @@ const MainLayout: React.FC = () => {
       <AIFloatingButton onClick={appState.handleAIChat} />
 
       {/* AI Chat Overlay */}
+      {console.log('🟢 About to render AIChatOverlay with isOpen:', appState.showChatOverlay)}
       <AIChatOverlay 
         isOpen={appState.showChatOverlay}
         onClose={appState.handleCloseChatOverlay}

@@ -13,7 +13,7 @@ interface AIChatOverlayProps {
 }
 
 const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectId }) => {
-  console.log('🟡 AIChatOverlay rendering with isOpen:', isOpen);
+  console.log('🟡 AIChatOverlay rendering - isOpen:', isOpen, 'projectId:', projectId);
   
   const [isMinimized, setIsMinimized] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -46,14 +46,14 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
   }, [isOpen, onClose]);
 
   if (!isOpen) {
-    console.log('🟡 AIChatOverlay not open, not rendering');
+    console.log('🟡 AIChatOverlay not open, returning null');
     return null;
   }
 
-  console.log('🟡 AIChatOverlay rendering with projectId:', projectId);
+  console.log('🟡 AIChatOverlay rendering overlay UI');
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

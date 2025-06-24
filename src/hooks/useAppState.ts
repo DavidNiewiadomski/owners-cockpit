@@ -51,12 +51,12 @@ export const useAppState = () => {
   };
 
   const handleAIChat = () => {
-    console.log('🟢 AI Chat button clicked, opening overlay');
+    console.log('🟢 handleAIChat called - setting showChatOverlay to true');
     setShowChatOverlay(true);
   };
 
   const handleCloseChatOverlay = () => {
-    console.log('🟢 Closing AI Chat overlay');
+    console.log('🟢 handleCloseChatOverlay called - setting showChatOverlay to false');
     setShowChatOverlay(false);
   };
 

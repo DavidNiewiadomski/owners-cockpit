@@ -9,8 +9,10 @@ interface AIFloatingButtonProps {
 }
 
 const AIFloatingButton: React.FC<AIFloatingButtonProps> = ({ onClick }) => {
-  const handleClick = () => {
-    console.log('🔵 AIFloatingButton clicked!');
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🔵 AIFloatingButton clicked - calling onClick handler');
     onClick();
   };
 
