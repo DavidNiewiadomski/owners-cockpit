@@ -19,7 +19,11 @@ export function useActionItems(projectId: string) {
         throw error;
       }
 
-      return data || [];
+      return (data || []).map(item => ({
+        ...item,
+        status: item.status as ActionItem['status'],
+        priority: item.priority as ActionItem['priority']
+      }));
     },
     enabled: !!projectId
   });

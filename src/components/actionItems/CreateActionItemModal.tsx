@@ -75,7 +75,9 @@ export const CreateActionItemModal: React.FC<CreateActionItemModalProps> = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const data: CreateActionItemData = {
-      ...values,
+      title: values.title,
+      description: values.description,
+      priority: values.priority,
       due_date: values.due_date ? values.due_date.toISOString().split('T')[0] : undefined,
       assignee: values.assignee || undefined,
       source_type: prefillData?.source_type,
