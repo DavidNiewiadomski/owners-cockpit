@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 interface IntegrationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet';
+  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
   projectId: string;
   existingIntegration?: ProjectIntegration;
 }
@@ -120,6 +120,10 @@ const IntegrationModal: React.FC<IntegrationModalProps> = ({
       box: 'Box',
       iot_sensors: 'IoT Sensors',
       smartsheet: 'Smartsheet',
+      green_badger: 'Green Badger',
+      billy: 'Billy',
+      clearstory: 'Clearstory',
+      track3d: 'Track3D',
     };
     return names[provider];
   };
@@ -131,6 +135,10 @@ const IntegrationModal: React.FC<IntegrationModalProps> = ({
       box: 'Configure Box integration using OAuth or API key authentication.',
       iot_sensors: 'Enter your IoT sensor API credentials and endpoint configuration.',
       smartsheet: 'Enter your Smartsheet API token. You can generate this in your Smartsheet account settings.',
+      green_badger: 'Enter your Green Badger API key. You can find this in your Green Badger account settings under API Access.',
+      billy: 'Enter your Billy API credentials. Access these through your Billy dashboard under API Settings.',
+      clearstory: 'Configure Clearstory integration using OAuth authentication. You\'ll need to authorize access to your Clearstory data.',
+      track3d: 'Enter your Track3D API key and project configuration. Find your API credentials in the Track3D dashboard.',
     };
     return instructions[provider];
   };
