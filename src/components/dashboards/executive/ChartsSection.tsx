@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, AlertTriangle } from 'lucide-react';
-import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Line, RadialBarChart, RadialBar, Legend } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis, Tooltip, Line, PieChart, Pie, Cell, Legend } from 'recharts';
 
 interface ChartsSectionProps {
   projectData: {
@@ -76,7 +76,7 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
         </CardContent>
       </Card>
 
-      {/* Risk Distribution Radar */}
+      {/* Risk Distribution Pie Chart */}
       <Card className="linear-chart-container">
         <CardHeader>
           <CardTitle className="linear-chart-title">
@@ -86,8 +86,22 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <RadialBarChart cx="50%" cy="50%" innerRadius="20%" outerRadius="90%" data={projectData.riskBreakdown}>
-              <RadialBar dataKey="value" cornerRadius={10} fill="hsl(var(--primary))" />
+            <PieChart>
+              <Pie
+                data={projectData.riskBreakdown}
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                innerRadius={30}
+                paddingAngle={2}
+                dataKey="value"
+                stroke="#fff"
+                strokeWidth={2}
+              >
+                {projectData.riskBreakdown.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
               <Tooltip 
                 contentStyle={{
                   backgroundColor: 'hsl(var(--popover))',
@@ -95,20 +109,20 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
                   borderRadius: '8px',
                   color: 'hsl(var(--popover-foreground))'
                 }}
+                formatter={(value: any, name: string) => [`${value}%`, name]}
               />
-            </RadialBarChart>
+              <Legend 
+                verticalAlign="bottom" 
+                height={50}
+                iconType="circle"
+                formatter={(value, entry: any) => (
+                  <span className="text-sm" style={{ color: entry.color }}>
+                    {value}: {entry.payload.value}%
+                  </span>
+                )}
+              />
+            </PieChart>
           </ResponsiveContainer>
-          <div className="grid grid-cols-2 gap-2 mt-4">
-            {projectData.riskBreakdown.map((item, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: item.color }}
-                />
-                <span className="text-xs font-medium text-foreground">{item.category}: {item.value}%</span>
-              </div>
-            ))}
-          </div>
         </CardContent>
       </Card>
     </div>
