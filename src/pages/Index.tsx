@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -90,7 +89,13 @@ const Index = () => {
   };
 
   const handleAIChat = () => {
+    console.log('🟢 AI Chat button clicked, opening overlay');
     setShowChatOverlay(true);
+  };
+
+  const handleCloseChatOverlay = () => {
+    console.log('🟢 Closing AI Chat overlay');
+    setShowChatOverlay(false);
   };
 
   const renderMainContent = () => {
@@ -162,10 +167,11 @@ const Index = () => {
       {/* AI Floating Button */}
       <AIFloatingButton onClick={handleAIChat} />
 
-      {/* AI Chat Overlay */}
+      {/* AI Chat Overlay - Debug the state */}
+      {console.log('🔍 Rendering AIChatOverlay with isOpen:', showChatOverlay)}
       <AIChatOverlay 
         isOpen={showChatOverlay}
-        onClose={() => setShowChatOverlay(false)}
+        onClose={handleCloseChatOverlay}
         projectId={selectedProject || 'portfolio'}
       />
 
