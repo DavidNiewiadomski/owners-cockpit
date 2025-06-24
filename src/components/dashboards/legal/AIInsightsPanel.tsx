@@ -3,44 +3,36 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Info, ArrowRight } from 'lucide-react';
+import { LegalDemoData } from '@/utils/legalDemoData';
 
 interface AIInsightsPanelProps {
-  projectData: {
-    name: string;
-    activeContracts: number;
-    pendingReviews: number;
-    complianceScore: number;
-    riskLevel: string;
-    renewalsNextQuarter: number;
-    disputesOpen: number;
-    avgReviewTime: number;
-  };
+  projectData: LegalDemoData;
 }
 
 const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
-  const complianceStatus = projectData.complianceScore > 90 ? 'excellent' : projectData.complianceScore > 80 ? 'good' : 'needs attention';
-  const riskColor = projectData.riskLevel === 'low' ? 'text-green-600' : projectData.riskLevel === 'medium' ? 'text-yellow-600' : 'text-red-600';
-  const reviewEfficiency = projectData.avgReviewTime < 5 ? 'fast' : projectData.avgReviewTime < 10 ? 'standard' : 'slow';
+  const { summary, insights } = projectData;
   
   const keyMetrics = [
-    { label: 'Compliance', value: `${projectData.complianceScore}%`, status: complianceStatus === 'excellent' ? 'positive' : complianceStatus === 'good' ? 'normal' : 'warning' },
-    { label: 'Risk Level', value: projectData.riskLevel, status: projectData.riskLevel === 'low' ? 'positive' : projectData.riskLevel === 'medium' ? 'normal' : 'warning' },
-    { label: 'Contracts', value: `${projectData.activeContracts}`, status: 'normal' },
-    { label: 'Reviews', value: `${projectData.pendingReviews}`, status: projectData.pendingReviews > 10 ? 'warning' : 'normal' }
-  ];
-
-  const insights = [
-    `Legal compliance at ${projectData.complianceScore}% with ${complianceStatus} regulatory adherence`,
-    `${projectData.activeContracts} active contracts with ${projectData.pendingReviews} pending reviews`,
-    `${projectData.riskLevel} risk profile with ${projectData.disputesOpen} open disputes requiring attention`,
-    `Contract review averaging ${projectData.avgReviewTime} days with ${reviewEfficiency} processing time`
-  ];
-
-  const recommendations = [
-    projectData.complianceScore < 80 ? 'Strengthen compliance monitoring procedures' : 'Maintain current compliance excellence',
-    projectData.pendingReviews > 10 ? 'Accelerate contract review process' : 'Continue current review timeline',
-    projectData.renewalsNextQuarter > 5 ? 'Prioritize upcoming contract renewals' : 'Monitor renewal timeline',
-    projectData.disputesOpen > 2 ? 'Focus on dispute resolution strategies' : 'Maintain proactive dispute prevention'
+    { 
+      label: 'Contracts', 
+      value: summary.activeContracts, 
+      status: 'normal' 
+    },
+    { 
+      label: 'Compliance', 
+      value: `${summary.complianceScore}%`, 
+      status: summary.complianceScore > 90 ? 'positive' : summary.complianceScore > 75 ? 'normal' : 'warning' 
+    },
+    { 
+      label: 'Claims', 
+      value: summary.activeClaims, 
+      status: summary.activeClaims === 0 ? 'positive' : summary.activeClaims < 3 ? 'normal' : 'warning' 
+    },
+    { 
+      label: 'COIs', 
+      value: `${summary.compliantCOIs}/${summary.totalCOIs}`, 
+      status: summary.compliantCOIs === summary.totalCOIs ? 'positive' : 'normal' 
+    }
   ];
 
   return (
@@ -74,17 +66,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         {/* Executive Summary */}
         <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
           <p className="text-sm leading-relaxed">
-            <strong>{projectData.name}</strong> legal operations maintain{' '}
-            <strong className={complianceStatus === 'excellent' ? 'text-green-600' : complianceStatus === 'good' ? 'text-foreground' : 'text-yellow-600'}>
-              {complianceStatus} compliance
-            </strong>{' '}
-            at {projectData.complianceScore}% with{' '}
-            <strong className={riskColor}>{projectData.riskLevel} risk profile</strong>.{' '}
-            Managing <strong>{projectData.activeContracts} active contracts</strong> with{' '}
-            <strong className={projectData.pendingReviews > 10 ? 'text-yellow-600' : 'text-green-600'}>
-              {projectData.pendingReviews} pending reviews
-            </strong>{' '}
-            and {projectData.avgReviewTime}-day average processing time.
+            Portfolio includes <strong>{summary.totalContracts}</strong> contracts with total value of <strong>${(summary.totalContractValue / 1000000).toFixed(1)}M</strong>. 
+            Compliance score at <strong>{summary.complianceScore}%</strong> with <strong>{summary.activeClaims}</strong> active claims. 
+            <strong>{summary.contractsEndingSoon}</strong> contracts ending within 60 days requiring attention.
           </p>
         </div>
 
@@ -96,14 +80,24 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
               Key Insights
             </div>
             <div className="space-y-2">
-              {insights.slice(0, 3).map((insight, index) => (
-                <div key={index} className="flex items-start gap-2 text-xs">
-                  <Badge variant="outline" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
-                    •
-                  </Badge>
-                  <span className="text-muted-foreground leading-relaxed">{insight}</span>
-                </div>
-              ))}
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="outline" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  •
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">{insights.contractCompliance}</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="outline" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  •
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">{insights.insuranceCompliance}</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="outline" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  •
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">{insights.claimsStatus}</span>
+              </div>
             </div>
           </div>
 
@@ -114,14 +108,24 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
               Recommendations
             </div>
             <div className="space-y-2">
-              {recommendations.slice(0, 3).map((rec, index) => (
-                <div key={index} className="flex items-start gap-2 text-xs">
-                  <Badge variant="secondary" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
-                    →
-                  </Badge>
-                  <span className="text-muted-foreground leading-relaxed">{rec}</span>
-                </div>
-              ))}
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="secondary" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  →
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">Monitor upcoming contract expirations and prepare renewal strategies</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="secondary" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  →
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">Continue proactive insurance compliance management</span>
+              </div>
+              <div className="flex items-start gap-2 text-xs">
+                <Badge variant="secondary" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
+                  →
+                </Badge>
+                <span className="text-muted-foreground leading-relaxed">{insights.riskAssessment}</span>
+              </div>
             </div>
           </div>
         </div>

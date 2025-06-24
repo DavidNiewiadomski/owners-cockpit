@@ -10,7 +10,7 @@ interface LegalDashboardProps {
 }
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
-  const projectData = generateLegalDemoData(projectId);
+  const projectData = generateLegalDemoData();
 
   return (
     <div className="space-y-6">
@@ -25,17 +25,17 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span>Active Contracts</span>
-                <Badge variant="outline">{projectData.activeContracts}</Badge>
+                <Badge variant="outline">{projectData.summary.activeContracts}</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span>Pending Reviews</span>
-                <Badge variant={projectData.pendingReviews > 10 ? "destructive" : "secondary"}>
-                  {projectData.pendingReviews}
+                <Badge variant={projectData.summary.pendingChangeOrders > 10 ? "destructive" : "secondary"}>
+                  {projectData.summary.pendingChangeOrders}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span>Renewals Next Quarter</span>
-                <Badge variant="outline">{projectData.renewalsNextQuarter}</Badge>
+                <Badge variant="outline">{projectData.summary.contractsEndingSoon}</Badge>
               </div>
             </div>
           </CardContent>
@@ -49,23 +49,23 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span>Compliance Score</span>
-                <Badge variant={projectData.complianceScore > 90 ? "default" : "secondary"}>
-                  {projectData.complianceScore}%
+                <Badge variant={projectData.summary.complianceScore > 90 ? "default" : "secondary"}>
+                  {projectData.summary.complianceScore}%
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span>Risk Level</span>
                 <Badge variant={
-                  projectData.riskLevel === 'low' ? 'default' : 
-                  projectData.riskLevel === 'medium' ? 'secondary' : 'destructive'
+                  projectData.summary.complianceScore > 90 ? 'default' : 
+                  projectData.summary.complianceScore > 75 ? 'secondary' : 'destructive'
                 }>
-                  {projectData.riskLevel}
+                  {projectData.summary.complianceScore > 90 ? 'low' : projectData.summary.complianceScore > 75 ? 'medium' : 'high'}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span>Open Disputes</span>
-                <Badge variant={projectData.disputesOpen > 2 ? "destructive" : "secondary"}>
-                  {projectData.disputesOpen}
+                <Badge variant={projectData.summary.activeClaims > 2 ? "destructive" : "secondary"}>
+                  {projectData.summary.activeClaims}
                 </Badge>
               </div>
             </div>

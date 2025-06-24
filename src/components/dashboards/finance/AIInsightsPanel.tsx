@@ -18,29 +18,41 @@ interface AIInsightsPanelProps {
 }
 
 const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
-  const budgetHealth = Math.abs(projectData.budgetVariance) < 5 ? 'on track' : projectData.budgetVariance > 5 ? 'over budget' : 'under budget';
-  const cashFlowStatus = projectData.cashFlow > 0 ? 'positive' : 'negative';
-  const profitabilityStatus = projectData.profitMargin > 15 ? 'excellent' : projectData.profitMargin > 10 ? 'good' : 'concerning';
-  
   const keyMetrics = [
-    { label: 'Budget Var.', value: `${projectData.budgetVariance > 0 ? '+' : ''}${projectData.budgetVariance}%`, status: Math.abs(projectData.budgetVariance) < 5 ? 'normal' : 'warning' },
-    { label: 'Cash Flow', value: `$${(projectData.cashFlow / 1000).toFixed(0)}K`, status: projectData.cashFlow > 0 ? 'positive' : 'warning' },
-    { label: 'Profit', value: `${projectData.profitMargin}%`, status: projectData.profitMargin > 15 ? 'positive' : projectData.profitMargin > 10 ? 'normal' : 'warning' },
-    { label: 'Invoices', value: `${projectData.invoicesPending}`, status: projectData.invoicesPending > 20 ? 'warning' : 'normal' }
+    { 
+      label: 'Budget', 
+      value: `$${(projectData.totalBudget / 1000000).toFixed(1)}M`, 
+      status: 'normal' 
+    },
+    { 
+      label: 'Variance', 
+      value: `${projectData.budgetVariance > 0 ? '+' : ''}${projectData.budgetVariance}%`, 
+      status: Math.abs(projectData.budgetVariance) < 5 ? 'positive' : 'warning' 
+    },
+    { 
+      label: 'Cash Flow', 
+      value: `$${(projectData.cashFlow / 1000).toFixed(0)}K`, 
+      status: projectData.cashFlow > 0 ? 'positive' : 'warning' 
+    },
+    { 
+      label: 'Margin', 
+      value: `${projectData.profitMargin}%`, 
+      status: projectData.profitMargin > 15 ? 'positive' : 'normal' 
+    }
   ];
 
   const insights = [
-    `Budget performance ${budgetHealth} with ${projectData.budgetVariance > 0 ? '+' : ''}${projectData.budgetVariance}% variance`,
-    `Cash flow ${cashFlowStatus} at $${(projectData.cashFlow / 1000).toFixed(0)}K monthly position`,
-    `Profitability ${profitabilityStatus} with ${projectData.profitMargin}% margin performance`,
-    `${projectData.invoicesPending} pending invoices with ${projectData.paymentDelay}-day average collection`
+    `Budget variance of ${projectData.budgetVariance > 0 ? '+' : ''}${projectData.budgetVariance}% ${Math.abs(projectData.budgetVariance) < 5 ? 'within acceptable range' : 'requires attention'}`,
+    `Monthly cash flow of $${(projectData.cashFlow / 1000).toFixed(0)}K indicates ${projectData.cashFlow > 0 ? 'healthy' : 'concerning'} liquidity position`,
+    `Profit margin at ${projectData.profitMargin}% ${projectData.profitMargin > 15 ? 'exceeds' : 'meets'} target performance`,
+    `${projectData.invoicesPending} pending invoices with ${projectData.paymentDelay} day average delay`
   ];
 
   const recommendations = [
-    Math.abs(projectData.budgetVariance) > 5 ? 'Implement budget control measures' : 'Maintain current budget discipline',
-    projectData.cashFlow < 0 ? 'Focus on cash flow improvement strategies' : 'Optimize cash flow management',
-    projectData.profitMargin < 10 ? 'Review cost structure and pricing strategy' : 'Maintain profitability focus',
-    projectData.invoicesPending > 20 ? 'Accelerate accounts receivable collection' : 'Continue efficient billing process'
+    Math.abs(projectData.budgetVariance) > 5 ? 'Review budget controls and cost management processes' : 'Maintain current budget discipline',
+    projectData.cashFlow < 0 ? 'Improve cash flow management and collection processes' : 'Continue strong cash flow management',
+    projectData.invoicesPending > 15 ? 'Accelerate invoice processing and payment collection' : 'Maintain efficient payment processing',
+    projectData.profitMargin < 15 ? 'Identify opportunities to improve project margins' : 'Sustain current profitability levels'
   ];
 
   return (
@@ -48,7 +60,7 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <Brain className="h-5 w-5 text-blue-600" />
-          AI Finance Insights
+          AI Financial Insights
           <Badge variant="secondary" className="ml-auto text-xs">
             Live Analysis
           </Badge>
@@ -74,19 +86,16 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         {/* Executive Summary */}
         <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
           <p className="text-sm leading-relaxed">
-            <strong>{projectData.name}</strong> financial performance shows{' '}
-            <strong className={budgetHealth === 'on track' ? 'text-green-600' : 'text-yellow-600'}>
-              {budgetHealth} budget status
+            <strong>{projectData.name}</strong> showing budget variance of{' '}
+            <strong className={Math.abs(projectData.budgetVariance) < 5 ? 'text-green-600' : 'text-yellow-600'}>
+              {projectData.budgetVariance > 0 ? '+' : ''}{projectData.budgetVariance}%
             </strong>{' '}
-            with {projectData.budgetVariance > 0 ? '+' : ''}{projectData.budgetVariance}% variance.{' '}
-            <strong className={cashFlowStatus === 'positive' ? 'text-green-600' : 'text-yellow-600'}>
-              {cashFlowStatus.charAt(0).toUpperCase() + cashFlowStatus.slice(1)} cash flow
+            with current spend at <strong>${(projectData.actualSpend / 1000000).toFixed(1)}M</strong> of{' '}
+            <strong>${(projectData.totalBudget / 1000000).toFixed(1)}M</strong> budget. Monthly cash flow{' '}
+            <strong className={projectData.cashFlow > 0 ? 'text-green-600' : 'text-red-600'}>
+              ${(projectData.cashFlow / 1000).toFixed(0)}K
             </strong>{' '}
-            at $${(projectData.cashFlow / 1000).toFixed(0)}K with{' '}
-            <strong className={profitabilityStatus === 'excellent' ? 'text-green-600' : profitabilityStatus === 'good' ? 'text-foreground' : 'text-yellow-600'}>
-              {projectData.profitMargin}% profit margin
-            </strong>{' '}
-            maintaining {profitabilityStatus} profitability.
+            with profit margin at <strong>{projectData.profitMargin}%</strong>.
           </p>
         </div>
 

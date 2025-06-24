@@ -11,7 +11,7 @@ interface FacilitiesDashboardProps {
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) => {
-  const projectData = generateFacilitiesDemoData(projectId);
+  const projectData = generateFacilitiesDemoData();
 
   return (
     <div className="space-y-6">

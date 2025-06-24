@@ -10,14 +10,14 @@ interface SustainabilityDashboardProps {
 }
 
 const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId }) => {
-  const projectData = generateSustainabilityDemoData(projectId);
+  const projectData = generateSustainabilityDemoData();
 
   return (
     <div className="space-y-6">
       <AIInsightsPanel projectData={projectData} />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SustainabilityMetrics projectId={projectId} />
+        <SustainabilityMetrics />
         
         <Card>
           <CardHeader>
@@ -27,15 +27,15 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span>Environmental Score</span>
-                <span className="font-semibold text-green-600">{projectData.esgScore}%</span>
+                <span className="font-semibold text-green-600">{projectData.kpis.averageEnergyStarScore}%</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Carbon Footprint</span>
-                <span className="font-semibold">{projectData.carbonFootprint}T CO2</span>
+                <span className="font-semibold">{projectData.kpis.currentEmissions}T CO2</span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Waste Reduction</span>
-                <span className="font-semibold text-green-600">{projectData.wasteReduction}%</span>
+                <span className="font-semibold text-green-600">{projectData.kpis.totalRecyclingRate}%</span>
               </div>
             </div>
           </CardContent>
