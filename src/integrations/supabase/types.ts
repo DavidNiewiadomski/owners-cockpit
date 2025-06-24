@@ -699,6 +699,57 @@ export type Database = {
           },
         ]
       }
+      insights: {
+        Row: {
+          context_data: Json | null
+          created_at: string | null
+          id: string
+          project_id: string | null
+          read_at: string | null
+          severity: string
+          summary: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          context_data?: Json | null
+          created_at?: string | null
+          id?: string
+          project_id?: string | null
+          read_at?: string | null
+          severity: string
+          summary: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          context_data?: Json | null
+          created_at?: string | null
+          id?: string
+          project_id?: string | null
+          read_at?: string | null
+          severity?: string
+          summary?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insights_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "insights_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_logs: {
         Row: {
           completed_at: string | null
@@ -1533,6 +1584,36 @@ export type Database = {
           layout?: Json
           project_id?: string
           role?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_notification_preferences: {
+        Row: {
+          created_at: string | null
+          email_notifications: boolean | null
+          id: string
+          insight_frequency: string
+          push_notifications: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          insight_frequency?: string
+          push_notifications?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email_notifications?: boolean | null
+          id?: string
+          insight_frequency?: string
+          push_notifications?: boolean | null
           updated_at?: string | null
           user_id?: string
         }

@@ -1,98 +1,160 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+interface NotificationPreferences {
+  insight_frequency: 'realtime' | 'daily' | 'weekly';
+  email_notifications: boolean;
+  push_notifications: boolean;
+}
 
 const NotificationSettings: React.FC = () => {
-  const [notifications, setNotifications] = useState({
-    emailNotifications: true,
-    pushNotifications: true,
-    projectUpdates: true,
-    taskReminders: true,
-    securityAlerts: true,
-    marketingEmails: false,
-    weeklyDigest: true,
-    frequency: 'immediate'
+  const [preferences, setPreferences] = useState<NotificationPreferences>({
+    insight_frequency: 'realtime',
+    email_notifications: true,
+    push_notifications: true,
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
 
-  const updateNotification = (key: string, value: boolean | string) => {
-    setNotifications(prev => ({ ...prev, [key]: value }));
+  useEffect(() => {
+    loadPreferences();
+  }, []);
+
+  const loadPreferences = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('user_notification_preferences')
+        .select('*')
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // Not found error
+        throw error;
+      }
+
+      if (data) {
+        setPreferences({
+          insight_frequency: data.insight_frequency,
+          email_notifications: data.email_notifications,
+          push_notifications: data.push_notifications,
+        });
+      }
+    } catch (error) {
+      console.error('Error loading notification preferences:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const savePreferences = async () => {
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('user_notification_preferences')
+        .upsert({
+          user_id: user.id,
+          ...preferences,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Settings saved",
+        description: "Your notification preferences have been updated.",
+      });
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save notification preferences.",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updatePreference = <K extends keyof NotificationPreferences>(
+    key: K,
+    value: NotificationPreferences[K]
+  ) => {
+    setPreferences(prev => ({ ...prev, [key]: value }));
+  };
+
+  if (loading) {
+    return <div className="p-4">Loading notification settings...</div>;
+  }
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Email Notifications</CardTitle>
+          <CardTitle>AI Insights Notifications</CardTitle>
           <CardDescription>
-            Choose what email notifications you'd like to receive
+            Control how and when you receive AI-generated project insights
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Insight Frequency</Label>
+            <Select 
+              value={preferences.insight_frequency} 
+              onValueChange={(value: 'realtime' | 'daily' | 'weekly') => 
+                updatePreference('insight_frequency', value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="realtime">Real-time (as they happen)</SelectItem>
+                <SelectItem value="daily">Daily Digest</SelectItem>
+                <SelectItem value="weekly">Weekly Summary</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-muted-foreground">
+              {preferences.insight_frequency === 'realtime' && 
+                "Receive instant notifications when new insights are generated"}
+              {preferences.insight_frequency === 'daily' && 
+                "Get a daily summary of insights at 8 AM"}
+              {preferences.insight_frequency === 'weekly' && 
+                "Receive a weekly summary every Monday morning"}
+            </p>
+          </div>
+
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Project Updates</Label>
+              <Label>Push Notifications</Label>
               <p className="text-sm text-muted-foreground">
-                Notifications about project status changes and milestones
+                Show browser notifications for critical insights
               </p>
             </div>
             <Switch
-              checked={notifications.projectUpdates}
-              onCheckedChange={(checked) => updateNotification('projectUpdates', checked)}
+              checked={preferences.push_notifications}
+              onCheckedChange={(checked) => updatePreference('push_notifications', checked)}
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Task Reminders</Label>
+              <Label>Email Notifications</Label>
               <p className="text-sm text-muted-foreground">
-                Reminders for upcoming deadlines and overdue tasks
+                Receive insights via email (based on frequency setting)
               </p>
             </div>
             <Switch
-              checked={notifications.taskReminders}
-              onCheckedChange={(checked) => updateNotification('taskReminders', checked)}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Security Alerts</Label>
-              <p className="text-sm text-muted-foreground">
-                Important security notifications and login alerts
-              </p>
-            </div>
-            <Switch
-              checked={notifications.securityAlerts}
-              onCheckedChange={(checked) => updateNotification('securityAlerts', checked)}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Weekly Digest</Label>
-              <p className="text-sm text-muted-foreground">
-                Summary of weekly activity and important updates
-              </p>
-            </div>
-            <Switch
-              checked={notifications.weeklyDigest}
-              onCheckedChange={(checked) => updateNotification('weeklyDigest', checked)}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Marketing Emails</Label>
-              <p className="text-sm text-muted-foreground">
-                Product updates, tips, and promotional content
-              </p>
-            </div>
-            <Switch
-              checked={notifications.marketingEmails}
-              onCheckedChange={(checked) => updateNotification('marketingEmails', checked)}
+              checked={preferences.email_notifications}
+              onCheckedChange={(checked) => updatePreference('email_notifications', checked)}
             />
           </div>
         </CardContent>
@@ -100,31 +162,61 @@ const NotificationSettings: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Notification Frequency</CardTitle>
+          <CardTitle>Insight Types</CardTitle>
           <CardDescription>
-            Control how often you receive notification emails
+            Choose which types of insights you want to receive
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label>Email Frequency</Label>
-            <Select 
-              value={notifications.frequency} 
-              onValueChange={(value) => updateNotification('frequency', value)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="immediate">Immediate</SelectItem>
-                <SelectItem value="hourly">Hourly Digest</SelectItem>
-                <SelectItem value="daily">Daily Digest</SelectItem>
-                <SelectItem value="weekly">Weekly Digest</SelectItem>
-              </SelectContent>
-            </Select>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Budget Overruns</Label>
+                <p className="text-sm text-muted-foreground">
+                  Alerts when project costs exceed budget
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Schedule Delays</Label>
+                <p className="text-sm text-muted-foreground">
+                  Notifications about overdue tasks and milestones
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Safety Incidents</Label>
+                <p className="text-sm text-muted-foreground">
+                  Critical safety alerts and incident reports
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Quality Issues</Label>
+                <p className="text-sm text-muted-foreground">
+                  Quality control and inspection findings
+                </p>
+              </div>
+              <Switch defaultChecked />
+            </div>
           </div>
         </CardContent>
       </Card>
+
+      <div className="flex justify-end">
+        <Button onClick={savePreferences} disabled={saving}>
+          {saving ? 'Saving...' : 'Save Preferences'}
+        </Button>
+      </div>
     </div>
   );
 };
