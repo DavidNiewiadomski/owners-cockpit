@@ -1,21 +1,24 @@
 
 import React from 'react';
-import { DashboardGrid } from './DashboardGrid';
+import DashboardGrid from './DashboardGrid';
 import { AIThemeAssistant } from '@/components/ai/AIThemeAssistant';
 import { useDashboardStore } from '@/stores/useDashboardStore';
+import { useAuth } from '@/hooks/useAuth';
+import { useRole } from '@/contexts/RoleContext';
 
 interface DashboardWithAIProps {
   projectId: string;
-  isEditMode: boolean;
-  onToggleEdit: () => void;
 }
 
 export const DashboardWithAI: React.FC<DashboardWithAIProps> = ({
-  projectId,
-  isEditMode,
-  onToggleEdit
+  projectId
 }) => {
-  const { layout } = useDashboardStore();
+  const { user } = useAuth();
+  const { currentRole } = useRole();
+  const { getLayout, isEditMode, setEditMode } = useDashboardStore();
+  
+  // Get layout for current user, role, and project
+  const layout = user ? getLayout(user.id, currentRole, projectId) : [];
   
   // Extract active widget IDs for AI context
   const activeWidgets = layout.map(item => item.widgetId);
@@ -36,12 +39,16 @@ export const DashboardWithAI: React.FC<DashboardWithAIProps> = ({
     return { timeOfDay, activity };
   };
 
+  const toggleEditMode = () => {
+    setEditMode(!isEditMode);
+  };
+
   return (
     <div className="relative">
       <DashboardGrid
         projectId={projectId}
         isEditMode={isEditMode}
-        onToggleEdit={onToggleEdit}
+        onToggleEdit={toggleEditMode}
       />
       
       {/* AI Theme Assistant */}
