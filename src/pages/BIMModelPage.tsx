@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Upload, Cube, Settings } from 'lucide-react';
+import { Upload, Box, Settings } from 'lucide-react';
 import BIMViewer from '@/components/bim/BIMViewer';
 import BIMUploadModal from '@/components/bim/BIMUploadModal';
 import BIMElementPanel from '@/components/bim/BIMElementPanel';
@@ -22,7 +22,7 @@ const BIMModelPage: React.FC = () => {
   const { data: bimFiles, isLoading, refetch } = useBIMFiles(projectId || '');
   const activeBimFile = bimFiles?.find(file => file.is_active);
 
-  const canManage = currentRole === 'project_manager' || currentRole === 'admin';
+  const canManage = currentRole === 'Construction' || currentRole === 'Executive';
 
   const handleElementSelect = (element: any) => {
     setSelectedElement(element);
@@ -49,7 +49,7 @@ const BIMModelPage: React.FC = () => {
       <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <Cube className="w-6 h-6 text-blue-600" />
+            <Box className="w-6 h-6 text-blue-600" />
             <div>
               <h1 className="text-xl font-semibold">3D Model Viewer</h1>
               <p className="text-sm text-muted-foreground">
@@ -108,7 +108,7 @@ const BIMModelPage: React.FC = () => {
         ) : (
           <div className="flex items-center justify-center h-full">
             <Card className="p-8 text-center max-w-md">
-              <Cube className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <Box className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">No 3D Model Available</h3>
               <p className="text-muted-foreground mb-4">
                 Upload an IFC or GLTF file to view the 3D model for this project.

@@ -2,8 +2,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { IFCLoader } from 'web-ifc-three/IFCLoader';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, ZoomIn, ZoomOut, Eye, EyeOff } from 'lucide-react';
@@ -117,11 +117,26 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
 
       if (bimFile.file_type === 'ifc') {
         const loader = new IFCLoader();
-        model = await loader.loadAsync(url);
+        // Use load method with callback instead of loadAsync
+        model = await new Promise((resolve, reject) => {
+          loader.load(
+            url,
+            (loadedModel) => resolve(loadedModel),
+            undefined,
+            (error) => reject(error)
+          );
+        });
       } else {
         const loader = new GLTFLoader();
-        const gltf = await loader.loadAsync(url);
-        model = gltf.scene;
+        const gltf = await new Promise((resolve, reject) => {
+          loader.load(
+            url,
+            (loadedGltf) => resolve(loadedGltf),
+            undefined,
+            (error) => reject(error)
+          );
+        });
+        model = (gltf as any).scene;
       }
 
       // Clear existing model

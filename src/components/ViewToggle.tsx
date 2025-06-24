@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Cube } from 'lucide-react';
+import { Box } from 'lucide-react';
 import { useRouter } from '@/hooks/useRouter';
 
 interface ViewToggleProps {
@@ -59,7 +59,7 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
                 onClick={handleModelView}
                 className="h-8 px-3 text-sm font-medium transition-all duration-200 gap-2"
               >
-                <Cube className="w-4 h-4" />
+                <Box className="w-4 h-4" />
                 Model
               </Button>
               <Button
