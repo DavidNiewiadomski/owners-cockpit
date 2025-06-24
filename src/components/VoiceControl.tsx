@@ -5,8 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
-import { useVoiceInterface } from '@/hooks/useVoiceInterface';
-import { useVoiceCommands } from '@/hooks/useVoiceCommands';
 import { useToast } from '@/hooks/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,105 +19,173 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
   onVoiceResponse,
   disabled = false
 }) => {
-  const [showTranscript, setShowTranscript] = useState(false);
-  const [pendingCommand, setPendingCommand] = useState<any>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [transcript, setTranscript] = useState('');
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [recognition, setRecognition] = useState<any>(null);
   
   const { toast } = useToast();
 
-  const {
-    isListening,
-    isProcessing,
-    isSpeaking,
-    transcript,
-    error,
-    startListening,
-    stopListening,
-    speak,
-    stopSpeaking,
-    isSupported,
-  } = useVoiceInterface({
-    language: 'en-US',
-    continuous: false,
-    interimResults: true,
-  });
-
-  const {
-    processVoiceCommand,
-    executeVoiceCommand,
-    getAvailableCommands,
-  } = useVoiceCommands();
-
-  // Handle transcript changes
+  // Initialize speech recognition
   useEffect(() => {
-    if (transcript && !isListening && transcript.trim().length > 0) {
-      handleVoiceInput(transcript);
-    }
-  }, [transcript, isListening]);
-
-  const handleVoiceInput = useCallback(async (text: string) => {
-    try {
-      const availableCommands = getAvailableCommands();
-      const command = processVoiceCommand(text, availableCommands);
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognitionConstructor();
       
-      if (command) {
-        // For now, execute commands directly without confirmation
-        // In the future, we could add confirmation logic based on command type
-        await executeVoiceCommand(command, onSendMessage, toast);
-        setPendingCommand(null);
-      } else {
-        // Fallback to general query
-        if (onSendMessage) {
-          onSendMessage(text);
-        }
-      }
-    } catch (error) {
-      console.error('Voice input processing error:', error);
-      speak("Sorry, I had trouble processing that command. Please try again.");
-    }
-  }, [processVoiceCommand, executeVoiceCommand, onSendMessage, speak, toast, getAvailableCommands]);
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = true;
+      recognitionInstance.lang = 'en-US';
+      recognitionInstance.maxAlternatives = 1;
 
-  const handleMicrophoneClick = useCallback(() => {
+      recognitionInstance.onstart = () => {
+        console.log('Speech recognition started successfully');
+        setIsListening(true);
+        setIsProcessing(false);
+      };
+
+      recognitionInstance.onresult = (event: any) => {
+        console.log('Speech recognition result received:', event);
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        setTranscript(finalTranscript || interimTranscript);
+
+        if (finalTranscript) {
+          console.log('Final transcript:', finalTranscript);
+          setIsListening(false);
+          setIsProcessing(true);
+          
+          setTimeout(() => {
+            if (onSendMessage && finalTranscript.trim()) {
+              onSendMessage(finalTranscript.trim());
+            }
+            setTranscript('');
+            setIsProcessing(false);
+          }, 500);
+        }
+      };
+
+      recognitionInstance.onend = () => {
+        console.log('Speech recognition ended');
+        setIsListening(false);
+        if (!transcript) {
+          setIsProcessing(false);
+        }
+      };
+
+      recognitionInstance.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        setIsProcessing(false);
+        
+        let errorMessage = 'Speech recognition error';
+        switch (event.error) {
+          case 'no-speech':
+            errorMessage = 'No speech detected. Please try speaking clearly.';
+            break;
+          case 'audio-capture':
+            errorMessage = 'Microphone not accessible. Please check permissions.';
+            break;
+          case 'not-allowed':
+            errorMessage = 'Microphone permission denied. Please enable microphone access.';
+            setHasPermission(false);
+            break;
+          case 'network':
+            errorMessage = 'Network error during speech recognition.';
+            break;
+          default:
+            errorMessage = `Speech recognition error: ${event.error}`;
+        }
+        
+        toast({
+          title: "Voice Recognition Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      };
+
+      setRecognition(recognitionInstance);
+    }
+  }, [onSendMessage, toast, transcript]);
+
+  // Check microphone permissions
+  const checkMicrophonePermission = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop());
+      setHasPermission(true);
+      return true;
+    } catch (error) {
+      console.error('Microphone permission error:', error);
+      setHasPermission(false);
+      toast({
+        title: "Microphone Access Required",
+        description: "Please allow microphone access to use voice features.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  }, [toast]);
+
+  const handleMicrophoneClick = useCallback(async () => {
     if (disabled) return;
     
     if (isListening) {
-      stopListening();
-    } else {
-      if (isSpeaking) {
-        stopSpeaking();
+      // Stop listening
+      if (recognition) {
+        recognition.stop();
       }
-      startListening();
-      setShowTranscript(true);
+      setIsListening(false);
+      return;
     }
-  }, [disabled, isListening, isSpeaking, startListening, stopListening, stopSpeaking]);
 
-  const handleConfirmCommand = useCallback(async () => {
-    if (pendingCommand) {
-      await executeVoiceCommand(pendingCommand, onSendMessage, toast);
-      setPendingCommand(null);
-      setShowTranscript(false);
-      speak("Command executed successfully.");
+    // Check permissions first
+    if (hasPermission === null) {
+      const permitted = await checkMicrophonePermission();
+      if (!permitted) return;
     }
-  }, [pendingCommand, executeVoiceCommand, onSendMessage, speak, toast]);
 
-  const handleCancelCommand = useCallback(() => {
-    setPendingCommand(null);
-    setShowTranscript(false);
-    speak("Command cancelled.");
-  }, [speak]);
+    if (!recognition) {
+      toast({
+        title: "Voice Not Supported",
+        description: "Speech recognition is not supported in this browser.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      setTranscript('');
+      console.log('Starting speech recognition...');
+      recognition.start();
+    } catch (error) {
+      console.error('Failed to start speech recognition:', error);
+      setIsProcessing(false);
+      toast({
+        title: "Voice Error",
+        description: "Failed to start voice recognition. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }, [disabled, isListening, recognition, hasPermission, checkMicrophonePermission, toast]);
 
   const toggleVoiceResponse = useCallback(() => {
     setVoiceEnabled(!voiceEnabled);
   }, [voiceEnabled]);
 
-  // Handle voice responses from the AI
-  useEffect(() => {
-    if (onVoiceResponse && voiceEnabled) {
-      // This would be called when the AI responds to speak the response
-    }
-  }, [onVoiceResponse, voiceEnabled]);
-
-  if (!isSupported()) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
     return (
       <TooltipProvider>
         <Tooltip>
@@ -137,7 +203,7 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 relative">
       {/* Microphone Control */}
       <TooltipProvider>
         <Tooltip>
@@ -146,7 +212,7 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
               variant={isListening ? "destructive" : "ghost"}
               size="sm"
               onClick={handleMicrophoneClick}
-              disabled={disabled || isProcessing}
+              disabled={disabled}
               className={`relative ${isListening ? 'animate-pulse' : ''}`}
             >
               {isListening ? (
@@ -173,7 +239,6 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
               variant="ghost"
               size="sm"
               onClick={toggleVoiceResponse}
-              className={isSpeaking ? 'animate-pulse' : ''}
             >
               {voiceEnabled ? (
                 <Volume2 className="w-4 h-4" />
@@ -195,11 +260,6 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
             Listening
           </Badge>
         )}
-        {isSpeaking && (
-          <Badge variant="default" className="text-xs">
-            Speaking
-          </Badge>
-        )}
         {isProcessing && (
           <Badge variant="secondary" className="text-xs">
             Processing
@@ -207,76 +267,25 @@ const VoiceControl: React.FC<VoiceControlProps> = ({
         )}
       </div>
 
-      {/* Transcript and Command Confirmation */}
+      {/* Transcript Display */}
       <AnimatePresence>
-        {showTranscript && (transcript || pendingCommand) && (
+        {(transcript || isListening) && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute top-12 right-0 z-50"
+            className="absolute bottom-12 right-0 z-50"
           >
             <Card className="w-80 shadow-lg">
               <CardContent className="p-4">
+                <div className="mb-2">
+                  <p className="text-sm font-medium">
+                    {isListening ? 'Listening...' : 'Processing...'}
+                  </p>
+                </div>
                 {transcript && (
-                  <div className="mb-3">
-                    <p className="text-sm font-medium mb-1">Transcript:</p>
-                    <p className="text-sm text-muted-foreground">{transcript}</p>
-                  </div>
+                  <p className="text-sm text-muted-foreground">{transcript}</p>
                 )}
-                
-                {pendingCommand && (
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Confirm Command:</p>
-                    <p className="text-sm text-muted-foreground">
-                      Action: {pendingCommand.action.replace('_', ' ')}
-                    </p>
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={handleConfirmCommand}>
-                        Confirm
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={handleCancelCommand}>
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                
-                {!pendingCommand && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setShowTranscript(false)}
-                    className="w-full"
-                  >
-                    Close
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Error Display */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute top-12 right-0 z-50"
-          >
-            <Card className="w-80 shadow-lg border-destructive">
-              <CardContent className="p-4">
-                <p className="text-sm text-destructive">{error}</p>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setShowTranscript(false)}
-                  className="w-full mt-2"
-                >
-                  Close
-                </Button>
               </CardContent>
             </Card>
           </motion.div>
