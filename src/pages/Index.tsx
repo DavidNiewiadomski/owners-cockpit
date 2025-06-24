@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import ChatWindow from '@/components/ChatWindow';
 import SourceModal from '@/components/SourceModal';
 import DocumentViewer from '@/components/DocumentViewer';
 import VoiceControl from '@/components/VoiceControl';
+import AIFloatingButton from '@/components/AIFloatingButton';
 import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import ModelViewer from '@/components/ModelViewer';
@@ -86,6 +86,11 @@ const Index = () => {
     console.log('Hero exit called');
   };
 
+  const handleAIChat = () => {
+    setShowChat(true);
+    setActiveView('chat');
+  };
+
   const renderMainContent = () => {
     if (activeView === 'communications') {
       // Use portfolio project ID for portfolio-level communications, or selected project
@@ -143,6 +148,11 @@ const Index = () => {
       <main className="flex-1">
         {renderMainContent()}
       </main>
+
+      {/* AI Floating Button */}
+      {activeView !== 'chat' && (
+        <AIFloatingButton onClick={handleAIChat} />
+      )}
 
       {/* Modals */}
       <SettingsModal 
