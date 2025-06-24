@@ -326,6 +326,78 @@ export type Database = {
           },
         ]
       }
+      communications: {
+        Row: {
+          body: string | null
+          comm_type: string
+          created_at: string | null
+          embedding: string | null
+          external_id: string | null
+          id: string
+          message_ts: string
+          metadata: Json | null
+          participants: Json | null
+          project_id: string
+          provider: string
+          speaker: Json | null
+          subject: string | null
+          thread_id: string | null
+          updated_at: string | null
+          url: string | null
+        }
+        Insert: {
+          body?: string | null
+          comm_type: string
+          created_at?: string | null
+          embedding?: string | null
+          external_id?: string | null
+          id?: string
+          message_ts: string
+          metadata?: Json | null
+          participants?: Json | null
+          project_id: string
+          provider: string
+          speaker?: Json | null
+          subject?: string | null
+          thread_id?: string | null
+          updated_at?: string | null
+          url?: string | null
+        }
+        Update: {
+          body?: string | null
+          comm_type?: string
+          created_at?: string | null
+          embedding?: string | null
+          external_id?: string | null
+          id?: string
+          message_ts?: string
+          metadata?: Json | null
+          participants?: Json | null
+          project_id?: string
+          provider?: string
+          speaker?: Json | null
+          subject?: string | null
+          thread_id?: string | null
+          updated_at?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "communications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           created_at: string | null
@@ -677,6 +749,60 @@ export type Database = {
           },
           {
             foreignKeyName: "integration_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      integration_tokens: {
+        Row: {
+          access_token: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          project_id: string
+          provider: string
+          refresh_token: string | null
+          token_data: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          project_id: string
+          provider: string
+          refresh_token?: string | null
+          token_data?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          project_id?: string
+          provider?: string
+          refresh_token?: string | null
+          token_data?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_tokens_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "integration_tokens_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -1761,6 +1887,26 @@ export type Database = {
           active_projects: number
           top_risks: Json
           project_metrics: Json
+        }[]
+      }
+      search_communications: {
+        Args: {
+          query_embedding: string
+          project_uuid: string
+          match_count?: number
+          similarity_threshold?: number
+        }
+        Returns: {
+          id: string
+          project_id: string
+          provider: string
+          comm_type: string
+          subject: string
+          body: string
+          speaker: Json
+          message_ts: string
+          url: string
+          similarity: number
         }[]
       }
       sparsevec_out: {
