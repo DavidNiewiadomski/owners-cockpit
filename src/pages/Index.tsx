@@ -87,7 +87,6 @@ const Index = () => {
   };
 
   const handleAIChat = () => {
-    setShowChat(true);
     setActiveView('chat');
   };
 
@@ -101,6 +100,25 @@ const Index = () => {
     if (activeView === 'portfolio') {
       return <PortfolioDashboard />;
     }
+
+    if (activeView === 'chat') {
+      // Show chat window regardless of whether a project is selected
+      const chatProjectId = selectedProject || 'portfolio';
+      return (
+        <div className="flex h-full">
+          <div className="flex-1">
+            {selectedProject ? (
+              <Dashboard projectId={selectedProject} />
+            ) : (
+              <PortfolioDashboard />
+            )}
+          </div>
+          <div className="w-96 border-l border-border/40">
+            <ChatWindow projectId={chatProjectId} />
+          </div>
+        </div>
+      );
+    }
     
     if (!selectedProject) {
       return <PortfolioDashboard />;
@@ -113,17 +131,6 @@ const Index = () => {
         return <ActionItemsPage />;
       case 'model':
         return <ModelViewer projectId={selectedProject} />;
-      case 'chat':
-        return (
-          <div className="flex h-full">
-            <div className="flex-1">
-              <Dashboard projectId={selectedProject} />
-            </div>
-            <div className="w-96 border-l border-border/40">
-              <ChatWindow projectId={selectedProject} />
-            </div>
-          </div>
-        );
       default:
         return <Dashboard projectId={selectedProject} />;
     }
