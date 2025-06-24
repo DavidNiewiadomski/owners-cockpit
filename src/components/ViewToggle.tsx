@@ -3,8 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 
 interface ViewToggleProps {
-  activeView: 'dashboard' | 'chat' | 'portfolio';
-  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio') => void;
+  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications';
+  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications') => void;
   selectedProject: string | null;
 }
 
@@ -39,9 +39,21 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
             >
               AI Chat
             </Button>
+            <Button
+              variant={activeView === 'communications' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => onViewChange('communications')}
+            >
+              Communications
+            </Button>
           </>
         )}
       </div>
+      {selectedProject && (
+        <div className="text-xs text-muted-foreground mt-1">
+          Press <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+C</kbd> for Communications
+        </div>
+      )}
     </div>
   );
 };

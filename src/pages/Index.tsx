@@ -12,14 +12,15 @@ import ChatWindow from '@/components/ChatWindow';
 import SourceModal from '@/components/SourceModal';
 import DocumentViewer from '@/components/DocumentViewer';
 import VoiceControl from '@/components/VoiceControl';
+import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
+import ViewToggle from '@/components/ViewToggle';
 import { useRole } from '@/contexts/RoleContext';
 import { useRouter } from '@/hooks/useRouter';
 
 const Index = () => {
   const { t } = useTranslation();
-  // Start with null - portfolio will be handled separately
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<'portfolio' | 'project'>('portfolio');
+  const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'portfolio' | 'communications'>('portfolio');
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
@@ -33,13 +34,40 @@ const Index = () => {
     console.log(`Current role: ${currentRole}`);
   }, [currentRole]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey) {
+        switch (event.key.toLowerCase()) {
+          case 'c':
+            if (selectedProject && activeView !== 'communications') {
+              event.preventDefault();
+              setActiveView('communications');
+            }
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedProject, activeView]);
+
   const handleProjectChange = (projectId: string | null) => {
     if (projectId === 'portfolio') {
-      setViewMode('portfolio');
+      setActiveView('portfolio');
       setSelectedProject(null);
     } else {
-      setViewMode('project');
       setSelectedProject(projectId);
+      if (activeView === 'portfolio') {
+        setActiveView('dashboard');
+      }
+    }
+  };
+
+  const handleViewChange = (view: 'dashboard' | 'chat' | 'portfolio' | 'communications') => {
+    setActiveView(view);
+    if (view === 'portfolio') {
+      setSelectedProject(null);
     }
   };
 
@@ -53,39 +81,58 @@ const Index = () => {
   };
 
   const handleHeroExit = () => {
-    // This can be a no-op since we're already in the main app
     console.log('Hero exit called');
+  };
+
+  const renderMainContent = () => {
+    if (activeView === 'portfolio') {
+      return <PortfolioDashboard />;
+    }
+    
+    if (!selectedProject) {
+      return <PortfolioDashboard />;
+    }
+
+    switch (activeView) {
+      case 'dashboard':
+        return <Dashboard projectId={selectedProject} />;
+      case 'chat':
+        return (
+          <div className="flex h-full">
+            <div className="flex-1">
+              <Dashboard projectId={selectedProject} />
+            </div>
+            <div className="w-96 border-l border-border/40">
+              <ChatWindow projectId={selectedProject} />
+            </div>
+          </div>
+        );
+      case 'communications':
+        return <CommunicationsIntegration projectId={selectedProject} />;
+      default:
+        return <Dashboard projectId={selectedProject} />;
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
-        selectedProject={viewMode === 'portfolio' ? 'portfolio' : selectedProject}
+        selectedProject={activeView === 'portfolio' ? 'portfolio' : selectedProject}
         onProjectChange={handleProjectChange}
         onUploadToggle={() => setShowUpload(!showUpload)}
         onSettingsToggle={() => setShowSettings(!showSettings)}
         onHeroExit={handleHeroExit}
       />
 
-      <div className="flex flex-1">
-        <main className="flex-1 relative">
-          {viewMode === 'portfolio' ? (
-            <PortfolioDashboard />
-          ) : selectedProject ? (
-            <Dashboard projectId={selectedProject} />
-          ) : (
-            // Fallback to portfolio if somehow no project is selected
-            <PortfolioDashboard />
-          )}
-        </main>
+      <ViewToggle
+        activeView={activeView}
+        onViewChange={handleViewChange}
+        selectedProject={selectedProject}
+      />
 
-        {/* Chat Window */}
-        {showChat && selectedProject && viewMode === 'project' && (
-          <div className="w-96 border-l border-border/40">
-            <ChatWindow projectId={selectedProject} />
-          </div>
-        )}
-      </div>
+      <main className="flex-1">
+        {renderMainContent()}
+      </main>
 
       {/* Modals */}
       <SettingsModal 
