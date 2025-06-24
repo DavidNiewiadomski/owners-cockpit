@@ -14,7 +14,7 @@ import IntegrationModal from './IntegrationModal';
 
 interface IntegrationCardProps {
   integration?: ProjectIntegration;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet';
+  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
   projectId: string;
 }
 
@@ -47,6 +47,30 @@ const PROVIDER_CONFIG = {
     name: 'Smartsheet',
     logo: '📋',
     description: 'Work management platform',
+    authType: 'api_key' as const,
+  },
+  green_badger: {
+    name: 'Green Badger',
+    logo: '🌱',
+    description: 'Sustainability tracking and reporting',
+    authType: 'api_key' as const,
+  },
+  billy: {
+    name: 'Billy',
+    logo: '🛡️',
+    description: 'Insurance management for construction',
+    authType: 'api_key' as const,
+  },
+  clearstory: {
+    name: 'Clearstory',
+    logo: '📈',
+    description: 'Construction data analytics',
+    authType: 'oauth' as const,
+  },
+  track3d: {
+    name: 'Track3D',
+    logo: '🎯',
+    description: 'AI-powered construction progress tracking',
     authType: 'api_key' as const,
   },
 };
