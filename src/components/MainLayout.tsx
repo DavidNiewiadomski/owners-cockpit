@@ -35,6 +35,9 @@ const MainLayout: React.FC = () => {
     console.log('Hero exit called');
   };
 
+  // Log before rendering the AIChatOverlay
+  console.log('🟢 About to render AIChatOverlay with isOpen:', appState.showChatOverlay);
+
   return (
     <div className="min-h-screen bg-background">
       <AppHeader 
@@ -62,7 +65,6 @@ const MainLayout: React.FC = () => {
       <AIFloatingButton onClick={appState.handleAIChat} />
 
       {/* AI Chat Overlay */}
-      {console.log('🟢 About to render AIChatOverlay with isOpen:', appState.showChatOverlay)}
       <AIChatOverlay 
         isOpen={appState.showChatOverlay}
         onClose={appState.handleCloseChatOverlay}
