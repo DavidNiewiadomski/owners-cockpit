@@ -46,6 +46,12 @@ interface ConnectedServicesProps {
 }
 
 const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isLoading, error }) => {
+  console.log('ConnectedServices render:', { 
+    integrationsCount: integrations?.length, 
+    isLoading, 
+    hasError: !!error 
+  });
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'connected':
@@ -107,6 +113,11 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
       <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50 text-red-500" />
       <p>Unable to load integrations</p>
       <p className="text-sm">Click "Open Integrations" to get started</p>
+      {error && (
+        <p className="text-xs text-red-500 mt-2">
+          Error: {error.message || 'Unknown error'}
+        </p>
+      )}
     </div>
   );
 

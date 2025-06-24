@@ -23,29 +23,42 @@ export function useProjectIntegrationsQuery(projectId: string) {
     queryFn: async (): Promise<ProjectIntegration[]> => {
       console.log('Fetching integrations for project:', projectId);
       
-      // If it's the demo project ID, get any project's integrations for demo purposes
-      let actualProjectId = projectId;
-      
+      // If it's the demo project ID, get integrations from any project for demo purposes
       if (projectId === 'project-1') {
-        // Get the first project from the database to use its integrations
-        const { data: projects } = await supabase
-          .from('projects')
-          .select('id')
-          .limit(1);
+        console.log('Demo mode: fetching integrations from any available project');
         
-        if (projects && projects.length > 0) {
-          actualProjectId = projects[0].id;
-          console.log('Using actual project ID for demo:', actualProjectId);
-        } else {
-          // No projects exist, return empty array
+        // First, try to get integrations from any project
+        const { data: allIntegrations, error: integrationsError } = await supabase
+          .from('project_integrations')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20); // Get up to 20 integrations for demo
+
+        if (integrationsError) {
+          console.error('Error fetching integrations for demo:', integrationsError);
+          // If we can't fetch integrations, return empty array rather than throw
           return [];
         }
+
+        if (allIntegrations && allIntegrations.length > 0) {
+          console.log(`Found ${allIntegrations.length} integrations for demo`);
+          return allIntegrations.map(item => ({
+            ...item,
+            provider: item.provider as ProjectIntegration['provider'],
+            status: item.status as ProjectIntegration['status']
+          }));
+        }
+
+        // If no integrations exist anywhere, return empty array
+        console.log('No integrations found in database');
+        return [];
       }
       
+      // For real project IDs, fetch normally
       const { data, error } = await supabase
         .from('project_integrations')
         .select('*')
-        .eq('project_id', actualProjectId)
+        .eq('project_id', projectId)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -53,7 +66,7 @@ export function useProjectIntegrationsQuery(projectId: string) {
         throw error;
       }
 
-      // Type assertion to ensure proper typing after database fetch
+      console.log(`Found ${data?.length || 0} integrations for project ${projectId}`);
       return (data || []).map(item => ({
         ...item,
         provider: item.provider as ProjectIntegration['provider'],
@@ -61,5 +74,7 @@ export function useProjectIntegrationsQuery(projectId: string) {
       }));
     },
     enabled: !!projectId,
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 }
