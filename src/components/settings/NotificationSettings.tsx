@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -43,7 +42,7 @@ const NotificationSettings: React.FC = () => {
 
       if (data) {
         setPreferences({
-          insight_frequency: data.insight_frequency,
+          insight_frequency: data.insight_frequency as InsightFrequency,
           email_notifications: data.email_notifications,
           push_notifications: data.push_notifications,
         });
@@ -111,8 +110,8 @@ const NotificationSettings: React.FC = () => {
             <Label>Insight Frequency</Label>
             <Select 
               value={preferences.insight_frequency} 
-              onValueChange={(value: InsightFrequency) => 
-                updatePreference('insight_frequency', value)
+              onValueChange={(value) => 
+                updatePreference('insight_frequency', value as InsightFrequency)
               }
             >
               <SelectTrigger>
