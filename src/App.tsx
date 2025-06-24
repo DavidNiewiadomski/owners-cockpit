@@ -15,7 +15,6 @@ import ActionItemsPage from '@/pages/ActionItemsPage';
 import SettingsAccessPage from '@/pages/SettingsAccessPage';
 import SettingsAuditPage from '@/pages/SettingsAuditPage';
 import NotFound from '@/pages/NotFound';
-import BIMModelPage from '@/pages/BIMModelPage';
 
 const queryClient = new QueryClient();
 
@@ -31,7 +30,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/landing" element={<LandingPage />} />
                 <Route path="/projects/:projectId" element={<Navigate to="/" replace />} />
-                <Route path="/projects/:projectId/model" element={<BIMModelPage />} />
+                <Route path="/projects/:projectId/model" element={<Navigate to="/" replace />} />
                 <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
                 <Route path="/communications" element={<CommunicationsPage />} />
                 <Route path="/action-items" element={<ActionItemsPage />} />

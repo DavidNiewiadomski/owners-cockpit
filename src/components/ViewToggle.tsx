@@ -2,11 +2,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Box } from 'lucide-react';
-import { useRouter } from '@/hooks/useRouter';
 
 interface ViewToggleProps {
-  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items';
-  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items') => void;
+  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model';
+  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model') => void;
   selectedProject: string | null;
 }
 
@@ -15,14 +14,6 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
   onViewChange,
   selectedProject
 }) => {
-  const router = useRouter();
-
-  const handleModelView = () => {
-    if (selectedProject) {
-      router.push(`/projects/${selectedProject}/model`);
-    }
-  };
-
   return (
     <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-between px-6 py-3">
@@ -54,9 +45,9 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
                 Action Items
               </Button>
               <Button
-                variant="ghost"
+                variant={activeView === 'model' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={handleModelView}
+                onClick={() => onViewChange('model')}
                 className="h-8 px-3 text-sm font-medium transition-all duration-200 gap-2"
               >
                 <Box className="w-4 h-4" />
