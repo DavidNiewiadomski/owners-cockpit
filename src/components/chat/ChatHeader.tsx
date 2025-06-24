@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Brain, RotateCcw, Volume2, VolumeX } from 'lucide-react';
+import { Brain, RotateCcw, Volume2, VolumeX, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
@@ -23,6 +23,7 @@ interface ChatHeaderProps {
   onRetry: () => void;
   onClear: () => void;
   onToggleVoice: () => void;
+  onStopSpeaking: () => void;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -37,7 +38,8 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   isStreaming,
   onRetry,
   onClear,
-  onToggleVoice
+  onToggleVoice,
+  onStopSpeaking
 }) => {
   return (
     <div className="border-b border-border/40 p-4">
@@ -62,6 +64,19 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Stop Speaking Button - Only show when AI is speaking */}
+          {isSpeaking && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={onStopSpeaking}
+              className="animate-pulse"
+            >
+              <Square className="w-4 h-4 mr-1" />
+              Stop
+            </Button>
+          )}
+          
           {ttsSupported && (
             <Button
               variant="ghost"

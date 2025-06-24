@@ -76,6 +76,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     }
   }, [voiceResponseEnabled, isSpeaking, stop]);
 
+  const handleStopSpeaking = useCallback(() => {
+    stop();
+  }, [stop]);
+
   return (
     <div className="flex flex-col h-full">
       <ChatHeader
@@ -91,6 +95,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
         onRetry={resendLastMessage}
         onClear={clearConversation}
         onToggleVoice={toggleVoiceResponse}
+        onStopSpeaking={handleStopSpeaking}
       />
 
       <ChatMessages
