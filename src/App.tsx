@@ -2,7 +2,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
@@ -65,6 +65,7 @@ function App() {
                       <Route path="/dashboard" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/projects/:projectId" element={<Index />} />
+                      <Route path="/projects/:projectId/integrations" element={<Navigate to="/projects/project-1" replace />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
