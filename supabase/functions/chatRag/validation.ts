@@ -1,20 +1,48 @@
 
-import { ChatRequest } from './types.ts';
-
-export function validateRequest(body: any): ChatRequest {
-  const { project_id, question, conversation_id } = body;
-
-  if (!project_id || !question) {
-    throw new Error('project_id and question are required');
-  }
-
-  return { project_id, question, conversation_id };
+export interface ChatRequest {
+  question: string;
+  project_id: string;
+  conversation_id?: string;
+  search_only?: boolean;
+  include_communications?: boolean;
+  match_count?: number;
 }
 
-export function validateEnvironment(): string {
-  const geminiKey = Deno.env.get('GEMINI_API_KEY');
-  if (!geminiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is required');
+export interface ValidationResult {
+  isValid: boolean;
+  error?: string;
+}
+
+export function validateChatRequest(body: any): ValidationResult {
+  if (!body) {
+    return {
+      isValid: false,
+      error: 'Request body is required'
+    };
   }
-  return geminiKey;
+
+  if (!body.question || typeof body.question !== 'string') {
+    return {
+      isValid: false,
+      error: 'Question is required and must be a string'
+    };
+  }
+
+  if (!body.project_id || typeof body.project_id !== 'string') {
+    return {
+      isValid: false,
+      error: 'Project ID is required and must be a string'
+    };
+  }
+
+  if (body.match_count && (typeof body.match_count !== 'number' || body.match_count < 1)) {
+    return {
+      isValid: false,
+      error: 'Match count must be a positive number'
+    };
+  }
+
+  return {
+    isValid: true
+  };
 }
