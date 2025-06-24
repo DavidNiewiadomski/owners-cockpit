@@ -15,7 +15,7 @@ export const DashboardWithAI: React.FC<DashboardWithAIProps> = ({
 }) => {
   const { user } = useAuth();
   const { currentRole } = useRole();
-  const { getLayout, isEditMode, setEditMode } = useDashboardStore();
+  const { getLayout } = useDashboardStore();
   
   // Get layout for current user, role, and project
   const layout = user ? getLayout(user.id, currentRole, projectId) : [];
@@ -39,17 +39,9 @@ export const DashboardWithAI: React.FC<DashboardWithAIProps> = ({
     return { timeOfDay, activity };
   };
 
-  const toggleEditMode = () => {
-    setEditMode(!isEditMode);
-  };
-
   return (
     <div className="relative">
-      <DashboardGrid
-        projectId={projectId}
-        isEditMode={isEditMode}
-        onToggleEdit={toggleEditMode}
-      />
+      <DashboardGrid projectId={projectId} />
       
       {/* AI Theme Assistant */}
       <AIThemeAssistant
