@@ -13,6 +13,7 @@ import SourceModal from '@/components/SourceModal';
 import DocumentViewer from '@/components/DocumentViewer';
 import VoiceControl from '@/components/VoiceControl';
 import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
+import ActionItemsPage from '@/pages/ActionItemsPage';
 import ViewToggle from '@/components/ViewToggle';
 import { useRole } from '@/contexts/RoleContext';
 import { useRouter } from '@/hooks/useRouter';
@@ -20,7 +21,7 @@ import { useRouter } from '@/hooks/useRouter';
 const Index = () => {
   const { t } = useTranslation();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'portfolio' | 'communications'>('portfolio');
+  const [activeView, setActiveView] = useState<'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items'>('portfolio');
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
@@ -64,7 +65,7 @@ const Index = () => {
     }
   };
 
-  const handleViewChange = (view: 'dashboard' | 'chat' | 'portfolio' | 'communications') => {
+  const handleViewChange = (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items') => {
     setActiveView(view);
     if (view === 'portfolio') {
       setSelectedProject(null);
@@ -102,6 +103,8 @@ const Index = () => {
     switch (activeView) {
       case 'dashboard':
         return <Dashboard projectId={selectedProject} />;
+      case 'action-items':
+        return <ActionItemsPage />;
       case 'chat':
         return (
           <div className="flex h-full">

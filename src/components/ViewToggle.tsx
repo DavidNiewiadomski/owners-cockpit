@@ -3,8 +3,8 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 
 interface ViewToggleProps {
-  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications';
-  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications') => void;
+  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items';
+  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items') => void;
   selectedProject: string | null;
 }
 
@@ -34,6 +34,14 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
                 className="h-8 px-3 text-sm font-medium transition-all duration-200"
               >
                 Dashboard
+              </Button>
+              <Button
+                variant={activeView === 'action-items' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => onViewChange('action-items')}
+                className="h-8 px-3 text-sm font-medium transition-all duration-200"
+              >
+                Action Items
               </Button>
               <Button
                 variant={activeView === 'chat' ? 'default' : 'ghost'}

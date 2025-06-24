@@ -5,6 +5,7 @@ import MotionWrapper from '@/components/MotionWrapper';
 import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
 import Dashboard from '@/components/Dashboard';
 import WelcomeScreen from '@/components/WelcomeScreen';
+import ActionItemsPage from '@/pages/ActionItemsPage';
 
 const ChatWindow = lazy(() => import('@/components/ChatWindow'));
 const PortfolioDashboard = lazy(() => import('@/components/PortfolioDashboard'));
@@ -20,7 +21,7 @@ const ChatWindowSkeleton = () => (
 
 interface MainContentProps {
   selectedProject: string | null;
-  activeView: 'dashboard' | 'chat' | 'portfolio';
+  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items';
   onProjectChange: (projectId: string | null) => void;
 }
 
@@ -58,6 +59,8 @@ const MainContent: React.FC<MainContentProps> = ({
       <EnhancedErrorBoundary>
         {activeView === 'dashboard' ? (
           <Dashboard projectId={selectedProject} />
+        ) : activeView === 'action-items' ? (
+          <ActionItemsPage />
         ) : (
           <Suspense fallback={<ChatWindowSkeleton />}>
             <ChatWindow projectId={selectedProject} />
