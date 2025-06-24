@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Mic, MicOff, Volume2, VolumeX, Settings } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { useVoiceCommands } from '@/hooks/useVoiceCommands';
 import { useToast } from '@/hooks/use-toast';
