@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,6 +12,7 @@ export interface Citation {
   timestamp?: string;
   comm_type?: string;
   provider?: string;
+  page?: number;
 }
 
 export interface Message {
@@ -53,10 +55,18 @@ export function useChatRag({ projectId }: { projectId: string }): UseChatRagResu
   const resendLastMessage = async () => {
     if (messages.length === 0) return;
 
-    const lastMessage = messages.findLast(m => m.role === 'user');
+    // Find last user message using reverse iteration
+    let lastMessage: Message | undefined;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === 'user') {
+        lastMessage = messages[i];
+        break;
+      }
+    }
+    
     if (!lastMessage) return;
 
-    setMessages(prev => prev.filter(m => m.id !== lastMessage.id));
+    setMessages(prev => prev.filter(m => m.id !== lastMessage!.id));
     await sendMessage(lastMessage.content);
   };
 
