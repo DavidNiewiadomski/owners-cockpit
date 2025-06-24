@@ -49,30 +49,6 @@ const providers = [
     status: 'connected',
     last_sync: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
     sync_error: null
-  },
-  {
-    name: 'green_badger',
-    status: 'connected',
-    last_sync: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    sync_error: null
-  },
-  {
-    name: 'billy',
-    status: 'not_connected',
-    last_sync: null,
-    sync_error: null
-  },
-  {
-    name: 'clearstory',
-    status: 'connected',
-    last_sync: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
-    sync_error: null
-  },
-  {
-    name: 'track3d',
-    status: 'error',
-    last_sync: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-    sync_error: 'Rate limit exceeded (429)'
   }
 ];
 

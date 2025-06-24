@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 export interface ProjectIntegration {
   id: string;
   project_id: string;
-  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet' | 'green_badger' | 'billy' | 'clearstory' | 'track3d';
+  provider: 'procore' | 'primavera' | 'box' | 'iot_sensors' | 'smartsheet';
   status: 'connected' | 'error' | 'not_connected' | 'syncing';
   api_key?: string;
   refresh_token?: string;

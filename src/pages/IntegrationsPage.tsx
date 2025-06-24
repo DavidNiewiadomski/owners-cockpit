@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,17 +9,7 @@ import { AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 
-const AVAILABLE_PROVIDERS = [
-  'procore', 
-  'primavera', 
-  'box', 
-  'iot_sensors', 
-  'smartsheet',
-  'green_badger',
-  'billy',
-  'clearstory',
-  'track3d'
-] as const;
+const AVAILABLE_PROVIDERS = ['procore', 'primavera', 'box', 'iot_sensors', 'smartsheet'] as const;
 
 const IntegrationsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
