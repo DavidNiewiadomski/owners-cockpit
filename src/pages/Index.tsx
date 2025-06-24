@@ -18,9 +18,10 @@ const Index: React.FC = () => {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<string | null>(projectId || null);
   const [activeView, setActiveView] = useState<ViewType>('dashboard');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { currentRole } = useRole();
 
-  usePerformanceMonitor();
+  usePerformanceMonitor('dashboard');
 
   // Update selected project when URL changes
   useEffect(() => {
@@ -99,7 +100,10 @@ const Index: React.FC = () => {
           <div className="flex items-center gap-2">
             <VoiceControl />
             <RoleToggle />
-            <SettingsModal />
+            <SettingsModal 
+              open={settingsOpen} 
+              onOpenChange={setSettingsOpen} 
+            />
           </div>
         </div>
 
