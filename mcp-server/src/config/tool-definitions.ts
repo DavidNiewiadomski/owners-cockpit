@@ -1,4 +1,3 @@
-
 export const TOOL_DEFINITIONS = [
   {
     name: 'get_overdue_rfis',
@@ -127,4 +126,71 @@ export const TOOL_DEFINITIONS = [
       required: ['project_id'],
     },
   },
+  {
+    name: 'create_action_item',
+    description: 'Create a new action item for a project that can be assigned and tracked',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        project_id: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the project to create the action item for'
+        },
+        title: {
+          type: 'string',
+          description: 'Title/summary of the action item'
+        },
+        description: {
+          type: 'string',
+          description: 'Detailed description of what needs to be done'
+        },
+        priority: {
+          type: 'string',
+          enum: ['Low', 'Medium', 'High', 'Critical'],
+          description: 'Priority level of the action item'
+        },
+        due_date: {
+          type: 'string',
+          format: 'date',
+          description: 'Due date in YYYY-MM-DD format'
+        },
+        assignee: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the user assigned to this action item'
+        },
+        source_type: {
+          type: 'string',
+          description: 'Type of source that generated this action item (meeting, insight, manual, etc.)'
+        },
+        source_id: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the source record (meeting ID, insight ID, etc.)'
+        },
+        created_by: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the user creating this action item'
+        }
+      },
+      required: ['project_id', 'title']
+    }
+  },
+  {
+    name: 'complete_action_item',
+    description: 'Mark an action item as complete/done',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        item_id: {
+          type: 'string',
+          format: 'uuid',
+          description: 'UUID of the action item to mark as complete'
+        }
+      },
+      required: ['item_id']
+    }
+  }
 ];

@@ -1,4 +1,3 @@
-
 #!/usr/bin/env node
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -70,6 +69,10 @@ class OwnersCockpitMCPServer {
             return await getNextAction(args);
           case 'sustainability_overview':
             return await getSustainabilityOverview(args);
+          case 'create_action_item':
+            return await createActionItem(args);
+          case 'complete_action_item':
+            return await completeActionItem(args);
           default:
             throw new McpError(
               ErrorCode.MethodNotFound,

@@ -1,19 +1,35 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { NextActionSchema } from '../schemas/validation.js';
+import { z } from 'zod';
 
 const SUPABASE_URL = process.env.SUPABASE_URL || '';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-export async function getNextAction(args: unknown) {
-  const params = NextActionSchema.parse(args);
+const CreateActionItemSchema = z.object({
+  project_id: z.string().uuid(),
+  title: z.string().min(1),
+  description: z.string().optional(),
+  priority: z.enum(['Low', 'Medium', 'High', 'Critical']).default('Medium'),
+  due_date: z.string().optional(), // ISO date string
+  assignee: z.string().uuid().optional(),
+  source_type: z.string().optional(),
+  source_id: z.string().uuid().optional(),
+  created_by: z.string().uuid().optional()
+});
+
+const CompleteActionItemSchema = z.object({
+  item_id: z.string().uuid()
+});
+
+export async function createActionItem(args: unknown) {
+  const params = CreateActionItemSchema.parse(args);
 
   // Verify project exists
   const { data: project, error: projectError } = await supabase
     .from('projects')
-    .select('id, name, status')
+    .select('id, name')
     .eq('id', params.project_id)
     .single();
 
@@ -24,147 +40,28 @@ export async function getNextAction(args: unknown) {
     );
   }
 
-  // Get project data for analysis
-  const [tasksResult, rfisResult, alertsResult, budgetResult] = await Promise.all([
-    // Get overdue and high priority tasks
-    supabase
-      .from('tasks')
-      .select('*')
-      .eq('project_id', params.project_id)
-      .in('status', ['not_started', 'in_progress'])
-      .order('priority', { ascending: false })
-      .order('due_date', { ascending: true }),
-    
-    // Get open RFIs, especially overdue ones
-    supabase
-      .from('rfi')
-      .select('*')
-      .eq('project_id', params.project_id)
-      .eq('status', 'open')
-      .order('due_date', { ascending: true }),
-    
-    // Get unresolved alerts
-    supabase
-      .from('alerts')
-      .select('*')
-      .eq('project_id', params.project_id)
-      .eq('resolved', false)
-      .order('severity', { ascending: false })
-      .order('created_at', { ascending: true }),
-    
-    // Get budget items with variance
-    supabase
-      .from('budget_items')
-      .select('*')
-      .eq('project_id', params.project_id)
-  ]);
+  // Create the action item
+  const { data: actionItem, error } = await supabase
+    .from('action_items')
+    .insert({
+      project_id: params.project_id,
+      title: params.title,
+      description: params.description,
+      priority: params.priority,
+      due_date: params.due_date ? params.due_date : null,
+      assignee: params.assignee,
+      source_type: params.source_type,
+      source_id: params.source_id,
+      created_by: params.created_by
+    })
+    .select()
+    .single();
 
-  const tasks = tasksResult.data || [];
-  const rfis = rfisResult.data || [];
-  const alerts = alertsResult.data || [];
-  const budgetItems = budgetResult.data || [];
-
-  // Analyze and prioritize actions
-  const today = new Date();
-  let highestImpactAction = null;
-  let maxScore = 0;
-
-  // Score overdue RFIs (highest priority)
-  for (const rfi of rfis) {
-    if (rfi.due_date && new Date(rfi.due_date) < today) {
-      const daysOverdue = Math.ceil((today.getTime() - new Date(rfi.due_date).getTime()) / (1000 * 60 * 60 * 24));
-      const score = 100 + daysOverdue * 5; // Base score 100 + overdue penalty
-      
-      if (score > maxScore) {
-        maxScore = score;
-        highestImpactAction = {
-          title: `Resolve Overdue RFI: ${rfi.title}`,
-          description: `This RFI is ${daysOverdue} days overdue and blocking project progress. ${rfi.description || 'Immediate attention required to prevent further delays.'}`,
-          assignee: rfi.assigned_to || 'Project Manager'
-        };
-      }
-    }
-  }
-
-  // Score critical alerts
-  for (const alert of alerts) {
-    let score = 80; // Base score for unresolved alerts
-    if (alert.severity === 'critical') score += 30;
-    else if (alert.severity === 'high') score += 20;
-    else if (alert.severity === 'medium') score += 10;
-    
-    const daysSinceAlert = Math.ceil((today.getTime() - new Date(alert.created_at).getTime()) / (1000 * 60 * 60 * 24));
-    score += daysSinceAlert * 2; // Urgency increases with time
-    
-    if (score > maxScore) {
-      maxScore = score;
-      highestImpactAction = {
-        title: `Address Critical Alert: ${alert.title}`,
-        description: `${alert.description} This ${alert.severity} severity alert has been open for ${daysSinceAlert} days and requires immediate action.`,
-        assignee: 'Project Manager'
-      };
-    }
-  }
-
-  // Score overdue high-priority tasks
-  for (const task of tasks) {
-    let score = 50 + (task.priority || 1) * 15; // Base score + priority bonus
-    
-    if (task.due_date && new Date(task.due_date) < today) {
-      const daysOverdue = Math.ceil((today.getTime() - new Date(task.due_date).getTime()) / (1000 * 60 * 60 * 24));
-      score += daysOverdue * 3; // Overdue penalty
-    }
-    
-    if (score > maxScore) {
-      maxScore = score;
-      const overdueText = task.due_date && new Date(task.due_date) < today 
-        ? ` This task is ${Math.ceil((today.getTime() - new Date(task.due_date).getTime()) / (1000 * 60 * 60 * 24))} days overdue.`
-        : '';
-      
-      highestImpactAction = {
-        title: `Complete High-Priority Task: ${task.name}`,
-        description: `${task.description || 'Critical task requiring immediate attention.'}${overdueText}`,
-        assignee: task.assigned_to || 'Project Team'
-      };
-    }
-  }
-
-  // Score budget variance issues
-  for (const budgetItem of budgetItems) {
-    if (budgetItem.budgeted_amount && budgetItem.actual_amount) {
-      const variance = (budgetItem.actual_amount - budgetItem.budgeted_amount) / budgetItem.budgeted_amount;
-      if (variance > 0.1) { // More than 10% over budget
-        const score = 60 + variance * 100; // Score based on variance percentage
-        
-        if (score > maxScore) {
-          maxScore = score;
-          highestImpactAction = {
-            title: `Address Budget Overrun: ${budgetItem.category}`,
-            description: `Budget item "${budgetItem.category}" is ${(variance * 100).toFixed(1)}% over budget (${budgetItem.actual_amount} vs ${budgetItem.budgeted_amount} budgeted). Immediate cost control measures needed.`,
-            assignee: 'Project Manager'
-          };
-        }
-      }
-    }
-  }
-
-  // Default action if no specific issues found
-  if (!highestImpactAction) {
-    // Look for the next upcoming task
-    const nextTask = tasks.find(task => task.status === 'not_started');
-    if (nextTask) {
-      highestImpactAction = {
-        title: `Start Next Planned Task: ${nextTask.name}`,
-        description: nextTask.description || 'Begin work on the next scheduled task to maintain project momentum.',
-        assignee: nextTask.assigned_to || 'Project Team'
-      };
-    } else {
-      highestImpactAction = {
-        title: 'Review Project Status',
-        description: 'Conduct a comprehensive review of project progress, update schedules, and identify any emerging issues or opportunities.',
-        assignee: 'Project Manager'
-      };
-    }
+  if (error) {
+    throw new McpError(
+      ErrorCode.InternalError,
+      `Failed to create action item: ${error.message}`
+    );
   }
 
   return {
@@ -173,15 +70,62 @@ export async function getNextAction(args: unknown) {
         type: 'text',
         text: JSON.stringify({
           success: true,
-          project_name: project.name,
-          next_action: highestImpactAction,
-          analysis_summary: {
-            tasks_analyzed: tasks.length,
-            open_rfis: rfis.length,
-            unresolved_alerts: alerts.length,
-            budget_items: budgetItems.length,
-            impact_score: maxScore
-          }
+          action_item: {
+            id: actionItem.id,
+            title: actionItem.title,
+            description: actionItem.description,
+            priority: actionItem.priority,
+            status: actionItem.status,
+            due_date: actionItem.due_date,
+            project_name: project.name
+          },
+          message: `Action item "${actionItem.title}" created successfully`
+        }, null, 2),
+      },
+    ],
+  };
+}
+
+export async function completeActionItem(args: unknown) {
+  const params = CompleteActionItemSchema.parse(args);
+
+  // Update the action item status
+  const { data: actionItem, error } = await supabase
+    .from('action_items')
+    .update({ 
+      status: 'Done',
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', params.item_id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new McpError(
+      ErrorCode.InternalError,
+      `Failed to complete action item: ${error.message}`
+    );
+  }
+
+  if (!actionItem) {
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      `Action item not found: ${params.item_id}`
+    );
+  }
+
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify({
+          success: true,
+          action_item: {
+            id: actionItem.id,
+            title: actionItem.title,
+            status: actionItem.status
+          },
+          message: `Action item "${actionItem.title}" marked as complete`
         }, null, 2),
       },
     ],
