@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Plug, BarChart3, Users, FileText, Calendar, Settings } from 'lucide-react';
 import DashboardGrid from '@/components/dashboard/DashboardGrid';
-import { useDashboardStore } from '@/stores/useDashboardStore';
 import IntegrationsModal from '@/components/integrations/IntegrationsModal';
 
 interface DashboardProps {
@@ -14,7 +13,6 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const [showIntegrations, setShowIntegrations] = useState(false);
-  const { widgets, layout, addWidget, removeWidget, updateLayout } = useDashboardStore();
 
   return (
     <div className="p-6 space-y-6">
@@ -97,14 +95,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
       </div>
 
       {/* Dashboard Grid */}
-      <DashboardGrid 
-        projectId={projectId}
-        widgets={widgets}
-        layout={layout}
-        onAddWidget={addWidget}
-        onRemoveWidget={removeWidget}
-        onLayoutChange={updateLayout}
-      />
+      <DashboardGrid projectId={projectId} />
 
       {/* Integrations Modal */}
       <IntegrationsModal
