@@ -9,6 +9,7 @@ import { searchCommunications } from "./communicationsSearch.ts";
 import { buildPrompt } from "./promptBuilder.ts";
 import { generateResponse } from "./geminiChat.ts";
 import { getProjectData } from "./projectData.ts";
+import { getPortfolioData } from "./portfolioData.ts";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -52,7 +53,7 @@ serve(async (req) => {
     const questionEmbedding = await createEmbedding(question, geminiKey);
 
     // Search documents
-    const documentChunks = await searchDocuments(supabase, questionEmbedding, project_id);
+    const documentChunks = await searchDocuments(supabase, questionEmbedding, project_id, match_count);
 
     // Search communications if requested
     let communicationResults = [];
@@ -70,8 +71,13 @@ serve(async (req) => {
       });
     }
 
-    // Get additional project data
-    const projectData = await getProjectData(supabase, project_id);
+    // Get project or portfolio data
+    let projectData;
+    if (project_id === 'portfolio') {
+      projectData = await getPortfolioData(supabase);
+    } else {
+      projectData = await getProjectData(supabase, project_id);
+    }
 
     // Build prompt with context
     const prompt = buildPrompt({

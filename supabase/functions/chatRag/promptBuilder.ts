@@ -1,75 +1,79 @@
 
-interface PromptBuilderParams {
+export function buildPrompt(params: {
   question: string;
   documentChunks: any[];
-  communicationResults?: any[];
-  projectData: any;
+  communicationResults: any[];
+  projectData?: any;
   conversationId?: string;
-}
+}) {
+  const { question, documentChunks, communicationResults, projectData } = params;
 
-export function buildPrompt({ 
-  question, 
-  documentChunks, 
-  communicationResults = [],
-  projectData,
-  conversationId 
-}: PromptBuilderParams): string {
+  let contextInfo = '';
   
-  let contextSections = [];
-
-  // Document context
-  if (documentChunks.length > 0) {
-    const documentContext = documentChunks
-      .map((chunk, index) => `[Doc ${index + 1}] ${chunk.content}`)
-      .join('\n\n');
-    contextSections.push(`**Document Context:**\n${documentContext}`);
-  }
-
-  // Communication context
-  if (communicationResults.length > 0) {
-    const communicationContext = communicationResults
-      .map((comm, index) => {
-        const speaker = comm.speaker?.name || 'Unknown';
-        const timestamp = new Date(comm.message_ts).toLocaleDateString();
-        const subject = comm.subject ? `Subject: ${comm.subject}` : '';
-        const body = comm.body || 'No content';
-        const commType = comm.comm_type.replace('_', ' ');
-        
-        return `[Comm ${index + 1}] ${commType} from ${speaker} (${timestamp})
-${subject}
-${body.substring(0, 300)}${body.length > 300 ? '...' : ''}`;
-      })
-      .join('\n\n');
-    contextSections.push(`**Communication Context:**\n${communicationContext}`);
-  }
-
-  // Project data context
+  // Add project/portfolio context
   if (projectData) {
-    const projectContext = `**Project Information:**
-- Name: ${projectData.name}
-- Status: ${projectData.status}
-- Budget Items: ${projectData.budget_items?.length || 0}
-- Tasks: ${projectData.tasks?.length || 0}
-- RFIs: ${projectData.rfis?.length || 0}`;
-    contextSections.push(projectContext);
+    if (projectData.summary) {
+      contextInfo += `Portfolio Context: ${projectData.summary}\n\n`;
+    }
+    
+    if (projectData.risks && projectData.risks.length > 0) {
+      contextInfo += `Current Portfolio Risks:\n`;
+      projectData.risks.forEach((risk: any, index: number) => {
+        contextInfo += `${index + 1}. ${risk.type} (${risk.severity}): ${risk.description}\n`;
+        contextInfo += `   Impact: ${risk.impact}\n`;
+        if (risk.affectedProjects && risk.affectedProjects.length > 0) {
+          contextInfo += `   Affected Projects: ${risk.affectedProjects.join(', ')}\n`;
+        }
+        contextInfo += '\n';
+      });
+    }
+
+    if (projectData.projects && projectData.projects.length > 0) {
+      contextInfo += `Portfolio Projects:\n`;
+      projectData.projects.slice(0, 10).forEach((project: any) => {
+        contextInfo += `- ${project.name} (${project.status})\n`;
+      });
+      contextInfo += '\n';
+    }
   }
 
-  // Build the complete prompt
-  const context = contextSections.join('\n\n');
+  // Add document context
+  if (documentChunks && documentChunks.length > 0) {
+    contextInfo += 'Relevant Document Information:\n';
+    documentChunks.slice(0, 5).forEach((chunk, index) => {
+      contextInfo += `${index + 1}. ${chunk.content.substring(0, 300)}...\n\n`;
+    });
+  }
 
-  return `You are an AI assistant for construction project management. Use the following context to answer the user's question about their project.
+  // Add communication context
+  if (communicationResults && communicationResults.length > 0) {
+    contextInfo += 'Recent Communications:\n';
+    communicationResults.slice(0, 3).forEach((comm, index) => {
+      const subject = comm.subject || 'No subject';
+      const body = (comm.body || '').substring(0, 200);
+      contextInfo += `${index + 1}. ${subject}: ${body}...\n\n`;
+    });
+  }
 
-${context}
+  const prompt = `You are an AI assistant specializing in construction project management and portfolio analysis. You provide strategic insights and risk assessments for construction projects.
 
-**Instructions:**
-- Provide accurate, helpful answers based on the context provided
-- When referencing information from communications, mention the speaker and approximate date
-- When referencing documents, cite them appropriately
-- If the context doesn't contain enough information to answer the question, say so clearly
-- Focus on construction project management topics
-- Be concise but comprehensive
+${contextInfo}
 
-**Question:** ${question}
+User Question: ${question}
 
-**Answer:**`;
+Please provide a comprehensive response that:
+1. Directly addresses the user's question about risks or project concerns
+2. References specific data from the context provided above
+3. Provides actionable insights and recommendations
+4. Uses a professional but accessible tone
+
+If asking about portfolio risks specifically, structure your response to cover:
+- Current risk overview
+- Specific risk categories (schedule, financial, operational)
+- Affected projects or areas
+- Recommended actions
+
+Response:`;
+
+  return prompt;
 }

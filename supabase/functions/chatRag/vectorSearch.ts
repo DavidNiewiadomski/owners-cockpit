@@ -1,23 +1,43 @@
 
-export async function searchDocuments(
-  supabase: any,
-  questionEmbedding: number[],
-  projectId: string
-): Promise<any[]> {
+export async function searchDocuments(supabase: any, queryEmbedding: number[], projectId: string, matchCount: number = 5) {
   console.log('Searching for relevant documents...');
   
-  const { data: vectorResults, error: vectorError } = await supabase.rpc('match_documents', {
-    query_embedding: questionEmbedding,
-    match_count: 12,
-    filter_project_id: projectId
-  });
+  try {
+    // If projectId is "portfolio", search across all projects the user has access to
+    if (projectId === 'portfolio') {
+      const { data: chunks, error } = await supabase
+        .rpc('match_documents', {
+          query_embedding: queryEmbedding,
+          match_count: matchCount,
+          filter_project_id: null // Search across all projects
+        });
 
-  if (vectorError) {
-    console.error('Vector search error:', vectorError);
+      if (error) {
+        console.error('Vector search error:', error);
+        return [];
+      }
+
+      console.log(`Found ${chunks?.length || 0} relevant chunks`);
+      return chunks || [];
+    } else {
+      // Search for specific project
+      const { data: chunks, error } = await supabase
+        .rpc('match_documents', {
+          query_embedding: queryEmbedding,
+          match_count: matchCount,
+          filter_project_id: projectId
+        });
+
+      if (error) {
+        console.error('Vector search error:', error);
+        return [];
+      }
+
+      console.log(`Found ${chunks?.length || 0} relevant chunks`);
+      return chunks || [];
+    }
+  } catch (error) {
+    console.error('Vector search error:', error);
+    return [];
   }
-
-  const chunks = vectorResults || [];
-  console.log(`Found ${chunks.length} relevant chunks`);
-  
-  return chunks;
 }
