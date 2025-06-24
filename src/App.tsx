@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -14,6 +13,10 @@ import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
+import AIOverlay from "@/components/AIOverlay";
+import AIFloatingButton from "@/components/AIFloatingButton";
+import { useState, useEffect } from "react";
+import hotkeys from "hotkeys-js";
 
 // Optimized QueryClient configuration
 const queryClient = new QueryClient({
@@ -48,7 +51,23 @@ const handleGlobalError = (error: Error, errorInfo: React.ErrorInfo, errorId: st
 };
 
 function App() {
+  const [showAIOverlay, setShowAIOverlay] = useState(false);
+  
   console.log('App rendering, current path:', window.location.pathname);
+
+  // Set up global hotkey for AI overlay
+  useEffect(() => {
+    // Command/Ctrl + Space to open AI overlay
+    hotkeys('cmd+space,ctrl+space', (event) => {
+      event.preventDefault();
+      setShowAIOverlay(true);
+    });
+
+    // Cleanup hotkeys on unmount
+    return () => {
+      hotkeys.unbind('cmd+space,ctrl+space');
+    };
+  }, []);
   
   return (
     <EnhancedErrorBoundary onError={handleGlobalError}>
@@ -71,6 +90,13 @@ function App() {
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
+                    
+                    {/* AI Overlay System */}
+                    <AIFloatingButton onClick={() => setShowAIOverlay(true)} />
+                    <AIOverlay 
+                      isOpen={showAIOverlay}
+                      onClose={() => setShowAIOverlay(false)}
+                    />
                   </EnhancedErrorBoundary>
                 </BrowserRouter>
               </TooltipProvider>
