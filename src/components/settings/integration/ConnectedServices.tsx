@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -14,6 +13,7 @@ import {
 } from 'lucide-react';
 import { ProjectIntegration } from '@/hooks/useProjectIntegrations';
 import { formatDistanceToNow } from 'date-fns';
+import IntegrationModal from '@/components/integrations/IntegrationModal';
 
 const PROVIDER_NAMES = {
   procore: 'Procore',
@@ -46,6 +46,11 @@ interface ConnectedServicesProps {
 }
 
 const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isLoading, error }) => {
+  const [selectedIntegration, setSelectedIntegration] = useState<{
+    integration: ProjectIntegration;
+    provider: any;
+  } | null>(null);
+
   console.log('🎯 ConnectedServices render:', { 
     integrationsCount: integrations?.length, 
     isLoading, 
@@ -99,6 +104,13 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     }
   };
 
+  const handleSettingsClick = (integration: ProjectIntegration) => {
+    setSelectedIntegration({
+      integration,
+      provider: integration.provider as any
+    });
+  };
+
   const renderLoadingState = () => (
     <div className="space-y-4">
       {Array.from({ length: 4 }).map((_, i) => (
@@ -147,7 +159,13 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     
     if (!integrations || integrations.length === 0) {
       console.log('🚨 No integrations to render, showing empty state');
-      return renderEmptyState();
+      return (
+        <div className="text-center py-8 text-muted-foreground">
+          <PlugZap className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <p>No integrations configured yet</p>
+          <p className="text-sm">Click "Open Integrations" to get started</p>
+        </div>
+      );
     }
 
     console.log('🎨 Rendering integrations:', integrations);
@@ -180,7 +198,11 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
                   </p>
                 </div>
                 <Switch checked={integration.status === 'connected'} />
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => handleSettingsClick(integration)}
+                >
                   <SettingsIcon className="h-4 w-4" />
                 </Button>
               </div>
@@ -196,12 +218,43 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     
     if (isLoading) {
       console.log('⏳ Showing loading state');
-      return renderLoadingState();
+      return (
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between p-4 border rounded-lg animate-pulse">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                <div>
+                  <div className="w-24 h-4 bg-gray-200 rounded mb-1"></div>
+                  <div className="w-32 h-3 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-6 bg-gray-200 rounded"></div>
+                <div className="w-8 h-6 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
     }
     
     if (error) {
       console.log('❌ Showing error state:', error);
-      return renderErrorState();
+      return (
+        <div className="text-center py-8 text-muted-foreground">
+          <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50 text-red-500" />
+          <p>Unable to load integrations</p>
+          <p className="text-sm">Click "Open Integrations" to get started</p>
+          {error && (
+            <div className="text-xs text-red-500 mt-2 space-y-1">
+              <p>Error: {error.message || 'Unknown error'}</p>
+              <p>Code: {error.code || 'N/A'}</p>
+              <p>Details: {error.details || 'N/A'}</p>
+            </div>
+          )}
+        </div>
+      );
     }
     
     console.log('📊 Showing integrations');
@@ -209,17 +262,29 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Connected Services</CardTitle>
-        <CardDescription>
-          Quick overview of your active integrations
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {renderContent()}
-      </CardContent>
-    </Card>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Connected Services</CardTitle>
+          <CardDescription>
+            Quick overview of your active integrations
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {renderContent()}
+        </CardContent>
+      </Card>
+
+      {selectedIntegration && (
+        <IntegrationModal
+          isOpen={!!selectedIntegration}
+          onClose={() => setSelectedIntegration(null)}
+          provider={selectedIntegration.provider}
+          projectId={selectedIntegration.integration.project_id}
+          existingIntegration={selectedIntegration.integration}
+        />
+      )}
+    </>
   );
 };
 
