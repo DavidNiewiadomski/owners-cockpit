@@ -17,7 +17,7 @@ import { useRouter } from '@/hooks/useRouter';
 
 const Index = () => {
   const { t } = useTranslation();
-  // Always start with portfolio view for /projects route
+  // Start with null - portfolio will be handled separately
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'portfolio' | 'project'>('portfolio');
   const [showSettings, setShowSettings] = useState(false);
@@ -34,7 +34,7 @@ const Index = () => {
   }, [currentRole]);
 
   const handleProjectChange = (projectId: string | null) => {
-    if (projectId === null || projectId === 'portfolio') {
+    if (projectId === 'portfolio') {
       setViewMode('portfolio');
       setSelectedProject(null);
     } else {
@@ -74,12 +74,12 @@ const Index = () => {
           ) : selectedProject ? (
             <Dashboard projectId={selectedProject} />
           ) : (
-            // Always show portfolio as fallback
+            // Fallback to portfolio if somehow no project is selected
             <PortfolioDashboard />
           )}
         </main>
 
-        {/* Chat Window - only show for specific projects */}
+        {/* Chat Window */}
         {showChat && selectedProject && viewMode === 'project' && (
           <div className="w-96 border-l border-border/40">
             <ChatWindow projectId={selectedProject} />
