@@ -88,7 +88,7 @@ export const ActionItemCard: React.FC<ActionItemCardProps> = ({ item, projectId 
           )}
 
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge size="sm" className={getPriorityColor(item.priority)}>
+            <Badge className={cn("text-xs", getPriorityColor(item.priority))}>
               {item.priority}
             </Badge>
 
@@ -112,7 +112,7 @@ export const ActionItemCard: React.FC<ActionItemCardProps> = ({ item, projectId 
 
           {item.source_type && (
             <div className="flex items-center gap-1 mt-2">
-              <Badge variant="outline" size="sm" className="text-xs">
+              <Badge variant="outline" className="text-xs">
                 {item.source_type}
               </Badge>
               {item.source_id && (
