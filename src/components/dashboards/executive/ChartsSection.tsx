@@ -21,6 +21,69 @@ interface ChartsSectionProps {
 }
 
 const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
+  // Enhanced futuristic color palette for risk categories
+  const futuristicRiskData = projectData.riskBreakdown.map((item, index) => {
+    const futuristicColors = [
+      '#00D4FF', // Cyan blue for Technical
+      '#00FF88', // Neon green for Financial  
+      '#FFB800', // Golden yellow for Schedule
+      '#FF3366'  // Neon red for External
+    ];
+    return {
+      ...item,
+      color: futuristicColors[index] || item.color
+    };
+  });
+
+  const CustomRiskTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      return (
+        <div className="bg-card/95 backdrop-blur-sm border border-primary/20 rounded-lg p-4 shadow-2xl">
+          <div className="flex items-center gap-3">
+            <div 
+              className="w-4 h-4 rounded-full shadow-lg"
+              style={{ 
+                backgroundColor: data.payload.color,
+                boxShadow: `0 0 10px ${data.payload.color}40`
+              }}
+            />
+            <div>
+              <p className="font-semibold text-foreground text-sm">
+                {data.payload.category}
+              </p>
+              <p className="text-2xl font-bold" style={{ color: data.payload.color }}>
+                {data.value}%
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomRiskLegend = ({ payload }: any) => {
+    return (
+      <div className="flex flex-wrap justify-center gap-6 mt-6">
+        {payload.map((entry: any, index: number) => (
+          <div key={index} className="flex items-center gap-3 group cursor-pointer">
+            <div 
+              className="w-4 h-4 rounded-full transition-all duration-300 group-hover:scale-110"
+              style={{ 
+                backgroundColor: entry.color,
+                boxShadow: `0 0 8px ${entry.color}60, inset 0 0 8px ${entry.color}40`
+              }}
+            />
+            <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+              {entry.value}: {futuristicRiskData.find(d => d.category === entry.value)?.value}%
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Financial Performance with Forecast */}
@@ -76,53 +139,60 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ projectData }) => {
         </CardContent>
       </Card>
 
-      {/* Risk Distribution Pie Chart */}
-      <Card className="linear-chart-container">
-        <CardHeader>
+      {/* Enhanced Futuristic Risk Distribution */}
+      <Card className="linear-chart-container relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none" />
+        <CardHeader className="relative">
           <CardTitle className="linear-chart-title">
-            <AlertTriangle className="h-5 w-5 text-orange-600" />
-            Risk Distribution Analysis
+            <div className="relative">
+              <AlertTriangle className="h-5 w-5 text-orange-400 drop-shadow-lg" />
+              <div className="absolute inset-0 h-5 w-5 text-orange-400 blur-sm opacity-50" />
+            </div>
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent font-semibold">
+              Risk Distribution Analysis
+            </span>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative">
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
+              <defs>
+                {futuristicRiskData.map((entry, index) => (
+                  <radialGradient key={index} id={`riskGradient${index}`} cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor={entry.color} stopOpacity={0.9}/>
+                    <stop offset="70%" stopColor={entry.color} stopOpacity={0.7}/>
+                    <stop offset="100%" stopColor={entry.color} stopOpacity={0.4}/>
+                  </radialGradient>
+                ))}
+              </defs>
               <Pie
-                data={projectData.riskBreakdown}
+                data={futuristicRiskData}
                 cx="50%"
                 cy="50%"
-                outerRadius={80}
-                innerRadius={30}
-                paddingAngle={2}
+                outerRadius={90}
+                innerRadius={35}
+                paddingAngle={3}
                 dataKey="value"
-                stroke="#fff"
-                strokeWidth={2}
+                stroke="rgba(255,255,255,0.1)"
+                strokeWidth={1}
               >
-                {projectData.riskBreakdown.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                {futuristicRiskData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={`url(#riskGradient${index})`}
+                    style={{
+                      filter: `drop-shadow(0 0 6px ${entry.color}40)`,
+                    }}
+                  />
                 ))}
               </Pie>
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: 'hsl(var(--popover))',
-                  border: '1px solid hsl(var(--border))',
-                  borderRadius: '8px',
-                  color: 'hsl(var(--popover-foreground))'
-                }}
-                formatter={(value: any, name: string) => [`${value}%`, name]}
-              />
-              <Legend 
-                verticalAlign="bottom" 
-                height={50}
-                iconType="circle"
-                formatter={(value, entry: any) => (
-                  <span className="text-sm" style={{ color: entry.color }}>
-                    {value}: {entry.payload.value}%
-                  </span>
-                )}
-              />
+              <Tooltip content={<CustomRiskTooltip />} />
+              <Legend content={<CustomRiskLegend />} />
             </PieChart>
           </ResponsiveContainer>
+          
+          {/* Central glow effect */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-xl pointer-events-none" />
         </CardContent>
       </Card>
     </div>
