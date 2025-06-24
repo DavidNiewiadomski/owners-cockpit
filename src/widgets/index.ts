@@ -1,9 +1,11 @@
+
 import { ConstructionProgress } from './components/ConstructionProgress';
 import { MaterialDeliveries } from './components/MaterialDeliveries';
 import { OpenIssues } from './components/OpenIssues';
 import { ProjectTimeline } from './components/ProjectTimeline';
 import { SafetyIncidents } from './components/SafetyIncidents';
 import { WeatherConditions } from './components/WeatherConditions';
+import { MeetingSummary } from './components/MeetingSummary';
 import WorkOrders from './components/WorkOrders';
 import EnergyUsage from './components/EnergyUsage';
 import SustainabilityMetrics from './components/SustainabilityMetrics';
@@ -16,7 +18,8 @@ export const WIDGET_REGISTRY = [
     component: ProjectTimeline,
     category: 'construction',
     roles: ['project_manager', 'executive'] as const,
-    defaultSize: { w: 2, h: 1 }
+    defaultSize: { w: 2, h: 1 },
+    supportsMedia: true
   },
   {
     id: 'construction-progress',
@@ -25,7 +28,18 @@ export const WIDGET_REGISTRY = [
     component: ConstructionProgress,
     category: 'construction',
     roles: ['project_manager', 'site_foreman'] as const,
-    defaultSize: { w: 1, h: 1 }
+    defaultSize: { w: 1, h: 1 },
+    supportsMedia: true
+  },
+  {
+    id: 'meeting-summary',
+    name: 'Meeting Summary',
+    description: 'Latest meeting summary with key slide screenshots',
+    component: MeetingSummary,
+    category: 'construction',
+    roles: ['project_manager', 'executive'] as const,
+    defaultSize: { w: 1, h: 1 },
+    supportsMedia: true
   },
   {
     id: 'material-deliveries',
@@ -100,6 +114,7 @@ export interface WidgetDefinition {
   category: 'construction' | 'other' | 'facilities' | 'sustainability';
   roles: readonly string[];
   defaultSize: { w: number; h: number };
+  supportsMedia?: boolean;
 }
 
 export const WIDGET_CATEGORIES = [

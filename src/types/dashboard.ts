@@ -11,9 +11,19 @@ export interface WidgetPosition {
   y: number;
 }
 
+export interface WidgetMedia {
+  url: string;
+  type: 'image' | 'document' | 'video';
+  title?: string;
+  thumbnail?: string;
+  caption?: string;
+}
+
 export interface LayoutItem extends WidgetPosition, WidgetSize {
   widgetId: string;
   id: string;
+  media_url?: string;
+  media_gallery?: WidgetMedia[];
 }
 
 export interface WidgetDefinition {
@@ -21,9 +31,10 @@ export interface WidgetDefinition {
   name: string;
   description?: string;
   component: React.ComponentType<any>;
-  category: 'construction' | 'facilities' | 'other';
+  category: 'construction' | 'facilities' | 'other' | 'sustainability';
   roles: readonly UserRole[];
   defaultSize: WidgetSize;
+  supportsMedia?: boolean;
 }
 
 export interface DashboardLayout {

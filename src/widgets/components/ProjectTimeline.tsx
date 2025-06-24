@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
+import { MediaCard } from '@/components/ui/media-card';
+import { WidgetMedia } from '@/types/dashboard';
 
 interface ProjectTimelineProps {
   projectId?: string;
@@ -15,8 +16,40 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
     { name: 'Final Inspection', date: '2024-12-01', status: 'upcoming' }
   ];
 
+  // Mock Track3D gallery data
+  const mockGallery: WidgetMedia[] = [
+    {
+      url: '/placeholder.svg',
+      type: 'image',
+      title: 'Foundation Progress',
+      caption: 'Latest foundation work captured via Track3D'
+    },
+    {
+      url: '/placeholder.svg',
+      type: 'image',
+      title: 'Frame Assembly',
+      caption: 'Steel frame progress - 68% complete'
+    },
+    {
+      url: '/placeholder.svg',
+      type: 'image',
+      title: 'Site Overview',
+      caption: 'Aerial view from drone capture'
+    },
+    {
+      url: '/placeholder.svg',
+      type: 'image',
+      title: 'Quality Check',
+      caption: 'QA inspection documentation'
+    }
+  ];
+
   return (
-    <Card className="p-4 h-full">
+    <MediaCard
+      title="Project Timeline"
+      media_gallery={mockGallery}
+      className="h-full"
+    >
       <div className="flex items-center gap-2 mb-4">
         <Calendar className="w-4 h-4 text-purple-600" />
         <h3 className="text-sm font-medium text-muted-foreground">Project Timeline</h3>
@@ -36,7 +69,7 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
           </div>
         ))}
       </div>
-    </Card>
+    </MediaCard>
   );
 };
 

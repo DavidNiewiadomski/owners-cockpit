@@ -50,6 +50,13 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 
   const WidgetComponent = widgetDef.component;
 
+  // Prepare widget props including media data
+  const widgetProps = {
+    projectId,
+    ...(item.media_url && { media_url: item.media_url }),
+    ...(item.media_gallery && { media_gallery: item.media_gallery })
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -88,7 +95,7 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
 
       {/* Widget Content */}
       <div className={isEditMode ? 'pointer-events-none' : ''}>
-        <WidgetComponent projectId={projectId} />
+        <WidgetComponent {...widgetProps} />
       </div>
     </div>
   );
