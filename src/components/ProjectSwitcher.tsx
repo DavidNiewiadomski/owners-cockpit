@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Check, ChevronsUpDown, Plus, Settings, PlugZap } from 'lucide-react';
+import { Check, ChevronsUpDown, Plus, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/popover';
 import { useProjects } from '@/hooks/useProjects';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-import { useRouter } from '@/hooks/useRouter';
 
 interface ProjectSwitcherProps {
   selectedProject: string | null;
@@ -35,19 +34,12 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
   const [open, setOpen] = useState(false);
   const { data: projects = [], isLoading } = useProjects();
   const { access } = useRoleBasedAccess();
-  const router = useRouter();
 
   const currentProject = projects.find(p => p.id === selectedProject);
 
   const handleProjectSelect = (projectId: string | null) => {
     onProjectChange(projectId);
     setOpen(false);
-  };
-
-  const handleIntegrationsClick = () => {
-    if (selectedProject) {
-      router.push(`/projects/${selectedProject}/integrations`);
-    }
   };
 
   return (
@@ -119,29 +111,17 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
       </Popover>
 
       {/* Project-specific actions */}
-      {selectedProject && (
+      {selectedProject && onSettingsToggle && (
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleIntegrationsClick}
+            onClick={onSettingsToggle}
             className="h-8 px-2"
           >
-            <PlugZap className="h-4 w-4" />
-            <span className="sr-only">Integrations</span>
+            <Settings className="h-4 w-4" />
+            <span className="sr-only">Settings</span>
           </Button>
-          
-          {onSettingsToggle && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onSettingsToggle}
-              className="h-8 px-2"
-            >
-              <Settings className="h-4 w-4" />
-              <span className="sr-only">Settings</span>
-            </Button>
-          )}
         </div>
       )}
     </div>
