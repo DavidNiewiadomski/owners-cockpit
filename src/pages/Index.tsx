@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -167,8 +168,7 @@ const Index = () => {
       {/* AI Floating Button */}
       <AIFloatingButton onClick={handleAIChat} />
 
-      {/* AI Chat Overlay - Debug the state */}
-      {console.log('🔍 Rendering AIChatOverlay with isOpen:', showChatOverlay)}
+      {/* AI Chat Overlay */}
       <AIChatOverlay 
         isOpen={showChatOverlay}
         onClose={handleCloseChatOverlay}

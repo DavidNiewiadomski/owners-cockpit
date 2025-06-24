@@ -9,6 +9,11 @@ interface AIFloatingButtonProps {
 }
 
 const AIFloatingButton: React.FC<AIFloatingButtonProps> = ({ onClick }) => {
+  const handleClick = () => {
+    console.log('🔵 AIFloatingButton clicked!');
+    onClick();
+  };
+
   return (
     <motion.div
       initial={{ scale: 0 }}
@@ -18,7 +23,7 @@ const AIFloatingButton: React.FC<AIFloatingButtonProps> = ({ onClick }) => {
       className="fixed bottom-6 right-6 z-40"
     >
       <Button
-        onClick={onClick}
+        onClick={handleClick}
         size="lg"
         className="h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
       >
