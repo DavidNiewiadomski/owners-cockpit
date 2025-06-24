@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useProjectIntegrations } from '@/hooks/useProjectIntegrations';
 import IntegrationCard from '@/components/integrations/IntegrationCard';
@@ -11,17 +11,8 @@ import { useQueryClient } from '@tanstack/react-query';
 
 const AVAILABLE_PROVIDERS = ['procore', 'primavera', 'box', 'iot_sensors', 'smartsheet'] as const;
 
-interface IntegrationsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  projectId: string | null;
-}
-
-const IntegrationsModal: React.FC<IntegrationsModalProps> = ({
-  isOpen,
-  onClose,
-  projectId
-}) => {
+const IntegrationsPage: React.FC = () => {
+  const { projectId } = useParams<{ projectId: string }>();
   const queryClient = useQueryClient();
   
   // Handle portfolio case - don't load integrations for portfolio view
@@ -32,7 +23,7 @@ const IntegrationsModal: React.FC<IntegrationsModalProps> = ({
 
   // Set up realtime subscription for live updates (only for actual projects)
   useEffect(() => {
-    if (!actualProjectId || isPortfolioView || !isOpen) return;
+    if (!actualProjectId || isPortfolioView) return;
 
     console.log('🔄 Setting up realtime subscription for integrations');
 
@@ -60,45 +51,61 @@ const IntegrationsModal: React.FC<IntegrationsModalProps> = ({
       console.log('🔌 Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
-  }, [actualProjectId, queryClient, isPortfolioView, isOpen]);
+  }, [actualProjectId, queryClient, isPortfolioView]);
 
-  const renderContent = () => {
-    if (isPortfolioView) {
-      return (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Integration Management</CardTitle>
-              <CardDescription>
-                Integrations are managed at the project level. Please navigate to a specific project to view and configure integrations.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+  if (isPortfolioView) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold">Portfolio Integrations</h1>
+          <p className="text-muted-foreground">
+            Select a specific project to view and manage integrations for that project.
+          </p>
         </div>
-      );
-    }
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Integration Management</CardTitle>
+            <CardDescription>
+              Integrations are managed at the project level. Please navigate to a specific project to view and configure integrations.
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
-    if (!projectId) {
-      return (
+  if (!projectId) {
+    return (
+      <div className="p-6">
         <div className="flex items-center gap-2 text-destructive">
           <AlertCircle className="w-5 h-5" />
           <span>No project selected</span>
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
-    if (isLoading) {
-      return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  if (isLoading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-48 w-full" />
           ))}
         </div>
-      );
-    }
+      </div>
+    );
+  }
 
-    if (error) {
-      return (
+  if (error) {
+    return (
+      <div className="p-6">
         <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
@@ -110,16 +117,25 @@ const IntegrationsModal: React.FC<IntegrationsModalProps> = ({
             </CardDescription>
           </CardHeader>
         </Card>
-      );
-    }
-
-    // Create a map of existing integrations by provider
-    const integrationMap = new Map(
-      (integrations || []).map(integration => [integration.provider, integration])
+      </div>
     );
+  }
 
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  // Create a map of existing integrations by provider
+  const integrationMap = new Map(
+    (integrations || []).map(integration => [integration.provider, integration])
+  );
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">Integrations</h1>
+        <p className="text-muted-foreground">
+          Connect external data sources to sync project information automatically.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {AVAILABLE_PROVIDERS.map(provider => (
           <IntegrationCard
             key={provider}
@@ -129,30 +145,8 @@ const IntegrationsModal: React.FC<IntegrationsModalProps> = ({
           />
         ))}
       </div>
-    );
-  };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {isPortfolioView ? 'Portfolio Integrations' : 'Integrations'}
-          </DialogTitle>
-          <p className="text-muted-foreground">
-            {isPortfolioView 
-              ? 'Select a specific project to view and manage integrations for that project.'
-              : 'Connect external data sources to sync project information automatically.'
-            }
-          </p>
-        </DialogHeader>
-        
-        <div className="mt-6">
-          {renderContent()}
-        </div>
-      </DialogContent>
-    </Dialog>
+    </div>
   );
 };
 
-export default IntegrationsModal;
+export default IntegrationsPage;

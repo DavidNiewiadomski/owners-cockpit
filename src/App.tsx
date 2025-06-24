@@ -1,8 +1,7 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SettingsProvider } from "@/contexts/SettingsContext";
 import EnhancedErrorBoundary from "@/components/EnhancedErrorBoundary";
@@ -13,6 +12,7 @@ import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
 import SettingsAccessPage from "./pages/SettingsAccessPage";
 import SettingsAuditPage from "./pages/SettingsAuditPage";
+import IntegrationsPage from "./pages/IntegrationsPage";
 import ExecutiveDashboard from "./pages/ExecutiveDashboard";
 
 // Optimized QueryClient configuration
@@ -65,8 +65,7 @@ function App() {
                       <Route path="/dashboard" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
-                      {/* Redirect old integrations routes to dashboard */}
-                      <Route path="/projects/:projectId/integrations" element={<Navigate to="/projects" replace />} />
+                      <Route path="/projects/:projectId/integrations" element={<IntegrationsPage />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
                       <Route path="/settings/audit/:projectId" element={<SettingsAuditPage />} />
                       <Route path="*" element={<NotFound />} />
