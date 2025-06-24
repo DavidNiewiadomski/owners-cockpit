@@ -46,10 +46,11 @@ interface ConnectedServicesProps {
 }
 
 const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isLoading, error }) => {
-  console.log('ConnectedServices render:', { 
+  console.log('🎯 ConnectedServices render:', { 
     integrationsCount: integrations?.length, 
     isLoading, 
-    hasError: !!error 
+    hasError: !!error,
+    integrations: integrations 
   });
 
   const getStatusIcon = (status: string) => {
@@ -129,45 +130,64 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     </div>
   );
 
-  const renderIntegrations = () => (
-    <div className="space-y-4">
-      {integrations!.map((integration) => (
-        <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
-          <div className="flex items-center gap-3">
-            {getStatusIcon(integration.status)}
-            <div>
-              <h4 className="text-sm font-medium">
-                {PROVIDER_NAMES[integration.provider] || integration.provider}
-              </h4>
-              <p className="text-xs text-muted-foreground">
-                {PROVIDER_DESCRIPTIONS[integration.provider] || 'External service integration'}
-              </p>
-              {integration.sync_error && (
-                <p className="text-xs text-red-500 mt-1">{integration.sync_error}</p>
-              )}
+  const renderIntegrations = () => {
+    if (!integrations || integrations.length === 0) {
+      console.log('🚨 No integrations to render, showing empty state');
+      return renderEmptyState();
+    }
+
+    console.log('🎨 Rendering integrations:', integrations);
+    
+    return (
+      <div className="space-y-4">
+        {integrations.map((integration) => (
+          <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
+            <div className="flex items-center gap-3">
+              {getStatusIcon(integration.status)}
+              <div>
+                <h4 className="text-sm font-medium">
+                  {PROVIDER_NAMES[integration.provider] || integration.provider}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {PROVIDER_DESCRIPTIONS[integration.provider] || 'External service integration'}
+                </p>
+                {integration.sync_error && (
+                  <p className="text-xs text-red-500 mt-1">{integration.sync_error}</p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-right">
+                {getStatusBadge(integration.status)}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Last sync: {getLastSyncText(integration.last_sync)}
+                </p>
+              </div>
+              <Switch checked={integration.status === 'connected'} />
+              <Button variant="ghost" size="sm">
+                <SettingsIcon className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              {getStatusBadge(integration.status)}
-              <p className="text-xs text-muted-foreground mt-1">
-                Last sync: {getLastSyncText(integration.last_sync)}
-              </p>
-            </div>
-            <Switch checked={integration.status === 'connected'} />
-            <Button variant="ghost" size="sm">
-              <SettingsIcon className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+        ))}
+      </div>
+    );
+  };
 
   const renderContent = () => {
-    if (isLoading) return renderLoadingState();
-    if (error) return renderErrorState();
-    if (!integrations || integrations.length === 0) return renderEmptyState();
+    console.log('🎬 Rendering content - isLoading:', isLoading, 'error:', !!error, 'integrations length:', integrations?.length);
+    
+    if (isLoading) {
+      console.log('⏳ Showing loading state');
+      return renderLoadingState();
+    }
+    
+    if (error) {
+      console.log('❌ Showing error state');
+      return renderErrorState();
+    }
+    
+    console.log('📊 Showing integrations');
     return renderIntegrations();
   };
 
