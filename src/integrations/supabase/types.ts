@@ -392,6 +392,57 @@ export type Database = {
           },
         ]
       }
+      capture_sets: {
+        Row: {
+          capture_date: string
+          created_at: string | null
+          id: string
+          pano_url: string | null
+          pointcloud_url: string | null
+          progress_data: Json | null
+          project_id: string
+          provider: string
+          thumbnail_url: string | null
+        }
+        Insert: {
+          capture_date: string
+          created_at?: string | null
+          id?: string
+          pano_url?: string | null
+          pointcloud_url?: string | null
+          progress_data?: Json | null
+          project_id: string
+          provider: string
+          thumbnail_url?: string | null
+        }
+        Update: {
+          capture_date?: string
+          created_at?: string | null
+          id?: string
+          pano_url?: string | null
+          pointcloud_url?: string | null
+          progress_data?: Json | null
+          project_id?: string
+          provider?: string
+          thumbnail_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "capture_sets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "portfolio_health"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "capture_sets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       change_orders: {
         Row: {
           amount: number | null
