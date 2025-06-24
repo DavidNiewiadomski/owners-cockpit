@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -64,6 +65,7 @@ function App() {
                       <Route path="/" element={<LandingPage />} />
                       <Route path="/dashboard" element={<Index />} />
                       <Route path="/projects" element={<Index />} />
+                      <Route path="/projects/:projectId" element={<Index />} />
                       <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
                       <Route path="/projects/:projectId/integrations" element={<IntegrationsPage />} />
                       <Route path="/settings/access/:projectId" element={<SettingsAccessPage />} />
