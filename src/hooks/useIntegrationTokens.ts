@@ -32,7 +32,12 @@ export function useIntegrationTokens(projectId: string) {
       }
 
       console.log(`✅ Found ${data?.length || 0} integration tokens:`, data);
-      return data || [];
+      
+      // Transform the data to match our interface
+      return (data || []).map(item => ({
+        ...item,
+        token_data: item.token_data || {}
+      })) as IntegrationToken[];
     },
     enabled: !!projectId,
   });

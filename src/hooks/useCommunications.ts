@@ -42,7 +42,14 @@ export function useCommunications(projectId: string) {
       }
 
       console.log(`✅ Found ${data?.length || 0} communications:`, data);
-      return data || [];
+      
+      // Transform the data to match our interface
+      return (data || []).map(item => ({
+        ...item,
+        speaker: item.speaker || {},
+        participants: Array.isArray(item.participants) ? item.participants : [],
+        metadata: item.metadata || {}
+      })) as Communication[];
     },
     enabled: !!projectId,
     staleTime: 30 * 1000,
