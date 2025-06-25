@@ -10,7 +10,7 @@ interface ChatHeaderProps {
     description: string;
   };
   agentMemory: {
-    messageHistory: any[];
+    messageHistory: unknown[];
     persona: string;
   };
   isSpeaking: boolean;
@@ -41,8 +41,6 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   onToggleVoice,
   onStopSpeaking
 }) => {
-  console.log('🟡 ChatHeader rendering');
-  
   return (
     <div className="border-b border-border/40 p-4">
       <div className="flex items-center justify-between">

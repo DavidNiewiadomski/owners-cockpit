@@ -16,7 +16,7 @@ interface VoiceCommandDefinition {
 }
 
 export const useVoiceCommands = () => {
-  const { toast } = useToast();
+  const _toast = useToast();
 
   const processVoiceCommand = useCallback((text: string, availableCommands: VoiceCommandDefinition[]): VoiceCommand | null => {
     for (const command of availableCommands) {
@@ -40,7 +40,7 @@ export const useVoiceCommands = () => {
   const executeVoiceCommand = useCallback(async (
     command: VoiceCommand,
     onSendMessage?: (message: string) => void,
-    toast?: any
+    toast?: unknown
   ) => {
     try {
       switch (command.action) {

@@ -1,9 +1,9 @@
 
-import React from 'react';
+import type React from 'react';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 const RoleContextBanner: React.FC = () => {
-  const { getRoleContextualMessage } = useRoleBasedAccess();
+  const { getRoleContextualMessage: _getRoleContextualMessage } = useRoleBasedAccess();
 
   return null;
 };

@@ -18,10 +18,10 @@ interface RiskAlert {
   title: string;
   description: string;
   alert_key: string;
-  metadata: any;
+  metadata: unknown;
 }
 
-async function checkOverdueTasks(supabase: any): Promise<RiskAlert[]> {
+async function checkOverdueTasks(supabase: unknown): Promise<RiskAlert[]> {
   const today = new Date().toISOString().split('T')[0];
   
   const { data: overdueTasks } = await supabase
@@ -69,7 +69,7 @@ async function checkOverdueTasks(supabase: any): Promise<RiskAlert[]> {
   return alerts;
 }
 
-async function checkBudgetVariance(supabase: any): Promise<RiskAlert[]> {
+async function checkBudgetVariance(supabase: unknown): Promise<RiskAlert[]> {
   const { data: projects } = await supabase
     .from('projects')
     .select(`
@@ -80,8 +80,8 @@ async function checkBudgetVariance(supabase: any): Promise<RiskAlert[]> {
   const alerts: RiskAlert[] = [];
 
   for (const project of projects || []) {
-    const totalBudgeted = project.budget_items?.reduce((sum: number, item: any) => sum + (item.budgeted_amount || 0), 0) || 0;
-    const totalActual = project.budget_items?.reduce((sum: number, item: any) => sum + (item.actual_amount || 0), 0) || 0;
+    const totalBudgeted = project.budget_items?.reduce((sum: number, item: unknown) => sum + (item.budgeted_amount || 0), 0) || 0;
+    const totalActual = project.budget_items?.reduce((sum: number, item: unknown) => sum + (item.actual_amount || 0), 0) || 0;
     
     if (totalBudgeted > 0) {
       const variancePercent = ((totalActual - totalBudgeted) / totalBudgeted) * 100;
@@ -122,7 +122,7 @@ async function checkBudgetVariance(supabase: any): Promise<RiskAlert[]> {
   return alerts;
 }
 
-async function checkOverdueRFIs(supabase: any): Promise<RiskAlert[]> {
+async function checkOverdueRFIs(supabase: unknown): Promise<RiskAlert[]> {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   const sevenDaysAgoISO = sevenDaysAgo.toISOString().split('T')[0];
@@ -180,7 +180,7 @@ async function checkOverdueRFIs(supabase: any): Promise<RiskAlert[]> {
   return alerts;
 }
 
-async function saveAlert(supabase: any, alert: RiskAlert) {
+async function saveAlert(supabase: unknown, alert: RiskAlert) {
   // Insert the alert
   const { data: savedAlert, error: alertError } = await supabase
     .from('alerts')
@@ -222,7 +222,7 @@ serve(async (req) => {
     const slackWebhook = Deno.env.get('SLACK_WEBHOOK_URL');
 
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const { project_id, scheduled = false } = await req.json();
+    const { project_id, scheduled: _scheduled = false } = await req.json();
 
     console.log('Running risk alert checks...');
 

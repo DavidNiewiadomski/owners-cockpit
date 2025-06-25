@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,7 @@ import { X, Link, Calendar, DollarSign, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface BIMElementPanelProps {
-  element: any;
+  element: unknown;
   projectId: string;
   onClose: () => void;
 }
@@ -17,8 +17,8 @@ interface ElementBinding {
   id: string;
   binding_type: string;
   binding_id: string;
-  metadata: any;
-  binding_data?: any;
+  metadata: unknown;
+  binding_data?: unknown;
 }
 
 const BIMElementPanel: React.FC<BIMElementPanelProps> = ({ 
@@ -29,11 +29,7 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
   const [bindings, setBindings] = useState<ElementBinding[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadElementBindings();
-  }, [element.id, projectId]);
-
-  const loadElementBindings = async () => {
+  const loadElementBindings = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -51,7 +47,7 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
           
           try {
             switch (binding.binding_type) {
-              case 'task':
+              case 'task': {
                 const { data: taskData } = await supabase
                   .from('tasks')
                   .select('*')
@@ -59,7 +55,8 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
                   .single();
                 bindingData = taskData;
                 break;
-              case 'budget_item':
+              }
+              case 'budget_item': {
                 const { data: budgetData } = await supabase
                   .from('budget_items')
                   .select('*')
@@ -67,7 +64,8 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
                   .single();
                 bindingData = budgetData;
                 break;
-              case 'rfi':
+              }
+              case 'rfi': {
                 const { data: rfiData } = await supabase
                   .from('rfi')
                   .select('*')
@@ -75,7 +73,8 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
                   .single();
                 bindingData = rfiData;
                 break;
-              case 'safety_incident':
+              }
+              case 'safety_incident': {
                 const { data: safetyData } = await supabase
                   .from('safety_incidents')
                   .select('*')
@@ -83,6 +82,7 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
                   .single();
                 bindingData = safetyData;
                 break;
+              }
             }
           } catch (err) {
             console.warn(`Failed to load ${binding.binding_type} data:`, err);
@@ -98,7 +98,11 @@ const BIMElementPanel: React.FC<BIMElementPanelProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [element.id, projectId]);
+
+  useEffect(() => {
+    loadElementBindings();
+  }, [loadElementBindings]);
 
   const getBindingIcon = (type: string) => {
     switch (type) {

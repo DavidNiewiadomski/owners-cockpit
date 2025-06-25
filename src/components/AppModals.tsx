@@ -12,8 +12,16 @@ interface AppModalsProps {
   setShowSourceModal: (show: boolean) => void;
   showDocumentViewer: boolean;
   setShowDocumentViewer: (show: boolean) => void;
-  selectedDocument: any;
-  setSelectedDocument: (doc: any) => void;
+  selectedDocument: {
+    url: string;
+    mimeType: string;
+    title: string;
+  } | null;
+  setSelectedDocument: (doc: {
+    url: string;
+    mimeType: string;
+    title: string;
+  } | null) => void;
 }
 
 const AppModals: React.FC<AppModalsProps> = ({
@@ -24,7 +32,7 @@ const AppModals: React.FC<AppModalsProps> = ({
   showDocumentViewer,
   setShowDocumentViewer,
   selectedDocument,
-  setSelectedDocument,
+  setSelectedDocument: _setSelectedDocument,
 }) => {
   return (
     <>

@@ -1,14 +1,13 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { AlertTriangle, CheckCircle, FileText, MessageSquare, Clock, Zap, Eye } from 'lucide-react';
-import { Contract, ContractReview, ReviewFinding, RiskLevel } from '@/types/contracts';
+import { AlertTriangle, CheckCircle, FileText, MessageSquare, Zap, Eye } from 'lucide-react';
+import type { Contract, ContractReview} from '@/types/contracts';
 import { useToast } from '@/hooks/use-toast';
 
 interface ContractReviewPanelProps {
@@ -68,15 +67,7 @@ ARTICLE 7 - WARRANTY
 
 [Additional standard clauses would continue...]`;
 
-  useEffect(() => {
-    if (open && contract) {
-      setContractText(mockContractText);
-      // Auto-trigger AI analysis
-      performAIAnalysis();
-    }
-  }, [open, contract]);
-
-  const performAIAnalysis = async () => {
+  const performAIAnalysis = useCallback(async () => {
     setIsAnalyzing(true);
     
     try {
@@ -138,7 +129,7 @@ ARTICLE 7 - WARRANTY
       };
       
       setAiReview(mockReview);
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Analysis Failed",
         description: "Failed to analyze contract. Please try again.",
@@ -147,7 +138,15 @@ ARTICLE 7 - WARRANTY
     } finally {
       setIsAnalyzing(false);
     }
-  };
+  }, [contract.id, toast]);
+
+  useEffect(() => {
+    if (open && contract) {
+      setContractText(mockContractText);
+      // Auto-trigger AI analysis
+      performAIAnalysis();
+    }
+  }, [open, contract, mockContractText, performAIAnalysis]);
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {

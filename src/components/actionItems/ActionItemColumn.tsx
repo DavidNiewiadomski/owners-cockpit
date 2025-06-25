@@ -7,7 +7,7 @@ import {
 } from '@dnd-kit/sortable';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ActionItem } from '@/types/actionItems';
+import type { ActionItem } from '@/types/actionItems';
 import { ActionItemCard } from './ActionItemCard';
 import { cn } from '@/lib/utils';
 

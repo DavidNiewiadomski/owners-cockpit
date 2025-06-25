@@ -8,7 +8,7 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export async function getPortfolioHealth(args: unknown) {
-  const params = PortfolioHealthSchema.parse(args);
+  const _params = PortfolioHealthSchema.parse(args);
   
   try {
     // Optimized query with proper error handling and caching

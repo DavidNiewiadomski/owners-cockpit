@@ -27,7 +27,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { action_type, project_id, scheduled = false } = await req.json();
+    const { action_type, project_id, scheduled: _scheduled = false } = await req.json();
 
     console.log(`Autopilot engine triggered: ${action_type} for project ${project_id || 'all'}`);
 
@@ -145,7 +145,7 @@ serve(async (req) => {
   }
 });
 
-async function executeWeeklySummary(supabase: any, projectId: string) {
+async function executeWeeklySummary(supabase: unknown, projectId: string) {
   console.log(`Executing weekly summary for project ${projectId}`);
   
   try {
@@ -181,7 +181,7 @@ async function executeWeeklySummary(supabase: any, projectId: string) {
   }
 }
 
-async function executeDailyReport(supabase: any, projectId: string) {
+async function executeDailyReport(supabase: unknown, projectId: string) {
   console.log(`Executing daily report for project ${projectId}`);
   
   try {
@@ -193,7 +193,7 @@ async function executeDailyReport(supabase: any, projectId: string) {
         .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
     ]);
 
-    const reportContent = generateDailyReportContent({
+    const _reportContent = generateDailyReportContent({
       tasks: tasksResult.data || [],
       rfis: rfisResult.data || [],
       documents: documentsResult.data || []
@@ -236,7 +236,7 @@ async function executeDailyReport(supabase: any, projectId: string) {
   }
 }
 
-async function executeNextActions(supabase: any, projectId: string) {
+async function executeNextActions(supabase: unknown, projectId: string) {
   console.log(`Executing next actions for project ${projectId}`);
   
   try {
@@ -291,18 +291,18 @@ async function executeNextActions(supabase: any, projectId: string) {
   }
 }
 
-function generateDailyReportContent(data: any) {
+function generateDailyReportContent(data: unknown) {
   const today = new Date().toLocaleDateString();
   return `
 Daily Site Report - ${today}
 
 TASKS SUMMARY:
-- Active Tasks: ${data.tasks.filter((t: any) => t.status === 'in_progress').length}
-- Overdue Tasks: ${data.tasks.filter((t: any) => new Date(t.due_date) < new Date()).length}
+- Active Tasks: ${data.tasks.filter((t: unknown) => t.status === 'in_progress').length}
+- Overdue Tasks: ${data.tasks.filter((t: unknown) => new Date(t.due_date) < new Date()).length}
 
 RFI STATUS:
 - Open RFIs: ${data.rfis.length}
-- Overdue RFIs: ${data.rfis.filter((r: any) => new Date(r.due_date) < new Date()).length}
+- Overdue RFIs: ${data.rfis.filter((r: unknown) => new Date(r.due_date) < new Date()).length}
 
 DOCUMENTS:
 - New Documents Today: ${data.documents.length}
@@ -311,7 +311,7 @@ Generated automatically by AI Autopilot
 `;
 }
 
-function generateNextBestActions(context: any) {
+function generateNextBestActions(context: unknown) {
   const actions = [];
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);

@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Message, Citation } from '@/hooks/useChatRag';
+import type { Message, Citation } from '@/hooks/useChatRag';
 import ChatMessage from './ChatMessage';
 import WelcomeMessage from './WelcomeMessage';
 import TypingIndicator from './TypingIndicator';

@@ -5,10 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { FileText, Calendar } from 'lucide-react';
 
 interface ContractRenewalsProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const ContractRenewals: React.FC<ContractRenewalsProps> = ({ projectId }) => {
+export function ContractRenewals({ projectId: _projectId }: ContractRenewalsProps) {
   const contracts = [
     { id: 'C-001', vendor: 'Security Services Inc', expiryDate: '2024-07-15', value: 45000, status: 'expiring' },
     { id: 'C-002', vendor: 'Cleaning Solutions LLC', expiryDate: '2024-08-30', value: 24000, status: 'upcoming' },

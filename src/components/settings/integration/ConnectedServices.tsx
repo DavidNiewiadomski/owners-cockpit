@@ -12,7 +12,7 @@ import {
   Clock,
   RefreshCw
 } from 'lucide-react';
-import { ProjectIntegration } from '@/hooks/useProjectIntegrations';
+import type { ProjectIntegration } from '@/hooks/useProjectIntegrations';
 import { formatDistanceToNow } from 'date-fns';
 import IntegrationModal from '@/components/integrations/IntegrationModal';
 import { toast } from 'sonner';
@@ -53,13 +53,13 @@ const PROVIDER_DESCRIPTIONS = {
 interface ConnectedServicesProps {
   integrations?: ProjectIntegration[];
   isLoading: boolean;
-  error: any;
+  error: unknown;
 }
 
 const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isLoading, error }) => {
   const [selectedIntegration, setSelectedIntegration] = useState<{
     integration: ProjectIntegration;
-    provider: any;
+    provider: unknown;
   } | null>(null);
   const [syncingIntegrations, setSyncingIntegrations] = useState<Set<string>>(new Set());
 
@@ -149,11 +149,11 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
   const handleSettingsClick = (integration: ProjectIntegration) => {
     setSelectedIntegration({
       integration,
-      provider: integration.provider as any
+      provider: integration.provider as unknown
     });
   };
 
-  const renderLoadingState = () => (
+  const _renderLoadingState = () => (
     <div className="space-y-4">
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} className="flex items-center justify-between p-4 border rounded-lg animate-pulse">
@@ -173,7 +173,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     </div>
   );
 
-  const renderErrorState = () => (
+  const _renderErrorState = () => (
     <div className="text-center py-8 text-muted-foreground">
       <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50 text-red-500" />
       <p>Unable to load integrations</p>
@@ -188,7 +188,7 @@ const ConnectedServices: React.FC<ConnectedServicesProps> = ({ integrations, isL
     </div>
   );
 
-  const renderEmptyState = () => (
+  const _renderEmptyState = () => (
     <div className="text-center py-8 text-muted-foreground">
       <PlugZap className="h-12 w-12 mx-auto mb-4 opacity-50" />
       <p>No integrations configured yet</p>

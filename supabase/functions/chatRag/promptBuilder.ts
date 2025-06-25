@@ -3,10 +3,19 @@ export function buildPrompt(params: {
   question: string;
   documentChunks: any[];
   communicationResults: any[];
-  projectData?: any;
+  projectData?: unknown;
   conversationId?: string;
+  context?: any;
+  enableActions?: boolean;
 }) {
-  const { question, documentChunks, communicationResults, projectData } = params;
+  const { 
+    question, 
+    documentChunks, 
+    communicationResults, 
+    projectData,
+    context = {},
+    enableActions = false 
+  } = params;
 
   let contextInfo = '';
   
@@ -18,7 +27,7 @@ export function buildPrompt(params: {
     
     if (projectData.risks && projectData.risks.length > 0) {
       contextInfo += `Current Portfolio Risks:\n`;
-      projectData.risks.forEach((risk: any, index: number) => {
+      projectData.risks.forEach((risk: unknown, index: number) => {
         contextInfo += `${index + 1}. ${risk.type} (${risk.severity}): ${risk.description}\n`;
         contextInfo += `   Impact: ${risk.impact}\n`;
         if (risk.affectedProjects && risk.affectedProjects.length > 0) {
@@ -30,7 +39,7 @@ export function buildPrompt(params: {
 
     if (projectData.projects && projectData.projects.length > 0) {
       contextInfo += `Portfolio Projects:\n`;
-      projectData.projects.slice(0, 10).forEach((project: any) => {
+      projectData.projects.slice(0, 10).forEach((project: unknown) => {
         contextInfo += `- ${project.name} (${project.status})\n`;
       });
       contextInfo += '\n';
@@ -55,23 +64,45 @@ export function buildPrompt(params: {
     });
   }
 
-  const prompt = `You are an AI assistant specializing in construction project management and portfolio analysis. You provide strategic insights and risk assessments for construction projects.
+  const contextualInfo = context.systemPrompt || '';
+  const currentPage = context.activeView || 'dashboard';
+  const userRole = context.userRole || 'Building Owner/Manager';
+  
+  const prompt = `You are an advanced AI assistant for a construction management platform with full integration capabilities.
+
+${contextualInfo}
+
+Current Context:
+- User Role: ${userRole}
+- Current Page: ${currentPage}
+- Project: ${projectData?.name || 'Portfolio View'}
+- Timestamp: ${new Date().toISOString()}
+
+You have access to:
+- Project documents, specifications, and reports  
+- Communication history (emails, Teams messages, Slack conversations)
+- Real-time project status and metrics
+- Safety records and compliance data
+- Financial information and budgets
+- Microsoft Teams integration (can send messages, create channels)
+- Outlook integration (can send emails, create meetings)
+- Platform actions (create tasks, update status, generate reports)
 
 ${contextInfo}
 
 User Question: ${question}
 
-Please provide a comprehensive response that:
-1. Directly addresses the user's question about risks or project concerns
-2. References specific data from the context provided above
-3. Provides actionable insights and recommendations
-4. Uses a professional but accessible tone
+When responding:
+1. Use specific data from the provided context
+2. Cite sources when referencing documents or communications  
+3. Provide actionable recommendations
+4. Focus on safety, compliance, efficiency, and cost-effectiveness
+5. Be conversational and helpful like talking to a human colleague
+6. ${enableActions ? 'When appropriate, offer to perform specific actions by including [ACTION:description] in your response' : 'Provide information and suggestions'}
 
-If asking about portfolio risks specifically, structure your response to cover:
-- Current risk overview
-- Specific risk categories (schedule, financial, operational)
-- Affected projects or areas
-- Recommended actions
+If asked to perform actions, use this format: [ACTION:send Teams message to project manager about schedule delay]
+
+Respond as if you\'re an expert construction professional with access to all project data and integration tools.
 
 Response:`;
 

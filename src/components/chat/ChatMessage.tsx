@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Bot, User } from 'lucide-react';
-import { Message, Citation } from '@/hooks/useChatRag';
+import type { Message, Citation } from '@/hooks/useChatRag';
 import CitationChip from '@/components/CitationChip';
 
 interface ChatMessageProps {

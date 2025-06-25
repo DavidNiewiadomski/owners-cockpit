@@ -8,7 +8,18 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // Cache for procurement data to improve performance
-const procurementCache = new Map<string, { data: any; timestamp: number }>();
+interface ProcurementCacheData {
+  success: boolean;
+  procurement_data: unknown[];
+  metadata: {
+    count: number;
+    timestamp: string;
+    cached: boolean;
+    project_id?: string;
+  };
+}
+
+const procurementCache = new Map<string, { data: ProcurementCacheData; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export async function getProcurementSummary(args: unknown) {

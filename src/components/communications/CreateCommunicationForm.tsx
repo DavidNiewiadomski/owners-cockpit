@@ -77,7 +77,7 @@ const CreateCommunicationForm: React.FC<CreateCommunicationFormProps> = ({
       setParticipants([]);
       
       onSuccess?.();
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Failed to create communication. Please try again.",
@@ -107,7 +107,7 @@ const CreateCommunicationForm: React.FC<CreateCommunicationFormProps> = ({
             <Label htmlFor="provider">Provider</Label>
             <Select 
               value={formData.provider} 
-              onValueChange={(value: any) => setFormData({ ...formData, provider: value })}
+              onValueChange={(value: unknown) => setFormData({ ...formData, provider: value })}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -126,7 +126,7 @@ const CreateCommunicationForm: React.FC<CreateCommunicationFormProps> = ({
             <Label htmlFor="comm_type">Type</Label>
             <Select 
               value={formData.comm_type} 
-              onValueChange={(value: any) => setFormData({ ...formData, comm_type: value })}
+              onValueChange={(value: unknown) => setFormData({ ...formData, comm_type: value })}
             >
               <SelectTrigger>
                 <SelectValue />

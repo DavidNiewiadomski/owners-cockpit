@@ -1,5 +1,5 @@
 
-import { ProjectData, PendingApproval, RecentReport, RiskMetric } from './types';
+import type { ProjectData, PendingApproval, RecentReport, RiskMetric } from './types';
 
 export const generateMockProjects = (): ProjectData[] => [
   {

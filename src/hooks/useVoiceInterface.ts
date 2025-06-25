@@ -5,8 +5,8 @@ import { useToast } from '@/hooks/use-toast';
 // Extend existing Window interface for speech recognition
 declare global {
   interface Window {
-    SpeechRecognition: any;
-    webkitSpeechRecognition: any;
+    SpeechRecognition: unknown;
+    webkitSpeechRecognition: unknown;
   }
 }
 
@@ -34,14 +34,18 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
   });
 
   const { toast } = useToast();
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const isCleaningUpRef = useRef(false);
 
   // Initialize speech recognition
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const WindowWithSpeech = window as Window & {
+        SpeechRecognition?: typeof SpeechRecognition;
+        webkitSpeechRecognition?: typeof SpeechRecognition;
+      };
+      const SpeechRecognitionConstructor = WindowWithSpeech.SpeechRecognition || WindowWithSpeech.webkitSpeechRecognition;
       recognitionRef.current = new SpeechRecognitionConstructor();
       
       const recognition = recognitionRef.current;
@@ -56,7 +60,7 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
         }
       };
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         console.log('Speech recognition result received');
         if (!isCleaningUpRef.current) {
           let transcript = '';
@@ -74,7 +78,7 @@ export const useVoiceInterface = (config: VoiceInterfaceConfig = {}) => {
         }
       };
 
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         // Don't show error if we're cleaning up (component unmounting)
         if (isCleaningUpRef.current || event.error === 'aborted') {

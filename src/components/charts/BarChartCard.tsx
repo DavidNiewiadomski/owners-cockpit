@@ -1,12 +1,12 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 
 interface BarChartCardProps {
   title: string;
-  data: any[];
+  data: Record<string, unknown>[];
   xKey: string;
   yKeys: string[];
   colors: string[];
@@ -21,7 +21,7 @@ const BarChartCard: React.FC<BarChartCardProps> = ({
   colors,
   className
 }) => {
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ color: string; dataKey: string; value: number }>; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <motion.div 
@@ -30,7 +30,7 @@ const BarChartCard: React.FC<BarChartCardProps> = ({
           className="glass-panel rounded-xl p-4 shadow-2xl border border-cyan-500/30"
         >
           <p className="text-cyan-300 font-futuristic text-sm font-medium mb-2">{`${label}`}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index: number) => (
             <motion.p 
               key={index} 
               initial={{ opacity: 0, x: -10 }}

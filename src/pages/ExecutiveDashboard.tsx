@@ -8,7 +8,6 @@ import {
   TrendingUp, 
   TrendingDown, 
   DollarSign, 
-  Calendar, 
   AlertTriangle, 
   FileText, 
   Users, 
@@ -199,7 +198,7 @@ const ExecutiveDashboard: React.FC = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="project" angle={-45} textAnchor="end" height={80} />
                 <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-                <Tooltip formatter={(value: any) => [`$${(value / 1000).toFixed(0)}K`, '']} />
+                <Tooltip formatter={(value: unknown) => [`$${(value / 1000).toFixed(0)}K`, '']} />
                 <Bar dataKey="planned" fill="#e5e7eb" name="Planned" />
                 <Bar dataKey="actual" fill="#3b82f6" name="Actual" />
               </BarChart>
@@ -246,7 +245,7 @@ const ExecutiveDashboard: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`} />
-              <Tooltip formatter={(value: any) => [`$${(value / 1000).toFixed(0)}K`, '']} />
+              <Tooltip formatter={(value: unknown) => [`$${(value / 1000).toFixed(0)}K`, '']} />
               <Line type="monotone" dataKey="planned" stroke="#e5e7eb" strokeWidth={2} name="Planned" />
               <Line type="monotone" dataKey="actual" stroke="#3b82f6" strokeWidth={2} name="Actual" />
             </LineChart>

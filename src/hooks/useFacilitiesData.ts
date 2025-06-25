@@ -14,7 +14,7 @@ export interface Equipment {
   installation_date?: string;
   warranty_expiration?: string;
   status: string;
-  specifications?: any;
+  specifications?: unknown;
   created_at?: string;
   updated_at?: string;
 }
@@ -77,7 +77,7 @@ export interface SensorReading {
   value: number;
   timestamp: string;
   status?: string;
-  metadata?: any;
+  metadata?: unknown;
 }
 
 export function useEquipment(projectId: string) {

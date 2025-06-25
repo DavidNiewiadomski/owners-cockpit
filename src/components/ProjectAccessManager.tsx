@@ -15,7 +15,7 @@ export function ProjectAccessManager({ projectId }: ProjectAccessManagerProps) {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { data: userProjects } = useUserProjects();
-  const grantAccess = useGrantProjectAccess();
+  const _grantAccess = useGrantProjectAccess();
 
   const currentProject = userProjects?.find(up => up.project_id === projectId);
 
@@ -30,7 +30,7 @@ export function ProjectAccessManager({ projectId }: ProjectAccessManagerProps) {
       // Note: In a real app, you'd need to look up the user by email first
       // For now, this is a placeholder for the grant access functionality
       toast.info('Access management requires additional implementation for user lookup by email');
-    } catch (error) {
+    } catch (_error) {
       toast.error('Failed to grant access');
     } finally {
       setIsLoading(false);

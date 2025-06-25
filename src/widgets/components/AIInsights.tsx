@@ -5,10 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Brain, Info, ArrowRight } from 'lucide-react';
 
 interface AIInsightsProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const AIInsights: React.FC<AIInsightsProps> = ({ projectId }) => {
+export function AIInsights({ projectId: _projectId }: AIInsightsProps) {
   const insights = {
     summary: 'Foundation costs are 12% over budget due to unexpected soil conditions, requiring additional structural reinforcement. Electrical and plumbing work can be parallelized to recover 3-5 days from schedule. Overall project health remains good with 2 minor safety incidents and 85% productivity rate.',
     keyFindings: [

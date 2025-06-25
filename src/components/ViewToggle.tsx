@@ -7,12 +7,14 @@ interface ViewToggleProps {
   activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model';
   onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model') => void;
   selectedProject: string | null;
+  onAIChat?: () => void;
 }
 
 const ViewToggle: React.FC<ViewToggleProps> = ({
   activeView,
   onViewChange,
-  selectedProject
+  selectedProject,
+  onAIChat
 }) => {
   return (
     <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,14 +54,6 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
               >
                 <Box className="w-4 h-4" />
                 Model
-              </Button>
-              <Button
-                variant={activeView === 'chat' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => onViewChange('chat')}
-                className="h-8 px-3 text-sm font-medium transition-all duration-200"
-              >
-                AI Chat
               </Button>
             </>
           )}

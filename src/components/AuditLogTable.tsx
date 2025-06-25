@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
-import { AuditLog } from '@/hooks/useAuditLogs';
+import type { AuditLog } from '@/hooks/useAuditLogs';
 import { format } from 'date-fns';
 import { getActionColor, formatTableName, generateRecordLink } from '@/utils/auditLogUtils';
 

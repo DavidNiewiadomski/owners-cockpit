@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,11 +17,11 @@ import { useRouter } from '@/hooks/useRouter';
 
 const BIMModelPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const { user } = useAuth();
+  const _user = useAuth();
   const { currentRole } = useRole();
   const router = useRouter();
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedElement, setSelectedElement] = useState<any>(null);
+  const [selectedElement, setSelectedElement] = useState<unknown>(null);
   const [showElementPanel, setShowElementPanel] = useState(false);
   const [activeTab, setActiveTab] = useState('model');
 
@@ -30,7 +30,7 @@ const BIMModelPage: React.FC = () => {
 
   const canManage = currentRole === 'Construction' || currentRole === 'Executive';
 
-  const handleElementSelect = (element: any) => {
+  const handleElementSelect = (element: unknown) => {
     setSelectedElement(element);
     setShowElementPanel(true);
     console.log('Selected BIM element:', element);

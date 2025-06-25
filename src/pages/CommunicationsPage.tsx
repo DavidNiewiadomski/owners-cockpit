@@ -16,8 +16,8 @@ const CommunicationsPage: React.FC = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all');
-  const [selectedMeeting, setSelectedMeeting] = useState<any>(null);
-  const [selectedThread, setSelectedThread] = useState<any>(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<unknown>(null);
+  const [selectedThread, setSelectedThread] = useState<unknown>(null);
   const [showMeetingModal, setShowMeetingModal] = useState(false);
   const [showReplyDrawer, setShowReplyDrawer] = useState(false);
 
@@ -43,7 +43,7 @@ const CommunicationsPage: React.FC = () => {
     if (debouncedSearch.trim() && projectId) {
       searchMutation.mutate({ query: debouncedSearch, projectId });
     }
-  }, [debouncedSearch, projectId]);
+  }, [debouncedSearch, projectId, searchMutation]);
 
   // Realtime subscription
   useEffect(() => {
@@ -88,12 +88,12 @@ const CommunicationsPage: React.FC = () => {
     }
   });
 
-  const handleMeetingClick = (communication: any) => {
+  const handleMeetingClick = (communication: unknown) => {
     setSelectedMeeting(communication);
     setShowMeetingModal(true);
   };
 
-  const handleReplyClick = (communication: any) => {
+  const handleReplyClick = (communication: unknown) => {
     setSelectedThread(communication);
     setShowReplyDrawer(true);
   };

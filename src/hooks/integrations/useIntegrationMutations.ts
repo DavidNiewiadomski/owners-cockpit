@@ -27,7 +27,7 @@ export function useCreateIntegration() {
 
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       queryClient.invalidateQueries({ queryKey: ['project-integrations'] });
       toast.success('Integration connected successfully');
     },

@@ -23,7 +23,7 @@ jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => ({
 
 describe('Next Action Tool', () => {
   let server: OwnersCockpitMCPServer;
-  let mockSupabase: any;
+  let mockSupabase: unknown;
 
   beforeEach(() => {
     // Setup Supabase mock

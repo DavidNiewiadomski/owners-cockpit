@@ -38,7 +38,7 @@ const mockSupabase = {
 };
 
 // Mock data
-const mockData: any = {
+const mockData: unknown = {
   tasks: [
     {
       id: 'task-1',
@@ -72,7 +72,7 @@ const mockData: any = {
 
 Deno.test("Risk Alert - Overdue Tasks Detection", async () => {
   // Mock the checkOverdueTasks function logic
-  const overdueTasks = mockData.tasks.filter((task: any) => {
+  const overdueTasks = mockData.tasks.filter((task: unknown) => {
     const today = new Date();
     const dueDate = new Date(task.due_date);
     return dueDate < today;
@@ -84,8 +84,8 @@ Deno.test("Risk Alert - Overdue Tasks Detection", async () => {
 
 Deno.test("Risk Alert - Budget Variance Detection", async () => {
   const project = mockData.projects[0];
-  const totalBudgeted = project.budget_items.reduce((sum: number, item: any) => sum + item.budgeted_amount, 0);
-  const totalActual = project.budget_items.reduce((sum: number, item: any) => sum + item.actual_amount, 0);
+  const totalBudgeted = project.budget_items.reduce((sum: number, item: unknown) => sum + item.budgeted_amount, 0);
+  const totalActual = project.budget_items.reduce((sum: number, item: unknown) => sum + item.actual_amount, 0);
   const variancePercent = ((totalActual - totalBudgeted) / totalBudgeted) * 100;
 
   // Should detect variance > 5%

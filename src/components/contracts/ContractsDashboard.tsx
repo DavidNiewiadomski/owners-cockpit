@@ -2,12 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileText, Plus, Search, AlertTriangle, Clock, CheckCircle, Users } from 'lucide-react';
-import { Contract, ContractStatus, ContractType, RiskLevel } from '@/types/contracts';
+import type { Contract, ContractStatus, ContractType, RiskLevel } from '@/types/contracts';
 import { ContractCard } from './ContractCard';
 import { ContractDraftDialog } from './ContractDraftDialog';
 import { ContractReviewPanel } from './ContractReviewPanel';
@@ -104,7 +102,7 @@ const ContractsDashboard: React.FC = () => {
     setFilteredContracts(filtered);
   }, [contracts, searchTerm, statusFilter, typeFilter]);
 
-  const getStatusIcon = (status: ContractStatus) => {
+  const _getStatusIcon = (status: ContractStatus) => {
     switch (status) {
       case 'executed':
         return <CheckCircle className="h-4 w-4 text-green-600" />;
@@ -119,7 +117,7 @@ const ContractsDashboard: React.FC = () => {
     }
   };
 
-  const getRiskBadgeVariant = (risk: RiskLevel) => {
+  const _getRiskBadgeVariant = (risk: RiskLevel) => {
     switch (risk) {
       case 'low':
         return 'default';

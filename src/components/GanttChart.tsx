@@ -1,6 +1,6 @@
 
 import React, { useMemo } from 'react';
-import { Task } from '@/types/tasks';
+import type { Task } from '@/types/tasks';
 import { format, differenceInDays, startOfDay } from 'date-fns';
 import { motion } from 'framer-motion';
 

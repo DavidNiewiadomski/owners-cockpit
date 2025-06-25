@@ -19,7 +19,7 @@ interface InsightSidebarProps {
   projectId: string;
 }
 
-const InsightSidebar: React.FC<InsightSidebarProps> = ({ projectId }) => {
+const InsightSidebar: React.FC<InsightSidebarProps> = ({ projectId: _projectId }) => {
   const { t } = useTranslation();
   const { timezone } = useSettings();
 

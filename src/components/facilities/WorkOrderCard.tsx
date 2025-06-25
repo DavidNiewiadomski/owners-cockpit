@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Clock, User, Wrench } from 'lucide-react';
-import { WorkOrder } from '@/hooks/useFacilitiesData';
+import type { WorkOrder } from '@/hooks/useFacilitiesData';
 
 interface WorkOrderCardProps {
   workOrder: WorkOrder;

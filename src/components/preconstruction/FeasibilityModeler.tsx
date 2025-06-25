@@ -4,14 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calculator, TrendingUp, AlertTriangle, DollarSign, Clock, BarChart3 } from 'lucide-react';
-import { Site, DevelopmentScenario, RiskFactor } from '@/types/preconstruction';
+import { Calculator, TrendingUp, AlertTriangle, BarChart3 } from 'lucide-react';
+import type { Site, DevelopmentScenario, RiskFactor } from '@/types/preconstruction';
 
 interface FeasibilityModelerProps {
   site: Site;
 }
 
-const FeasibilityModeler: React.FC<FeasibilityModelerProps> = ({ site }) => {
+const FeasibilityModeler: React.FC<FeasibilityModelerProps> = ({ site: _site }) => {
   const [scenarios, setScenarios] = useState<DevelopmentScenario[]>([]);
   const [isModeling, setIsModeling] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);

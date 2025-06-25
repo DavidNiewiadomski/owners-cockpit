@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Calendar, Clock } from 'lucide-react';
 
 interface ScheduleKPIProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const ScheduleKPI: React.FC<ScheduleKPIProps> = ({ projectId }) => {
+export function ScheduleKPI({ projectId: _projectId }: ScheduleKPIProps) {
   // Mock data
   const scheduleData = {
     totalTasks: 156,

@@ -1,7 +1,7 @@
 
 import { create } from 'zustand';
-import { LayoutItem } from '@/types/dashboard';
-import { UserRole } from '@/types/roles';
+import type { LayoutItem } from '@/types/dashboard';
+import type { UserRole } from '@/types/roles';
 import { supabase } from '@/integrations/supabase/client';
 
 interface DashboardState {
@@ -61,13 +61,32 @@ const generateDefaultLayout = (role: UserRole): LayoutItem[] => {
 };
 
 // Helper function to safely parse layout data from Supabase
-const parseLayoutData = (data: any): LayoutItem[] => {
+const parseLayoutData = (data: unknown): LayoutItem[] => {
   try {
     if (Array.isArray(data)) {
-      return data as LayoutItem[];
+      // Validate that each item has the required LayoutItem structure
+      return data.filter((item): item is LayoutItem => {
+        return (
+          typeof item === 'object' &&
+          item !== null &&
+          'id' in item &&
+          'widgetId' in item &&
+          'x' in item &&
+          'y' in item &&
+          'w' in item &&
+          'h' in item &&
+          typeof item.id === 'string' &&
+          typeof item.widgetId === 'string' &&
+          typeof item.x === 'number' &&
+          typeof item.y === 'number' &&
+          typeof item.w === 'number' &&
+          typeof item.h === 'number'
+        );
+      });
     }
     if (typeof data === 'string') {
-      return JSON.parse(data) as LayoutItem[];
+      const parsed = JSON.parse(data);
+      return parseLayoutData(parsed); // Recursive call for validation
     }
     return [];
   } catch (error) {

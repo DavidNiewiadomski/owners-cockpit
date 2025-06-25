@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Truck } from 'lucide-react';
 
 interface MaterialDeliveriesProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const MaterialDeliveries: React.FC<MaterialDeliveriesProps> = ({ projectId }) => {
+export function MaterialDeliveries({ projectId: _projectId }: MaterialDeliveriesProps) {
   const deliveries = [
     { item: 'Steel Beams', scheduled: '2024-06-25', status: 'on-time' },
     { item: 'Concrete Mix', scheduled: '2024-06-26', status: 'delayed' },
@@ -37,4 +37,3 @@ const MaterialDeliveries: React.FC<MaterialDeliveriesProps> = ({ projectId }) =>
   );
 };
 
-export { MaterialDeliveries };

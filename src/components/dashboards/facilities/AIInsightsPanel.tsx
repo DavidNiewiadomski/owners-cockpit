@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Brain, Info, ArrowRight } from 'lucide-react';
-import { FacilitiesDashboardData } from '@/utils/facilitiesDemoData';
+import type { FacilitiesDashboardData } from '@/utils/facilitiesDemoData';
 
 interface AIInsightsPanelProps {
   projectData: FacilitiesDashboardData;

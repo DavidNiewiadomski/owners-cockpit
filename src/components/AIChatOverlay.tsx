@@ -1,19 +1,26 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { X, MessageSquare, Send, Minimize2 } from 'lucide-react';
+import { X, MessageSquare, Minimize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ChatWindow from '@/components/ChatWindow';
+import AdvancedAIChat from '@/components/AdvancedAIChat';
+import { useAppState } from '@/hooks/useAppState';
 
 interface AIChatOverlayProps {
   isOpen: boolean;
   onClose: () => void;
   projectId: string;
+  activeView?: string;
+  contextData?: any;
 }
 
-const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectId }) => {
-  console.log('🟡 AIChatOverlay rendering - isOpen:', isOpen, 'projectId:', projectId);
+const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ 
+  isOpen, 
+  onClose, 
+  projectId, 
+  activeView = 'dashboard',
+  contextData 
+}) => {
   
   const [isMinimized, setIsMinimized] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -21,20 +28,17 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
-        console.log('🟡 Clicked outside overlay, closing');
         onClose();
       }
     };
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        console.log('🟡 Escape key pressed, closing overlay');
         onClose();
       }
     };
 
     if (isOpen) {
-      console.log('🟡 Adding event listeners for overlay');
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('keydown', handleEscape);
     }
@@ -46,11 +50,10 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
   }, [isOpen, onClose]);
 
   if (!isOpen) {
-    console.log('🟡 AIChatOverlay not open, returning null');
     return null;
   }
 
-  console.log('🟡 AIChatOverlay rendering overlay UI');
+  // Rendering overlay UI
 
   return (
     <AnimatePresence mode="wait">
@@ -80,7 +83,6 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  console.log('🟡 Minimize/maximize button clicked');
                   setIsMinimized(!isMinimized);
                 }}
                 className="w-8 h-8 p-0"
@@ -91,7 +93,6 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  console.log('🟡 Close button clicked');
                   onClose();
                 }}
                 className="w-8 h-8 p-0"
@@ -111,7 +112,11 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({ isOpen, onClose, projectI
                 className="flex-1 overflow-hidden"
               >
                 <div className="h-[536px]">
-                  <ChatWindow projectId={projectId} />
+                  <AdvancedAIChat 
+                    projectId={projectId}
+                    activeView={activeView}
+                    contextData={contextData}
+                  />
                 </div>
               </motion.div>
             )}

@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertTriangle, CheckCircle, MapPin, Building, Calculator, FileText } from 'lucide-react';
-import { Site, ZoningAnalysisRequest, PermitRequirement } from '@/types/preconstruction';
+import { AlertTriangle, CheckCircle, Building, Calculator, FileText } from 'lucide-react';
+import type { Site, ZoningAnalysisRequest, PermitRequirement } from '@/types/preconstruction';
 
 interface ZoningAnalyzerProps {
   site: Site;
@@ -23,7 +23,7 @@ const ZoningAnalyzer: React.FC<ZoningAnalyzerProps> = ({ site }) => {
       height: 60
     }
   });
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<unknown>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Mock permit requirements

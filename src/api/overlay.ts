@@ -2,17 +2,17 @@
 // This would be implemented as a Supabase Edge Function
 // For now, this shows the structure of the API endpoint
 
-interface OverlayRequest {
+interface _OverlayRequest {
   prompt: string;
 }
 
 interface OverlayResponse {
   action: 'navigate' | 'query' | 'tool' | 'chat';
   path?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   message?: string;
   toolName?: string;
-  toolArgs?: any;
+  toolArgs?: Record<string, unknown>;
 }
 
 export const processOverlayCommand = async (prompt: string): Promise<OverlayResponse> => {

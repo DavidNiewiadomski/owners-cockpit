@@ -37,7 +37,7 @@ import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useCreateActionItem } from '@/hooks/useActionItems';
-import { CreateActionItemData } from '@/types/actionItems';
+import type { CreateActionItemData } from '@/types/actionItems';
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),

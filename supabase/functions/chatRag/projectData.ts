@@ -1,5 +1,5 @@
 
-export async function getProjectData(supabase: any, projectId: string): Promise<any> {
+export async function getProjectData(supabase: unknown, projectId: string): Promise<any> {
   console.log('Getting project data...');
   
   // Get project basic info
@@ -28,13 +28,13 @@ export async function getProjectData(supabase: any, projectId: string): Promise<
     .eq('project_id', projectId);
 
   // Process task summary
-  const taskSummary = taskStats?.reduce((acc: any, task: any) => {
+  const taskSummary = taskStats?.reduce((acc: unknown, task: unknown) => {
     acc[task.status] = (acc[task.status] || 0) + 1;
     return acc;
   }, {}) || {};
 
   // Process budget summary
-  const budgetSummary = budgetStats?.reduce((acc: any, item: any) => {
+  const budgetSummary = budgetStats?.reduce((acc: unknown, item: unknown) => {
     acc.budgeted += item.budgeted_amount || 0;
     acc.actual += item.actual_amount || 0;
     return acc;

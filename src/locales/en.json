@@ -1,0 +1,10 @@
+{
+  "app": {
+    "title": "Owners Cockpit"
+  },
+  "navigation": {
+    "upload": "Upload Documents",
+    "projects": "Projects",
+    "settings": "Settings"
+  }
+}

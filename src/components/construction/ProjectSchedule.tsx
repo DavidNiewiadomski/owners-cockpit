@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import GanttChart from '@/components/GanttChart';
-import { Task } from '@/types/tasks';
+import type { Task } from '@/types/tasks';
 
 interface ProjectScheduleProps {
   tasks: Task[];

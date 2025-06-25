@@ -19,7 +19,7 @@ export const WIDGET_REGISTRY = [
     description: 'Key budget performance indicators and variance tracking',
     component: BudgetKPI,
     category: 'construction',
-    roles: ['project_manager', 'executive', 'preconstruction'] as const,
+    roles: ['Construction', 'Executive', 'Preconstruction', 'Finance'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -28,7 +28,7 @@ export const WIDGET_REGISTRY = [
     description: 'Project timeline visualization with planned vs actual progress',
     component: TimelineChart,
     category: 'construction',
-    roles: ['project_manager', 'executive', 'preconstruction'] as const,
+    roles: ['Construction', 'Executive', 'Preconstruction'] as const,
     defaultSize: { w: 2, h: 1 }
   },
   {
@@ -37,7 +37,7 @@ export const WIDGET_REGISTRY = [
     description: 'Visual representation of project milestones and progress',
     component: ProjectTimeline,
     category: 'construction',
-    roles: ['project_manager', 'executive'] as const,
+    roles: ['Construction', 'Executive', 'Preconstruction'] as const,
     defaultSize: { w: 2, h: 1 },
     supportsMedia: true
   },
@@ -47,7 +47,7 @@ export const WIDGET_REGISTRY = [
     description: 'Real-time tracking of construction phases and completion rates',
     component: ConstructionProgress,
     category: 'construction',
-    roles: ['project_manager', 'site_foreman'] as const,
+    roles: ['Construction', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 },
     supportsMedia: true
   },
@@ -57,7 +57,7 @@ export const WIDGET_REGISTRY = [
     description: 'Latest meeting summary with key slide screenshots',
     component: MeetingSummary,
     category: 'construction',
-    roles: ['project_manager', 'executive'] as const,
+    roles: ['Construction', 'Executive', 'Preconstruction'] as const,
     defaultSize: { w: 1, h: 1 },
     supportsMedia: true
   },
@@ -67,7 +67,7 @@ export const WIDGET_REGISTRY = [
     description: 'Overview of planned vs actual material deliveries',
     component: MaterialDeliveries,
     category: 'construction',
-    roles: ['project_manager', 'logistics_coordinator'] as const,
+    roles: ['Construction', 'Preconstruction'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -76,7 +76,7 @@ export const WIDGET_REGISTRY = [
     description: 'List of open QA issues, RFIs, and submittals',
     component: OpenIssues,
     category: 'construction',
-    roles: ['project_manager', 'qa_engineer'] as const,
+    roles: ['Construction', 'Preconstruction'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -85,7 +85,7 @@ export const WIDGET_REGISTRY = [
     description: 'Tracking of safety incidents and near-miss events',
     component: SafetyIncidents,
     category: 'construction',
-    roles: ['safety_manager', 'site_foreman'] as const,
+    roles: ['Construction', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -94,7 +94,7 @@ export const WIDGET_REGISTRY = [
     description: 'Current and forecasted weather conditions at the site',
     component: WeatherConditions,
     category: 'construction',
-    roles: ['project_manager', 'site_foreman'] as const,
+    roles: ['Construction'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -103,7 +103,7 @@ export const WIDGET_REGISTRY = [
     description: 'Active maintenance work orders and status',
     component: WorkOrders,
     category: 'facilities',
-    roles: ['facilities_manager', 'project_manager', 'executive'] as const,
+    roles: ['Facilities', 'Construction', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -112,7 +112,7 @@ export const WIDGET_REGISTRY = [
     description: 'Building energy consumption and efficiency metrics',
     component: EnergyUsage,
     category: 'facilities',
-    roles: ['facilities_manager', 'sustainability_manager', 'executive'] as const,
+    roles: ['Facilities', 'Sustainability', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 }
   },
   {
@@ -121,7 +121,7 @@ export const WIDGET_REGISTRY = [
     description: 'Environmental performance and ESG tracking',
     component: SustainabilityMetrics,
     category: 'sustainability',
-    roles: ['sustainability_manager', 'facilities_manager', 'executive'] as const,
+    roles: ['Sustainability', 'Facilities', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 }
   }
 ];
@@ -130,7 +130,7 @@ export interface WidgetDefinition {
   id: string;
   name: string;
   description?: string;
-  component: React.ComponentType<any>;
+  component: React.ComponentType<{ projectId: string; item?: unknown }>;
   category: 'construction' | 'other' | 'facilities' | 'sustainability';
   roles: readonly string[];
   defaultSize: { w: number; h: number };

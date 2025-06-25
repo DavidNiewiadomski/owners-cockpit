@@ -10,7 +10,7 @@ export interface CaptureSet {
   thumbnail_url: string | null;
   pano_url: string | null;
   pointcloud_url: string | null;
-  progress_data?: any;
+  progress_data?: unknown;
   created_at: string;
 }
 

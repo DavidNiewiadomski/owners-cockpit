@@ -1,5 +1,5 @@
 
-export async function searchDocuments(supabase: any, queryEmbedding: number[], projectId: string, matchCount: number = 5) {
+export async function searchDocuments(supabase: unknown, queryEmbedding: number[], projectId: string, matchCount: number = 5) {
   console.log('Searching for relevant documents...');
   
   try {

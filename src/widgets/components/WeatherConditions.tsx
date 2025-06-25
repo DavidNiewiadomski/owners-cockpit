@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Cloud, Sun, CloudRain } from 'lucide-react';
 
 interface WeatherConditionsProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const WeatherConditions: React.FC<WeatherConditionsProps> = ({ projectId }) => {
+export function WeatherConditions({ projectId: _projectId }: WeatherConditionsProps) {
   const weather = {
     current: { temp: 75, condition: 'sunny', humidity: 45 },
     forecast: [
@@ -55,4 +55,3 @@ const WeatherConditions: React.FC<WeatherConditionsProps> = ({ projectId }) => {
   );
 };
 
-export { WeatherConditions };

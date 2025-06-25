@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 interface TimelineChartProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const TimelineChart: React.FC<TimelineChartProps> = ({ projectId }) => {
+export function TimelineChart({ projectId: _projectId }: TimelineChartProps) {
   const timelineData = [
     { phase: 'Foundation', planned: 30, actual: 32 },
     { phase: 'Framing', planned: 45, actual: 43 },

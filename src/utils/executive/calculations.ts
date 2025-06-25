@@ -1,5 +1,5 @@
 
-import { ProjectData, PortfolioKPIs } from './types';
+import type { ProjectData, PortfolioKPIs } from './types';
 
 export const calculatePortfolioKPIs = (projects: ProjectData[]): PortfolioKPIs => {
   const activeProjects = projects.filter(p => p.status !== 'completed');

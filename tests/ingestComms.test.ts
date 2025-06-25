@@ -2,9 +2,9 @@
 import { assertEquals, assertExists } from "https://deno.land/std@0.168.0/testing/asserts.ts";
 
 // Mock Supabase client
-const mockSupabase = {
+const _mockSupabase = {
   from: (table: string) => ({
-    insert: (data: any) => ({
+    insert: (data: unknown) => ({
       select: () => ({
         single: () => Promise.resolve({ data: { id: 'test-id', ...data }, error: null })
       })
@@ -13,7 +13,7 @@ const mockSupabase = {
 };
 
 // Mock OpenAI
-const mockOpenAI = {
+const _mockOpenAI = {
   embeddings: {
     create: () => Promise.resolve({
       data: [{ embedding: new Array(1536).fill(0.1) }]
@@ -132,7 +132,7 @@ Deno.test("ingestComms - Manual communication", async () => {
 });
 
 // Mock function to simulate webhook processing
-async function mockProcessWebhook(request: Request, payload: any) {
+async function mockProcessWebhook(request: Request, payload: unknown) {
   // This would contain the actual function logic in a real test
   // For now, we'll simulate the expected behavior
   
@@ -150,7 +150,7 @@ async function mockProcessWebhook(request: Request, payload: any) {
     });
   } else if (payload['@odata.context'] && payload.value) {
     // Outlook delta
-    records = payload.value.map((email: any) => ({
+    records = payload.value.map((email: unknown) => ({
       id: 'mock-id-2',
       project_id: projectId,
       provider: 'outlook',

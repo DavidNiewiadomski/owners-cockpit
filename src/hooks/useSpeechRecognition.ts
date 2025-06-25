@@ -10,13 +10,17 @@ export const useSpeechRecognition = ({ onSendMessage }: UseSpeechRecognitionProp
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [recognition, setRecognition] = useState<any>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
   const { toast } = useToast();
 
   // Initialize speech recognition
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognitionConstructor = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const WindowWithSpeech = window as Window & {
+        SpeechRecognition?: typeof SpeechRecognition;
+        webkitSpeechRecognition?: typeof SpeechRecognition;
+      };
+      const SpeechRecognitionConstructor = WindowWithSpeech.SpeechRecognition || WindowWithSpeech.webkitSpeechRecognition;
       const recognitionInstance = new SpeechRecognitionConstructor();
       
       recognitionInstance.continuous = false;
@@ -30,7 +34,7 @@ export const useSpeechRecognition = ({ onSendMessage }: UseSpeechRecognitionProp
         setIsProcessing(false);
       };
 
-      recognitionInstance.onresult = (event: any) => {
+      recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
         console.log('Speech recognition result received:', event);
         let finalTranscript = '';
         let interimTranscript = '';
@@ -69,7 +73,7 @@ export const useSpeechRecognition = ({ onSendMessage }: UseSpeechRecognitionProp
         }
       };
 
-      recognitionInstance.onerror = (event: any) => {
+      recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         setIsProcessing(false);

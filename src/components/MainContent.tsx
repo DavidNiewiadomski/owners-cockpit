@@ -6,7 +6,7 @@ import ChatWindow from '@/components/ChatWindow';
 import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import ModelViewer from '@/components/ModelViewer';
-import { ActiveView } from '@/hooks/useAppState';
+import type { ActiveView } from '@/hooks/useAppState';
 
 interface MainContentProps {
   activeView: ActiveView;
@@ -23,23 +23,7 @@ const MainContent: React.FC<MainContentProps> = ({ activeView, selectedProject }
     return <PortfolioDashboard />;
   }
 
-  if (activeView === 'chat') {
-    const chatProjectId = selectedProject || 'portfolio';
-    return (
-      <div className="flex h-full">
-        <div className="flex-1">
-          {selectedProject ? (
-            <Dashboard projectId={selectedProject} />
-          ) : (
-            <PortfolioDashboard />
-          )}
-        </div>
-        <div className="w-96 border-l border-border/40">
-          <ChatWindow projectId={chatProjectId} />
-        </div>
-      </div>
-    );
-  }
+  // Chat view removed - now uses overlay instead
   
   if (!selectedProject) {
     return <PortfolioDashboard />;

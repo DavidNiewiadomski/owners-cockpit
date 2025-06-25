@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { AlertCircle, CheckCircle, Wrench, Zap } from 'lucide-react';
-import { BuildingSystem } from '@/hooks/useFacilitiesData';
+import type { BuildingSystem } from '@/hooks/useFacilitiesData';
 
 interface SystemStatusCardProps {
   system: BuildingSystem;

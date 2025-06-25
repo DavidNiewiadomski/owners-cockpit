@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, MessageSquare, Mail, Video, Users, Clock, ExternalLink } from 'lucide-react';
 import { useCommunications, useSearchCommunications } from '@/hooks/useCommunications';
@@ -157,15 +156,12 @@ const CommunicationsDashboard: React.FC<CommunicationsDashboardProps> = ({ proje
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   {getProviderIcon(comm.provider)}
-                  <Badge variant="outline" className="text-xs">
-                    {comm.provider}
-                  </Badge>
                   <Badge className={`text-xs ${getTypeColor(comm.comm_type)}`}>
                     {comm.comm_type.replace('_', ' ')}
                   </Badge>
                   {'similarity' in comm && (
                     <Badge variant="secondary" className="text-xs">
-                      {Math.round((comm as any).similarity * 100)}% match
+                      {Math.round((comm as unknown as { similarity: number }).similarity * 100)}% match
                     </Badge>
                   )}
                 </div>

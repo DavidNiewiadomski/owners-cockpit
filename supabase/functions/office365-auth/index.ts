@@ -16,7 +16,7 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const _supabase = createClient(supabaseUrl, supabaseKey);
 
     const clientId = Deno.env.get('MICROSOFT_CLIENT_ID');
     const clientSecret = Deno.env.get('MICROSOFT_CLIENT_SECRET');

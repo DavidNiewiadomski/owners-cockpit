@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Citation } from '@/hooks/useChatRag';
+import type { Citation } from '@/hooks/useChatRag';
 
 interface CitationContentProps {
   citation: Citation;

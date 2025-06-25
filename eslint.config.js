@@ -5,12 +5,15 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "node_modules", "supabase/migrations"] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    extends: [
+      js.configs.recommended, 
+      ...tseslint.configs.recommended
+    ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2022,
       globals: globals.browser,
     },
     plugins: {
@@ -23,7 +26,60 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-eslint/no-unused-vars": "off",
+      
+      // Type Safety Rules (Enterprise-grade)
+      "@typescript-eslint/no-explicit-any": "error",
+      
+      // Code Quality Rules
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { 
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_"
+        }
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports" }
+      ],
+      "@typescript-eslint/no-duplicate-enum-values": "error",
+      
+      // React Best Practices
+      "react-hooks/exhaustive-deps": "error",
+      
+      // Performance and Security
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-debugger": "error",
+      "prefer-const": "error",
+      "no-var": "error",
+      "eqeqeq": "error",
+    },
+  },
+  {
+    // Relaxed rules for test files
+    files: ["**/*.test.{ts,tsx}", "**/__tests__/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
+  {
+    // Relaxed rules for Supabase functions (third-party integration)
+    files: ["supabase/functions/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-require-imports": "warn",
+    },
+  },
+  {
+    // Separate config for Cypress files (no typed linting)
+    files: ["cypress/**/*.ts"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.browser,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   }
 );

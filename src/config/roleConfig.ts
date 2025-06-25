@@ -1,5 +1,5 @@
 
-import { RoleConfig, UserRole } from '@/types/roles';
+import type { RoleConfig, UserRole } from '@/types/roles';
 
 export const ROLE_CONFIGS: Record<UserRole, RoleConfig> = {
   Executive: {

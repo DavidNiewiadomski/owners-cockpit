@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic } from 'lucide-react';
 
 interface VoiceButtonProps {
   isListening: boolean;
@@ -25,7 +25,7 @@ const VoiceButton: React.FC<VoiceButtonProps> = ({ isListening, disabled, onClic
             {isListening ? (
               <Mic className="w-4 h-4" />
             ) : (
-              <MicOff className="w-4 h-4" />
+              <Mic className="w-4 h-4" />
             )}
             {isListening && (
               <div className="absolute -inset-1 rounded-full bg-red-500/20 animate-ping" />

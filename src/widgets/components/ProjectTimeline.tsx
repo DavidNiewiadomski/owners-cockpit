@@ -2,13 +2,13 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { MediaCard } from '@/components/ui/media-card';
-import { WidgetMedia } from '@/types/dashboard';
+import type { WidgetMedia } from '@/types/dashboard';
 
 interface ProjectTimelineProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
+export function ProjectTimeline({ projectId: _projectId }: ProjectTimelineProps) {
   const milestones = [
     { name: 'Foundation Complete', date: '2024-05-15', status: 'completed' },
     { name: 'Frame Structure', date: '2024-07-01', status: 'in-progress' },
@@ -73,4 +73,3 @@ const ProjectTimeline: React.FC<ProjectTimelineProps> = ({ projectId }) => {
   );
 };
 
-export { ProjectTimeline };

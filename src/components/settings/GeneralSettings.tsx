@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const GeneralSettings: React.FC = () => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const { language, timezone, setLanguage, setTimezone } = useSettings();
 
   const timezones = [

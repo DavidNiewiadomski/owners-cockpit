@@ -13,10 +13,10 @@ interface ProjectIntegrationSeed {
   status: string;
   last_sync: string | null;
   sync_error: string | null;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   api_key: string | null;
   refresh_token: string | null;
-  oauth_data: Record<string, any>;
+  oauth_data: Record<string, unknown>;
 }
 
 const providers = [

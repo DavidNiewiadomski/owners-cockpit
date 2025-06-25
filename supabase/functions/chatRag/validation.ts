@@ -13,7 +13,7 @@ export interface ValidationResult {
   error?: string;
 }
 
-export function validateChatRequest(body: any): ValidationResult {
+export function validateChatRequest(body: unknown): ValidationResult {
   if (!body) {
     return {
       isValid: false,

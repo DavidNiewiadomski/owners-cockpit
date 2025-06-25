@@ -10,7 +10,6 @@ import {
   HelpCircle, 
   MessageCircle, 
   BookOpen, 
-  ExternalLink, 
   Mail,
   FileText,
   Video,

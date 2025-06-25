@@ -67,7 +67,7 @@ describe('Document Ingestion Pipeline', () => {
   describe('Text Chunking', () => {
     it('should chunk text into appropriate token sizes', () => {
       // Import the chunking function (would need to be available in test environment)
-      const mockText = 'This is a test document. It has multiple sentences. Each sentence should be properly chunked based on token limits.';
+      const _mockText = 'This is a test document. It has multiple sentences. Each sentence should be properly chunked based on token limits.';
       
       // Mock the chunking logic result
       const expectedChunks = [

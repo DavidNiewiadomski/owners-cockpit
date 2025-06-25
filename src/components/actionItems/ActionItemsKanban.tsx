@@ -1,10 +1,11 @@
 
 import React from 'react';
+import type {
+  DragEndEvent,
+  DragStartEvent} from '@dnd-kit/core';
 import {
   DndContext,
-  DragEndEvent,
   DragOverlay,
-  DragStartEvent,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -12,11 +13,9 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
-  SortableContext,
-  verticalListSortingStrategy,
   sortableKeyboardCoordinates,
 } from '@dnd-kit/sortable';
-import { ActionItem } from '@/types/actionItems';
+import type { ActionItem } from '@/types/actionItems';
 import { ActionItemCard } from './ActionItemCard';
 import { ActionItemColumn } from './ActionItemColumn';
 import { useUpdateActionItem } from '@/hooks/useActionItems';

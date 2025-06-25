@@ -43,7 +43,7 @@ interface WeeklyContext {
   };
 }
 
-async function getWeeklyContext(supabase: any, projectId: string): Promise<WeeklyContext> {
+async function getWeeklyContext(supabase: unknown, projectId: string): Promise<WeeklyContext> {
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
   const weekAgoISO = weekAgo.toISOString();
@@ -180,7 +180,7 @@ DOCUMENTS: ${context.documents.uploaded} uploaded, ${context.documents.processed
   return data.choices[0].message.content;
 }
 
-async function saveReport(supabase: any, projectId: string, summary: string, context: WeeklyContext) {
+async function saveReport(supabase: unknown, projectId: string, summary: string, context: WeeklyContext) {
   const reportData = {
     project_id: projectId,
     report_type: 'weekly_summary',

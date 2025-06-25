@@ -9,7 +9,7 @@ interface SustainabilityDashboardProps {
   projectId: string;
 }
 
-const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId }) => {
+const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId: _projectId }) => {
   const projectData = generateSustainabilityDemoData();
 
   return (

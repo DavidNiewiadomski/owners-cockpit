@@ -8,8 +8,8 @@ import { WIDGET_REGISTRY } from '@/widgets/index';
 import { useRole } from '@/contexts/RoleContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useDashboardStore } from '@/stores/useDashboardStore';
-import { LayoutItem } from '@/types/dashboard';
-import { UserRole } from '@/types/roles';
+import type { LayoutItem } from '@/types/dashboard';
+// import { UserRole } from '@/types/roles';
 
 interface AddWidgetPanelProps {
   projectId: string;

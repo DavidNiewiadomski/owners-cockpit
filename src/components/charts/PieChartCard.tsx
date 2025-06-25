@@ -1,12 +1,12 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { motion } from 'framer-motion';
 
 interface PieChartCardProps {
   title: string;
-  data: any[];
+  data: Record<string, unknown>[];
   colors: string[];
   className?: string;
 }
@@ -17,7 +17,7 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
   colors,
   className
 }) => {
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; name: string; color: string; payload: { total: number } }> }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
@@ -48,7 +48,8 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
     return null;
   };
 
-  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+  const CustomLabel = (props: { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; percent: number; index: number }) => {
+    const { cx, cy, midAngle, innerRadius, outerRadius, percent, index } = props;
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);

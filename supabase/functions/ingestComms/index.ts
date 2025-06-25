@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import OpenAI from "https://esm.sh/openai@4.20.1";
 
-interface TeamsWebhookPayload {
+interface _TeamsWebhookPayload {
   subscriptionId: string;
   changeType: string;
   resource: string;
@@ -52,13 +52,13 @@ interface CommunicationRecord {
   comm_type: 'email' | 'chat_message' | 'meeting_recording' | 'meeting_transcript' | 'channel_message';
   subject?: string;
   body?: string;
-  speaker: any;
+  speaker: unknown;
   message_ts: string;
   url?: string;
   participants: string[];
   thread_id?: string;
   external_id: string;
-  metadata: any;
+  metadata: unknown;
 }
 
 serve(async (req) => {
@@ -91,7 +91,7 @@ serve(async (req) => {
     }
 
     const payload = await req.json();
-    const authHeader = req.headers.get('authorization');
+    const _authHeader = req.headers.get('authorization');
     
     // Extract project_id from auth context or payload
     const projectId = payload.project_id || req.headers.get('x-project-id');
@@ -102,7 +102,7 @@ serve(async (req) => {
       );
     }
 
-    let communicationRecords: CommunicationRecord[] = [];
+    const communicationRecords: CommunicationRecord[] = [];
 
     // Handle Teams webhook
     if (payload.subscriptionId && payload.resource) {

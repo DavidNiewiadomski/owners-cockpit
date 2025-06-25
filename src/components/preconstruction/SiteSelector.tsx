@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Search, Filter, Star, AlertTriangle, DollarSign } from 'lucide-react';
-import { Site, SiteSearchCriteria, ProjectType } from '@/types/preconstruction';
+import { MapPin, Search, Star, AlertTriangle, DollarSign } from 'lucide-react';
+import type { Site, SiteSearchCriteria, ProjectType } from '@/types/preconstruction';
 
 interface SiteSelectorProps {
   onSiteSelect: (site: Site) => void;

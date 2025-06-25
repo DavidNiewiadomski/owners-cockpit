@@ -11,9 +11,9 @@ vi.mock('@/hooks/useAuth');
 vi.mock('@/contexts/RoleContext');
 vi.mock('@/stores/useDashboardStore');
 
-const mockUseAuth = useAuth as any;
-const mockUseRole = useRole as any;
-const mockUseDashboardStore = useDashboardStore as any;
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+const mockUseRole = useRole as jest.MockedFunction<typeof useRole>;
+const mockUseDashboardStore = useDashboardStore as jest.MockedFunction<typeof useDashboardStore>;
 
 describe('AddWidgetPanel', () => {
   const mockProps = {

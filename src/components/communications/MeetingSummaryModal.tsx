@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -23,25 +23,13 @@ const MeetingSummaryModal: React.FC<MeetingSummaryModalProps> = ({
   isOpen,
   onClose,
   meeting,
-  projectId,
+  projectId: _projectId,
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [isLoadingSummary, setIsLoadingSummary] = useState(false);
 
-  useEffect(() => {
-    if (meeting && isOpen) {
-      // Check if we have a summary in metadata
-      if (meeting.metadata?.summary) {
-        setSummary(meeting.metadata.summary);
-      } else {
-        // Generate summary
-        generateSummary();
-      }
-    }
-  }, [meeting, isOpen]);
-
-  const generateSummary = async () => {
+  const generateSummary = useCallback(async () => {
     if (!meeting) return;
     
     setIsLoadingSummary(true);
@@ -76,7 +64,19 @@ The team will reconvene next week to finalize the implementation plan and addres
     } finally {
       setIsLoadingSummary(false);
     }
-  };
+  }, [meeting]);
+
+  useEffect(() => {
+    if (meeting && isOpen) {
+      // Check if we have a summary in metadata
+      if (meeting.metadata?.summary) {
+        setSummary(meeting.metadata.summary);
+      } else {
+        // Generate summary
+        generateSummary();
+      }
+    }
+  }, [meeting, isOpen, generateSummary]);
 
   const togglePlayback = () => {
     setIsPlaying(!isPlaying);

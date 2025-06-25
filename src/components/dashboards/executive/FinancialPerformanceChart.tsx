@@ -13,12 +13,12 @@ interface FinancialPerformanceChartProps {
   }>;
 }
 
-const CustomFinancialTooltip = ({ active, payload, label }: any) => {
+const CustomFinancialTooltip = ({ active, payload, label }: unknown) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-card/95 backdrop-blur-sm border border-primary/20 rounded-lg p-4 shadow-2xl">
         <p className="font-semibold text-foreground mb-2">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry: unknown, index: number) => (
           <div key={index} className="flex items-center gap-3 mb-1">
             <div 
               className="w-3 h-3 rounded-full"
@@ -41,10 +41,10 @@ const CustomFinancialTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const CustomFinancialLegend = ({ payload }: any) => {
+const CustomFinancialLegend = ({ payload }: unknown) => {
   return (
     <div className="flex justify-center gap-8 mt-6">
-      {payload.map((entry: any, index: number) => (
+      {payload.map((entry: unknown, index: number) => (
         <div key={index} className="flex items-center gap-3 group cursor-pointer">
           <div 
             className="w-4 h-4 rounded-full transition-all duration-300 group-hover:scale-110"

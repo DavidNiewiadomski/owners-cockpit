@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface BudgetKPIProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const BudgetKPI: React.FC<BudgetKPIProps> = ({ projectId }) => {
+export function BudgetKPI({ projectId: _projectId }: BudgetKPIProps) {
   // Mock data - in real app would fetch from API
   const budgetData = {
     total: 2500000,

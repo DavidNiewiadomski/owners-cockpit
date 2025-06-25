@@ -1,5 +1,5 @@
 
-export async function getPortfolioData(supabase: any): Promise<any> {
+export async function getPortfolioData(supabase: unknown): Promise<any> {
   console.log('Getting portfolio data...');
   
   try {
@@ -112,7 +112,7 @@ function analyzePortfolioRisks(projects: any[], tasks: any[], budgetItems: any[]
     projectBudgets[projectId].actual += item.actual_amount || 0;
   });
 
-  const overBudgetProjects = Object.values(projectBudgets).filter((budget: any) => 
+  const overBudgetProjects = Object.values(projectBudgets).filter((budget: unknown) => 
     budget.budgeted > 0 && budget.actual > budget.budgeted * 1.1
   );
 
@@ -122,7 +122,7 @@ function analyzePortfolioRisks(projects: any[], tasks: any[], budgetItems: any[]
       severity: 'Medium',
       description: `${overBudgetProjects.length} projects over budget by >10%`,
       impact: 'Cost overruns affecting portfolio profitability',
-      affectedProjects: overBudgetProjects.map((p: any) => p.name).filter(Boolean)
+      affectedProjects: overBudgetProjects.map((p: unknown) => p.name).filter(Boolean)
     });
   }
 

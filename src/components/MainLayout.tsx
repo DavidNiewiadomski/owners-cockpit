@@ -14,7 +14,7 @@ import { useRouter } from '@/hooks/useRouter';
 
 const MainLayout: React.FC = () => {
   const { currentRole } = useRole();
-  const router = useRouter();
+  const _router = useRouter();
   const appState = useAppState();
 
   useEffect(() => {
@@ -35,8 +35,7 @@ const MainLayout: React.FC = () => {
     console.log('Hero exit called');
   };
 
-  // Log before rendering the AIChatOverlay
-  console.log('🟢 About to render AIChatOverlay with isOpen:', appState.showChatOverlay);
+  // Ready to render components
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,6 +51,7 @@ const MainLayout: React.FC = () => {
         activeView={appState.activeView}
         onViewChange={appState.handleViewChange}
         selectedProject={appState.selectedProject}
+        onAIChat={appState.handleAIChat}
       />
 
       <main className="flex-1">
@@ -69,6 +69,11 @@ const MainLayout: React.FC = () => {
         isOpen={appState.showChatOverlay}
         onClose={appState.handleCloseChatOverlay}
         projectId={appState.selectedProject || 'portfolio'}
+        activeView={appState.activeView}
+        contextData={{
+          selectedProject: appState.selectedProject,
+          timestamp: new Date().toISOString()
+        }}
       />
 
       {/* Modals */}

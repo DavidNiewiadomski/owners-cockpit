@@ -31,10 +31,10 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({ projectId, onClose }) =
     setIsDragOver(false);
   }, []);
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = useCallback(async (file: File) => {
     if (!projectId) return;
 
-    const uploadId = Date.now() + Math.random();
+    const _uploadId = Date.now() + Math.random();
     const newUpload: UploadProgress = {
       file,
       progress: 0,
@@ -97,7 +97,7 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({ projectId, onClose }) =
           : upload
       ));
     }
-  };
+  }, [projectId]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -105,12 +105,12 @@ const UploadDropzone: React.FC<UploadDropzoneProps> = ({ projectId, onClose }) =
 
     const files = Array.from(e.dataTransfer.files);
     files.forEach(uploadFile);
-  }, [projectId]);
+  }, [uploadFile]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     files.forEach(uploadFile);
-  }, [projectId]);
+  }, [uploadFile]);
 
   return (
     <motion.div

@@ -103,7 +103,7 @@ export function useUpdateUserRole() {
 
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       queryClient.invalidateQueries({ queryKey: ['user-roles'] });
       toast.success('User role updated successfully');
     },

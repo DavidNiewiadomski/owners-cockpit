@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from 'react';
-import { ThemeSuggestion } from '@/types/theme';
+import type { ThemeSuggestion } from '@/types/theme';
 import { ThemeAIService } from '@/services/themeAI';
 import { useThemeController } from './useThemeController';
 import { useTheme } from '@/components/ThemeProvider';

@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ProjectIntegration, useCreateIntegration, useUpdateIntegration, useTestIntegration } from '@/hooks/useProjectIntegrations';
+import type { ProjectIntegration} from '@/hooks/useProjectIntegrations';
+import { useCreateIntegration, useUpdateIntegration, useTestIntegration } from '@/hooks/useProjectIntegrations';
 import { toast } from 'sonner';
 
 interface IntegrationModalProps {

@@ -17,10 +17,10 @@ jest.mock('react-router-dom', () => {
 // Mock framer-motion
 jest.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
-    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
-    button: ({ children, ...props }: any) => <button {...props}>{children}</button>
+    div: ({ children, ...props }: unknown) => <div {...props}>{children}</div>,
+    h1: ({ children, ...props }: unknown) => <h1 {...props}>{children}</h1>,
+    p: ({ children, ...props }: unknown) => <p {...props}>{children}</p>,
+    button: ({ children, ...props }: unknown) => <button {...props}>{children}</button>
   }
 }));
 

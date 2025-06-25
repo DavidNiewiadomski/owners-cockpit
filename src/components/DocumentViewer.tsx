@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ interface DocumentViewerProps {
 }
 
 const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl, mimeType, title }) => {
-  const [pdfDoc, setPdfDoc] = useState<any>(null);
+  const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
@@ -43,7 +43,7 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl, mimeType, titl
     }
   };
 
-  const renderPdfPage = async (pageNum: number) => {
+  const renderPdfPage = useCallback(async (pageNum: number) => {
     if (!pdfDoc || !canvasRef) return;
 
     try {
@@ -63,13 +63,13 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({ fileUrl, mimeType, titl
     } catch (err) {
       console.error('Error rendering PDF page:', err);
     }
-  };
+  }, [pdfDoc, canvasRef]);
 
   useEffect(() => {
     if (pdfDoc && canvasRef && currentPage) {
       renderPdfPage(currentPage);
     }
-  }, [pdfDoc, canvasRef, currentPage]);
+  }, [pdfDoc, canvasRef, currentPage, renderPdfPage]);
 
   if (error) {
     return (

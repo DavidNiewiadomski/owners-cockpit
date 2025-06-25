@@ -7,7 +7,6 @@ import { Plus, ListTodo } from 'lucide-react';
 import { useActionItems } from '@/hooks/useActionItems';
 import { ActionItemsKanban } from '@/components/actionItems/ActionItemsKanban';
 import { CreateActionItemModal } from '@/components/actionItems/CreateActionItemModal';
-import { ActionItem } from '@/types/actionItems';
 
 const ActionItemsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();

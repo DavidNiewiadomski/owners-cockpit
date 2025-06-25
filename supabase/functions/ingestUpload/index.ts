@@ -56,7 +56,7 @@ function chunkText(text: string, maxTokens: number = 500): TextChunk[] {
   return chunks;
 }
 
-interface UploadRequest {
+interface _UploadRequest {
   project_id: string;
   file: File;
   doc_type?: string;
@@ -125,7 +125,7 @@ serve(async (req) => {
 
     // Upload file to Supabase Storage
     const fileBuffer = await file.arrayBuffer();
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: _uploadData, error: uploadError } = await supabase.storage
       .from('documents')
       .upload(filePath, fileBuffer, {
         contentType: file.type,

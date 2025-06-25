@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 interface PerformanceMetrics {
   componentName: string;
   renderTime: number;
-  props?: any;
+  props?: unknown;
   timestamp: number;
 }
 
@@ -33,14 +33,14 @@ export function usePerformanceMonitor(
     renderStartTime.current = performance.now();
   }, [enabled]);
 
-  const endMeasurement = useCallback((props?: any) => {
+  const endMeasurement = useCallback((props?: unknown) => {
     if (!enabled || renderStartTime.current === 0) return;
 
     const renderTime = performance.now() - renderStartTime.current;
     renderCount.current++;
     totalRenderTime.current += renderTime;
 
-    const metrics: PerformanceMetrics = {
+    const _metrics: PerformanceMetrics = {
       componentName,
       renderTime,
       timestamp: Date.now(),

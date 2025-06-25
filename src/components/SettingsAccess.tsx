@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,7 +29,6 @@ interface SettingsAccessProps {
 }
 
 const SettingsAccess: React.FC<SettingsAccessProps> = ({ projectId }) => {
-  const { t } = useTranslation();
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'admin' | 'gc' | 'vendor' | 'viewer'>('viewer');
   const [isInviting, setIsInviting] = useState(false);
@@ -130,7 +128,7 @@ const SettingsAccess: React.FC<SettingsAccessProps> = ({ projectId }) => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="invite-role">Role</Label>
-              <Select value={inviteRole} onValueChange={(value: any) => setInviteRole(value)}>
+              <Select value={inviteRole} onValueChange={(value: unknown) => setInviteRole(value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
@@ -183,7 +181,7 @@ const SettingsAccess: React.FC<SettingsAccessProps> = ({ projectId }) => {
                   <TableCell>
                     <Select
                       value={userRole.role}
-                      onValueChange={(value: any) => handleRoleUpdate(userRole.user_id, value)}
+                      onValueChange={(value: unknown) => handleRoleUpdate(userRole.user_id, value)}
                     >
                       <SelectTrigger className="w-32">
                         <SelectValue />

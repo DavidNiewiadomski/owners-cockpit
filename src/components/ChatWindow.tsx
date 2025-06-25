@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Citation } from '@/hooks/useChatRag';
+import type { Citation } from '@/hooks/useChatRag';
 import { useChatRag } from '@/hooks/useChatRag';
 import { useRole } from '@/contexts/RoleContext';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
@@ -14,7 +14,6 @@ interface ChatWindowProps {
 }
 
 const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
-  console.log('🟢 ChatWindow rendering with projectId:', projectId);
   
   const [selectedCitation, setSelectedCitation] = useState<Citation | null>(null);
   const [selectedSourceId, setSelectedSourceId] = useState<string | undefined>(undefined);
@@ -37,15 +36,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
     error
   } = useChatRag({ projectId });
 
-  console.log('🟢 ChatWindow state:', { 
-    messagesCount: messages.length, 
-    isLoading, 
-    isStreaming, 
-    currentRole,
-    projectId,
-    roleConfig: !!roleConfig,
-    agentMemory: !!agentMemory 
-  });
+  // State logging removed for performance
 
   // Speak AI responses when they arrive with more natural settings
   useEffect(() => {
@@ -67,7 +58,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   }, [messages, speak, voiceResponseEnabled, ttsSupported]);
 
   const handleSendMessage = useCallback((content: string) => {
-    console.log('🟢 ChatWindow handleSendMessage called with:', content);
     // Stop any current speech when sending a new message
     if (isSpeaking) {
       stop();
@@ -77,14 +67,12 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   }, [sendMessage, isSpeaking, stop]);
 
   const handleCitationClick = (citation: Citation, sourceId?: string) => {
-    console.log('🟢 ChatWindow handleCitationClick called');
     setSelectedCitation(citation);
     setSelectedSourceId(sourceId);
     setIsSourceModalOpen(true);
   };
 
   const toggleVoiceResponse = useCallback(() => {
-    console.log('🟢 ChatWindow toggleVoiceResponse called');
     setVoiceResponseEnabled(!voiceResponseEnabled);
     if (isSpeaking && !voiceResponseEnabled) {
       stop();
@@ -92,15 +80,13 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ projectId }) => {
   }, [voiceResponseEnabled, isSpeaking, stop]);
 
   const handleStopSpeaking = useCallback(() => {
-    console.log('🟢 ChatWindow handleStopSpeaking called');
     stop();
   }, [stop]);
 
-  console.log('🟢 ChatWindow about to render JSX');
+  // Ready to render JSX
 
   // Simple fallback if role context is missing
   if (!roleConfig || !agentMemory) {
-    console.log('🔴 ChatWindow: Missing roleConfig or agentMemory, using defaults');
     const defaultRoleConfig = {
       displayName: 'AI Assistant',
       description: 'General AI Assistant'

@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, DollarSign, Building, AlertTriangle, CheckCircle, Clock, Users, FileText } from 'lucide-react';
-import { Contract, ContractStatus, RiskLevel } from '@/types/contracts';
+import type { Contract, ContractStatus, RiskLevel } from '@/types/contracts';
 import { format } from 'date-fns';
 
 interface ContractCardProps {

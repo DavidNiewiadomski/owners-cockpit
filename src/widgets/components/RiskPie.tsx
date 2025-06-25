@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 interface RiskPieProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const RiskPie: React.FC<RiskPieProps> = ({ projectId }) => {
+export function RiskPie({ projectId: _projectId }: RiskPieProps) {
   const riskData = [
     { name: 'Technical', value: 28, color: '#3b82f6', description: 'Technical implementation risks' },
     { name: 'Financial', value: 32, color: '#10b981', description: 'Budget and cost overrun risks' },
@@ -15,7 +15,7 @@ const RiskPie: React.FC<RiskPieProps> = ({ projectId }) => {
     { name: 'External', value: 15, color: '#ef4444', description: 'External dependencies and regulatory risks' }
   ];
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: unknown) => {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
@@ -30,10 +30,10 @@ const RiskPie: React.FC<RiskPieProps> = ({ projectId }) => {
     return null;
   };
 
-  const CustomLegend = ({ payload }: any) => {
+  const CustomLegend = ({ payload }: unknown) => {
     return (
       <div className="flex flex-wrap justify-center gap-4 mt-4">
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry: unknown, index: number) => (
           <div key={index} className="flex items-center gap-2">
             <div 
               className="w-3 h-3 rounded-full" 

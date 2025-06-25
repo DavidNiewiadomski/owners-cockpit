@@ -12,7 +12,7 @@ interface RiskDistributionChartProps {
   }>;
 }
 
-const CustomRiskTooltip = ({ active, payload }: any) => {
+const CustomRiskTooltip = ({ active, payload }: unknown) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
@@ -40,10 +40,10 @@ const CustomRiskTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-const CustomRiskLegend = ({ payload, futuristicRiskData }: any) => {
+const CustomRiskLegend = ({ payload, futuristicRiskData }: unknown) => {
   return (
     <div className="flex flex-wrap justify-center gap-6 mt-6">
-      {payload.map((entry: any, index: number) => (
+      {payload.map((entry: unknown, index: number) => (
         <div key={index} className="flex items-center gap-3 group cursor-pointer">
           <div 
             className="w-4 h-4 rounded-full transition-all duration-300 group-hover:scale-110"
@@ -53,7 +53,7 @@ const CustomRiskLegend = ({ payload, futuristicRiskData }: any) => {
             }}
           />
           <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
-            {entry.value}: {futuristicRiskData.find((d: any) => d.category === entry.value)?.value}%
+            {entry.value}: {futuristicRiskData.find((d: unknown) => d.category === entry.value)?.value}%
           </span>
         </div>
       ))}

@@ -6,10 +6,10 @@ import { Wrench, Clock } from 'lucide-react';
 import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 
 interface WorkOrdersProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const WorkOrders: React.FC<WorkOrdersProps> = ({ projectId }) => {
+export function WorkOrders({ projectId: _projectId }: WorkOrdersProps) {
   const { workOrders } = generateFacilitiesDemoData();
 
   const recentWorkOrders = [

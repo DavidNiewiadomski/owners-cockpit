@@ -9,8 +9,8 @@ export function useTestIntegration() {
       provider: string;
       apiKey?: string;
       refreshToken?: string;
-      oauthData?: any;
-      config?: any;
+      oauthData?: unknown;
+      config?: unknown;
     }) => {
       console.log('Testing integration:', provider);
       

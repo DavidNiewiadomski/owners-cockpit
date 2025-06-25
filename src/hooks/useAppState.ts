@@ -12,7 +12,7 @@ export interface AppState {
   showUpload: boolean;
   showSourceModal: boolean;
   showDocumentViewer: boolean;
-  selectedDocument: any;
+  selectedDocument: unknown;
 }
 
 export const useAppState = () => {
@@ -24,7 +24,7 @@ export const useAppState = () => {
   const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  const [selectedDocument, setSelectedDocument] = useState<unknown>(null);
 
   const handleProjectChange = (projectId: string | null) => {
     if (projectId === 'portfolio') {
@@ -45,18 +45,16 @@ export const useAppState = () => {
     }
   };
 
-  const handleDocumentSelect = (document: any) => {
+  const handleDocumentSelect = (document: unknown) => {
     setSelectedDocument(document);
     setShowDocumentViewer(true);
   };
 
   const handleAIChat = () => {
-    console.log('🟢 handleAIChat called - setting showChatOverlay to true');
     setShowChatOverlay(true);
   };
 
   const handleCloseChatOverlay = () => {
-    console.log('🟢 handleCloseChatOverlay called - setting showChatOverlay to false');
     setShowChatOverlay(false);
   };
 

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Palette } from 'lucide-react';
 import { ThemeSuggestionModal } from './ThemeSuggestionModal';
@@ -29,6 +29,9 @@ export const AIThemeAssistant: React.FC<AIThemeAssistantProps> = ({
     setShowSuggestions
   } = useAIThemeAssistant();
 
+  // Memoize activeWidgets string to avoid unnecessary re-renders
+  const activeWidgetsKey = useMemo(() => activeWidgets.join(','), [activeWidgets]);
+  
   // Auto-generate suggestions when widgets change significantly
   useEffect(() => {
     if (activeWidgets.length > 0) {
@@ -38,7 +41,7 @@ export const AIThemeAssistant: React.FC<AIThemeAssistantProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [activeWidgets.join(','), generateSuggestions, context]);
+  }, [activeWidgetsKey, activeWidgets, generateSuggestions, context]);
 
   return (
     <>

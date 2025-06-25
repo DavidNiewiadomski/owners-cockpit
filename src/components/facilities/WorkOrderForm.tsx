@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useCreateWorkOrder, WorkOrder } from '@/hooks/useFacilitiesData';
+import type { WorkOrder } from '@/hooks/useFacilitiesData';
+import { useCreateWorkOrder } from '@/hooks/useFacilitiesData';
 
 interface WorkOrderFormProps {
   projectId: string;

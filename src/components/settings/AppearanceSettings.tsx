@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useTheme } from '@/components/ThemeProvider';
-import { Palette, Monitor, Sun, Moon } from 'lucide-react';
+import { Monitor, Sun, Moon } from 'lucide-react';
 
 const AppearanceSettings: React.FC = () => {
   const { theme, setTheme } = useTheme();

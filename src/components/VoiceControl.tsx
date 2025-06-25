@@ -19,7 +19,7 @@ interface VoiceControlProps {
 
 const VoiceControl: React.FC<VoiceControlProps> = ({
   onSendMessage,
-  onVoiceResponse,
+  onVoiceResponse: _onVoiceResponse,
   disabled = false
 }) => {
   const [voiceEnabled, setVoiceEnabled] = useState(true);

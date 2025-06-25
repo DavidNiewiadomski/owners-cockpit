@@ -2,6 +2,7 @@
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { OwnersCockpitMCPServer } from './server.js';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 
 // Mock Supabase
 jest.mock('@supabase/supabase-js');
@@ -23,7 +24,7 @@ jest.mock('@modelcontextprotocol/sdk/server/stdio.js', () => ({
 
 describe('OwnersCockpitMCPServer', () => {
   let server: OwnersCockpitMCPServer;
-  let mockSupabase: any;
+  let mockSupabase: unknown;
 
   beforeEach(() => {
     // Setup Supabase mock
@@ -88,7 +89,6 @@ describe('OwnersCockpitMCPServer', () => {
         // This would be tested through the actual tool call mechanism
         // For now, we can test the validation schema directly
         expect(() => {
-          const { z } = require('zod');
           const schema = z.object({
             project_id: z.string().uuid().optional(),
             days_overdue: z.number().min(0).default(0),
@@ -98,7 +98,6 @@ describe('OwnersCockpitMCPServer', () => {
       });
 
       it('should set default days_overdue to 0', () => {
-        const { z } = require('zod');
         const schema = z.object({
           project_id: z.string().uuid().optional(),
           days_overdue: z.number().min(0).default(0),
@@ -111,7 +110,6 @@ describe('OwnersCockpitMCPServer', () => {
 
     describe('create_rfi', () => {
       it('should require project_id and title', () => {
-        const { z } = require('zod');
         const schema = z.object({
           project_id: z.string().uuid(),
           title: z.string().min(1).max(255),
@@ -130,7 +128,6 @@ describe('OwnersCockpitMCPServer', () => {
       });
 
       it('should validate due_date format', () => {
-        const { z } = require('zod');
         const schema = z.object({
           project_id: z.string().uuid(),
           title: z.string().min(1).max(255),

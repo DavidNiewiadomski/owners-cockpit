@@ -35,7 +35,7 @@ export function useRoleBasedAccess() {
   }), [permissions, currentRole]);
 
   const filterDataByRole = useMemo(() => {
-    return (data: any[], dataType: string) => {
+    return (data: unknown[], dataType: string) => {
       switch (dataType) {
         case 'budget':
           return access.canViewBudgets ? data : [];
@@ -56,7 +56,7 @@ export function useRoleBasedAccess() {
   }, [access]);
 
   const getRoleContextualMessage = useMemo(() => {
-    const roleConfig = getRoleConfig(currentRole);
+    const _roleConfig = getRoleConfig(currentRole);
     
     const contextMessages = {
       Executive: "You have access to high-level summaries and strategic insights.",

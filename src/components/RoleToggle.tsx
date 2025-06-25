@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { UserRole } from '@/types/roles';
+import type { UserRole } from '@/types/roles';
 import { 
   Crown, 
   ClipboardList, 

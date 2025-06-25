@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Wand2, FileText, Users, Calendar } from 'lucide-react';
-import { ContractType, Contract, ContractTemplate, TemplateVariable } from '@/types/contracts';
+import { Loader2, Wand2, FileText } from 'lucide-react';
+import type { Contract, ContractTemplate} from '@/types/contracts';
 import { useToast } from '@/hooks/use-toast';
 
 interface ContractDraftDialogProps {
@@ -24,9 +23,9 @@ export const ContractDraftDialog: React.FC<ContractDraftDialogProps> = ({
 }) => {
   const [step, setStep] = useState<'template' | 'details' | 'ai_draft' | 'review'>('template');
   const [selectedTemplate, setSelectedTemplate] = useState<ContractTemplate | null>(null);
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<Record<string, unknown>>({});
   const [aiInstructions, setAiInstructions] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [_isGenerating, _setIsGenerating] = useState(false);
   const [draftedContract, setDraftedContract] = useState<string>('');
   const { toast } = useToast();
 
@@ -114,7 +113,7 @@ export const ContractDraftDialog: React.FC<ContractDraftDialogProps> = ({
       return;
     }
 
-    setIsGenerating(true);
+    _setIsGenerating(true);
     setStep('ai_draft');
 
     try {
@@ -124,7 +123,7 @@ export const ContractDraftDialog: React.FC<ContractDraftDialogProps> = ({
       const draftContent = generateMockContract(selectedTemplate, formData);
       setDraftedContract(draftContent);
       setStep('review');
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Drafting Failed",
         description: "Failed to generate contract draft. Please try again.",
@@ -132,11 +131,11 @@ export const ContractDraftDialog: React.FC<ContractDraftDialogProps> = ({
       });
       setStep('details');
     } finally {
-      setIsGenerating(false);
+      _setIsGenerating(false);
     }
   };
 
-  const generateMockContract = (template: ContractTemplate, data: Record<string, any>): string => {
+  const generateMockContract = (template: ContractTemplate, data: Record<string, unknown>): string => {
     // This is a simplified mock - real implementation would use AI
     switch (template.type) {
       case 'construction':

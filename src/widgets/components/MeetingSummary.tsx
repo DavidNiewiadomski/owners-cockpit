@@ -2,14 +2,14 @@
 import React from 'react';
 import { Calendar, Users, FileText } from 'lucide-react';
 import { MediaCard } from '@/components/ui/media-card';
-import { WidgetMedia } from '@/types/dashboard';
+import type { WidgetMedia } from '@/types/dashboard';
 import { Badge } from '@/components/ui/badge';
 
 interface MeetingSummaryProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const MeetingSummary: React.FC<MeetingSummaryProps> = ({ projectId }) => {
+export function MeetingSummary({ projectId: _projectId }: MeetingSummaryProps) {
   const mockKeySlide = '/placeholder.svg'; // Key slide screenshot
   
   const mockMeetingMedia: WidgetMedia[] = [
@@ -96,4 +96,3 @@ const MeetingSummary: React.FC<MeetingSummaryProps> = ({ projectId }) => {
   );
 };
 
-export { MeetingSummary };

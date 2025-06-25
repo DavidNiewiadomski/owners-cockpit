@@ -9,10 +9,10 @@ export interface ProjectIntegration {
   status: 'connected' | 'error' | 'not_connected' | 'syncing';
   api_key?: string;
   refresh_token?: string;
-  oauth_data?: any;
+  oauth_data?: unknown;
   last_sync?: string;
   sync_error?: string;
-  config?: any;
+  config?: unknown;
   created_at: string;
   updated_at: string;
 }

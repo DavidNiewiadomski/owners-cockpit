@@ -97,7 +97,7 @@ serve(async (req) => {
   }
 });
 
-async function gatherProjectData(supabase: any, projectId: string): Promise<ProjectData | null> {
+async function gatherProjectData(supabase: unknown, projectId: string): Promise<ProjectData | null> {
   try {
     // Get recent data (last 24 hours for real-time insights)
     const yesterday = new Date();
@@ -125,7 +125,7 @@ async function gatherProjectData(supabase: any, projectId: string): Promise<Proj
   }
 }
 
-async function generateProjectInsights(project: any, projectData: ProjectData | null): Promise<any[]> {
+async function generateProjectInsights(project: unknown, projectData: ProjectData | null): Promise<any[]> {
   if (!projectData) return [];
 
   const insights = [];

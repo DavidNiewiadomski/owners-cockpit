@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { ActiveView } from './useAppState';
+import type { ActiveView } from './useAppState';
 
 interface UseKeyboardShortcutsProps {
   activeView: ActiveView;

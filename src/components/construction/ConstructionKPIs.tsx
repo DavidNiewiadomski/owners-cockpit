@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Clock, Users, FileText } from 'lucide-react';
-import { ProjectMetrics } from '@/types/construction';
+import type { ProjectMetrics } from '@/types/construction';
 
 interface ConstructionKPIsProps {
   metrics: ProjectMetrics;

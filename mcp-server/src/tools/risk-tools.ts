@@ -7,7 +7,27 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // Enhanced cache with LRU-like behavior
-const riskCache = new Map<string, { data: any; timestamp: number; accessCount: number }>();
+interface RiskCacheData {
+  success: boolean;
+  risk_data: unknown[];
+  risk_analysis: {
+    total_risks: number;
+    high_priority: number;
+    medium_priority: number;
+    low_priority: number;
+    recommendations: string[];
+  };
+  metadata: {
+    count: number;
+    timestamp: string;
+    cached: boolean;
+    project_id: string;
+    cache_age?: number;
+    access_count?: number;
+  };
+}
+
+const riskCache = new Map<string, { data: RiskCacheData; timestamp: number; accessCount: number }>();
 const MAX_CACHE_SIZE = 100;
 const CACHE_DURATION = 3 * 60 * 1000; // 3 minutes for risk data
 
@@ -116,7 +136,12 @@ export async function getRiskAdvisory(args: unknown) {
   }
 }
 
-function analyzeRisks(risks: any[]): {
+interface RiskItem {
+  severity?: string;
+  [key: string]: unknown;
+}
+
+function analyzeRisks(risks: RiskItem[]): {
   total_risks: number;
   high_priority: number;
   medium_priority: number;

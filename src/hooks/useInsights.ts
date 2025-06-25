@@ -9,7 +9,7 @@ export interface Insight {
   severity: 'low' | 'medium' | 'high' | 'critical';
   title: string;
   summary: string;
-  context_data: any;
+  context_data: unknown;
   read_at: string | null;
   created_at: string;
   updated_at: string;

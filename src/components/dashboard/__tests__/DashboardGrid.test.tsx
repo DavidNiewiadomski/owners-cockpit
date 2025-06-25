@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import DashboardGrid from '../DashboardGrid';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,9 +13,9 @@ vi.mock('@/contexts/RoleContext');
 vi.mock('@/stores/useDashboardStore');
 vi.mock('@/integrations/supabase/client');
 
-const mockUseAuth = useAuth as any;
-const mockUseRole = useRole as any;
-const mockUseDashboardStore = useDashboardStore as any;
+const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
+const mockUseRole = useRole as jest.MockedFunction<typeof useRole>;
+const mockUseDashboardStore = useDashboardStore as jest.MockedFunction<typeof useDashboardStore>;
 
 const mockUser = { id: 'user-1', email: 'test@example.com' };
 const mockLayout = [

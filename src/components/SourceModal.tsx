@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Card } from '@/components/ui/card';
 import { FileText, Image, Loader2 } from 'lucide-react';
-import { Citation } from '@/hooks/useChatRag';
+import type { Citation } from '@/hooks/useChatRag';
 import DocumentViewer from './DocumentViewer';
 import DocumentMetadata from './DocumentMetadata';
 import CitationContent from './CitationContent';
@@ -48,13 +48,7 @@ const SourceModal: React.FC<SourceModalProps> = ({
   // Initialize Supabase client only if credentials are available
   const supabase = hasSupabaseConfig ? createClient(supabaseUrl, supabaseAnonKey) : null;
 
-  useEffect(() => {
-    if (isOpen && sourceId) {
-      fetchDocumentData();
-    }
-  }, [isOpen, sourceId]);
-
-  const fetchDocumentData = async () => {
+  const fetchDocumentData = useCallback(async () => {
     if (!sourceId) return;
 
     // If no Supabase configuration, show error
@@ -92,7 +86,13 @@ const SourceModal: React.FC<SourceModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [sourceId, hasSupabaseConfig, supabase]);
+
+  useEffect(() => {
+    if (isOpen && sourceId) {
+      fetchDocumentData();
+    }
+  }, [isOpen, sourceId, fetchDocumentData]);
 
   const getSourceIcon = (mimeType?: string) => {
     if (!mimeType) return <FileText className="w-4 h-4" />;

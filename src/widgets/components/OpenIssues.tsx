@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 
 interface OpenIssuesProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const OpenIssues: React.FC<OpenIssuesProps> = ({ projectId }) => {
+export function OpenIssues({ projectId: _projectId }: OpenIssuesProps) {
   const issues = {
     critical: 2,
     high: 5,
@@ -44,4 +44,3 @@ const OpenIssues: React.FC<OpenIssuesProps> = ({ projectId }) => {
   );
 };
 
-export { OpenIssues };

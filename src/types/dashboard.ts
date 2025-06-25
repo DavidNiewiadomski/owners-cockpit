@@ -1,5 +1,5 @@
 
-import { UserRole } from './roles';
+import type { UserRole } from './roles';
 
 export interface WidgetSize {
   w: number;
@@ -30,7 +30,7 @@ export interface WidgetDefinition {
   id: string;
   name: string;
   description?: string;
-  component: React.ComponentType<any>;
+  component: React.ComponentType<{ projectId: string; item?: LayoutItem }>;
   category: 'construction' | 'facilities' | 'other' | 'sustainability';
   roles: readonly UserRole[];
   defaultSize: WidgetSize;

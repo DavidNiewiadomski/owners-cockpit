@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MapPin, Building, Calculator, FileCheck } from 'lucide-react';
-import { Site } from '@/types/preconstruction';
+import type { Site } from '@/types/preconstruction';
 import SiteSelector from './SiteSelector';
 import ZoningAnalyzer from './ZoningAnalyzer';
 import FeasibilityModeler from './FeasibilityModeler';

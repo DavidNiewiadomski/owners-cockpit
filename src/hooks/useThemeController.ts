@@ -1,6 +1,6 @@
 
 import { useState, useCallback } from 'react';
-import { ThemeChange, UserThemePreferences } from '@/types/theme';
+import type { ThemeChange, UserThemePreferences } from '@/types/theme';
 import { useTheme } from '@/components/ThemeProvider';
 
 export const useThemeController = () => {
@@ -14,7 +14,7 @@ export const useThemeController = () => {
         setTheme(change.value as 'light' | 'dark' | 'system');
         break;
         
-      case 'css_variable':
+      case 'css_variable': {
         const root = document.documentElement;
         const currentValue = getComputedStyle(root).getPropertyValue(change.target);
         
@@ -28,8 +28,9 @@ export const useThemeController = () => {
         
         root.style.setProperty(change.target, change.value);
         break;
+      }
         
-      case 'widget_accent':
+      case 'widget_accent': {
         // Apply widget-specific accent classes
         const widgets = document.querySelectorAll(`[data-widget-id="${change.target}"]`);
         widgets.forEach(widget => {
@@ -43,6 +44,7 @@ export const useThemeController = () => {
           }
         });
         break;
+      }
         
       case 'layout_setting':
         // Apply layout-specific changes
@@ -64,7 +66,7 @@ export const useThemeController = () => {
         clearPreview();
       }
     }, 10000);
-  }, [applyThemeChange, previewActive]);
+  }, [applyThemeChange, previewActive, clearPreview]);
 
   const clearPreview = useCallback(() => {
     if (!previewActive) return;

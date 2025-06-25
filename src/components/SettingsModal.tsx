@@ -1,28 +1,16 @@
 
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSettings } from '@/contexts/SettingsContext';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { 
   User, 
   Bell, 
   Shield, 
   Palette, 
-  Globe, 
   PlugZap, 
   HelpCircle, 
   Settings as SettingsIcon,
@@ -99,7 +87,6 @@ const settingsMenuItems = [
 ];
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange }) => {
-  const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState<SettingsSection>('general');
 
   const renderSettingsContent = () => {

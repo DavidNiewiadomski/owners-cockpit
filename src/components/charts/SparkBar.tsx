@@ -4,7 +4,7 @@ import { BarChart, Bar, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
 
 interface SparkBarProps {
-  data: any[];
+  data: Array<{value: number}>
   color: string;
   className?: string;
 }

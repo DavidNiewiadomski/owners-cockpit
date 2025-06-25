@@ -10,9 +10,9 @@ export type UserRole =
 
 export interface RoleState {
   selectedProject?: string;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   activeView?: string;
-  dashboardConfig?: Record<string, any>;
+  dashboardConfig?: Record<string, unknown>;
 }
 
 export interface RolePermissions {

@@ -8,7 +8,7 @@ interface PreconstructionDashboardProps {
   projectId: string;
 }
 
-const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId }) => {
+const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId: _projectId }) => {
   const projectData = generatePreconDemoData();
 
   // Transform the data to match the expected structure for AIInsightsPanel

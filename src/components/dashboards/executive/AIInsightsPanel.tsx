@@ -21,7 +21,7 @@ interface AIInsightsPanelProps {
 const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   const budgetUtilizationNum = (projectData.spentBudget / projectData.totalBudget) * 100;
   const budgetUtilization = budgetUtilizationNum.toFixed(1);
-  const milestoneProgress = ((projectData.milestonesCompleted / projectData.totalMilestones) * 100).toFixed(0);
+  const _milestoneProgress = ((projectData.milestonesCompleted / projectData.totalMilestones) * 100).toFixed(0);
   
   const riskLevel = projectData.riskScore <= 25 ? 'low' : projectData.riskScore <= 50 ? 'medium' : 'high';
   const riskColor = riskLevel === 'low' ? 'text-green-600' : riskLevel === 'medium' ? 'text-yellow-600' : 'text-red-600';

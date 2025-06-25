@@ -1,5 +1,5 @@
 
-import { ThemeSuggestion } from '@/types/theme';
+import type { ThemeSuggestion } from '@/types/theme';
 
 export class ThemeAIService {
   private static instance: ThemeAIService;

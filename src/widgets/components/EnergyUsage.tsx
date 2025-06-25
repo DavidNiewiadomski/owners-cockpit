@@ -6,10 +6,10 @@ import { Zap } from 'lucide-react';
 import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 
 interface EnergyUsageProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const EnergyUsage: React.FC<EnergyUsageProps> = ({ projectId }) => {
+export function EnergyUsage({ projectId: _projectId }: EnergyUsageProps) {
   const { energy } = generateFacilitiesDemoData();
 
   const energyData = [

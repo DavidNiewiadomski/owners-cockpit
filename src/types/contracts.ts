@@ -38,7 +38,7 @@ export interface Contract {
   ai_risk_score?: number;
   risk_level?: RiskLevel;
   document_url?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ContractTemplate {
@@ -83,7 +83,7 @@ export interface ReviewFinding {
 
 export interface ContractDraftRequest {
   template_id: string;
-  variables: Record<string, any>;
+  variables: Record<string, unknown>;
   additional_instructions?: string;
 }
 

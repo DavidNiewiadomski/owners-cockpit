@@ -11,7 +11,7 @@ export interface Office365Token {
   access_token: string;
   refresh_token?: string;
   expires_at?: string;
-  token_data: any;
+  token_data: unknown;
   created_at: string;
   updated_at: string;
 }
@@ -104,7 +104,7 @@ export function useDraftReply() {
 
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: (_data) => {
       console.log('✅ Reply drafted successfully');
       toast.success('Reply drafted successfully');
     },

@@ -18,7 +18,7 @@ export interface Communication {
   participants: string[];
   thread_id?: string;
   external_id: string;
-  metadata: any;
+  metadata: unknown;
   created_at: string;
   updated_at: string;
 }
@@ -30,7 +30,7 @@ export interface CommunicationSearchResult {
   comm_type: string;
   subject?: string;
   body?: string;
-  speaker: any;
+  speaker: unknown;
   message_ts: string;
   url?: string;
   similarity: number;

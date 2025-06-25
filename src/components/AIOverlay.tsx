@@ -17,10 +17,10 @@ interface AIOverlayProps {
 interface OverlayResponse {
   action: 'navigate' | 'query' | 'tool' | 'chat';
   path?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   message?: string;
   toolName?: string;
-  toolArgs?: any;
+  toolArgs?: Record<string, unknown>;
 }
 
 const AIOverlay: React.FC<AIOverlayProps> = ({ isOpen, onClose, defaultPrompt = '' }) => {
@@ -140,7 +140,7 @@ const AIOverlay: React.FC<AIOverlayProps> = ({ isOpen, onClose, defaultPrompt = 
       return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as unknown as { SpeechRecognition?: typeof window.SpeechRecognition; webkitSpeechRecognition?: typeof window.SpeechRecognition }).SpeechRecognition || (window as unknown as { webkitSpeechRecognition?: typeof window.SpeechRecognition }).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     
     recognition.continuous = false;
@@ -150,7 +150,7 @@ const AIOverlay: React.FC<AIOverlayProps> = ({ isOpen, onClose, defaultPrompt = 
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setPrompt(transcript);
     };

@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,8 +10,8 @@ interface TestIntegrationRequest {
   provider: string;
   apiKey?: string;
   refreshToken?: string;
-  oauthData?: any;
-  config?: any;
+  oauthData?: unknown;
+  config?: unknown;
 }
 
 serve(async (req) => {
@@ -20,7 +20,7 @@ serve(async (req) => {
   }
 
   try {
-    const { provider, apiKey, refreshToken, oauthData, config }: TestIntegrationRequest = await req.json()
+    const { provider, apiKey, refreshToken: _refreshToken, oauthData, config }: TestIntegrationRequest = await req.json()
 
     console.log(`Testing integration for provider: ${provider}`)
 
@@ -89,7 +89,7 @@ serve(async (req) => {
   }
 })
 
-async function testProcoreConnection(apiKey?: string, oauthData?: any) {
+async function testProcoreConnection(apiKey?: string, oauthData?: unknown) {
   try {
     if (!apiKey && !oauthData?.access_token) {
       return { ok: false, error: 'API key or OAuth token required for Procore' }
@@ -118,7 +118,7 @@ async function testProcoreConnection(apiKey?: string, oauthData?: any) {
   }
 }
 
-async function testPrimaveraConnection(apiKey?: string, config?: any) {
+async function testPrimaveraConnection(apiKey?: string, _config?: unknown) {
   try {
     if (!apiKey) {
       return { ok: false, error: 'API key required for Primavera' }
@@ -133,7 +133,7 @@ async function testPrimaveraConnection(apiKey?: string, config?: any) {
   }
 }
 
-async function testOneDriveConnection(oauthData?: any) {
+async function testOneDriveConnection(oauthData?: unknown) {
   try {
     if (!oauthData?.access_token) {
       return { ok: false, error: 'OAuth token required for OneDrive' }
@@ -148,7 +148,7 @@ async function testOneDriveConnection(oauthData?: any) {
   }
 }
 
-async function testIoTConnection(apiKey?: string, config?: any) {
+async function testIoTConnection(apiKey?: string, _config?: unknown) {
   try {
     if (!apiKey || !config?.endpoint) {
       return { ok: false, error: 'API key and endpoint required for IoT sensors' }
@@ -208,7 +208,7 @@ async function testBillyConnection(apiKey?: string) {
   }
 }
 
-async function testClearstoryConnection(oauthData?: any) {
+async function testClearstoryConnection(oauthData?: unknown) {
   try {
     if (!oauthData?.access_token) {
       return { ok: false, error: 'OAuth token required for Clearstory' }
@@ -223,7 +223,7 @@ async function testClearstoryConnection(oauthData?: any) {
   }
 }
 
-async function testTrack3DConnection(apiKey?: string, config?: any) {
+async function testTrack3DConnection(apiKey?: string, config?: unknown) {
   try {
     if (!apiKey) {
       return { ok: false, error: 'API key required for Track3D' }
@@ -238,7 +238,7 @@ async function testTrack3DConnection(apiKey?: string, config?: any) {
   }
 }
 
-async function testBIM360Connection(apiKey?: string, oauthData?: any) {
+async function testBIM360Connection(apiKey?: string, oauthData?: unknown) {
   try {
     if (!apiKey && !oauthData?.access_token) {
       return { ok: false, error: 'API key or OAuth token required for BIM 360' }
@@ -253,7 +253,7 @@ async function testBIM360Connection(apiKey?: string, oauthData?: any) {
   }
 }
 
-async function testMicrosoftTeamsConnection(oauthData?: any) {
+async function testMicrosoftTeamsConnection(oauthData?: unknown) {
   try {
     if (!oauthData?.access_token) {
       return { ok: false, error: 'OAuth token required for Microsoft Teams' }
@@ -268,7 +268,7 @@ async function testMicrosoftTeamsConnection(oauthData?: any) {
   }
 }
 
-async function testZoomConnection(oauthData?: any) {
+async function testZoomConnection(oauthData?: unknown) {
   try {
     if (!oauthData?.access_token) {
       return { ok: false, error: 'OAuth token required for Zoom' }
@@ -283,7 +283,7 @@ async function testZoomConnection(oauthData?: any) {
   }
 }
 
-async function testOutlookConnection(oauthData?: any) {
+async function testOutlookConnection(oauthData?: unknown) {
   try {
     if (!oauthData?.access_token) {
       return { ok: false, error: 'OAuth token required for Outlook' }

@@ -9,8 +9,8 @@ export interface AuditLog {
   action: string;
   table_name: string;
   record_id: string | null;
-  old_values: any;
-  new_values: any;
+  old_values: unknown;
+  new_values: unknown;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;

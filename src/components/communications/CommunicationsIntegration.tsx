@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
@@ -13,12 +12,10 @@ import {
   Video, 
   Settings, 
   RefreshCw, 
-  Send, 
   Bot,
   ExternalLink,
   CheckCircle,
-  AlertCircle,
-  Clock
+  AlertCircle
 } from 'lucide-react';
 import { useOffice365Tokens, useStartOffice365Auth } from '@/hooks/useOffice365Integration';
 import { useCommunications } from '@/hooks/useCommunications';
@@ -32,13 +29,13 @@ interface CommunicationsIntegrationProps {
 
 const CommunicationsIntegration: React.FC<CommunicationsIntegrationProps> = ({ projectId }) => {
   const [activeTab, setActiveTab] = useState('overview');
-  const [selectedCommunication, setSelectedCommunication] = useState<any>(null);
+  const [selectedCommunication, setSelectedCommunication] = useState<unknown>(null);
   const [showReplyDrawer, setShowReplyDrawer] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
   const [selectedProvider, setSelectedProvider] = useState<string>('all');
 
-  const { data: tokens = [], isLoading: tokensLoading } = useOffice365Tokens(projectId);
-  const { data: communications = [], isLoading: commsLoading } = useCommunications(projectId);
+  const { data: tokens = [], isLoading: _tokensLoading } = useOffice365Tokens(projectId);
+  const { data: communications = [], isLoading: _commsLoading } = useCommunications(projectId);
   const startAuth = useStartOffice365Auth();
   const { toast } = useToast();
 
@@ -67,7 +64,7 @@ const CommunicationsIntegration: React.FC<CommunicationsIntegrationProps> = ({ p
     if (!selectedCommunication) return;
 
     try {
-      const prompt = action === 'summarize' 
+      const _prompt = action === 'summarize'
         ? 'Summarize this communication and highlight key points'
         : action === 'reply'
         ? aiPrompt || 'Draft a professional reply to this message'
@@ -78,7 +75,7 @@ const CommunicationsIntegration: React.FC<CommunicationsIntegrationProps> = ({ p
         title: "AI Processing",
         description: `${action} request sent to AI agent.`,
       });
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "AI Error",
         description: "Failed to process AI request.",
@@ -186,7 +183,7 @@ const CommunicationsIntegration: React.FC<CommunicationsIntegrationProps> = ({ p
                         </p>
                       )}
                       <Button
-                        onClick={() => handleConnectProvider(provider.id as any)}
+                        onClick={() => handleConnectProvider(provider.id as 'outlook' | 'teams' | 'zoom')}
                         disabled={startAuth.isPending}
                         className="w-full"
                         variant={status.status === 'connected' ? 'outline' : 'default'}

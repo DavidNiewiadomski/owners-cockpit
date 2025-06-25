@@ -1,5 +1,5 @@
 
-export async function searchCommunications(supabase: any, queryEmbedding: number[], projectId: string, matchCount: number = 10) {
+export async function searchCommunications(supabase: unknown, queryEmbedding: number[], projectId: string, matchCount: number = 10) {
   console.log('🔍 Searching communications for relevant context...');
   
   try {

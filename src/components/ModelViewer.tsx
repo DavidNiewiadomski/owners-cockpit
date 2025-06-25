@@ -19,7 +19,7 @@ interface ModelViewerProps {
 const ModelViewer: React.FC<ModelViewerProps> = ({ projectId }) => {
   const { currentRole } = useRole();
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [selectedElement, setSelectedElement] = useState<any>(null);
+  const [selectedElement, setSelectedElement] = useState<unknown>(null);
   const [showElementPanel, setShowElementPanel] = useState(false);
   const [activeTab, setActiveTab] = useState('model');
 
@@ -28,7 +28,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({ projectId }) => {
 
   const canManage = currentRole === 'Construction' || currentRole === 'Executive';
 
-  const handleElementSelect = (element: any) => {
+  const handleElementSelect = (element: unknown) => {
     setSelectedElement(element);
     setShowElementPanel(true);
     console.log('Selected BIM element:', element);

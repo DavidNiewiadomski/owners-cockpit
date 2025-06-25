@@ -75,12 +75,12 @@ globalThis.fetch = async (url: string | URL | Request, init?: RequestInit) => {
 // Mock Supabase client
 const mockSupabase = {
   from: (table: string) => ({
-    select: (columns: string) => ({
-      eq: (column: string, value: string) => ({
+    select: (_columns: string) => ({
+      eq: (_column: string, _value: string) => ({
         single: () => ({
           data: table === 'projects' ? mockProjectData.project : null
         }),
-        gte: (column: string, date: string) => ({
+        gte: (_column: string, _date: string) => ({
           data: table === 'documents' ? mockProjectData.documents : null
         }),
         data: table === 'tasks' ? mockProjectData.tasks :
@@ -89,7 +89,7 @@ const mockSupabase = {
       })
     })
   }),
-  insert: (data: any) => ({
+  insert: (data: unknown) => ({
     select: () => ({
       single: () => ({
         data: { id: 'test-report-id', ...data },

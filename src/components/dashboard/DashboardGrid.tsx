@@ -1,9 +1,10 @@
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
+import type {
+  DragEndEvent,
+  DragStartEvent} from '@dnd-kit/core';
 import {
   DndContext,
-  DragEndEvent,
-  DragStartEvent,
   DragOverlay,
   closestCenter,
   KeyboardSensor,
@@ -19,14 +20,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Edit3, Plus, X } from 'lucide-react';
+import { Edit3, Plus } from 'lucide-react';
 import { useDashboardStore } from '@/stores/useDashboardStore';
-import { WIDGET_REGISTRY } from '@/widgets/index';
+// import { WIDGET_REGISTRY } from '@/widgets/index';
 import { useRole } from '@/contexts/RoleContext';
 import { useAuth } from '@/hooks/useAuth';
 import DashboardWidget from './DashboardWidget';
 import AddWidgetPanel from './AddWidgetPanel';
-import { LayoutItem } from '@/types/dashboard';
+// import { LayoutItem } from '@/types/dashboard';
 
 interface DashboardGridProps {
   projectId: string;
@@ -68,7 +69,7 @@ const DashboardGrid: React.FC<DashboardGridProps> = ({ projectId }) => {
       console.log('Loading layout for:', { userId: user.id, role: currentRole, projectId });
       loadLayout(user.id, currentRole, projectId);
     }
-  }, [user?.id, currentRole, projectId]); // Removed loadLayout from dependencies to prevent infinite loop
+  }, [user, currentRole, projectId, loadLayout]);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);

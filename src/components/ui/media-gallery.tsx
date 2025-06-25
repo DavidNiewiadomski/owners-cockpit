@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, Download, FileText, Image as ImageIcon, Video } from 'lucide-react';
-import { WidgetMedia } from '@/types/dashboard';
+import type { WidgetMedia } from '@/types/dashboard';
 
 interface MediaGalleryProps {
   media: WidgetMedia[];

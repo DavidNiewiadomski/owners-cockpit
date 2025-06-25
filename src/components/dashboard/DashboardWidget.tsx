@@ -5,7 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
 import { GripVertical, X } from 'lucide-react';
 import { WIDGET_REGISTRY } from '@/widgets/index';
-import { LayoutItem } from '@/types/dashboard';
+import type { LayoutItem } from '@/types/dashboard';
 
 interface DashboardWidgetProps {
   item: LayoutItem;
@@ -14,7 +14,7 @@ interface DashboardWidgetProps {
   onRemove: () => void;
 }
 
-const DashboardWidget: React.FC<DashboardWidgetProps> = ({
+const DashboardWidget: React.FC<DashboardWidgetProps> = React.memo(({
   item,
   projectId,
   isEditMode,
@@ -99,6 +99,6 @@ const DashboardWidget: React.FC<DashboardWidgetProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default DashboardWidget;

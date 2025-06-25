@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { HardHat } from 'lucide-react';
-import { SafetyIncident } from '@/types/construction';
+import type { SafetyIncident } from '@/types/construction';
 
 interface SafetyDashboardProps {
   safetyDays: number;

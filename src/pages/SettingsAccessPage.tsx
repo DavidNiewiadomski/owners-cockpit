@@ -8,7 +8,7 @@ import SettingsAccess from '@/components/SettingsAccess';
 import MotionWrapper from '@/components/MotionWrapper';
 
 const SettingsAccessPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const { projectId } = useParams<{ projectId: string }>();
 
   if (!projectId) {

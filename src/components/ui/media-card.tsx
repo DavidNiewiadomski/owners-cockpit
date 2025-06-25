@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { MediaGallery } from './media-gallery';
-import { WidgetMedia } from '@/types/dashboard';
+import type { WidgetMedia } from '@/types/dashboard';
 import { Eye } from 'lucide-react';
 
 interface MediaCardProps {

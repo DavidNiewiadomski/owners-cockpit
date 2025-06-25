@@ -27,7 +27,7 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       if (error) {
         toast.error('Failed to sign in: ' + error.message);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('An unexpected error occurred');
     } finally {
       setIsSigningIn(false);

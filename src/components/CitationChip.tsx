@@ -2,7 +2,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { FileText, ExternalLink } from 'lucide-react';
-import { Citation } from '@/hooks/useChatRag';
+import type { Citation } from '@/hooks/useChatRag';
 
 interface CitationChipProps {
   citation: Citation;

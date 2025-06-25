@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Layers, Calendar, Download, Eye } from 'lucide-react';
@@ -10,7 +10,7 @@ interface RealityCaptureViewerProps {
 }
 
 const RealityCaptureViewer: React.FC<RealityCaptureViewerProps> = ({ projectId }) => {
-  const [selectedCapture, setSelectedCapture] = useState<any>(null);
+  const [selectedCapture, setSelectedCapture] = useState(null);
   const { data: captures, isLoading } = useCaptureData(projectId);
 
   if (isLoading) {
@@ -37,7 +37,7 @@ const RealityCaptureViewer: React.FC<RealityCaptureViewerProps> = ({ projectId }
           </div>
           
           {captures?.length ? (
-            captures.map((capture: any) => (
+captures.map((capture: { id: string; thumbnail_url: string; provider: string; capture_date: string; pano_url?: string; pointcloud_url?: string }) => (
               <Card 
                 key={capture.id}
                 className={`p-3 cursor-pointer transition-colors ${

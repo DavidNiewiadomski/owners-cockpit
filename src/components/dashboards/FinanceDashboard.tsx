@@ -99,7 +99,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis tickFormatter={(value) => `$${value}K`} />
-              <Tooltip formatter={(value: any) => [`$${value}K`, '']} />
+              <Tooltip formatter={(value: unknown) => [`$${value}K`, '']} />
               <Bar dataKey="revenue" fill="#3b82f6" name="Revenue" />
               <Bar dataKey="costs" fill="#ef4444" name="Costs" />
               <Bar dataKey="profit" fill="#10b981" name="Profit" />

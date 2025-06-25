@@ -3,13 +3,13 @@ import React from 'react';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp } from 'lucide-react';
 import { MediaCard } from '@/components/ui/media-card';
-import { WidgetMedia } from '@/types/dashboard';
+import type { WidgetMedia } from '@/types/dashboard';
 
 interface ConstructionProgressProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const ConstructionProgress: React.FC<ConstructionProgressProps> = ({ projectId }) => {
+export function ConstructionProgress({ projectId: _projectId }: ConstructionProgressProps) {
   const progress = 68;
   const target = 70;
 
@@ -70,4 +70,3 @@ const ConstructionProgress: React.FC<ConstructionProgressProps> = ({ projectId }
   );
 };
 
-export { ConstructionProgress };

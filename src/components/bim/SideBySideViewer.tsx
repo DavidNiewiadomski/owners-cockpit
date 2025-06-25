@@ -8,8 +8,8 @@ import RealityCaptureViewer from './RealityCaptureViewer';
 
 interface SideBySideViewerProps {
   projectId: string;
-  bimFile: any;
-  onElementSelect: (element: any) => void;
+  bimFile: unknown;
+  onElementSelect: (element: unknown) => void;
 }
 
 const SideBySideViewer: React.FC<SideBySideViewerProps> = ({

@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Calendar, User, MoreVertical, ExternalLink, Trash2, Edit } from 'lucide-react';
-import { ActionItem } from '@/types/actionItems';
+import type { ActionItem } from '@/types/actionItems';
 import { useDeleteActionItem } from '@/hooks/useActionItems';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,7 @@ interface ActionItemCardProps {
 }
 
 export const ActionItemCard: React.FC<ActionItemCardProps> = ({ item, projectId }) => {
-  const [showDetails, setShowDetails] = useState(false);
+  const [_showDetails, _setShowDetails] = useState(false);
   const deleteActionItem = useDeleteActionItem();
 
   const {

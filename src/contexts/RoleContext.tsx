@@ -1,12 +1,12 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { UserRole, RoleState, RolePermissions } from '@/types/roles';
+import type { UserRole, RoleState, RolePermissions } from '@/types/roles';
 import { ROLE_CONFIGS } from '@/config/roleConfig';
 
 interface AgentMemory {
   conversationSummary: string;
   persona: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   messageHistory: Array<{
     id: string;
     role: 'user' | 'assistant';
@@ -25,7 +25,7 @@ interface RoleContextType {
   getRoleConfig: (role: UserRole) => typeof ROLE_CONFIGS[UserRole];
   captureUIState: () => RoleState;
   restoreUIState: (state: RoleState) => void;
-  updateAgentMemory: (messages: any[]) => void;
+  updateAgentMemory: (messages: unknown[]) => void;
   getActiveAgentMemory: () => AgentMemory;
   getRolePersona: (role: UserRole) => string;
 }
@@ -126,7 +126,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
         // Convert timestamp strings back to Date objects
         Object.keys(parsed).forEach(role => {
           if (parsed[role].messageHistory) {
-            parsed[role].messageHistory = parsed[role].messageHistory.map((msg: any) => ({
+            parsed[role].messageHistory = parsed[role].messageHistory.map((msg: unknown) => ({
               ...msg,
               timestamp: new Date(msg.timestamp)
             }));
@@ -175,7 +175,7 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
     }));
   }, [currentRole]);
 
-  const updateAgentMemory = useCallback((messages: any[]) => {
+  const updateAgentMemory = useCallback((messages: unknown[]) => {
     setAgentMemories(prev => ({
       ...prev,
       [currentRole]: {

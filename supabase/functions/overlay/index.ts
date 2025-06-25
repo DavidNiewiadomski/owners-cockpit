@@ -15,10 +15,10 @@ interface OverlayRequest {
 interface OverlayResponse {
   action: 'navigate' | 'query' | 'tool' | 'chat';
   path?: string;
-  data?: any;
+  data?: unknown;
   message?: string;
   toolName?: string;
-  toolArgs?: any;
+  toolArgs?: unknown;
 }
 
 serve(async (req) => {

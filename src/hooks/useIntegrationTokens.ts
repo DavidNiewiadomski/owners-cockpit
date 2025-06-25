@@ -9,7 +9,7 @@ export interface IntegrationToken {
   provider: 'teams' | 'outlook' | 'zoom' | 'google_meet';
   access_token: string;
   refresh_token?: string;
-  token_data: any;
+  token_data: unknown;
   expires_at?: string;
   created_at: string;
   updated_at: string;

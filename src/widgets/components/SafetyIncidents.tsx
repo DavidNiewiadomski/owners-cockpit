@@ -4,10 +4,10 @@ import { Card } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
 
 interface SafetyIncidentsProps {
-  projectId?: string;
+  projectId: string;
 }
 
-const SafetyIncidents: React.FC<SafetyIncidentsProps> = ({ projectId }) => {
+export function SafetyIncidents({ projectId: _projectId }: SafetyIncidentsProps) {
   const incidents = {
     thisMonth: 0,
     lastMonth: 2,
@@ -42,4 +42,3 @@ const SafetyIncidents: React.FC<SafetyIncidentsProps> = ({ projectId }) => {
   );
 };
 
-export { SafetyIncidents };

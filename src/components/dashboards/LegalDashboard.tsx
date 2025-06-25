@@ -9,7 +9,7 @@ interface LegalDashboardProps {
   projectId: string;
 }
 
-const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId }) => {
+const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId: _projectId }) => {
   const projectData = generateLegalDemoData();
 
   return (

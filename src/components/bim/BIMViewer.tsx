@@ -1,12 +1,12 @@
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { IFCLoader } from 'web-ifc-three/IFCLoader';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, ZoomIn, ZoomOut, Eye, EyeOff } from 'lucide-react';
+import { RotateCcw, Eye, EyeOff } from 'lucide-react';
 
 interface BIMFile {
   id: string;
@@ -18,10 +18,10 @@ interface BIMFile {
 interface BIMViewerProps {
   projectId: string;
   bimFile: BIMFile;
-  onElementSelect: (element: any) => void;
+  onElementSelect: (element: unknown) => void;
 }
 
-const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSelect }) => {
+const BIMViewer: React.FC<BIMViewerProps> = ({ projectId: _projectId, bimFile, onElementSelect }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -35,18 +35,7 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
   const [error, setError] = useState<string | null>(null);
   const [showWireframe, setShowWireframe] = useState(false);
 
-  useEffect(() => {
-    if (!containerRef.current || !bimFile) return;
-
-    initViewer();
-    loadModel();
-
-    return () => {
-      cleanup();
-    };
-  }, [bimFile]);
-
-  const initViewer = () => {
+  const initViewer = useCallback(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
@@ -97,9 +86,21 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
 
     // Animation loop
     animate();
-  };
+  }, [animate, onMouseClick]);
 
-  const loadModel = async () => {
+  const animate = useCallback(() => {
+    requestAnimationFrame(animate);
+    
+    if (controlsRef.current) {
+      controlsRef.current.update();
+    }
+    
+    if (rendererRef.current && sceneRef.current && cameraRef.current) {
+      rendererRef.current.render(sceneRef.current, cameraRef.current);
+    }
+  }, []);
+
+  const loadModel = useCallback(async () => {
     if (!sceneRef.current || !bimFile) return;
 
     setIsLoading(true);
@@ -136,7 +137,7 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
             (error) => reject(error)
           );
         });
-        model = (gltf as any).scene;
+        model = (gltf as { scene: THREE.Object3D }).scene;
       }
 
       // Clear existing model
@@ -169,9 +170,9 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
       setError('Failed to load 3D model');
       setIsLoading(false);
     }
-  };
+  }, [bimFile]);
 
-  const onMouseClick = (event: MouseEvent) => {
+  const onMouseClick = useCallback((event: MouseEvent) => {
     if (!containerRef.current || !cameraRef.current || !sceneRef.current) return;
 
     const rect = containerRef.current.getBoundingClientRect();
@@ -198,7 +199,7 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
       // Highlight selected element
       highlightElement(object);
     }
-  };
+  }, [onElementSelect]);
 
   const highlightElement = (object: THREE.Object3D) => {
     // Remove previous highlights
@@ -227,17 +228,6 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
     }
   };
 
-  const animate = () => {
-    requestAnimationFrame(animate);
-    
-    if (controlsRef.current) {
-      controlsRef.current.update();
-    }
-    
-    if (rendererRef.current && sceneRef.current && cameraRef.current) {
-      rendererRef.current.render(sceneRef.current, cameraRef.current);
-    }
-  };
 
   const onWindowResize = () => {
     if (!containerRef.current || !cameraRef.current || !rendererRef.current) return;
@@ -250,7 +240,7 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
     rendererRef.current.setSize(width, height);
   };
 
-  const cleanup = () => {
+  const cleanup = useCallback(() => {
     if (rendererRef.current) {
       rendererRef.current.domElement.removeEventListener('click', onMouseClick);
       if (containerRef.current?.contains(rendererRef.current.domElement)) {
@@ -259,7 +249,18 @@ const BIMViewer: React.FC<BIMViewerProps> = ({ projectId, bimFile, onElementSele
       rendererRef.current.dispose();
     }
     window.removeEventListener('resize', onWindowResize);
-  };
+  }, [onMouseClick]);
+
+  useEffect(() => {
+    if (!containerRef.current || !bimFile) return;
+
+    initViewer();
+    loadModel();
+
+    return () => {
+      cleanup();
+    };
+  }, [bimFile, initViewer, loadModel, cleanup]);
 
   const resetView = () => {
     if (!cameraRef.current || !controlsRef.current || !modelRef.current) return;

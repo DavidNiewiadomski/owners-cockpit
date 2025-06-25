@@ -3,7 +3,6 @@ import React from 'react';
 import { useRole } from '@/contexts/RoleContext';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import DashboardGrid from '@/components/dashboard/DashboardGrid';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 interface DashboardProps {
@@ -12,7 +11,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { currentRole, getRoleConfig } = useRole();
-  const { access } = useRoleBasedAccess();
+  const { access: _access } = useRoleBasedAccess();
   const roleConfig = getRoleConfig(currentRole);
 
   return (

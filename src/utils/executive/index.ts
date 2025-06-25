@@ -1,5 +1,5 @@
 
-import { ExecutiveDashboardData } from './types';
+import type { ExecutiveDashboardData } from './types';
 import { 
   generateMockProjects, 
   generateMockPendingApprovals, 
