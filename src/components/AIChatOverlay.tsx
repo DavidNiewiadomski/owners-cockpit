@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, MessageSquare, Minimize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import AdvancedAIChat from '@/components/AdvancedAIChat';
+import SimpleAIChat from '@/components/SimpleAIChat';
 import { useAppState } from '@/hooks/useAppState';
 
 interface AIChatOverlayProps {
@@ -112,7 +112,7 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
                 className="flex-1 overflow-hidden"
               >
                 <div className="h-[536px]">
-                  <AdvancedAIChat 
+                  <SimpleAIChat 
                     projectId={projectId}
                     activeView={activeView}
                     contextData={contextData}
