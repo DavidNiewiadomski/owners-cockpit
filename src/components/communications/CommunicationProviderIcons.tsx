@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -10,12 +10,10 @@ import {
   Phone, 
   Slack, 
   Bot,
-  Bell,
   AlertCircle,
   CheckCircle,
   Settings,
   ExternalLink,
-  RefreshCw,
   Loader2
 } from 'lucide-react';
 import { communicationSetup, type CommunicationProvider } from '@/services/communicationSetup';
@@ -76,7 +74,7 @@ const CommunicationProviderIcons: React.FC<CommunicationProviderIconsProps> = ({
   };
 
   // Load providers from service
-  const loadProviders = () => {
+  const loadProviders = useCallback(() => {
     const serviceProviders = communicationSetup.getProviders();
     const uiProviders: UIProvider[] = serviceProviders.map(provider => ({
       id: provider.id,
@@ -91,12 +89,12 @@ const CommunicationProviderIcons: React.FC<CommunicationProviderIconsProps> = ({
       connectedEmail: provider.connectedEmail
     }));
     setProviders(uiProviders);
-  };
+  }, []);
 
   // Initialize providers on mount
   useEffect(() => {
     loadProviders();
-  }, []);
+  }, [loadProviders]);
 
   // Handle provider connection
   const handleConnect = async (providerId: string) => {
