@@ -27,7 +27,7 @@ import {
   Play,
   Pause,
   Sparkles,
-  Waveform,
+  AudioWaveform,
   Clock,
   CheckCircle,
   AlertCircle,
@@ -546,7 +546,7 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
                           {/* Voice indicator */}
                           {message.metadata?.isVoice && (
                             <div className="flex items-center space-x-1 mt-2">
-                              <Waveform className="h-3 w-3 opacity-60" />
+                              <AudioWaveform className="h-3 w-3 opacity-60" />
                               <span className="text-xs opacity-60">Voice message</span>
                             </div>
                           )}
@@ -775,7 +775,7 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
                         animate={{ opacity: 1, scale: 1 }}
                         className="flex items-center space-x-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 rounded-full"
                       >
-                        <Waveform className="h-3 w-3 text-green-600 dark:text-green-400" />
+                        <AudioWaveform className="h-3 w-3 text-green-600 dark:text-green-400" />
                         <span className="text-xs text-green-600 dark:text-green-400 font-medium">
                           Speaking...
                         </span>

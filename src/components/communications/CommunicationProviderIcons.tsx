@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   MessageSquare, 
   Mail, 
@@ -11,8 +12,14 @@ import {
   Bot,
   Bell,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Settings,
+  ExternalLink,
+  RefreshCw,
+  Loader2
 } from 'lucide-react';
+import { communicationSetup, type CommunicationProvider } from '@/services/communicationSetup';
+import { useToast } from '@/hooks/use-toast';
 import OutlookPopup from './popups/OutlookPopup';
 import TeamsPopup from './popups/TeamsPopup';
 import ZoomPopup from './popups/ZoomPopup';
@@ -23,7 +30,7 @@ interface CommunicationProviderIconsProps {
   projectId: string;
 }
 
-interface Provider {
+interface UIProvider {
   id: string;
   name: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -32,64 +39,114 @@ interface Provider {
   unreadCount: number;
   lastActivity: string;
   urgentCount: number;
+  status: 'disconnected' | 'connecting' | 'connected' | 'error';
+  connectedEmail?: string;
 }
 
 const CommunicationProviderIcons: React.FC<CommunicationProviderIconsProps> = ({ projectId }) => {
   const [activeProvider, setActiveProvider] = useState<string | null>(null);
+  const [setupDialogOpen, setSetupDialogOpen] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<CommunicationProvider | null>(null);
+  const [providers, setProviders] = useState<UIProvider[]>([]);
+  const [isConnecting, setIsConnecting] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  // Mock provider data - in real app, fetch from API
-  const providers: Provider[] = [
-    {
-      id: 'outlook',
-      name: 'Outlook',
-      icon: Mail,
-      color: 'bg-blue-600 hover:bg-blue-700',
-      connected: true,
-      unreadCount: 8,
-      lastActivity: '5 min ago',
-      urgentCount: 2
-    },
-    {
-      id: 'teams',
-      name: 'Microsoft Teams',
-      icon: MessageSquare,
-      color: 'bg-purple-600 hover:bg-purple-700',
-      connected: true,
-      unreadCount: 15,
-      lastActivity: '2 min ago',
-      urgentCount: 1
-    },
-    {
-      id: 'zoom',
-      name: 'Zoom',
-      icon: Video,
-      color: 'bg-blue-500 hover:bg-blue-600',
-      connected: true,
-      unreadCount: 3,
-      lastActivity: '12 min ago',
-      urgentCount: 0
-    },
-    {
-      id: 'slack',
-      name: 'Slack',
-      icon: Slack,
-      color: 'bg-green-600 hover:bg-green-700',
-      connected: false,
-      unreadCount: 0,
-      lastActivity: 'Not connected',
-      urgentCount: 0
-    },
-    {
-      id: 'whatsapp',
-      name: 'WhatsApp Business',
-      icon: Phone,
-      color: 'bg-green-500 hover:bg-green-600',
-      connected: true,
-      unreadCount: 4,
-      lastActivity: '8 min ago',
-      urgentCount: 1
+  // Icon mapping for providers
+  const getProviderIcon = (providerId: string): React.ComponentType<{ className?: string }> => {
+    const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+      outlook: Mail,
+      teams: MessageSquare,
+      zoom: Video,
+      slack: Slack,
+      whatsapp: Phone
+    };
+    return iconMap[providerId] || Mail;
+  };
+
+  // Color mapping for providers
+  const getProviderColor = (providerId: string): string => {
+    const colorMap: Record<string, string> = {
+      outlook: 'bg-blue-600 hover:bg-blue-700',
+      teams: 'bg-purple-600 hover:bg-purple-700',
+      zoom: 'bg-blue-500 hover:bg-blue-600',
+      slack: 'bg-green-600 hover:bg-green-700',
+      whatsapp: 'bg-green-500 hover:bg-green-600'
+    };
+    return colorMap[providerId] || 'bg-gray-600 hover:bg-gray-700';
+  };
+
+  // Load providers from service
+  const loadProviders = () => {
+    const serviceProviders = communicationSetup.getProviders();
+    const uiProviders: UIProvider[] = serviceProviders.map(provider => ({
+      id: provider.id,
+      name: provider.name,
+      icon: getProviderIcon(provider.id),
+      color: getProviderColor(provider.id),
+      connected: provider.isConnected,
+      unreadCount: provider.unreadCount,
+      lastActivity: provider.lastSync || (provider.isConnected ? 'Connected' : 'Not connected'),
+      urgentCount: Math.floor(provider.unreadCount * 0.2), // 20% are urgent
+      status: provider.status,
+      connectedEmail: provider.connectedEmail
+    }));
+    setProviders(uiProviders);
+  };
+
+  // Initialize providers on mount
+  useEffect(() => {
+    loadProviders();
+  }, []);
+
+  // Handle provider connection
+  const handleConnect = async (providerId: string) => {
+    try {
+      setIsConnecting(providerId);
+      await communicationSetup.connectProvider(providerId);
+      loadProviders();
+      setSetupDialogOpen(false);
+      toast({
+        title: "Connected Successfully",
+        description: `${selectedProvider?.name} has been connected to your account.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Connection Failed",
+        description: error instanceof Error ? error.message : "Failed to connect provider",
+        variant: "destructive",
+      });
+    } finally {
+      setIsConnecting(null);
     }
-  ];
+  };
+
+  // Handle provider disconnection
+  const handleDisconnect = async (providerId: string) => {
+    try {
+      await communicationSetup.disconnectProvider(providerId);
+      loadProviders();
+      toast({
+        title: "Disconnected",
+        description: `Provider has been disconnected from your account.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Disconnection Failed",
+        description: error instanceof Error ? error.message : "Failed to disconnect provider",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle provider setup dialog
+  const handleProviderSetup = (providerId: string) => {
+    const serviceProviders = communicationSetup.getProviders();
+    const provider = serviceProviders.find(p => p.id === providerId);
+    if (provider) {
+      setSelectedProvider(provider);
+      setSetupDialogOpen(true);
+    }
+  };
 
   const handleProviderClick = (providerId: string) => {
     setActiveProvider(activeProvider === providerId ? null : providerId);
@@ -135,8 +192,7 @@ const CommunicationProviderIcons: React.FC<CommunicationProviderIconsProps> = ({
                       ? `${provider.color} text-white shadow-md hover:scale-105` 
                       : 'bg-gray-200 text-gray-400 hover:bg-gray-300'
                   } ${activeProvider === provider.id ? 'ring-2 ring-white ring-offset-2' : ''}`}
-                  onClick={() => handleProviderClick(provider.id)}
-                  disabled={!provider.connected}
+                  onClick={() => provider.connected ? handleProviderClick(provider.id) : handleProviderSetup(provider.id)}
                 >
                   <IconComponent className="w-4 h-4" />
                   
@@ -224,6 +280,103 @@ const CommunicationProviderIcons: React.FC<CommunicationProviderIconsProps> = ({
 
       {/* Render Active Popup */}
       {activeProvider && renderPopup()}
+      
+      {/* Provider Setup Dialog */}
+      <Dialog open={setupDialogOpen} onOpenChange={setSetupDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Settings className="w-5 h-5" />
+              Setup {selectedProvider?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Connect your {selectedProvider?.name} account to enable communication features.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedProvider && (
+            <div className="space-y-6">
+              {/* Provider Features */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-medium text-foreground">Features</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {selectedProvider.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Setup Instructions */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-medium text-foreground">Setup Instructions</h3>
+                <div className="space-y-2">
+                  {selectedProvider.setupInstructions.map((instruction, index) => (
+                    <div key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <div className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-medium mt-0.5">
+                        {index + 1}
+                      </div>
+                      {instruction}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Connection Status */}
+              {selectedProvider.isConnected && (
+                <div className="p-4 rounded-lg bg-green-50 border border-green-200">
+                  <div className="flex items-center gap-2 text-green-800">
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-medium">Already Connected</span>
+                  </div>
+                  {selectedProvider.connectedEmail && (
+                    <p className="text-sm text-green-700 mt-1">
+                      Connected as: {selectedProvider.connectedEmail}
+                    </p>
+                  )}
+                </div>
+              )}
+              
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-4 border-t">
+                <Button
+                  variant="outline"
+                  onClick={() => setSetupDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                
+                <div className="flex items-center gap-2">
+                  {selectedProvider.isConnected && (
+                    <Button
+                      variant="destructive"
+                      onClick={() => handleDisconnect(selectedProvider.id)}
+                      className="mr-2"
+                    >
+                      Disconnect
+                    </Button>
+                  )}
+                  
+                  <Button
+                    onClick={() => handleConnect(selectedProvider.id)}
+                    disabled={isConnecting === selectedProvider.id}
+                    className="flex items-center gap-2"
+                  >
+                    {isConnecting === selectedProvider.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <ExternalLink className="w-4 h-4" />
+                    )}
+                    {selectedProvider.isConnected ? 'Reconnect' : 'Connect Account'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
