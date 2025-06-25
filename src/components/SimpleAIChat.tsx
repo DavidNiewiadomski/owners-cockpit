@@ -1,11 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Send, Bot, User, Brain, Mic, MicOff, Volume2, VolumeX, Square, Settings, Zap } from 'lucide-react';
-import { conversationalAI } from '@/services/conversationalAI';
-import { elevenLabsVoiceService } from '@/services/elevenLabsVoice';
+import { Send, Bot, User } from 'lucide-react';
 
 interface Message {
   id: string;

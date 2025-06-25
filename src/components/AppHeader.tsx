@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Settings, Plus, Users } from 'lucide-react';
+import { Settings, Plus, Users, Mail, FolderOpen } from 'lucide-react';
 import { Calendar, MessageCircle, Phone, Video, MessageSquare } from 'lucide-react';
+import { Slack } from 'lucide-react';
 import { BarChart3, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, DollarSign, Building } from 'lucide-react';
 import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -133,7 +134,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                       className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
                       title="Slack Communications"
                     >
-                      <Slack className="h-4 w-4" />
+                      <MessageSquare className="h-4 w-4" />
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                     </Button>
                   </PopoverTrigger>
