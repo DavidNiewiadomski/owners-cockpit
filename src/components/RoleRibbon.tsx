@@ -4,44 +4,30 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { UserRole } from '@/types/roles';
 import { 
-  Crown, 
+  BarChart3, 
+  Palette, 
   ClipboardList, 
   HardHat, 
-  Building, 
   Leaf, 
+  Shield,
   Scale, 
   DollarSign,
+  Building,
 } from 'lucide-react';
 
-const roleIcons = {
-  Executive: Crown,
+const categoryIcons = {
+  Overview: BarChart3,
+  Design: Palette,
   Preconstruction: ClipboardList,
   Construction: HardHat,
-  Facilities: Building,
   Sustainability: Leaf,
+  Safety: Shield,
   Legal: Scale,
   Finance: DollarSign,
+  Facilities: Building,
 };
 
-const roleColors = {
-  Executive: 'bg-purple-500/20 text-purple-300 border-purple-400/50 hover:bg-purple-500/30',
-  Preconstruction: 'bg-blue-500/20 text-blue-300 border-blue-400/50 hover:bg-blue-500/30',
-  Construction: 'bg-orange-500/20 text-orange-300 border-orange-400/50 hover:bg-orange-500/30',
-  Facilities: 'bg-green-500/20 text-green-300 border-green-400/50 hover:bg-green-500/30',
-  Sustainability: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/50 hover:bg-emerald-500/30',
-  Legal: 'bg-slate-500/20 text-slate-300 border-slate-400/50 hover:bg-slate-500/30',
-  Finance: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/50 hover:bg-yellow-500/30',
-};
-
-const activeRoleColors = {
-  Executive: 'bg-purple-500/40 text-purple-100 border-purple-300 shadow-purple-500/30',
-  Preconstruction: 'bg-blue-500/40 text-blue-100 border-blue-300 shadow-blue-500/30',
-  Construction: 'bg-orange-500/40 text-orange-100 border-orange-300 shadow-orange-500/30',
-  Facilities: 'bg-green-500/40 text-green-100 border-green-300 shadow-green-500/30',
-  Sustainability: 'bg-emerald-500/40 text-emerald-100 border-emerald-300 shadow-emerald-500/30',
-  Legal: 'bg-slate-500/40 text-slate-100 border-slate-300 shadow-slate-500/30',
-  Finance: 'bg-yellow-500/40 text-yellow-100 border-yellow-300 shadow-yellow-500/30',
-};
+// Removed role colors since we're using simple tab styling
 
 const RoleRibbon: React.FC = () => {
   const { currentRole, switchRole, getRoleConfig } = useRole();
@@ -51,20 +37,19 @@ const RoleRibbon: React.FC = () => {
     switchRole(newRole);
   };
 
-  const roles = Object.keys(roleIcons) as UserRole[];
+  const categories = Object.keys(categoryIcons) as (keyof typeof categoryIcons)[];
 
   return (
     <div className="bg-white border-b border-gray-200">
       <div className="flex overflow-x-auto scrollbar-hide">
-        {roles.map((role) => {
-          const config = getRoleConfig(role);
-          const Icon = roleIcons[role];
-          const isActive = currentRole === role;
+        {categories.map((category) => {
+          const Icon = categoryIcons[category];
+          const isActive = currentRole === category; // For now, using role state
           
           return (
             <button
-              key={role}
-              onClick={() => handleRoleSwitch(role)}
+              key={category}
+              onClick={() => handleRoleSwitch(category as any)}
               className={`
                 flex items-center space-x-2 px-6 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap border-b-2
                 ${isActive 
@@ -74,7 +59,7 @@ const RoleRibbon: React.FC = () => {
               `}
             >
               <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
-              <span>{config.displayName}</span>
+              <span>{category === 'Legal' ? 'Legal & Insurance' : category}</span>
             </button>
           );
         })}
