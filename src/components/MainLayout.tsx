@@ -4,9 +4,9 @@ import AppHeader from '@/components/AppHeader';
 import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
 import AIFloatingButton from '@/components/AIFloatingButton';
-// import { PremiumAIChat } from '@/components/ai/PremiumAIChat';
+import { PremiumAIChat } from '@/components/ai/PremiumAIChat';
 import AppModals from '@/components/AppModals';
-import VoiceControl from '@/components/VoiceControl';
+// import VoiceControl from '@/components/VoiceControl';
 import { useAppState } from '@/hooks/useAppState';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useRole } from '@/contexts/RoleContext';
@@ -64,23 +64,19 @@ const MainLayout: React.FC = () => {
       {/* AI Floating Button */}
       <AIFloatingButton onClick={appState.handleAIChat} />
 
-      {/* Premium AI Chat with 11.ai Integration - Temporarily Disabled */}
-      {appState.showChatOverlay && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <div className="w-96 h-96 bg-card border border-border rounded-lg shadow-lg p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">AI Assistant</h3>
-              <button onClick={appState.handleCloseChatOverlay} className="text-muted-foreground hover:text-foreground">
-                ×
-              </button>
-            </div>
-            <div className="text-center text-muted-foreground">
-              <p>AI Assistant is temporarily disabled for demo stability.</p>
-              <p className="text-sm mt-2">This will be restored in the next update.</p>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Premium AI Chat with Advanced Features */}
+      <PremiumAIChat 
+        isOpen={appState.showChatOverlay}
+        onClose={appState.handleCloseChatOverlay}
+        currentProjectId={appState.selectedProject || 'portfolio'}
+        availableProjects={[
+          { id: 'portfolio', name: 'Portfolio Overview', status: 'active' },
+          { id: 'pacific-heights-tower', name: 'Pacific Heights Tower', status: 'in-progress' },
+          { id: 'downtown-office-complex', name: 'Downtown Office Complex', status: 'planning' },
+          { id: 'marina-residential', name: 'Marina Residential', status: 'completed' },
+          { id: 'tech-campus-expansion', name: 'Tech Campus Expansion', status: 'in-progress' }
+        ]}
+      />
 
       {/* Modals */}
       <AppModals
@@ -97,7 +93,7 @@ const MainLayout: React.FC = () => {
         setSelectedDocument={appState.setSelectedDocument}
       />
 
-      <VoiceControl />
+      {/* <VoiceControl /> */}
     </div>
   );
 };

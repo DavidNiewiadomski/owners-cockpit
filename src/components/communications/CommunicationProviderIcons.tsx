@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { 
   Bot,
-  AlertCircle,
-  CheckCircle,
-  Settings,
-  ExternalLink,
-  Loader2
+  Mail,
+  MessageSquare,
+  Video,
+  Phone
 } from 'lucide-react';
 
 // Brand Icons Components
