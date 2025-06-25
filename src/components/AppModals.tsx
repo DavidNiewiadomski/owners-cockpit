@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import SettingsModal from '@/components/SettingsModal';
 import SourceModal from '@/components/SourceModal';
 import DocumentViewer from '@/components/DocumentViewer';
+import UploadDropzone from '@/components/UploadDropzone';
 
 interface AppModalsProps {
   showSettings: boolean;
@@ -12,6 +13,9 @@ interface AppModalsProps {
   setShowSourceModal: (show: boolean) => void;
   showDocumentViewer: boolean;
   setShowDocumentViewer: (show: boolean) => void;
+  showUpload: boolean;
+  setShowUpload: (show: boolean) => void;
+  selectedProject: string | null;
   selectedDocument: {
     url: string;
     mimeType: string;
@@ -31,6 +35,9 @@ const AppModals: React.FC<AppModalsProps> = ({
   setShowSourceModal,
   showDocumentViewer,
   setShowDocumentViewer,
+  showUpload,
+  setShowUpload,
+  selectedProject,
   selectedDocument,
   setSelectedDocument: _setSelectedDocument,
 }) => {
@@ -64,6 +71,15 @@ const AppModals: React.FC<AppModalsProps> = ({
               />
             </div>
           </div>
+        </div>
+      )}
+
+      {showUpload && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <UploadDropzone
+            projectId={selectedProject}
+            onClose={() => setShowUpload(false)}
+          />
         </div>
       )}
     </>

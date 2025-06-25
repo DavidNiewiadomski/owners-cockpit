@@ -61,6 +61,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 variant="ghost" 
                 size="icon" 
                 className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                onClick={() => onProjectChange('portfolio')}
                 title={t('navigation.projects')}
               >
                 <FolderOpen className="h-4 w-4" />

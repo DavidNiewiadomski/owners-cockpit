@@ -84,6 +84,9 @@ const MainLayout: React.FC = () => {
         setShowSourceModal={appState.setShowSourceModal}
         showDocumentViewer={appState.showDocumentViewer}
         setShowDocumentViewer={appState.setShowDocumentViewer}
+        showUpload={appState.showUpload}
+        setShowUpload={appState.setShowUpload}
+        selectedProject={appState.selectedProject}
         selectedDocument={appState.selectedDocument}
         setSelectedDocument={appState.setSelectedDocument}
       />
