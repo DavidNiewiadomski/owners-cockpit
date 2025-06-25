@@ -74,15 +74,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 <Plus className="h-4 w-4" />
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                title={t('navigation.projects')}
-              >
-                <FolderOpen className="h-4 w-4" />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-              </Button>
               
               {/* Communication Provider Icons */}
               <div className="flex items-center gap-1 border-l border-border/40 pl-2 ml-2">
