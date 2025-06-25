@@ -4,7 +4,7 @@ import AppHeader from '@/components/AppHeader';
 import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
 import AIFloatingButton from '@/components/AIFloatingButton';
-import AIChatOverlay from '@/components/AIChatOverlay';
+import { PremiumAIChat } from '@/components/ai/PremiumAIChat';
 import AppModals from '@/components/AppModals';
 import VoiceControl from '@/components/VoiceControl';
 import { useAppState } from '@/hooks/useAppState';
@@ -64,16 +64,18 @@ const MainLayout: React.FC = () => {
       {/* AI Floating Button */}
       <AIFloatingButton onClick={appState.handleAIChat} />
 
-      {/* AI Chat Overlay */}
-      <AIChatOverlay 
+      {/* Premium AI Chat with 11.ai Integration */}
+      <PremiumAIChat 
         isOpen={appState.showChatOverlay}
         onClose={appState.handleCloseChatOverlay}
-        projectId={appState.selectedProject || 'portfolio'}
-        activeView={appState.activeView}
-        contextData={{
-          selectedProject: appState.selectedProject,
-          timestamp: new Date().toISOString()
-        }}
+        currentProjectId={appState.selectedProject || 'portfolio'}
+        availableProjects={[
+          { id: 'portfolio', name: 'Portfolio Overview', status: 'active' },
+          { id: 'pacific-heights-tower', name: 'Pacific Heights Tower', status: 'in-progress' },
+          { id: 'downtown-office-complex', name: 'Downtown Office Complex', status: 'planning' },
+          { id: 'marina-residential', name: 'Marina Residential', status: 'completed' },
+          { id: 'tech-campus-expansion', name: 'Tech Campus Expansion', status: 'in-progress' }
+        ]}
       />
 
       {/* Modals */}
