@@ -11,6 +11,10 @@ import EnergyUsage from './components/EnergyUsage';
 import SustainabilityMetrics from './components/SustainabilityMetrics';
 import BudgetKPI from './components/BudgetKPI';
 import TimelineChart from './components/TimelineChart';
+import ScheduleKPI from './components/ScheduleKPI';
+import RiskPie from './components/RiskPie';
+import AIInsights from './components/AIInsights';
+import ContractRenewals from './components/ContractRenewals';
 
 export const WIDGET_REGISTRY = [
   {
@@ -122,6 +126,42 @@ export const WIDGET_REGISTRY = [
     component: SustainabilityMetrics,
     category: 'sustainability',
     roles: ['Sustainability', 'Facilities', 'Executive'] as const,
+    defaultSize: { w: 1, h: 1 }
+  },
+  {
+    id: 'schedule-kpi',
+    name: 'Schedule KPI',
+    description: 'Schedule performance indicators and milestone tracking',
+    component: ScheduleKPI,
+    category: 'construction',
+    roles: ['Construction', 'Executive', 'Preconstruction'] as const,
+    defaultSize: { w: 1, h: 1 }
+  },
+  {
+    id: 'risk-pie',
+    name: 'Risk Distribution',
+    description: 'Risk breakdown by category and severity',
+    component: RiskPie,
+    category: 'construction',
+    roles: ['Executive', 'Legal', 'Construction'] as const,
+    defaultSize: { w: 1, h: 1 }
+  },
+  {
+    id: 'ai-insights',
+    name: 'AI Insights',
+    description: 'AI-generated project insights and recommendations',
+    component: AIInsights,
+    category: 'construction',
+    roles: ['Executive', 'Construction', 'Preconstruction'] as const,
+    defaultSize: { w: 2, h: 1 }
+  },
+  {
+    id: 'contract-renewals',
+    name: 'Contract Renewals',
+    description: 'Upcoming contract renewals and legal matters',
+    component: ContractRenewals,
+    category: 'other',
+    roles: ['Finance', 'Legal', 'Executive'] as const,
     defaultSize: { w: 1, h: 1 }
   }
 ];
