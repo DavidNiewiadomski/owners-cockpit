@@ -1,11 +1,19 @@
 import OpenAI from 'openai';
 import { supabase } from '@/integrations/supabase/client';
 
-// Premium AI Configuration
+// Premium AI Configuration - Multiple Model Support
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
 const ELEVENLABS_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY || '';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY || '';
+const OLLAMA_BASE_URL = import.meta.env.VITE_OLLAMA_URL || 'http://localhost:11434';
+
+// Voice Configuration
 const ELEVENLABS_MODEL_ID = 'eleven_multilingual_v2';
-const ELEVENLABS_VOICE_ID = import.meta.env.VITE_ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL'; // Bella - Professional
+const ELEVENLABS_VOICE_ID = import.meta.env.VITE_ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
+
+// AI Model Priority (first available will be used)
+const AI_MODEL_PRIORITY = ['ollama', 'gemini', 'openai', 'anthropic', 'fallback'];
 
 interface AIMessage {
   id: string;
@@ -110,11 +118,14 @@ class PremiumAIService {
       if (onStreamChunk) {
         // Streaming response
         const stream = await this.openai!.chat.completions.create({
-          model: 'gpt-4o', // Latest GPT-4 Omni model
+          model: 'gpt-4o-mini', // Faster model for real-time responses
           messages,
           stream: true,
-          max_tokens: 2000,
+          max_tokens: 1500,
           temperature: 0.7,
+          top_p: 0.9,
+          frequency_penalty: 0.1,
+          presence_penalty: 0.1,
           functions: this.getPlatformFunctions(),
           function_call: 'auto'
         });
@@ -169,10 +180,11 @@ class PremiumAIService {
       } else {
         // Non-streaming response
         const completion = await this.openai!.chat.completions.create({
-          model: 'gpt-4o',
+          model: 'gpt-4o-mini',
           messages,
-          max_tokens: 2000,
+          max_tokens: 1500,
           temperature: 0.7,
+          top_p: 0.9,
           functions: this.getPlatformFunctions(),
           function_call: 'auto'
         });
@@ -205,6 +217,43 @@ class PremiumAIService {
     messageId: string
   ): Promise<AIMessage> {
     
+    // Try alternative AI models before using intelligent fallback
+    try {
+      // Try Ollama first (local AI)
+      const ollamaResponse = await this.tryOllamaAPI(message, context);
+      if (ollamaResponse) {
+        return {
+          id: messageId,
+          role: 'assistant',
+          content: ollamaResponse,
+          timestamp: new Date().toISOString(),
+          metadata: {
+            model: 'ollama-local',
+            confidence: 0.95
+          }
+        };
+      }
+
+      // Try Gemini API if Ollama fails
+      if (GEMINI_API_KEY) {
+        const geminiResponse = await this.tryGeminiAPI(message, context);
+        if (geminiResponse) {
+          return {
+            id: messageId,
+            role: 'assistant',
+            content: geminiResponse,
+            timestamp: new Date().toISOString(),
+            metadata: {
+              model: 'gemini-pro',
+              confidence: 0.9
+            }
+          };
+        }
+      }
+    } catch (error) {
+      console.warn('Alternative AI models failed, using intelligent fallback:', error);
+    }
+    
     // Intelligent fallback responses based on context
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
 
@@ -219,6 +268,8 @@ class PremiumAIService {
       
       communication: `I've analyzed recent communications for ${projectInfo}. There are 3 priority messages requiring your attention and 2 pending approvals. I can draft responses or create calendar events for follow-up meetings. How would you like to proceed?`,
       
+      risks: `I've identified several potential risks for ${projectInfo}: weather delays for next week's concrete pour, and the electrical inspection is scheduled but might conflict with the drywall timeline. I can reschedule the inspection or coordinate with the trades. What's your preference?`,
+      
       default: `I understand you're asking about "${message}" regarding ${projectInfo}. 
 
 Based on your current ${context.activeView} view, I can help with:
@@ -232,7 +283,7 @@ Based on your current ${context.activeView} view, I can help with:
 
 I have access to platform actions and can perform tasks like sending messages, creating meetings, updating project status, and generating reports. What specific action would be most helpful right now?
 
-*Note: This is an intelligent fallback response. Connect the OpenAI API for full AI capabilities.*`
+*Note: This is an intelligent fallback response. Connect an AI API for full capabilities.*`
     };
 
     const messageKey = Object.keys(responses).find(key => 
@@ -249,6 +300,95 @@ I have access to platform actions and can perform tasks like sending messages, c
         confidence: 0.8
       }
     };
+  }
+
+  // Try Ollama API (local AI model)
+  private async tryOllamaAPI(message: string, context: any): Promise<string | null> {
+    try {
+      const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama3.1', // or 'mistral', 'codellama', etc.
+          prompt: this.buildOllamaPrompt(message, context),
+          stream: false,
+          options: {
+            temperature: 0.7,
+            top_p: 0.9,
+            max_tokens: 1000
+          }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('🦙 Ollama response received');
+        return data.response;
+      }
+    } catch (error) {
+      console.log('Ollama not available, trying next option...');
+    }
+    return null;
+  }
+
+  // Try Google Gemini API
+  private async tryGeminiAPI(message: string, context: any): Promise<string | null> {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: this.buildGeminiPrompt(message, context)
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            topP: 0.8,
+            topK: 40,
+            maxOutputTokens: 1000,
+          }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('💎 Gemini response received');
+        return data.candidates[0]?.content?.parts[0]?.text;
+      }
+    } catch (error) {
+      console.log('Gemini not available, trying next option...');
+    }
+    return null;
+  }
+
+  private buildOllamaPrompt(message: string, context: any): string {
+    const projectName = context.projectId === 'portfolio' ? 'the portfolio' : 
+      context.projectId === 'pacific-heights-tower' ? 'Pacific Heights Tower' :
+      context.projectId || 'the project';
+
+    return `You are Sarah, an experienced construction project manager. You're helping with ${projectName}.
+
+User question: "${message}"
+
+Respond as Sarah would - knowledgeable, practical, and action-oriented. Keep it conversational and specific to construction project management. Mention specific actions you can take like sending Teams messages, scheduling meetings, or generating reports.`;
+  }
+
+  private buildGeminiPrompt(message: string, context: any): string {
+    const projectName = context.projectId === 'portfolio' ? 'your portfolio overview' : 
+      context.projectId === 'pacific-heights-tower' ? 'Pacific Heights Tower project' :
+      context.projectId || 'your construction project';
+
+    return `You are Sarah Mitchell, a senior construction project manager with 15+ years of experience. You're currently helping with ${projectName}.
+
+User's question: "${message}"
+
+Respond naturally as Sarah would - experienced, practical, and ready to take action. You have access to project management tools and can send Teams messages, create calendar events, generate reports, and coordinate with team members. Be specific and actionable in your response.`;
   }
 
   private buildSystemPrompt(context: any): string {

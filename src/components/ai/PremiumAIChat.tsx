@@ -357,8 +357,8 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "fixed bottom-4 right-4 w-96 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 z-50 overflow-hidden",
-          "before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-500/5 before:to-purple-500/5 before:pointer-events-none",
+          "fixed bottom-4 right-4 w-96 backdrop-blur-xl bg-background/95 rounded-2xl shadow-2xl border border-border/50 z-50 overflow-hidden",
+          "before:absolute before:inset-0 before:bg-gradient-to-br before:from-primary/5 before:to-secondary/5 before:pointer-events-none",
           isMinimized && "h-16",
           !isMinimized && "h-[600px]",
           className
@@ -530,14 +530,14 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
                         </Avatar>
                       </div>
 
-                      {/* Message Bubble */}
+                      /* Message Bubble */
                       <div className={cn(
                         "relative rounded-2xl p-4 shadow-sm backdrop-blur-sm border",
                         message.role === 'user'
-                          ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white border-blue-500/20'
-                          : 'bg-white/80 dark:bg-gray-800/80 text-gray-900 dark:text-white border-gray-200/50 dark:border-gray-700/50'
-                      )}>
-                        {/* Message content */}
+                          ? 'bg-gradient-to-br from-primary to-secondary text-primary-foreground border-primary/20'
+                          : 'bg-card text-card-foreground border-border/50'
+                      )}
+                      >
                         <div className="space-y-2">
                           <p className="text-sm leading-relaxed whitespace-pre-wrap">
                             {message.content}
@@ -626,7 +626,7 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-gray-200/50 dark:border-gray-700/50 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/50 dark:to-gray-900/50">
+            <div className="p-4 border-t border-border/50 bg-gradient-to-r from-background via-background/70 to-background">
               <div className="space-y-3">
                 {/* Main input area */}
                 <div className="flex items-end space-x-3">
