@@ -1,15 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Send, Bot, User, Brain } from 'lucide-react';
+import { Send, Bot, User, Brain, Mic, MicOff, Volume2, VolumeX, Square, Settings, Zap } from 'lucide-react';
+import { conversationalAI } from '@/services/conversationalAI';
+import { elevenLabsVoiceService } from '@/services/elevenLabsVoice';
 
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
+  audioUrl?: string;
+  toolCalls?: any[];
+  isVoiceInput?: boolean;
 }
 
 interface SimpleAIChatProps {
@@ -21,50 +26,94 @@ interface SimpleAIChatProps {
 const SimpleAIChat: React.FC<SimpleAIChatProps> = ({ 
   projectId, 
   activeView, 
-  contextData: _contextData 
+  contextData 
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  // Initialize AI services
+  useEffect(() => {
+    const initializeAI = async () => {
+      try {
+        // Get API keys from environment or use demo mode
+        const apiKeys = {
+          openai: import.meta.env.VITE_OPENAI_API_KEY,
+          elevenlabs: import.meta.env.VITE_ELEVENLABS_API_KEY,
+          anthropic: import.meta.env.VITE_ANTHROPIC_API_KEY
+        };
+
+        const initialized = await conversationalAI.initialize(apiKeys);
+        setIsInitialized(initialized);
+        
+        if (initialized) {
+          console.log('🤖 Advanced AI services initialized successfully');
+        } else {
+          console.log('📝 Running in demo mode - add API keys for full functionality');
+        }
+      } catch (error) {
+        console.error('❌ Failed to initialize AI services:', error);
+        setError('Failed to initialize AI services');
+      }
+    };
+
+    initializeAI();
+
+    // Initialize speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+      
+      recognitionRef.current.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+        setIsListening(false);
+        // Auto-send voice input
+        handleSendMessage(transcript, true);
+      };
+      
+      recognitionRef.current.onerror = () => {
+        setIsListening(false);
+        setError('Voice recognition failed. Please try again.');
+      };
+      
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+  }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const generateDemoResponse = (question: string) => {
-    const lowerQ = question.toLowerCase();
-    
-    if (lowerQ.includes('schedule') || lowerQ.includes('timeline')) {
-      return `Based on your ${projectId} project data, I can see your current schedule shows 85% completion. The critical path indicates potential delays in structural work due to weather. I recommend accelerating interior finishes while monitoring foundation curing. Would you like me to generate a detailed schedule report?`;
+  const startListening = useCallback(() => {
+    if (recognitionRef.current && !isListening) {
+      setIsListening(true);
+      setError(null);
+      recognitionRef.current.start();
     }
-    
-    if (lowerQ.includes('budget') || lowerQ.includes('cost')) {
-      return `Your project is currently 3.2% over budget ($47,000) due to recent material cost increases. I've identified potential savings through vendor renegotiation and scope optimization. The largest variance is in electrical work. Would you like me to create a budget variance report?`;
-    }
-    
-    if (lowerQ.includes('safety') || lowerQ.includes('incident')) {
-      return `Safety metrics show excellent performance with zero incidents this month and a 96% compliance rate. Recent safety training completion is at 89%. I notice some subcontractors need updated certifications. Shall I generate a safety compliance report?`;
-    }
-    
-    if (lowerQ.includes('team') || lowerQ.includes('communication')) {
-      return `Recent communication analysis shows strong coordination between trades. There are 3 pending action items requiring owner approval and 5 RFIs awaiting response. The average response time has improved by 15% this week. Would you like me to summarize pending items?`;
-    }
+  }, [isListening]);
 
-    if (lowerQ.includes('progress') || lowerQ.includes('status')) {
-      return `Current project progress is 78% complete, slightly ahead of the baseline schedule. Key milestones achieved this week include completion of HVAC rough-in and electrical panel installation. Next critical milestone is drywall completion by Friday. Overall trajectory looks positive for on-time delivery.`;
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
     }
+  }, [isListening]);
 
-    if (lowerQ.includes('weather') || lowerQ.includes('site conditions')) {
-      return `Current site conditions are favorable with clear skies and temperatures ideal for concrete work. Weather forecast shows potential rain Thursday-Friday which may impact exterior finishes. I recommend accelerating roofing work and protecting open areas. Shall I update the weather contingency plan?`;
-    }
-    
-    return `I understand you're asking about "${question}". As your AI construction assistant for ${projectId === 'portfolio' ? 'Portfolio View' : `Project ${projectId}`}, I can help with project data, schedules, budgets, safety metrics, team coordination, and site management. I can also generate reports and send notifications. What specific aspect would you like me to analyze?`;
-  };
-
-  const handleSendMessage = async () => {
-    const messageContent = input.trim();
+  const handleSendMessage = async (content?: string, isVoice = false) => {
+    const messageContent = content || input.trim();
     if (!messageContent) return;
 
     const userMessage: Message = {
@@ -72,24 +121,76 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
       role: 'user',
       content: messageContent,
       timestamp: new Date().toISOString(),
+      isVoiceInput: isVoice,
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
+    setError(null);
 
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    try {
+      console.log('🚀 Processing conversation with advanced AI...');
+      
+      const response = await conversationalAI.processConversation({
+        message: messageContent,
+        projectId,
+        context: {
+          activeView,
+          contextData,
+          timestamp: new Date().toISOString()
+        },
+        enableVoice: voiceEnabled && (isVoice || true), // Enable voice for all responses
+        priority: 'normal'
+      });
 
-    const assistantMessage: Message = {
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content: generateDemoResponse(messageContent),
-      timestamp: new Date().toISOString(),
-    };
+      if (response.success) {
+        const assistantMessage: Message = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: response.message,
+          timestamp: new Date().toISOString(),
+          audioUrl: response.audioUrl,
+          toolCalls: response.toolCalls
+        };
 
-    setMessages(prev => [...prev, assistantMessage]);
-    setIsLoading(false);
+        setMessages(prev => [...prev, assistantMessage]);
+
+        // Auto-play voice response if available
+        if (response.audioUrl && voiceEnabled) {
+          try {
+            await elevenLabsVoiceService.playAudio(response.audioUrl);
+          } catch (audioError) {
+            console.error('Audio playback failed:', audioError);
+          }
+        }
+
+        console.log('✅ Conversation processed successfully:', {
+          model: response.metadata.model,
+          tokens: response.metadata.tokens,
+          responseTime: response.metadata.responseTime,
+          toolsUsed: response.metadata.toolsUsed
+        });
+      } else {
+        throw new Error(response.error || 'Conversation processing failed');
+      }
+
+    } catch (err) {
+      console.error('❌ Conversation processing failed:', err);
+      setError(`AI processing failed: ${err.message || 'Unknown error'}`);
+      
+      // Fallback message
+      const fallbackMessage: Message = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `I apologize, but I'm having trouble processing your request right now. This might be due to API connectivity issues. Please try again in a moment, or contact support if the problem persists.\n\nIn the meantime, I can still help you with general construction management questions!`,
+        timestamp: new Date().toISOString(),
+      };
+      
+      setMessages(prev => [...prev, fallbackMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -117,7 +218,43 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
           ? 'bg-primary text-primary-foreground' 
           : 'bg-muted/50'
       }`}>
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        <div className="flex items-start justify-between gap-2">
+          <p className="text-sm whitespace-pre-wrap flex-1">{message.content}</p>
+          {message.isVoiceInput && (
+            <Badge variant="secondary" className="text-xs ml-2">
+              <Mic className="w-3 h-3 mr-1" />
+              Voice
+            </Badge>
+          )}
+        </div>
+        
+        {/* Tool Calls Indicator */}
+        {message.toolCalls && message.toolCalls.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {message.toolCalls.map((tool, index) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                <Zap className="w-3 h-3 mr-1" />
+                {tool.name.replace('get', '').replace('Construction', '').replace('Project', '')}
+              </Badge>
+            ))}
+          </div>
+        )}
+        
+        {/* Audio Playback Button */}
+        {message.audioUrl && (
+          <div className="mt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => elevenLabsVoiceService.playAudio(message.audioUrl!)}
+              className="text-xs p-1 h-6"
+            >
+              <Volume2 className="w-3 h-3 mr-1" />
+              Play Audio
+            </Button>
+          </div>
+        )}
+        
         <p className={`text-xs mt-2 opacity-70 ${
           message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
         }`}>
@@ -149,14 +286,42 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
           </div>
         </div>
         
-        <div className="flex items-center gap-2 mt-2">
-          <Badge variant="default" className="text-xs">
-            <Brain className="w-3 h-3 mr-1" />
-            AI Assistant
-          </Badge>
-          <Badge variant="secondary" className="text-xs">
-            Demo Mode
-          </Badge>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-2">
+            <Badge variant="default" className="text-xs">
+              <Brain className="w-3 h-3 mr-1" />
+              Advanced AI
+            </Badge>
+            <Badge variant={isInitialized ? "default" : "secondary"} className="text-xs">
+              {isInitialized ? '🟢 Live' : '📝 Demo'}
+            </Badge>
+            <Badge variant={voiceEnabled ? "default" : "secondary"} className="text-xs">
+              <Volume2 className="w-3 h-3 mr-1" />
+              Voice {voiceEnabled ? 'On' : 'Off'}
+            </Badge>
+          </div>
+          
+          <div className="flex items-center gap-1">
+            {elevenLabsVoiceService.isPlaying() && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => elevenLabsVoiceService.stopAudio()}
+                className="animate-pulse"
+              >
+                <Square className="w-3 h-3" />
+              </Button>
+            )}
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setVoiceEnabled(!voiceEnabled)}
+              className={voiceEnabled ? 'text-primary' : 'text-muted-foreground'}
+            >
+              {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -197,18 +362,28 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
       {/* Input */}
       <div className="border-t border-border/40 p-4">
         <div className="flex gap-2">
+          <Button
+            variant={isListening ? "destructive" : "ghost"}
+            size="sm"
+            onClick={isListening ? stopListening : startListening}
+            disabled={!recognitionRef.current || isLoading}
+            className={isListening ? 'animate-pulse' : ''}
+          >
+            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+          </Button>
+          
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Ask about your project or request assistance..."
-            disabled={isLoading}
+            placeholder={isListening ? "Listening..." : "Ask about your project or request assistance..."}
+            disabled={isLoading || isListening}
             className="flex-1"
           />
           
           <Button 
-            onClick={handleSendMessage}
-            disabled={isLoading || !input.trim()}
+            onClick={() => handleSendMessage()}
+            disabled={isLoading || !input.trim() || isListening}
             size="sm"
           >
             <Send className="w-4 h-4" />
