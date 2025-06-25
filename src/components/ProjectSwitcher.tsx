@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/popover';
 import { useProjects } from '@/hooks/useProjects';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-import CreateProjectModal from '@/components/CreateProjectModal';
 
 interface ProjectSwitcherProps {
   selectedProject: string | null;
@@ -33,7 +32,6 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
   onSettingsToggle,
 }) => {
   const [open, setOpen] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const { data: projects = [], isLoading } = useProjects();
   const { access } = useRoleBasedAccess();
 
@@ -100,13 +98,7 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
                 <>
                   <CommandSeparator />
                   <CommandGroup>
-                    <CommandItem 
-                      className="cursor-pointer"
-                      onSelect={() => {
-                        setOpen(false);
-                        setShowCreateModal(true);
-                      }}
-                    >
+                    <CommandItem className="cursor-pointer">
                       <Plus className="mr-2 h-4 w-4" />
                       Create Project
                     </CommandItem>
@@ -132,14 +124,6 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
           </Button>
         </div>
       )}
-      
-      <CreateProjectModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onSuccess={(projectId) => {
-          onProjectChange(projectId);
-        }}
-      />
     </div>
   );
 };

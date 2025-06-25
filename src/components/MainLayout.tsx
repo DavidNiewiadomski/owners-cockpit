@@ -4,9 +4,9 @@ import AppHeader from '@/components/AppHeader';
 import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
 import AIFloatingButton from '@/components/AIFloatingButton';
-import { PremiumAIChat } from '@/components/ai/PremiumAIChat';
+import AIChatOverlay from '@/components/AIChatOverlay';
 import AppModals from '@/components/AppModals';
-// import VoiceControl from '@/components/VoiceControl';
+import VoiceControl from '@/components/VoiceControl';
 import { useAppState } from '@/hooks/useAppState';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useRole } from '@/contexts/RoleContext';
@@ -64,18 +64,16 @@ const MainLayout: React.FC = () => {
       {/* AI Floating Button */}
       <AIFloatingButton onClick={appState.handleAIChat} />
 
-      {/* Premium AI Chat with Advanced Features */}
-      <PremiumAIChat 
+      {/* AI Chat Overlay */}
+      <AIChatOverlay 
         isOpen={appState.showChatOverlay}
         onClose={appState.handleCloseChatOverlay}
-        currentProjectId={appState.selectedProject || 'portfolio'}
-        availableProjects={[
-          { id: 'portfolio', name: 'Portfolio Overview', status: 'active' },
-          { id: 'pacific-heights-tower', name: 'Pacific Heights Tower', status: 'in-progress' },
-          { id: 'downtown-office-complex', name: 'Downtown Office Complex', status: 'planning' },
-          { id: 'marina-residential', name: 'Marina Residential', status: 'completed' },
-          { id: 'tech-campus-expansion', name: 'Tech Campus Expansion', status: 'in-progress' }
-        ]}
+        projectId={appState.selectedProject || 'portfolio'}
+        activeView={appState.activeView}
+        contextData={{
+          selectedProject: appState.selectedProject,
+          timestamp: new Date().toISOString()
+        }}
       />
 
       {/* Modals */}
@@ -86,14 +84,11 @@ const MainLayout: React.FC = () => {
         setShowSourceModal={appState.setShowSourceModal}
         showDocumentViewer={appState.showDocumentViewer}
         setShowDocumentViewer={appState.setShowDocumentViewer}
-        showUpload={appState.showUpload}
-        setShowUpload={appState.setShowUpload}
-        selectedProject={appState.selectedProject}
         selectedDocument={appState.selectedDocument}
         setSelectedDocument={appState.setSelectedDocument}
       />
 
-      {/* <VoiceControl /> */}
+      <VoiceControl />
     </div>
   );
 };

@@ -8,87 +8,29 @@ interface AIInsightsProps {
   projectId: string;
 }
 
-export function AIInsights({ projectId }: AIInsightsProps) {
-  // Get project-specific insights
-  const getInsights = () => {
-    const insightData: Record<string, any> = {
-      '11111111-1111-1111-1111-111111111111': {
-        summary: 'Medical Center construction shows MEP installation 12 days behind critical path, but medical equipment coordination offers parallel installation opportunity. Fire safety systems performing exceptionally with zero rework. Overall project health strong with 3.2% budget variance and excellent safety record.',
-        keyFindings: [
-          'MEP rough-in behind schedule by 12 days on critical path',
-          'Medical equipment delivery optimization potential identified', 
-          'Fire safety installation ahead of schedule with zero defects',
-          'Overall budget variance at 3.2% over planned costs'
-        ],
-        recommendations: [
-          'Add weekend MEP crew and coordinate equipment vendor parallel work',
-          'Implement consolidated equipment deliveries for 15% cost savings',
-          'Document fire safety best practices for future projects',
-          'Continue current cost control measures and monitor equipment spending'
-        ]
-      },
-      '22222222-2222-2222-2222-222222222222': {
-        summary: 'Corporate Campus steel erection affected by extended weather forecast showing 8 days of adverse conditions. Smart building systems installation progressing 15% ahead of schedule. Energy efficiency design targets being exceeded, positioning for additional LEED points.',
-        keyFindings: [
-          'Weather impact threatens steel erection schedule by 2 weeks',
-          'Smart building IoT infrastructure 15% ahead of timeline',
-          'Energy efficiency design exceeding LEED Gold targets',
-          'Site preparation completed under budget with quality performance'
-        ],
-        recommendations: [
-          'Implement weather protection or accelerate indoor preparation tasks',
-          'Leverage early IoT completion for extended testing and optimization',
-          'Document energy efficiency achievements for LEED Platinum consideration',
-          'Apply site preparation lessons learned to future campus phases'
-        ]
-      },
-      'portfolio': {
-        summary: 'Portfolio-wide analysis identifies cross-project resource optimization opportunities and material cost trend concerns. Energy efficiency targets exceeded by 18% across all projects. Steel price increases of 12% expected next quarter requiring procurement acceleration.',
-        keyFindings: [
-          'Cross-project equipment sharing could reduce costs by $125K quarterly',
-          'Steel price increases of 12% forecasted for next quarter',
-          'Portfolio energy efficiency exceeding targets by 18%',
-          'Specialized labor resources optimizable across 3 active projects'
-        ],
-        recommendations: [
-          'Implement coordinated resource scheduling across portfolio',
-          'Accelerate Q2 steel procurement to lock current pricing',
-          'Document sustainability practices for enhanced bidding position',
-          'Establish cross-project labor pool for specialized trades'
-        ]
-      }
-    };
-    
-    return insightData[projectId] || insightData.portfolio;
+export function AIInsights({ projectId: _projectId }: AIInsightsProps) {
+  const insights = {
+    summary: 'Foundation costs are 12% over budget due to unexpected soil conditions, requiring additional structural reinforcement. Electrical and plumbing work can be parallelized to recover 3-5 days from schedule. Overall project health remains good with 2 minor safety incidents and 85% productivity rate.',
+    keyFindings: [
+      'Foundation budget variance detected at 12% over planned costs',
+      'Schedule optimization opportunity identified in MEP coordination',
+      'Safety performance within acceptable parameters',
+      'Productivity metrics trending at 85% efficiency'
+    ],
+    recommendations: [
+      'Implement value engineering for remaining foundation work',
+      'Coordinate parallel MEP installation to optimize timeline',
+      'Continue current safety protocol enforcement',
+      'Monitor productivity trends for potential improvements'
+    ]
   };
 
-  const getMetrics = () => {
-    const metricsData: Record<string, any[]> = {
-      '11111111-1111-1111-1111-111111111111': [
-        { label: 'Progress', value: '68%', status: 'normal' },
-        { label: 'Budget', value: '103.2%', status: 'warning' },
-        { label: 'ROI', value: '16.8%', status: 'positive' },
-        { label: 'Risk', value: 'Medium', status: 'warning' }
-      ],
-      '22222222-2222-2222-2222-222222222222': [
-        { label: 'Progress', value: '32%', status: 'normal' },
-        { label: 'Budget', value: '98.9%', status: 'positive' },
-        { label: 'ROI', value: '14.2%', status: 'positive' },
-        { label: 'Risk', value: 'High', status: 'warning' }
-      ],
-      'portfolio': [
-        { label: 'Progress', value: '52%', status: 'normal' },
-        { label: 'Budget', value: '101.8%', status: 'warning' },
-        { label: 'ROI', value: '15.3%', status: 'positive' },
-        { label: 'Risk', value: 'Medium', status: 'normal' }
-      ]
-    };
-    
-    return metricsData[projectId] || metricsData.portfolio;
-  };
-
-  const insights = getInsights();
-  const keyMetrics = getMetrics();
+  const keyMetrics = [
+    { label: 'Progress', value: '68%', status: 'normal' },
+    { label: 'Budget', value: '112%', status: 'warning' },
+    { label: 'ROI', value: '16.8%', status: 'positive' },
+    { label: 'Risk', value: 'low', status: 'normal' }
+  ];
 
   return (
     <Card>
