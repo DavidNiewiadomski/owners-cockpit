@@ -365,11 +365,11 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center space-x-3">
             <div className="relative">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                <AvatarFallback className="bg-primary/10 text-primary">
                   <Brain className="h-4 w-4" />
                 </AvatarFallback>
               </Avatar>
@@ -378,8 +378,8 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
               )}
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Sarah Mitchell</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <h3 className="text-sm font-semibold text-foreground">Sarah Mitchell</h3>
+              <p className="text-xs text-muted-foreground">
                 Project Manager • {selectedProjects.length} project{selectedProjects.length !== 1 ? 's' : ''} active
               </p>
             </div>
@@ -417,11 +417,11 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
           <>
             {/* Settings Panel */}
             {showSettings && (
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <div className="p-4 border-b border-border bg-muted/30">
                 <div className="space-y-4">
                   {/* Project Selection */}
                   <div>
-                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    <label className="text-xs font-medium text-foreground mb-2 block">
                       Project Context
                     </label>
                     <Select 
@@ -449,7 +449,7 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
 
                   {/* Voice Settings */}
                   <div>
-                    <label className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    <label className="text-xs font-medium text-foreground mb-2 block">
                       Voice Assistant
                     </label>
                     <Select 
