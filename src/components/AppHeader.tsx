@@ -10,6 +10,7 @@ import { BarChart3, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, Dollar
 import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
+import CommunicationHub from '@/components/communications/CommunicationHub';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { useRole } from '@/contexts/RoleContext';
 
@@ -75,87 +76,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
               
-              {/* Communication Provider Icons */}
-              <div className="flex items-center gap-1 border-l border-border/40 pl-2 ml-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                      title="Email Communications"
-                    >
-                      <Mail className="h-4 w-4" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">Email Communications</h3>
-                      <p className="text-sm text-gray-600">Manage your email communications and notifications.</p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                      title="Microsoft Teams"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">Microsoft Teams</h3>
-                      <p className="text-sm text-gray-600">Connect with your team and manage project communications.</p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                      title="Slack Communications"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">Slack Integration</h3>
-                      <p className="text-sm text-gray-600">Sync with Slack channels and manage team conversations.</p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                      title="Phone Communications"
-                    >
-                      <Phone className="h-4 w-4" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80">
-                    <div className="p-4">
-                      <h3 className="font-semibold mb-2">Phone & Voice</h3>
-                      <p className="text-sm text-gray-600">Access call logs and voice communication features.</p>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+              {/* Enterprise Communication Hub */}
+              <div className="flex items-center justify-center gap-1 border-l border-border/40 pl-4 ml-4">
+                <CommunicationHub />
               </div>
               {selectedProject && access.canManageUsers && (
                 <Button 
