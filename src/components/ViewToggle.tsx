@@ -55,16 +55,8 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
                 <Box className="w-4 h-4" />
                 Model
               </Button>
-            </>
+              </>
           )}
-          <Button
-            variant={activeView === 'communications' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => onViewChange('communications')}
-            className="h-8 px-3 text-sm font-medium transition-all duration-200"
-          >
-            Communications
-          </Button>
         </div>
         {(selectedProject || activeView === 'communications') && (
           <div className="text-xs text-muted-foreground">
