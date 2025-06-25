@@ -68,9 +68,9 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className={`bg-background border border-border/50 shadow-2xl rounded-lg overflow-hidden ${
-            isMinimized ? 'w-80 h-16' : 'w-[800px] h-[600px]'
-          } transition-all duration-300`}
+          className={`bg-background border border-border/50 shadow-xl rounded-lg overflow-hidden transition-all duration-300 ${
+            isMinimized ? 'w-80 h-16' : 'w-[900px] h-[700px]'
+          }`
         >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/40 bg-muted/30">

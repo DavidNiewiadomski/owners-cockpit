@@ -387,9 +387,12 @@ ${generateIntelligentDemoResponse(messageContent, activeView, projectId)}
             <Brain className="w-5 h-5 text-primary" />
             <div>
               <h2 className="text-lg font-semibold">AI Construction Assistant</h2>
-              <p className="text-sm text-muted-foreground">
-                Context: {projectId === 'portfolio' ? 'Portfolio View' : `Project ${projectId}`} • {activeView}
-              </p>
+              <div className="text-sm text-muted-foreground">
+                <strong>Current Project: </strong>
+                <span>{projectId === 'portfolio' ? 'Portfolio View' : `Project ${projectId}`}</span>
+                <span className="mx-2">•</span>
+                <span>{activeView}</span>
+              </div>
             </div>
           </div>
           

@@ -45,21 +45,20 @@ export const useTextToSpeech = () => {
     utterance.pitch = options.pitch || 0.95; // Slightly lower pitch
     utterance.volume = options.volume || 0.9;
 
-    // Try to find the most natural voice
+    // Try to find the highest quality voice
     const availableVoices = loadVoices();
     if (options.voice) {
       utterance.voice = options.voice;
     } else {
-      // Priority order for natural-sounding voice names
+      // Priority order for highest-quality voice names
       const preferredVoiceNames = [
         'Google UK English Female',
         'Google US English',
         'Microsoft Zira - English (United States)',
         'Microsoft David - English (United States)',
-        'Alex',
-        'Samantha',
-        'Karen',
-        'Victoria'
+        'Amazon Polly Joanna',
+        'Amazon Polly Matthew',
+        'Amazon Polly Neural',
       ];
 
       // Find voices by preferred names first
@@ -75,10 +74,24 @@ export const useTextToSpeech = () => {
         );
       }
 
-      // If still no voice found, look for female voices
+      // If still no voice found, look for expressive voices
       if (!selectedVoice) {
         selectedVoice = availableVoices.find(voice => 
-          voice.name.toLowerCase().includes('female') ||
+          ['Google UK English Female', 'Samantha', 'Alex'].some(name => 
+            voice.name.includes(name)
+          )
+        );
+      }
+
+      // If still no voice found, use any English voice
+      if (!selectedVoice) {
+        selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en'));
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+    }
           voice.name.toLowerCase().includes('woman') ||
           ['Samantha', 'Alex', 'Victoria', 'Allison', 'Ava', 'Susan', 'Vicki'].some(name => 
             voice.name.includes(name)
