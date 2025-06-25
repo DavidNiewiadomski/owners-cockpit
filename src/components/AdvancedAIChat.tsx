@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useAppState } from '@/hooks/useAppState';
 import { supabase } from '@/integrations/supabase/client';
+import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 
 interface Message {
   id: string;
@@ -62,13 +63,14 @@ const AdvancedAIChat: React.FC<AdvancedAIChatProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [autoVoiceResponse, setAutoVoiceResponse] = useState(true);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // References
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Enhanced text-to-speech hook
+  const { speak, stop: stopSpeaking, isSpeaking, getBestVoice, isSupported: ttsSupported } = useTextToSpeech();
   
   // Voice setup
   useEffect(() => {
@@ -118,43 +120,11 @@ const AdvancedAIChat: React.FC<AdvancedAIChatProps> = ({
     }
   }, [isListening]);
 
-  const speak = useCallback((text: string) => {
-    if (!voiceEnabled || !('speechSynthesis' in window)) return;
-    
-    // Cancel any existing speech
-    speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    synthesisRef.current = utterance;
-    
-    // Use high-quality voice
-    const voices = speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice => 
-      voice.name.includes('Samantha') || 
-      voice.name.includes('Alex') ||
-      voice.name.includes('Google US English') ||
-      voice.name.toLowerCase().includes('neural')
-    ) || voices.find(voice => voice.lang.startsWith('en'));
-    
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-    
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.9;
-    
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    
-    speechSynthesis.speak(utterance);
-  }, [voiceEnabled]);
-
-  const stopSpeaking = useCallback(() => {
-    speechSynthesis.cancel();
-    setIsSpeaking(false);
-  }, []);
+  // Enhanced voice function using the hook
+  const speakText = useCallback((text: string) => {
+    if (!voiceEnabled || !ttsSupported) return;
+    speak(text);
+  }, [voiceEnabled, ttsSupported, speak]);
 
   const getContextualPrompt = useCallback(() => {
     const contextInfo = {
@@ -235,7 +205,7 @@ When appropriate, suggest specific actions you can take to help the user.`;
 
       // Auto voice response if user used voice or if auto-voice is enabled
       if ((isVoice && autoVoiceResponse) || (autoVoiceResponse && voiceEnabled)) {
-        speak(assistantMessage.content);
+        speakText(assistantMessage.content);
       }
 
     } catch (err) {
@@ -273,7 +243,7 @@ ${generateIntelligentDemoResponse(messageContent, activeView, projectId)}
       setMessages(prev => [...prev, assistantMessage]);
 
       if ((isVoice && autoVoiceResponse) || (autoVoiceResponse && voiceEnabled)) {
-        speak(demoResponse);
+        speakText(demoResponse);
       }
     } finally {
       setIsLoading(false);
@@ -388,10 +358,17 @@ ${generateIntelligentDemoResponse(messageContent, activeView, projectId)}
             <div>
               <h2 className="text-lg font-semibold">AI Construction Assistant</h2>
               <div className="text-sm text-muted-foreground">
-                <strong>Current Project: </strong>
-                <span>{projectId === 'portfolio' ? 'Portfolio View' : `Project ${projectId}`}</span>
-                <span className="mx-2">•</span>
-                <span>{activeView}</span>
+                <div className="flex items-center gap-2">
+                  <strong>Project:</strong>
+                  <span>{projectId === 'portfolio' ? 'Portfolio View' : `Project ${projectId}`}</span>
+                  <span className="mx-2">•</span>
+                  <span>{activeView}</span>
+                </div>
+                {ttsSupported && (
+                  <div className="text-xs text-primary mt-1">
+                    🔊 Enhanced Voice: {getBestVoice()}
+                  </div>
+                )}
               </div>
             </div>
           </div>

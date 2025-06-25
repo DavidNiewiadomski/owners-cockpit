@@ -92,22 +92,6 @@ export const useTextToSpeech = () => {
         utterance.voice = selectedVoice;
       }
     }
-          voice.name.toLowerCase().includes('woman') ||
-          ['Samantha', 'Alex', 'Victoria', 'Allison', 'Ava', 'Susan', 'Vicki'].some(name => 
-            voice.name.includes(name)
-          )
-        );
-      }
-
-      // If still no voice found, use any English voice
-      if (!selectedVoice) {
-        selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en'));
-      }
-
-      if (selectedVoice) {
-        utterance.voice = selectedVoice;
-      }
-    }
 
     utterance.onstart = () => {
       setIsSpeaking(true);

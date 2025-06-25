@@ -2,8 +2,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, MessageSquare, Minimize2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import AdvancedAIChat from '@/components/AdvancedAIChat';
+// import { motion, AnimatePresence } from 'framer-motion'; // Temporarily disabled
+import UltimateAIChat from '@/components/UltimateAIChat';
+// import TestAIChat from '@/components/TestAIChat';
 import { useAppState } from '@/hooks/useAppState';
 
 interface AIChatOverlayProps {
@@ -56,22 +57,13 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
   // Rendering overlay UI
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+      <div
+        ref={overlayRef}
+        className={`bg-background border border-border/50 shadow-xl rounded-lg overflow-hidden transition-all duration-300 ${
+          isMinimized ? 'w-80 h-16' : 'w-[900px] h-[700px]'
+        }`}
       >
-        <motion.div
-          ref={overlayRef}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className={`bg-background border border-border/50 shadow-xl rounded-lg overflow-hidden transition-all duration-300 ${
-            isMinimized ? 'w-80 h-16' : 'w-[900px] h-[700px]'
-          }`
-        >
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border/40 bg-muted/30">
             <div className="flex items-center gap-2">
@@ -103,27 +95,19 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
           </div>
 
           {/* Chat Content */}
-          <AnimatePresence>
-            {!isMinimized && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="flex-1 overflow-hidden"
-              >
-                <div className="h-[536px]">
-                  <AdvancedAIChat 
-                    projectId={projectId}
-                    activeView={activeView}
-                    contextData={contextData}
-                  />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+          {!isMinimized && (
+            <div className="flex-1 overflow-hidden">
+              <div className="h-[536px]">
+                <UltimateAIChat 
+                  projectId={projectId}
+                  activeView={activeView}
+                  contextData={contextData}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+    </div>
   );
 };
 
