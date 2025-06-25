@@ -830,5 +830,36 @@ Remember: You're their trusted project manager who gets things done, not a chatb
 }
 
 // Singleton instance
-export const premiumAI = new PremiumAIService();
-export type { AIMessage, StreamingResponse, PlatformAction };
+// Temporarily disable AI service for demo stability
+// export const premiumAI = new PremiumAIService();
+// export type { AIMessage, StreamingResponse, PlatformAction };
+
+// Mock AI service for demo
+export const premiumAI = {
+  isReady: () => false,
+  getStatus: () => 'Demo Mode - AI Disabled',
+  sendMessage: async () => ({ id: 'demo', role: 'assistant', content: 'Demo mode', timestamp: new Date().toISOString() }),
+  initializeVoiceAssistant: async () => false,
+  updateProjectContext: () => {},
+  textToSpeech: async () => new Blob(),
+};
+
+export type AIMessage = {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: string;
+  metadata?: any;
+};
+
+export type StreamingResponse = {
+  message: AIMessage;
+  isComplete: boolean;
+  delta?: string;
+};
+
+export type PlatformAction = {
+  type: string;
+  description: string;
+  parameters: any;
+};
