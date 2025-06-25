@@ -10,7 +10,6 @@ import { BarChart3, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, Dollar
 import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
-import CommunicationHub from '@/components/communications/CommunicationHub';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { useRole } from '@/contexts/RoleContext';
 
@@ -76,9 +75,47 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               </Button>
               
-              {/* Enterprise Communication Hub */}
-              <div className="flex items-center justify-center gap-1 border-l border-border/40 pl-4 ml-4">
-                <CommunicationHub />
+              {/* Communication Provider Icons */}
+              <div className="flex items-center gap-1 border-l border-border/40 pl-2 ml-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                  style={{ backgroundColor: '#0078d4', color: 'white' }}
+                  title="Microsoft Outlook"
+                >
+                  <Mail className="h-4 w-4" />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                  style={{ backgroundColor: '#6264a7', color: 'white' }}
+                  title="Microsoft Teams"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                  style={{ backgroundColor: '#2D8CFF', color: 'white' }}
+                  title="Zoom"
+                >
+                  <Video className="h-4 w-4" />
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                  style={{ backgroundColor: '#25D366', color: 'white' }}
+                  title="Phone & Text"
+                >
+                  <Phone className="h-4 w-4" />
+                </Button>
               </div>
               {selectedProject && access.canManageUsers && (
                 <Button 
