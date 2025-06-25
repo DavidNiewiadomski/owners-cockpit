@@ -7,6 +7,7 @@ import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import RoleToggle from '@/components/RoleToggle';
 import MotionWrapper from '@/components/MotionWrapper';
+import CommunicationProviderIcons from '@/components/communications/CommunicationProviderIcons';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
 interface AppHeaderProps {
@@ -44,6 +45,14 @@ const AppHeader: React.FC<AppHeaderProps> = ({
               />
             </MotionWrapper>
           </div>
+          
+          {/* Communication Provider Icons - Center */}
+          {selectedProject && (
+            <MotionWrapper animation="fadeIn" delay={0.2}>
+              <CommunicationProviderIcons projectId={selectedProject} />
+            </MotionWrapper>
+          )}
+          
           <MotionWrapper animation="fadeIn" delay={0.3}>
             <div className="flex items-center gap-2">
               <RoleToggle variant="compact" />
