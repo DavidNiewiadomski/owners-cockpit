@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Send, 
@@ -17,12 +16,12 @@ import {
   Settings,
   CheckCircle
 } from 'lucide-react';
-import { naturalAI, type NaturalResponse, type ConversationContext } from '@/services/naturalAI';
+import { naturalAI, type ConversationContext } from '@/services/naturalAI';
 
 interface NaturalAIChatProps {
   projectId: string;
   activeView: string;
-  contextData?: any;
+  contextData?: unknown;
   onClose?: () => void;
 }
 
@@ -35,7 +34,7 @@ interface ChatMessage {
   actions?: Array<{
     type: string;
     description: string;
-    data?: any;
+    data?: unknown;
   }>;
 }
 
@@ -96,7 +95,7 @@ const NaturalAIChat: React.FC<NaturalAIChatProps> = ({
 
     loadVoices();
     speechSynthesis.onvoiceschanged = loadVoices;
-  }, []);
+  }, [voiceSettings.selectedVoice]);
 
   // Initialize voice recognition
   useEffect(() => {
@@ -111,7 +110,8 @@ const NaturalAIChat: React.FC<NaturalAIChatProps> = ({
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
         setIsListening(false);
-        handleSendMessage(transcript, true);
+        // Set a flag to send the message after state updates
+        setTimeout(() => handleSendMessage(transcript, true), 100);
       };
       
       recognitionRef.current.onerror = () => {
@@ -163,7 +163,7 @@ const NaturalAIChat: React.FC<NaturalAIChatProps> = ({
         setMessages(prev => [...prev, suggestionMessage]);
       }, 1000);
     }
-  }, [projectId, activeView]);
+  }, [projectId, activeView, messages.length]);
 
   const startListening = useCallback(() => {
     if (recognitionRef.current && !isListening) {
@@ -199,12 +199,12 @@ const NaturalAIChat: React.FC<NaturalAIChatProps> = ({
     speechSynthesis.speak(utterance);
   }, [voiceSettings, availableVoices]);
 
-  const stopSpeaking = useCallback(() => {
+  const _stopSpeaking = useCallback(() => {
     speechSynthesis.cancel();
     synthRef.current = null;
   }, []);
 
-  const handleSendMessage = async (content?: string, isVoice = false) => {
+  const handleSendMessage = useCallback(async (content?: string, isVoice = false) => {
     const messageContent = content || input.trim();
     if (!messageContent || isLoading) return;
 
@@ -260,15 +260,15 @@ const NaturalAIChat: React.FC<NaturalAIChatProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [messages, input, isLoading, projectId, activeView, contextData, voiceSettings, speakText]);
 
   const handleSuggestionClick = (suggestion: string) => {
     handleSendMessage(suggestion);
   };
 
-  const executeAction = (action: any) => {
+  const executeAction = (action: { type: string; description: string; data?: { query?: string } }) => {
     console.log('Executing action:', action);
-    if (action.type === 'suggestion') {
+    if (action.type === 'suggestion' && action.data?.query) {
       handleSuggestionClick(action.data.query);
     }
     // Add more action types as needed
