@@ -35,6 +35,7 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedVoice, setSelectedVoice] = useState('sarah');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 

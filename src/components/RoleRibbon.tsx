@@ -54,59 +54,30 @@ const RoleRibbon: React.FC = () => {
   const roles = Object.keys(roleIcons) as UserRole[];
 
   return (
-    <div className="border-b border-border/30 bg-background/95 backdrop-blur-sm">
-      <div className="flex items-center justify-center px-6 py-2">
-        <div className="flex items-center gap-1 rounded-full bg-muted/30 p-1 backdrop-blur-sm border border-border/20">
-          {roles.map((role) => {
-            const config = getRoleConfig(role);
-            const Icon = roleIcons[role];
-            const isActive = currentRole === role;
-            
-            return (
-              <Button
-                key={role}
-                variant="ghost"
-                size="sm"
-                onClick={() => handleRoleSwitch(role)}
-                className={`
-                  relative gap-2 px-4 py-2 rounded-full border transition-all duration-300 hover:scale-105
-                  ${isActive 
-                    ? `${activeRoleColors[role]} shadow-lg shadow-current/20` 
-                    : `${roleColors[role]} hover:shadow-md`
-                  }
-                `}
-              >
-                <Icon className="w-4 h-4" />
-                <span className="text-sm font-medium hidden sm:inline">
-                  {config.displayName}
-                </span>
-                {isActive && (
-                  <Badge 
-                    variant="secondary" 
-                    className="ml-1 text-xs bg-white/20 text-current border-current/30"
-                  >
-                    Active
-                  </Badge>
-                )}
-                
-                {/* Glow effect for active role */}
-                {isActive && (
-                  <div className="absolute inset-0 rounded-full bg-current opacity-10 animate-pulse" />
-                )}
-              </Button>
-            );
-          })}
-        </div>
-      </div>
-      
-      {/* Current role description */}
-      <div className="px-6 pb-2">
-        <div className="text-center">
-          <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">{getRoleConfig(currentRole).displayName}:</span>{' '}
-            {getRoleConfig(currentRole).description}
-          </p>
-        </div>
+    <div className="bg-white border-b border-gray-200">
+      <div className="flex overflow-x-auto scrollbar-hide">
+        {roles.map((role) => {
+          const config = getRoleConfig(role);
+          const Icon = roleIcons[role];
+          const isActive = currentRole === role;
+          
+          return (
+            <button
+              key={role}
+              onClick={() => handleRoleSwitch(role)}
+              className={`
+                flex items-center space-x-2 px-6 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap border-b-2
+                ${isActive 
+                  ? 'text-blue-600 border-blue-600 bg-blue-50' 
+                  : 'text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300'
+                }
+              `}
+            >
+              <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600' : 'text-gray-500'}`} />
+              <span>{config.displayName}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

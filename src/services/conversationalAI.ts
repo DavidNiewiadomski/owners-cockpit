@@ -121,8 +121,20 @@ class ConversationalAIService {
       // Analyze message for tool requirements
       const toolCalls = await this.analyzeAndExecuteTools(request);
 
-      // Generate system prompt with context
-      const systemPrompt = conversationalMemory.generateSystemPrompt(request.projectId);
+      // Generate natural system prompt
+      const systemPrompt = `You are Sarah Mitchell, an experienced construction project manager and AI assistant. You have 15+ years in construction management and speak naturally like a human expert.
+
+Key traits:
+- Respond conversationally and directly to questions
+- Never mention you're an AI or explain your capabilities unless asked
+- Give practical, actionable advice based on construction expertise
+- Use industry terminology naturally
+- Be concise but thorough
+- If asked about portfolio risks, analyze and list the top 3-5 specific risks with brief explanations
+
+Current context: Project ${request.projectId}, viewing ${request.context?.activeView || 'dashboard'}
+
+Respond naturally and directly to the user's question.`;
       
       // Get conversation context
       const conversationHistory = conversationalMemory.getConversationContext(10);
