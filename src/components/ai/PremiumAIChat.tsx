@@ -205,7 +205,7 @@ export const PremiumAIChat: React.FC<PremiumAIChatProps> = ({
       const userMessage: AIMessage = {
         id: `user-${Date.now()}`,
         role: 'user',
-        content: '[Voice Message]', // Would contain transcription in real implementation
+        content: result.transcription || '[Voice Message]',
         timestamp: new Date().toISOString(),
         metadata: { isVoice: true }
       };

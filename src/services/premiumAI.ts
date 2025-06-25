@@ -436,7 +436,7 @@ Remember: You're their trusted project manager who gets things done, not a chatb
     }
   }
 
-  public async sendVoiceMessage(audioBlob: Blob, context: any): Promise<{ text: string; audioResponse: Blob }> {
+  public async sendVoiceMessage(audioBlob: Blob, context: any): Promise<{ text: string; audioResponse: Blob; transcription: string }> {
     try {
       if (!this.currentConversationId) {
         await this.startVoiceConversation();
@@ -444,6 +444,7 @@ Remember: You're their trusted project manager who gets things done, not a chatb
 
       // Step 1: Convert speech to text using Web Speech API or fallback
       const transcribedText = await this.speechToText(audioBlob);
+      console.log('🎤 Transcribed text:', transcribedText);
       
       // Step 2: Process the text through our AI service
       const aiResponse = await this.sendMessage(transcribedText, {
@@ -459,7 +460,8 @@ Remember: You're their trusted project manager who gets things done, not a chatb
       
       return {
         text: aiResponse.content,
-        audioResponse
+        audioResponse,
+        transcription: transcribedText
       };
       
     } catch (error) {
