@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import AppHeader from '@/components/AppHeader';
+import RoleRibbon from '@/components/RoleRibbon';
 import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
 import AIFloatingButton from '@/components/AIFloatingButton';
@@ -46,6 +47,8 @@ const MainLayout: React.FC = () => {
         onSettingsToggle={() => appState.setShowSettings(!appState.showSettings)}
         onHeroExit={handleHeroExit}
       />
+
+      <RoleRibbon />
 
       <ViewToggle
         activeView={appState.activeView}

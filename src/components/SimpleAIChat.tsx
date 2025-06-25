@@ -46,7 +46,7 @@ const SimpleAIChat: React.FC<SimpleAIChatProps> = ({
         const apiKeys = {
           openai: import.meta.env.VITE_OPENAI_API_KEY,
           elevenlabs: import.meta.env.VITE_ELEVENLABS_API_KEY,
-          anthropic: import.meta.env.VITE_ANTHROPIC_API_KEY
+          gemini: import.meta.env.VITE_GEMINI_API_KEY
         };
 
         const initialized = await conversationalAI.initialize(apiKeys);

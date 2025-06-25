@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Settings, Plus, FolderOpen, Users } from 'lucide-react';
 import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
-import RoleToggle from '@/components/RoleToggle';
 import MotionWrapper from '@/components/MotionWrapper';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 
@@ -46,7 +45,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({
           </div>
           <MotionWrapper animation="fadeIn" delay={0.3}>
             <div className="flex items-center gap-2">
-              <RoleToggle variant="compact" />
               <Button
                 variant="ghost"
                 size="icon"

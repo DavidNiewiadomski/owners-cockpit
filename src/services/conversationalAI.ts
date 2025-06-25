@@ -1,11 +1,11 @@
 import OpenAI from 'openai';
-import { Anthropic } from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { conversationalMemory } from './conversationalMemory';
 import { toolRegistry } from './toolRegistry';
 import { elevenLabsVoiceService } from './elevenLabsVoice';
 
 export interface AIConfig {
-  provider: 'openai' | 'anthropic' | 'hybrid';
+  provider: 'openai' | 'gemini' | 'hybrid';
   model: string;
   temperature: number;
   maxTokens: number;
@@ -40,7 +40,7 @@ export interface ConversationResponse {
 
 class ConversationalAIService {
   private openai: OpenAI | null = null;
-  private anthropic: Anthropic | null = null;
+  private gemini: GoogleGenerativeAI | null = null;
   private isInitialized = false;
   private config: AIConfig;
 
@@ -58,7 +58,7 @@ class ConversationalAIService {
 
   async initialize(apiKeys: {
     openai?: string;
-    anthropic?: string;
+    gemini?: string;
     elevenlabs?: string;
   }): Promise<boolean> {
     try {
@@ -68,23 +68,29 @@ class ConversationalAIService {
           apiKey: apiKeys.openai,
           dangerouslyAllowBrowser: true
         });
+        console.log('✅ OpenAI initialized');
       }
 
-      // Initialize Anthropic
-      if (apiKeys.anthropic) {
-        this.anthropic = new Anthropic({
-          apiKey: apiKeys.anthropic,
-          // Note: Anthropic may not work in browser, this is for server-side
-        });
+      // Initialize Gemini (Better browser support than Anthropic)
+      if (apiKeys.gemini) {
+        try {
+          this.gemini = new GoogleGenerativeAI(apiKeys.gemini);
+          console.log('✅ Gemini initialized');
+        } catch (error) {
+          console.warn('❌ Gemini initialization failed:', error);
+        }
       }
 
       // Initialize ElevenLabs
       if (apiKeys.elevenlabs) {
-        await elevenLabsVoiceService.initialize(apiKeys.elevenlabs);
+        const voiceInitialized = await elevenLabsVoiceService.initialize(apiKeys.elevenlabs);
+        if (voiceInitialized) {
+          console.log('✅ ElevenLabs voice service initialized');
+        }
       }
 
       this.isInitialized = true;
-      console.log('🤖 Conversational AI Service initialized');
+      console.log('🤖 Conversational AI Service initialized successfully');
       return true;
     } catch (error) {
       console.error('❌ Failed to initialize AI services:', error);
@@ -484,12 +490,12 @@ I'm here to help you stay on top of every aspect of your construction project!`;
   }
 
   isReady(): boolean {
-    return this.isInitialized && (!!this.openai || !!this.anthropic);
+    return this.isInitialized && (!!this.openai || !!this.gemini);
   }
 
   dispose(): void {
     this.openai = null;
-    this.anthropic = null;
+    this.gemini = null;
     this.isInitialized = false;
     elevenLabsVoiceService.dispose();
   }
