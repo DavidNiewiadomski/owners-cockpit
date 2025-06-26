@@ -128,23 +128,23 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+    <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-semibold text-white">
             {title}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-slate-400 mt-1">
             {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             <DollarSign className="w-4 h-4 mr-2" />
             ${(project.financial.totalBudget / 1000000).toFixed(1)}M Budget
           </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             {project.financial.roi.toFixed(1)}% ROI
           </Badge>
         </div>
