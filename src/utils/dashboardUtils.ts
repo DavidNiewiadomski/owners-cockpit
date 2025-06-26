@@ -5,25 +5,12 @@ export interface DashboardTitleInfo {
   subtitle: string;
 }
 
-export const getDashboardTitle = (category: string, projectId: string): DashboardTitleInfo => {
-  // Determine if we're in portfolio or project view
-  const isPortfolio = projectId === 'portfolio';
+export const getDashboardTitle = (category: string, projectName?: string): DashboardTitleInfo => {
+  // Always show "[Tab Name] Dashboard" as the main title
+  const title = `${category} Dashboard`;
   
-  // Get project name if not portfolio
-  const projectName = isPortfolio ? null : luxuryOfficeProject.name;
-  const projectDescription = isPortfolio ? null : luxuryOfficeProject.description;
-  
-  // Generate title based on category
-  let title: string;
-  let subtitle: string;
-  
-  if (isPortfolio) {
-    title = `Portfolio ${category}`;
-    subtitle = 'All Projects • Portfolio Management & Analytics';
-  } else {
-    title = `${category} Dashboard`;
-    subtitle = `${projectName} • ${projectDescription}`;
-  }
+  // Subtitle shows either Portfolio Overview or selected project name
+  const subtitle = projectName || 'Portfolio Overview';
   
   return { title, subtitle };
 };

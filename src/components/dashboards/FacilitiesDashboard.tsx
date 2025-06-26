@@ -7,6 +7,7 @@ import { Building, Wrench, Zap } from 'lucide-react';
 import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 import WorkOrders from '@/widgets/components/WorkOrders';
 import EnergyUsage from '@/widgets/components/EnergyUsage';
 
@@ -18,7 +19,13 @@ interface FacilitiesDashboardProps {
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
   const projectData = generateFacilitiesDemoData();
-  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">

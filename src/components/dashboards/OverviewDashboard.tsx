@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface OverviewDashboardProps {
   projectId: string;
@@ -27,7 +28,13 @@ interface OverviewDashboardProps {
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
-  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
   // Calculate key metrics
   const budgetUsed = (project.financial.spentToDate / project.financial.totalBudget) * 100;

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface DesignDashboardProps {
   projectId: string;
@@ -29,7 +30,13 @@ interface DesignDashboardProps {
 
 const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
-  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
   // Design-specific data
   const designPhases = [

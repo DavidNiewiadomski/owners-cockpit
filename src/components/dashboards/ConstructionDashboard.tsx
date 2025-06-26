@@ -41,6 +41,7 @@ import {
 } from 'recharts';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface ConstructionDashboardProps {
   projectId: string;
@@ -49,7 +50,13 @@ interface ConstructionDashboardProps {
 
 const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
-  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
   // Enhanced construction metrics
   const constructionMetrics = {

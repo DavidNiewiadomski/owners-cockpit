@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Scale, Shield, FileText } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface LegalDashboardProps {
   projectId: string;
@@ -15,7 +16,13 @@ interface LegalDashboardProps {
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
-  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
   const projectData = generateLegalDemoData();
 
   return (
