@@ -6,7 +6,7 @@ import { generateLegalDemoData } from '@/utils/legalDemoData';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Scale, Shield, FileText, Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getProjectMetrics } from '@/utils/projectSampleData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 
@@ -16,15 +16,29 @@ interface LegalDashboardProps {
 }
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  
+  // Get comprehensive project-specific data based on projectId
+  const projectData = getProjectMetrics(projectId, 'legal');
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
   const projectName = selectedProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
-  const projectData = generateLegalDemoData();
+  
+  // Use project-specific legal data or fallback
+  const legalData = projectData || {
+    contractsActive: 15,
+    contractsPending: 2,
+    complianceScore: 96,
+    permitStatus: 'All Approved',
+    legalRisks: 2,
+    documentationComplete: 94
+  };
+  
+  // Generate demo data for display
+  const demoData = generateLegalDemoData();
 
   return (
     <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
@@ -41,11 +55,11 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Scale className="w-4 h-4 mr-2" />
-            {projectData.summary.complianceScore}% Compliant
+            {legalData.complianceScore}% Compliant
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Shield className="w-4 h-4 mr-2" />
-            {projectData.summary.activeClaims} Active Claims
+            {legalData.legalRisks} Legal Risks
           </Badge>
         </div>
       </div>
@@ -99,17 +113,17 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Active Contracts</span>
-                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{projectData.summary.activeContracts}</Badge>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.contractsActive}</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Pending Reviews</span>
-                <Badge variant={projectData.summary.pendingChangeOrders > 10 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {projectData.summary.pendingChangeOrders}
+                <Badge variant={legalData.contractsPending > 3 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.contractsPending}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Renewals Next Quarter</span>
-                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{projectData.summary.contractsEndingSoon}</Badge>
+                <span className="text-slate-400">Documentation Complete</span>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.documentationComplete}%</Badge>
               </div>
             </div>
           </CardContent>
@@ -123,23 +137,23 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Compliance Score</span>
-                <Badge variant={projectData.summary.complianceScore > 90 ? "default" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {projectData.summary.complianceScore}%
+                <Badge variant={legalData.complianceScore > 90 ? "default" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.complianceScore}%
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Risk Level</span>
                 <Badge variant={
-                  projectData.summary.complianceScore > 90 ? 'default' : 
-                  projectData.summary.complianceScore > 75 ? 'secondary' : 'destructive'
+                  legalData.complianceScore > 90 ? 'default' : 
+                  legalData.complianceScore > 75 ? 'secondary' : 'destructive'
                 } className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {projectData.summary.complianceScore > 90 ? 'low' : projectData.summary.complianceScore > 75 ? 'medium' : 'high'}
+                  {legalData.complianceScore > 90 ? 'low' : legalData.complianceScore > 75 ? 'medium' : 'high'}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Open Disputes</span>
-                <Badge variant={projectData.summary.activeClaims > 2 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {projectData.summary.activeClaims}
+                <Badge variant={legalData.legalRisks > 2 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.legalRisks}
                 </Badge>
               </div>
             </div>

@@ -17,7 +17,7 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getProjectMetrics } from '@/utils/projectSampleData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 
@@ -27,8 +27,10 @@ interface FinanceDashboardProps {
 }
 
 const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  
+  // Get comprehensive project-specific data based on projectId
+  const projectData = getProjectMetrics(projectId, 'finance');
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -36,11 +38,33 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
+  // Use project-specific financial data or fallback
+  const financialData = projectData || {
+    totalBudget: 52000000,
+    spentToDate: 35400000,
+    forecastedCost: 51200000,
+    contingencyUsed: 1200000,
+    contingencyRemaining: 1400000,
+    roi: 16.8,
+    npv: 8500000,
+    costPerSqft: 347,
+    marketValue: 68000000,
+    monthlySpend: [
+      { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
+      { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
+      { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
+      { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
+      { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
+      { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
+    ]
+  };
+  
   // Financial metrics calculations
-  const budgetUtilization = (project.financial.spentToDate / project.financial.totalBudget) * 100;
-  const contingencyUsed = (project.financial.contingencyUsed / project.financial.contingencyTotal) * 100;
-  const forecastVariance = project.financial.forecastedCost - project.financial.totalBudget;
-  const variancePercent = (forecastVariance / project.financial.totalBudget) * 100;
+  const budgetUtilization = (financialData.spentToDate / financialData.totalBudget) * 100;
+  const contingencyTotal = (financialData.contingencyUsed + financialData.contingencyRemaining);
+  const contingencyUsed = contingencyTotal > 0 ? (financialData.contingencyUsed / contingencyTotal) * 100 : 0;
+  const forecastVariance = financialData.forecastedCost - financialData.totalBudget;
+  const variancePercent = (forecastVariance / financialData.totalBudget) * 100;
 
   // Cost breakdown by category
   const costBreakdown = [
@@ -142,10 +166,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <DollarSign className="w-4 h-4 mr-2" />
-            ${(project.financial.totalBudget / 1000000).toFixed(1)}M Budget
+            ${(financialData.totalBudget / 1000000).toFixed(1)}M Budget
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
-            {project.financial.roi.toFixed(1)}% ROI
+            {(financialData.roi || 16.8).toFixed(1)}% ROI
           </Badge>
         </div>
       </div>
@@ -169,7 +193,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               <div className="text-sm text-slate-400">Budget Used</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{project.financial.roi.toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-white">{(financialData.roi || 16.8).toFixed(1)}%</div>
               <div className="text-sm text-slate-400">ROI</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
@@ -185,7 +209,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           {/* Summary */}
           <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
-              Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {project.financial.roi.toFixed(1)}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
+              Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {(financialData.roi || 16.8).toFixed(1)}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
             </p>
           </div>
           
@@ -197,9 +221,9 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
                 <span className="text-sm font-medium text-white">Key Insights</span>
               </div>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li>• Budget tracking at {budgetUtilization.toFixed(1)}% with ${(project.financial.spentToDate / 1000000).toFixed(1)}M of ${(project.financial.totalBudget / 1000000).toFixed(1)}M spent</li>
+                <li>• Budget tracking at {budgetUtilization.toFixed(1)}% with ${(financialData.spentToDate / 1000000).toFixed(1)}M of ${(financialData.totalBudget / 1000000).toFixed(1)}M spent</li>
                 <li>• Financial variance {variancePercent > 0 ? 'above' : 'below'} forecast by {Math.abs(variancePercent).toFixed(1)}%</li>
-                <li>• Strong ROI projection at {project.financial.roi.toFixed(1)}% vs market average 12-15%</li>
+                <li>• Strong ROI projection at {(financialData.roi || 16.8).toFixed(1)}% vs market average 12-15%</li>
                 <li>• Contingency reserves healthy at {contingencyUsed.toFixed(1)}% utilization</li>
               </ul>
             </div>
@@ -274,10 +298,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ${(project.financial.totalBudget / 1000000).toFixed(1)}M
+              ${(financialData.totalBudget / 1000000).toFixed(1)}M
             </div>
             <div className="text-xs text-slate-400">
-              ${(project.financial.spentToDate / 1000000).toFixed(1)}M spent ({budgetUtilization.toFixed(1)}%)
+              ${(financialData.spentToDate / 1000000).toFixed(1)}M spent ({budgetUtilization.toFixed(1)}%)
             </div>
             <Progress value={budgetUtilization} className="mt-2" />
           </CardContent>
@@ -290,7 +314,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ${(project.financial.forecastedCost / 1000000).toFixed(1)}M
+              ${(financialData.forecastedCost / 1000000).toFixed(1)}M
             </div>
             <div className={`text-xs mt-1 ${variancePercent > 0 ? 'text-red-400' : 'text-green-400'}`}>
               {variancePercent > 0 ? '+' : ''}${(forecastVariance / 1000).toFixed(0)}K variance
@@ -308,13 +332,13 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-400">
-              ${(project.financial.marketValue / 1000000).toFixed(1)}M
+              ${(financialData.marketValue / 1000000).toFixed(1)}M
             </div>
             <div className="text-xs text-green-400 mt-1">
-              +${((project.financial.marketValue - project.financial.totalBudget) / 1000000).toFixed(1)}M gain
+              +${((financialData.marketValue - financialData.totalBudget) / 1000000).toFixed(1)}M gain
             </div>
             <div className="text-xs text-slate-400">
-              {((project.financial.marketValue / project.financial.totalBudget - 1) * 100).toFixed(1)}% appreciation
+              {((financialData.marketValue / financialData.totalBudget - 1) * 100).toFixed(1)}% appreciation
             </div>
           </CardContent>
         </Card>
@@ -329,7 +353,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               {contingencyUsed.toFixed(1)}%
             </div>
             <div className="text-xs text-slate-400">
-              ${(project.financial.contingencyRemaining / 1000).toFixed(0)}K remaining
+              ${(financialData.contingencyRemaining / 1000).toFixed(0)}K remaining
             </div>
             <Progress value={contingencyUsed} className="mt-2" />
           </CardContent>
@@ -458,25 +482,25 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Net Present Value</div>
                 <div className="text-xl font-bold text-green-400">
-                  ${(project.financial.npv / 1000000).toFixed(1)}M
+                  ${(financialData.npv / 1000000).toFixed(1)}M
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Internal Rate of Return</div>
                 <div className="text-xl font-bold text-green-400">
-                  {project.financial.irr}%
+                  {(financialData.roi || 16.8).toFixed(1)}%
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Cost per Sq Ft</div>
                 <div className="text-lg font-semibold text-white">
-                  ${project.financial.costPerSqft}
+                  ${financialData.costPerSqft}
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">10-Year Projection</div>
                 <div className="text-lg font-semibold text-green-400">
-                  ${(project.financial.leasingProjections / 1000000).toFixed(1)}M
+                  ${(financialData.marketValue / 1000000).toFixed(1)}M
                 </div>
               </div>
             </div>
@@ -484,12 +508,12 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             <div className="pt-4 border-t border-slate-700">
               <div className="text-sm text-slate-400 mb-2">Pre-Leasing Revenue</div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm text-white">Current: {project.leasing.preLeasingRate.toFixed(1)}%</span>
-                <span className="text-sm text-white">Target: {project.leasing.targetOccupancy}%</span>
+                <span className="text-sm text-white">Current: 29.8%</span>
+                <span className="text-sm text-white">Target: 95%</span>
               </div>
-              <Progress value={project.leasing.preLeasingRate} className="h-2" />
+              <Progress value={29.8} className="h-2" />
               <div className="text-xs text-slate-400 mt-1">
-                ${(project.leasing.preLeasedSpace * project.leasing.averageRent / 1000000).toFixed(1)}M annual revenue secured
+                $6.0M annual revenue secured
               </div>
             </div>
           </CardContent>
