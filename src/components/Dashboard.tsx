@@ -19,21 +19,21 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { currentRole } = useRole();
   const [activeCategory, setActiveCategory] = useState<string>('Overview');
   
-  // Listen for changes to sessionStorage activeCategory
+  // Initialize activeCategory from sessionStorage and listen for changes
   useEffect(() => {
+    // Only initialize from sessionStorage or use fallback on first load
     const getActiveCategory = () => {
-      // Check if there's a stored active category in sessionStorage
       const storedCategory = sessionStorage.getItem('activeCategory');
       if (storedCategory) {
         return storedCategory;
       }
       
-      // Fallback to role-based mapping
+      // Fallback to role-based mapping ONLY on initial load
       switch (currentRole) {
         case 'Executive':
           return 'Overview';
         case 'Preconstruction':
-          return 'Preconstruction'; // Default to Preconstruction, but could be Design
+          return 'Preconstruction';
         case 'Construction':
           return 'Construction';
         case 'Sustainability':
@@ -49,8 +49,8 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
       }
     };
     
-    const newActiveCategory = getActiveCategory();
-    setActiveCategory(newActiveCategory);
+    const initialCategory = getActiveCategory();
+    setActiveCategory(initialCategory);
     
     // Listen for storage events to react to tab changes
     const handleStorageChange = (e: StorageEvent) => {
@@ -73,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('activeCategoryChange', handleCustomStorageChange as EventListener);
     };
-  }, [currentRole]);
+  }, []); // Remove currentRole dependency to prevent reset on role changes
   
   // Debug logging
   console.log('Dashboard: currentRole =', currentRole);

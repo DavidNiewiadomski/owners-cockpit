@@ -317,15 +317,24 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   key={category}
                   onClick={() => {
                     const targetRole = categoryToRoleMap[category] || category;
+                    console.log('===== TAB CLICK START =====');
                     console.log('AppHeader: Clicking category:', category, 'mapping to role:', targetRole);
+                    console.log('AppHeader: Current activeCategory before change:', activeCategory);
+                    console.log('AppHeader: Current sessionStorage before change:', sessionStorage.getItem('activeCategory'));
+                    
                     setActiveCategory(category);
                     sessionStorage.setItem('activeCategory', category);
                     
+                    console.log('AppHeader: Updated activeCategory to:', category);
+                    console.log('AppHeader: Updated sessionStorage to:', sessionStorage.getItem('activeCategory'));
+                    
                     // Dispatch custom event for immediate Dashboard update
                     window.dispatchEvent(new CustomEvent('activeCategoryChange', { detail: category }));
+                    console.log('AppHeader: Dispatched activeCategoryChange event with detail:', category);
                     
-                    console.log('AppHeader: Stored activeCategory in sessionStorage and dispatched event:', category);
+                    console.log('AppHeader: About to call switchRole with:', targetRole);
                     switchRole(targetRole as any);
+                    console.log('===== TAB CLICK END =====');
                   }}
                   className={`
                     flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap relative
