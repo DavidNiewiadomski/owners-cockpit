@@ -17,9 +17,17 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
-import { getProjectMetrics } from '@/supabase/functions/getMetrics';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { 
+  useFinancialMetrics, 
+  useMonthlySpend, 
+  useCashFlow, 
+  useCostBreakdown, 
+  useTransactions,
+  useProjectInsights,
+  useProjectTeam
+} from '@/hooks/useProjectMetrics';
 
 interface FinanceDashboardProps {
   projectId: string;
@@ -29,8 +37,14 @@ interface FinanceDashboardProps {
 const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
   
-  // Get comprehensive project-specific data based on projectId
-  const projectData = getProjectMetrics(projectId, 'finance');
+  // Fetch all project data from Supabase
+  const { data: financialMetrics, isLoading: loadingFinancial } = useFinancialMetrics(projectId);
+  const { data: monthlySpend, isLoading: loadingMonthlySpend } = useMonthlySpend(projectId);
+  const { data: cashFlow, isLoading: loadingCashFlow } = useCashFlow(projectId);
+  const { data: costBreakdown, isLoading: loadingCostBreakdown } = useCostBreakdown(projectId);
+  const { data: transactions, isLoading: loadingTransactions } = useTransactions(projectId);
+  const { data: insights, isLoading: loadingInsights } = useProjectInsights(projectId);
+  const { data: team, isLoading: loadingTeam } = useProjectTeam(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -38,26 +52,38 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
-  // Use project-specific financial data or fallback
-  const financialData = projectData || {
-    totalBudget: 52000000,
-    spentToDate: 35400000,
-    forecastedCost: 51200000,
-    contingencyUsed: 1200000,
-    contingencyRemaining: 1400000,
-    roi: 16.8,
-    npv: 8500000,
-    costPerSqft: 347,
-    marketValue: 68000000,
-    monthlySpend: [
-      { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
-      { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
-      { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
-      { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
-      { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
-      { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
-    ]
-  };
+  // Show loading state if any data is still loading
+  const isLoading = loadingFinancial || loadingMonthlySpend || loadingCashFlow || loadingCostBreakdown || loadingTransactions || loadingInsights || loadingTeam;
+  
+  // Use fetched data or null if not available
+  const financialData = financialMetrics ? {
+    totalBudget: financialMetrics.total_budget,
+    spentToDate: financialMetrics.spent_to_date,
+    forecastedCost: financialMetrics.forecasted_cost,
+    contingencyUsed: financialMetrics.contingency_used,
+    contingencyRemaining: financialMetrics.contingency_remaining,
+    roi: financialMetrics.roi,
+    npv: financialMetrics.npv,
+    costPerSqft: financialMetrics.cost_per_sqft,
+    marketValue: financialMetrics.market_value,
+  } : null;
+  
+  // Return early if no data available
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-white text-lg">Loading project data...</div>
+      </div>
+    );
+  }
+  
+  if (!financialData) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-slate-400 text-lg">No financial data available for this project.</div>
+      </div>
+    );
+  }
   
   // Financial metrics calculations
   const budgetUtilization = (financialData.spentToDate / financialData.totalBudget) * 100;
@@ -66,78 +92,46 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
   const forecastVariance = financialData.forecastedCost - financialData.totalBudget;
   const variancePercent = (forecastVariance / financialData.totalBudget) * 100;
 
-  // Cost breakdown by category
-  const costBreakdown = [
-    { category: 'Construction', amount: 18500000, percentage: 77.1, color: 'bg-blue-500' },
-    { category: 'Architecture/Engineering', amount: 2050000, percentage: 8.5, color: 'bg-green-500' },
-    { category: 'Site Work', amount: 1200000, percentage: 5.0, color: 'bg-yellow-500' },
-    { category: 'Permits & Fees', amount: 850000, percentage: 3.5, color: 'bg-purple-500' },
-    { category: 'Other/Contingency', amount: 1400000, percentage: 5.9, color: 'bg-slate-500' }
-  ];
+  // Cost breakdown by category with color mapping
+  const colorMap = {
+    'Construction': 'bg-blue-500',
+    'Architecture/Engineering': 'bg-green-500', 
+    'Site Work': 'bg-yellow-500',
+    'Permits & Fees': 'bg-purple-500',
+    'Structural Work': 'bg-blue-600',
+    'Engineering': 'bg-green-600',
+    'Traffic Management': 'bg-orange-500',
+    'Materials': 'bg-cyan-500',
+    'Other/Contingency': 'bg-slate-500',
+    'default': 'bg-gray-500'
+  };
+  
+  const costBreakdownData = costBreakdown?.map(item => ({
+    category: item.category,
+    amount: item.amount,
+    percentage: item.percentage,
+    color: colorMap[item.category] || colorMap.default
+  })) || [];
 
-  // Recent financial transactions
-  const recentTransactions = [
-    {
-      id: 1,
-      date: '2024-06-20',
-      description: 'Steel Supplier Payment - Floors 7-9',
-      vendor: 'Metropolitan Steel Supply',
-      amount: -89450,
-      category: 'Materials',
-      status: 'paid',
-      invoiceNumber: 'MS-2024-0456'
-    },
-    {
-      id: 2,
-      date: '2024-06-18',
-      description: 'Pre-leasing Commission - TechCorp',
-      vendor: 'Elite Leasing Group',
-      amount: -52000,
-      category: 'Leasing',
-      status: 'paid',
-      invoiceNumber: 'ELG-2024-0234'
-    },
-    {
-      id: 3,
-      date: '2024-06-15',
-      description: 'Monthly Progress Payment - GC',
-      vendor: 'Premium Builders Inc.',
-      amount: -1850000,
-      category: 'Construction',
-      status: 'paid',
-      invoiceNumber: 'PB-2024-0567'
-    },
-    {
-      id: 4,
-      date: '2024-06-15',
-      description: 'Tenant Deposit - Global Finance Partners',
-      vendor: 'Global Finance Partners',
-      amount: 137500,
-      category: 'Pre-leasing',
-      status: 'received',
-      invoiceNumber: 'DEP-2024-0123'
-    },
-    {
-      id: 5,
-      date: '2024-06-12',
-      description: 'Insurance Premium - Q2',
-      vendor: 'Metropolitan Insurance Corp',
-      amount: -71250,
-      category: 'Insurance',
-      status: 'paid',
-      invoiceNumber: 'MIC-2024-0789'
-    }
-  ];
+  // Use fetched transactions or default to empty array
+  const recentTransactions = transactions?.slice(0, 5).map(transaction => ({
+    id: transaction.id,
+    date: transaction.transaction_date,
+    description: transaction.description,
+    vendor: transaction.vendor,
+    amount: transaction.amount,
+    category: transaction.category,
+    status: transaction.status,
+    invoiceNumber: `INV-${transaction.id}` // Generate invoice number from ID
+  })) || [];
 
-  // Budget vs Actual by month
-  const monthlyBudgetData = [
-    { month: 'Jan', budgeted: 1200000, actual: 1185000, variance: -15000 },
-    { month: 'Feb', budgeted: 1450000, actual: 1465000, variance: 15000 },
-    { month: 'Mar', budgeted: 1680000, actual: 1675000, variance: -5000 },
-    { month: 'Apr', budgeted: 1520000, actual: 1545000, variance: 25000 },
-    { month: 'May', budgeted: 1750000, actual: 1780000, variance: 30000 },
-    { month: 'Jun', budgeted: 600000, actual: 550000, variance: -50000 }
-  ];
+  // Budget vs Actual by month using fetched data
+  const monthlyBudgetData = monthlySpend?.map(item => ({
+    month: item.month,
+    budgeted: item.budget,
+    actual: item.actual,
+    variance: item.actual - item.budget
+  })) || [];
 
   const getTrendIcon = (variance: number) => {
     if (variance > 0) return <TrendingUp className="h-4 w-4 text-red-500" />;
@@ -371,7 +365,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {costBreakdown.map((item, index) => (
+            {costBreakdownData.map((item, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-white">{item.category}</span>
