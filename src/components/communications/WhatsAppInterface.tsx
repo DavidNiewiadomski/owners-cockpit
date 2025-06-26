@@ -28,9 +28,9 @@ const WhatsAppInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[600px] bg-background border rounded-lg overflow-hidden">
+    <div className="flex h-[600px] bg-background rounded-lg overflow-hidden border border-border/40">
       {/* Sidebar */}
-      <div className="w-80 bg-[#25D366] text-white flex flex-col">
+      <div className="w-80 bg-[#25D366] text-white flex flex-col border-r border-border/20">
         <div className="p-4 border-b border-green-600">
           <div className="flex items-center gap-2 mb-4">
             <Phone className="h-6 w-6" />
@@ -179,7 +179,7 @@ const WhatsAppInterface: React.FC = () => {
             </div>
 
             {/* Message Input */}
-            <div className="p-4 border-t border-border bg-white">
+            <div className="p-4 border-t border-border bg-background/50 backdrop-blur-sm">
               <div className="flex items-center gap-2">
                 <Button variant="ghost" size="icon" className="text-gray-500">
                   <Paperclip className="h-4 w-4" />

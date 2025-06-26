@@ -95,9 +95,9 @@ const OutlookInterface: React.FC = () => {
   );
 
   return (
-    <div className="flex h-[600px] bg-background border rounded-lg overflow-hidden">
+    <div className="flex h-[600px] bg-background rounded-lg overflow-hidden border border-border/40">
       {/* Sidebar */}
-      <div className="w-64 bg-[#0078d4] text-white flex flex-col">
+      <div className="w-64 bg-[#0078d4] text-white flex flex-col border-r border-border/20">
         <div className="p-4 border-b border-blue-600">
           <div className="flex items-center gap-2 mb-4">
             <Mail className="h-6 w-6" />
