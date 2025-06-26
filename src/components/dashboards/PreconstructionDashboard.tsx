@@ -131,59 +131,59 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-indigo-950 dark:via-blue-950 dark:to-cyan-950 p-6 space-y-8">
+    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
             Preconstruction Dashboard
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             {project.name} • Planning, Bidding & Design Development
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 px-4 py-2 text-sm">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             <ClipboardList className="w-4 h-4 mr-2" />
             {preconstructionMetrics.designProgress}% Design Complete
           </Badge>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 px-4 py-2 text-sm">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             {preconstructionMetrics.permitsApproved}/{preconstructionMetrics.totalPermits} Permits
           </Badge>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Calculator className="h-6 w-6 text-green-600" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Calculator className="h-5 w-5 text-gray-600 dark:text-gray-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700">
+            <Button className="justify-start bg-blue-600 hover:bg-blue-700 text-white">
               <DollarSign className="w-4 h-4 mr-2" />
               Update Budget
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <FileText className="w-4 h-4 mr-2" />
               Submit Permit
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Gavel className="w-4 h-4 mr-2" />
               Review Bids
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Calendar className="w-4 h-4 mr-2" />
               Update Schedule
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Users className="w-4 h-4 mr-2" />
               Contractor Meeting
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Target className="w-4 h-4 mr-2" />
               Risk Assessment
             </Button>

@@ -231,12 +231,12 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Energy Consumption Trends */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Zap className="h-6 w-6 text-yellow-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Zap className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Energy Consumption Trends
             </CardTitle>
           </CardHeader>
@@ -284,10 +284,10 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Carbon Footprint */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <TreePine className="h-6 w-6 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <TreePine className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Carbon Footprint Tracking
             </CardTitle>
           </CardHeader>
@@ -341,12 +341,12 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </div>
 
       {/* LEED Categories and Water Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* LEED Categories Progress */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Award className="h-6 w-6 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Award className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               LEED Certification Progress
             </CardTitle>
           </CardHeader>
@@ -355,13 +355,13 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
               {leedCategories.map((category, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-sm">{category.category}</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                    <span className="font-medium text-sm text-gray-900 dark:text-white">{category.category}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {category.earned}/{category.available} points
                     </span>
                   </div>
-                  <Progress value={category.percentage} className="h-3" />
-                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                  <Progress value={category.percentage} className="h-2" />
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
                     {category.percentage}% complete
                   </div>
                 </div>
@@ -371,31 +371,31 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Water Usage Breakdown */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Droplets className="h-6 w-6 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Droplets className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Water Usage Optimization
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {waterUsage.map((usage, index) => (
-                <div key={index} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                <div key={index} className="p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{usage.category}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{usage.category}</span>
                     <Badge className="bg-blue-100 text-blue-700 border-blue-200">
                       -{usage.reduction}%
                     </Badge>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Current:</span>
-                      <span className="font-medium ml-2">{usage.current.toLocaleString()} gal/month</span>
+                      <span className="text-gray-600 dark:text-gray-400">Current:</span>
+                      <span className="font-medium ml-2 text-gray-900 dark:text-white">{usage.current.toLocaleString()} gal/month</span>
                     </div>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Baseline:</span>
-                      <span className="font-medium ml-2">{usage.baseline.toLocaleString()} gal/month</span>
+                      <span className="text-gray-600 dark:text-gray-400">Baseline:</span>
+                      <span className="font-medium ml-2 text-gray-900 dark:text-white">{usage.baseline.toLocaleString()} gal/month</span>
                     </div>
                   </div>
                 </div>
@@ -406,27 +406,27 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </div>
 
       {/* Green Features and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Green Building Features */}
-        <Card className="lg:col-span-2 border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="lg:col-span-2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Building className="h-6 w-6 text-emerald-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Building className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Green Building Features
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {project.sustainability.greenFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                <div key={index} className="flex items-center gap-3 p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm font-medium">{feature}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">{feature}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-6 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <div className="mt-6 p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2 mb-2">
-                <Sun className="h-5 w-5 text-green-600" />
+                <Sun className="h-4 w-4 text-green-600" />
                 <span className="font-medium text-green-800 dark:text-green-200">Environmental Impact</span>
               </div>
               <div className="grid grid-cols-3 gap-4 text-sm">
@@ -448,17 +448,17 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Sustainability Summary */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Leaf className="h-6 w-6 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Leaf className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Sustainability Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <div className="p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
                 <span className="font-medium text-green-800 dark:text-green-200">Exceeding Targets</span>
               </div>
               <div className="text-sm text-green-700 dark:text-green-300">
@@ -467,20 +467,20 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-bold text-yellow-600">{sustainabilityMetrics.energyEfficiency}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Energy Savings</div>
+                <div className="font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.energyEfficiency}%</div>
+                <div className="text-gray-600 dark:text-gray-400">Energy Savings</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-blue-600">{sustainabilityMetrics.waterReduction}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Water Savings</div>
+                <div className="font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.waterReduction}%</div>
+                <div className="text-gray-600 dark:text-gray-400">Water Savings</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-purple-600">{sustainabilityMetrics.wasteRecycling}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Waste Recycled</div>
+                <div className="font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.wasteRecycling}%</div>
+                <div className="text-gray-600 dark:text-gray-400">Waste Recycled</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-green-600">{sustainabilityMetrics.carbonSaved}</div>
-                <div className="text-slate-600 dark:text-slate-400">CO2 Saved (tons)</div>
+                <div className="font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.carbonSaved}</div>
+                <div className="text-gray-600 dark:text-gray-400">CO2 Saved (tons)</div>
               </div>
             </div>
           </CardContent>
