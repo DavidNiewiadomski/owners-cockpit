@@ -92,86 +92,316 @@ const OOUXLayout: React.FC<OOUXLayoutProps> = ({ showOOUXDemo = false }) => {
     );
   }
 
-  // Sample OOUX data for demonstration
+  // Comprehensive realistic sample data for live demo feel
   const sampleObjects: AnyObject[] = [
+    // PROJECTS
     {
       id: 'proj_downtown_office',
-      name: 'Downtown Office Building',
-      description: 'A 12-story modern office building with sustainable design features',
+      name: 'Downtown Office Tower',
+      description: '42-story Class A office building with LEED Platinum certification, 1.2M sq ft, featuring sky gardens and advanced building automation',
       type: 'commercial_office',
       phase: 'construction',
       status: 'active',
-      health: 'green',
-      progress: 65,
+      health: 'yellow',
+      progress: 68,
       start_date: '2024-01-15',
-      end_date: '2024-12-31',
-      budget: {
-        total: 15000000,
-        spent: 9750000,
-        remaining: 5250000,
-        currency: 'USD'
-      },
+      end_date: '2025-08-30',
+      location: { address: '150 Main Street', city: 'Chicago', state: 'IL', country: 'USA' },
+      budget: { total: 285000000, spent: 194000000, remaining: 91000000, currency: 'USD' },
       organization_id: 'org_1',
       owner_id: 'user_1',
-      team_members: ['user_1', 'user_2', 'user_3'],
+      team_members: ['user_1', 'user_2', 'user_3', 'user_4', 'user_5'],
       created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-06-25T12:00:00Z',
+      updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
       actions: {} as any
     } as ProjectObject,
     {
-      id: 'comm_weekly_update',
-      type: 'meeting',
-      title: 'Weekly Project Update',
-      subject: 'Downtown Office Project - Week 25 Update',
-      body: 'Discussed current progress, upcoming milestones, and resolved three critical issues.',
-      sender: { id: 'user_1', name: 'John Smith', email: 'john@construction.com' },
-      recipients: [{ id: 'user_2', name: 'Jane Doe', email: 'jane@construction.com' }],
-      participants: [{ id: 'user_1', name: 'John Smith' }, { id: 'user_2', name: 'Jane Doe' }],
-      message_timestamp: '2024-06-24T10:00:00Z',
-      provider: 'teams',
-      priority: 'high',
+      id: 'proj_residential_complex',
+      name: 'Riverside Residential Complex',
+      description: 'Mixed-income housing development with 240 units across 4 buildings, including affordable housing component and community center',
+      type: 'residential_multi_family',
+      phase: 'preconstruction',
+      status: 'active',
+      health: 'green',
+      progress: 85,
+      start_date: '2024-03-01',
+      end_date: '2025-11-15',
+      location: { address: '2800 Riverside Drive', city: 'Seattle', state: 'WA', country: 'USA' },
+      budget: { total: 95000000, spent: 81000000, remaining: 14000000, currency: 'USD' },
+      organization_id: 'org_1',
+      owner_id: 'user_2',
+      team_members: ['user_2', 'user_6', 'user_7'],
+      created_at: '2024-02-15T00:00:00Z',
+      updated_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+      actions: {} as any
+    } as ProjectObject,
+    {
+      id: 'proj_warehouse_expansion',
+      name: 'Distribution Center Phase 2',
+      description: '500,000 sq ft automated warehouse facility with advanced robotics and sustainable design elements',
+      type: 'industrial_warehouse',
+      phase: 'construction',
+      status: 'on_hold',
+      health: 'red',
+      progress: 32,
+      start_date: '2024-05-01',
+      end_date: '2025-03-30',
+      location: { address: '4500 Industrial Parkway', city: 'Phoenix', state: 'AZ', country: 'USA' },
+      budget: { total: 125000000, spent: 40000000, remaining: 85000000, currency: 'USD' },
+      organization_id: 'org_1',
+      owner_id: 'user_3',
+      team_members: ['user_3', 'user_8', 'user_9'],
+      created_at: '2024-04-01T00:00:00Z',
+      updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+      actions: {} as any
+    } as ProjectObject,
+
+    // COMMUNICATIONS
+    {
+      id: 'comm_foundation_delay',
+      type: 'email',
+      title: 'URGENT: Foundation Pour Delayed Due to Weather',
+      subject: 'Downtown Office Tower - Foundation Pour Postponement',
+      body: 'Due to unexpected severe weather conditions forecasted for this week, we need to postpone the foundation pour originally scheduled for Thursday. The concrete supplier has confirmed availability for next Monday. This delay will impact the critical path by 3 days, but we can potentially recover time during the framing phase. Please confirm attendance for the emergency coordination meeting tomorrow at 7 AM.',
+      sender: { id: 'user_4', name: 'Mike Rodriguez', email: 'mrodriguez@constructioncorp.com' },
+      recipients: [{ id: 'user_1', name: 'Sarah Johnson' }, { id: 'user_2', name: 'David Chen' }],
+      participants: [{ id: 'user_4', name: 'Mike Rodriguez' }],
+      message_timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), // 3 hours ago
+      provider: 'outlook',
+      priority: 'urgent',
       project_id: 'proj_downtown_office',
-      created_at: '2024-06-24T10:00:00Z',
-      updated_at: '2024-06-24T10:00:00Z',
+      created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
       actions: {} as any
     } as CommunicationObject,
     {
-      id: 'doc_architectural_plans',
-      name: 'Architectural Plans v3.2',
-      description: 'Updated architectural plans with client revisions',
+      id: 'comm_safety_meeting',
+      type: 'meeting',
+      title: 'Weekly Safety Coordination Meeting',
+      subject: 'Multi-Project Safety Review & Compliance Update',
+      body: 'Agenda: 1) Review of last week\'s incidents (2 minor cuts, 1 near-miss), 2) New safety protocols for crane operations, 3) PPE inspection results, 4) Training schedule for Q3, 5) Weather contingency plans. All site supervisors must attend.',
+      sender: { id: 'user_5', name: 'Lisa Parker', email: 'lparker@safety.com' },
+      recipients: [{ id: 'user_1', name: 'Sarah Johnson' }, { id: 'user_4', name: 'Mike Rodriguez' }, { id: 'user_6', name: 'Tom Wilson' }],
+      participants: [{ id: 'user_5', name: 'Lisa Parker' }, { id: 'user_1', name: 'Sarah Johnson' }],
+      message_timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // yesterday
+      provider: 'teams',
+      priority: 'high',
+      project_id: 'proj_downtown_office',
+      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as CommunicationObject,
+    {
+      id: 'comm_budget_alert',
+      type: 'chat',
+      title: 'Budget Variance Alert - Riverside Project',
+      subject: 'Material costs trending 8% over budget',
+      body: 'Hey team, getting an alert that our steel costs are trending higher than expected. Current variance is 8% over budget on structural materials. Supplier mentioned global pricing increases. Need to discuss mitigation strategies ASAP. Can we meet tomorrow to review alternatives?',
+      sender: { id: 'user_6', name: 'Tom Wilson', email: 'twilson@pm.com' },
+      recipients: [{ id: 'user_2', name: 'David Chen' }, { id: 'user_7', name: 'Emily Davis' }],
+      participants: [{ id: 'user_6', name: 'Tom Wilson' }, { id: 'user_2', name: 'David Chen' }],
+      message_timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+      provider: 'teams',
+      priority: 'high',
+      project_id: 'proj_residential_complex',
+      created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as CommunicationObject,
+
+    // DOCUMENTS
+    {
+      id: 'doc_structural_drawings',
+      name: 'Structural Drawings Package Rev 4.1',
+      description: 'Complete structural engineering drawings including foundation details, steel framing plans, and connection details. Updated to address city review comments.',
       type: 'drawing',
-      size: 25600000,
+      size: 47500000, // 47.5 MB
       mime_type: 'application/pdf',
-      url: 'https://example.com/plans.pdf',
-      category: 'architectural',
-      version: 3.2,
+      url: 'https://example.com/structural-rev4.1.pdf',
+      category: 'structural',
+      version: 4.1,
       is_latest: true,
       review_status: 'approved',
       project_id: 'proj_downtown_office',
-      uploaded_by: 'user_1',
+      uploaded_by: 'user_8',
       access_level: 'project_team',
-      created_at: '2024-06-20T09:00:00Z',
-      updated_at: '2024-06-23T14:30:00Z',
+      created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week ago
+      updated_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
       actions: {} as any
     } as DocumentObject,
     {
+      id: 'doc_permit_application',
+      name: 'Building Permit Amendment - Floor 15-20',
+      description: 'Permit amendment for mechanical system modifications on floors 15-20. Required due to updated HVAC specifications from client.',
+      type: 'pdf',
+      size: 3200000, // 3.2 MB
+      mime_type: 'application/pdf',
+      url: 'https://example.com/permit-amendment.pdf',
+      category: 'permits',
+      version: 1,
+      is_latest: true,
+      review_status: 'pending',
+      project_id: 'proj_downtown_office',
+      uploaded_by: 'user_1',
+      access_level: 'managers_only',
+      created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+      updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as DocumentObject,
+    {
+      id: 'doc_material_contract',
+      name: 'Steel Supply Contract - Amendment #3',
+      description: 'Contract amendment for additional steel materials required due to design changes. Includes pricing for upgraded seismic connections.',
+      type: 'contract',
+      size: 890000, // 890 KB
+      mime_type: 'application/pdf',
+      url: 'https://example.com/steel-contract-amendment.pdf',
+      category: 'contracts',
+      version: 3,
+      is_latest: true,
+      review_status: 'in_review',
+      project_id: 'proj_downtown_office',
+      uploaded_by: 'user_3',
+      access_level: 'confidential',
+      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+      updated_at: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), // 8 hours ago
+      actions: {} as any
+    } as DocumentObject,
+    {
+      id: 'doc_safety_inspection',
+      name: 'Monthly Safety Inspection Report - June 2024',
+      description: 'Comprehensive safety inspection covering all active work areas, equipment status, and compliance verification. 3 minor violations noted and corrected.',
+      type: 'report',
+      size: 5600000, // 5.6 MB
+      mime_type: 'application/pdf',
+      url: 'https://example.com/safety-june-2024.pdf',
+      category: 'reports',
+      version: 1,
+      is_latest: true,
+      review_status: 'approved',
+      project_id: 'proj_downtown_office',
+      uploaded_by: 'user_5',
+      access_level: 'project_team',
+      created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+      updated_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as DocumentObject,
+
+    // ACTION ITEMS / TASKS
+    {
       id: 'task_foundation_inspection',
-      title: 'Foundation Inspection Approval',
-      description: 'Schedule and complete foundation inspection before concrete pour',
+      title: 'Foundation Inspection Coordination',
+      description: 'Schedule and coordinate foundation inspection with city inspector. Concrete pour cannot proceed until inspection is complete and approved. Inspector availability is limited this week.',
       type: 'inspection',
-      assigned_to: 'user_3',
+      assigned_to: 'user_4',
       assigned_by: 'user_1',
       status: 'in_progress',
       priority: 'urgent',
       progress: 75,
-      due_date: '2024-06-28T17:00:00Z',
+      due_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // tomorrow
       category: 'quality_control',
       project_id: 'proj_downtown_office',
       requires_approval: true,
-      created_at: '2024-06-20T08:00:00Z',
-      updated_at: '2024-06-25T11:00:00Z',
+      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
       actions: {} as any
-    } as ActionItemObject
+    } as ActionItemObject,
+    {
+      id: 'task_permit_submission',
+      title: 'Submit Revised Permit Application',
+      description: 'Submit the revised building permit application with updated HVAC drawings. City planning department requires all documents by Friday to maintain schedule.',
+      type: 'approval',
+      assigned_to: 'user_1',
+      assigned_by: 'user_1',
+      status: 'pending_review',
+      priority: 'high',
+      progress: 90,
+      due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // day after tomorrow
+      category: 'compliance',
+      project_id: 'proj_downtown_office',
+      requires_approval: false,
+      created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+      actions: {} as any
+    } as ActionItemObject,
+    {
+      id: 'task_steel_delivery',
+      title: 'Coordinate Steel Beam Delivery - Floors 8-12',
+      description: 'Coordinate delivery of structural steel beams for floors 8-12. Crane availability confirmed for next week. Need to verify site access and staging area preparation.',
+      type: 'delivery',
+      assigned_to: 'user_6',
+      assigned_by: 'user_4',
+      status: 'open',
+      priority: 'normal',
+      progress: 25,
+      due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // next week
+      category: 'procurement',
+      project_id: 'proj_downtown_office',
+      requires_approval: false,
+      created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as ActionItemObject,
+    {
+      id: 'task_budget_review',
+      title: 'Q2 Budget Variance Analysis',
+      description: 'Complete comprehensive review of Q2 budget performance across all projects. Focus on material cost overruns and labor efficiency metrics. Prepare presentation for board meeting.',
+      type: 'review',
+      assigned_to: 'user_2',
+      assigned_by: 'user_1',
+      status: 'completed',
+      priority: 'high',
+      progress: 100,
+      due_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // completed 3 days ago
+      category: 'budget',
+      project_id: 'proj_residential_complex',
+      requires_approval: true,
+      created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      actions: {} as any
+    } as ActionItemObject,
+
+    // USERS/PEOPLE
+    {
+      id: 'user_sarah_johnson',
+      name: 'Sarah Johnson',
+      email: 'sarah.johnson@ownerscorp.com',
+      avatar_url: 'https://ui-avatars.com/api/?name=Sarah+Johnson&background=3b82f6&color=fff',
+      primary_role: 'Executive',
+      title: 'VP of Development',
+      department: 'Executive Leadership',
+      phone: '+1 (555) 123-4567',
+      status: 'active',
+      organization_id: 'org_1',
+      managed_projects: ['proj_downtown_office', 'proj_residential_complex'],
+      assigned_projects: ['proj_downtown_office', 'proj_residential_complex', 'proj_warehouse_expansion'],
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+      permissions: [],
+      preferences: {} as any,
+      notification_settings: {} as any,
+      actions: {} as any
+    } as UserObject,
+    {
+      id: 'user_mike_rodriguez',
+      name: 'Mike Rodriguez',
+      email: 'mike.rodriguez@constructioncorp.com',
+      avatar_url: 'https://ui-avatars.com/api/?name=Mike+Rodriguez&background=10b981&color=fff',
+      primary_role: 'Construction',
+      title: 'Senior Project Manager',
+      department: 'Construction Operations',
+      phone: '+1 (555) 234-5678',
+      status: 'active',
+      organization_id: 'org_1',
+      managed_projects: ['proj_downtown_office'],
+      assigned_projects: ['proj_downtown_office'],
+      created_at: '2024-01-15T00:00:00Z',
+      updated_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      permissions: [],
+      preferences: {} as any,
+      notification_settings: {} as any,
+      actions: {} as any
+    } as UserObject
   ];
 
   const handleObjectClick = (object: AnyObject) => {
