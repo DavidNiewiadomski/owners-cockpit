@@ -3,7 +3,8 @@ import React from 'react';
 import AIInsightsPanel from './facilities/AIInsightsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Building, Wrench, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Building, Wrench, Zap, Clock, BarChart3, Calendar, CheckCircle2, DollarSign, Target } from 'lucide-react';
 import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
@@ -52,6 +53,44 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
       </div>
 
       <AIInsightsPanel projectData={projectData} />
+      
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Wrench className="w-4 h-4 mr-2" />
+              Create Work Order
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Maintenance
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Review Energy Reports
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Building className="w-4 h-4 mr-2" />
+              Inspect Building Systems
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Update Operating Costs
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Target className="w-4 h-4 mr-2" />
+              Generate Facilities Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <WorkOrders projectId={projectId} />

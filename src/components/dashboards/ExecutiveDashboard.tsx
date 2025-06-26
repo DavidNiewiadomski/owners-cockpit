@@ -4,6 +4,9 @@ import AIInsightsPanel from './executive/AIInsightsPanel';
 import KPICards from './executive/KPICards';
 import ChartsSection from './executive/ChartsSection';
 import PerformanceTrends from './executive/PerformanceTrends';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
 
 interface ExecutiveDashboardProps {
   projectId: string;
@@ -86,6 +89,45 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
   return (
     <div className="space-y-6">
       <AIInsightsPanel projectData={projectData} />
+      
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Review Budget Variance
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Board Meeting
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approve Strategic Decisions
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Building className="w-4 h-4 mr-2" />
+              Review Portfolio Performance
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Update Financial Forecasts
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Target className="w-4 h-4 mr-2" />
+              Generate Executive Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      
       <KPICards projectData={projectData} />
       <ChartsSection projectData={projectData} />
       <PerformanceTrends projectData={projectData} />

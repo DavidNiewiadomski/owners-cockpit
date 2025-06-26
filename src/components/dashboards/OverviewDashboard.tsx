@@ -139,6 +139,44 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </CardContent>
       </Card>
 
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Review Budget Variance
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Site Visit
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approve Change Orders
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Building className="w-4 h-4 mr-2" />
+              Review Tenant Applications
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Update Insurance Coverage
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Target className="w-4 h-4 mr-2" />
+              Generate Progress Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Budget Performance */}

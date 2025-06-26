@@ -4,7 +4,8 @@ import AIInsightsPanel from './legal/AIInsightsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { generateLegalDemoData } from '@/utils/legalDemoData';
 import { Badge } from '@/components/ui/badge';
-import { Scale, Shield, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Scale, Shield, FileText, Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
@@ -50,6 +51,44 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
       </div>
 
       <AIInsightsPanel projectData={projectData} />
+      
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <FileText className="w-4 h-4 mr-2" />
+              Review Contracts
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Legal Review
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approve Change Orders
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Shield className="w-4 h-4 mr-2" />
+              Update Compliance Status
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Scale className="w-4 h-4 mr-2" />
+              Resolve Disputes
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Target className="w-4 h-4 mr-2" />
+              Generate Legal Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
