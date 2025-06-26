@@ -38,27 +38,27 @@ const categoryIcons = {
 // Map UI category names to actual role names
 const categoryToRoleMap: Record<string, string> = {
   Overview: 'Executive',
-  Design: 'Design',
+  Design: 'Preconstruction',
   Preconstruction: 'Preconstruction',
   Construction: 'Construction',
   Sustainability: 'Sustainability',
-  Safety: 'Safety',
+  Safety: 'Construction',
   Legal: 'Legal',
   Finance: 'Finance',
   Facilities: 'Facilities',
 };
 
 // Map role names back to categories for active state
-const roleToCategoryMap: Record<string, string> = {
-  Executive: 'Overview',
-  Design: 'Design',
-  Preconstruction: 'Preconstruction',
-  Construction: 'Construction',
-  Sustainability: 'Sustainability',
-  Safety: 'Safety',
-  Legal: 'Legal',
-  Finance: 'Finance',
-  Facilities: 'Facilities',
+// Note: This is tricky because 'Design' and 'Safety' map to existing roles
+// We'll handle this in the component logic
+const roleToCategoryMap: Record<string, string[]> = {
+  Executive: ['Overview'],
+  Preconstruction: ['Design', 'Preconstruction'],
+  Construction: ['Construction', 'Safety'],
+  Sustainability: ['Sustainability'],
+  Legal: ['Legal'],
+  Finance: ['Finance'],
+  Facilities: ['Facilities'],
 };
 
 const AppHeader: React.FC<AppHeaderProps> = ({
@@ -74,6 +74,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const { connections, connect, getConnectionStatus } = useOAuthConnections();
   const [showCommunications, setShowCommunications] = useState(false);
   const [activeProvider, setActiveProvider] = useState<string>('outlook');
+  const [activeCategory, setActiveCategory] = useState<string>('Overview');
 
   return (
     <MotionWrapper animation="slideUp" className="sticky top-0 z-50">
@@ -298,13 +299,14 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="border-t border-border/20 bg-background/50">
           <div className="flex overflow-x-auto scrollbar-hide px-6">
             {Object.entries(categoryIcons).map(([category, Icon]) => {
-              const isActive = roleToCategoryMap[currentRole] === category || currentRole === category;
+              const isActive = roleToCategoryMap[currentRole]?.includes(category) || false;
               
               return (
                 <button
                   key={category}
                   onClick={() => {
                     const targetRole = categoryToRoleMap[category] || category;
+                    setActiveCategory(category);
                     switchRole(targetRole as any);
                   }}
                   className={`
