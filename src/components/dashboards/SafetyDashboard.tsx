@@ -100,59 +100,59 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-950 dark:via-blue-950 dark:to-cyan-950 p-6 space-y-8">
+    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
             Safety Dashboard
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             {project.name} • Safety Monitoring & Compliance
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             <Shield className="w-4 h-4 mr-2" />
             {safetyMetrics.recordableDays} Days Safe
           </Badge>
-          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 px-4 py-2 text-sm">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             {safetyMetrics.complianceScore}% Compliance
           </Badge>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <AlertCircle className="h-6 w-6 text-red-600" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <AlertCircle className="h-5 w-5 text-gray-600 dark:text-gray-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
+            <Button className="justify-start bg-red-600 hover:bg-red-700 text-white">
               <AlertTriangle className="w-4 h-4 mr-2" />
               Report Incident
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <FileText className="w-4 h-4 mr-2" />
               Schedule Inspection
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Users className="w-4 h-4 mr-2" />
               Safety Training
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Calendar className="w-4 h-4 mr-2" />
               Emergency Drill
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Award className="w-4 h-4 mr-2" />
               View Certifications
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <TrendingUp className="w-4 h-4 mr-2" />
               Safety Analytics
             </Button>
@@ -161,17 +161,16 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
       </Card>
 
       {/* Key Safety KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Days Without Incident */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Days Without Incident</CardTitle>
-            <Shield className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Days Without Incident</CardTitle>
+            <Shield className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{safetyMetrics.recordableDays}</div>
-            <div className="flex items-center mt-2 text-green-100">
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{safetyMetrics.recordableDays}</div>
+            <div className="flex items-center mt-2 text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">+15 days from last month</span>
             </div>
@@ -179,16 +178,15 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Incident Rate */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Incident Rate</CardTitle>
-            <AlertTriangle className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Incident Rate</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{safetyMetrics.incidentRate}</div>
-            <div className="text-sm text-blue-100 mt-1">per 100 workers</div>
-            <div className="flex items-center mt-2 text-blue-100">
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{safetyMetrics.incidentRate}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">per 100 workers</div>
+            <div className="flex items-center mt-2 text-green-600">
               <TrendingDown className="w-4 h-4 mr-1" />
               <span className="text-sm">-20% vs industry avg</span>
             </div>
@@ -196,30 +194,28 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Training Completion */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Training Completion</CardTitle>
-            <Award className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Training Completion</CardTitle>
+            <Award className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{safetyMetrics.safetyTraining}%</div>
-            <div className="text-sm text-purple-100 mt-1">workforce certified</div>
-            <Progress value={safetyMetrics.safetyTraining} className="mt-3 bg-white/20" />
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{safetyMetrics.safetyTraining}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">workforce certified</div>
+            <Progress value={safetyMetrics.safetyTraining} className="mt-3 h-2" />
           </CardContent>
         </Card>
 
         {/* OSHA Compliance */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">OSHA Compliance</CardTitle>
-            <CheckCircle2 className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">OSHA Compliance</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{safetyMetrics.complianceScore}%</div>
-            <div className="text-sm text-orange-100 mt-1">{safetyMetrics.violations} violations</div>
-            <div className="flex items-center mt-2 text-orange-100">
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{safetyMetrics.complianceScore}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{safetyMetrics.violations} violations</div>
+            <div className="flex items-center mt-2 text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">+2% this quarter</span>
             </div>
@@ -228,12 +224,12 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Safety Trends Chart */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Activity className="h-6 w-6 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Activity className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Safety Performance Trends
             </CardTitle>
           </CardHeader>
@@ -286,10 +282,10 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Training Progress */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <HardHat className="h-6 w-6 text-purple-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <HardHat className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Training Completion Status
             </CardTitle>
           </CardHeader>
@@ -298,14 +294,14 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
               {trainingData.map((training, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium">{training.category}</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                    <span className="font-medium text-gray-900 dark:text-white">{training.category}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                       {training.completed}/{training.total}
                     </span>
                   </div>
                   <Progress 
                     value={(training.completed / training.total) * 100} 
-                    className="h-3"
+                    className="h-2"
                   />
                 </div>
               ))}
@@ -315,12 +311,12 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
       </div>
 
       {/* Safety Categories and Inspection Results */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Safety Categories Pie Chart */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Eye className="h-6 w-6 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Eye className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Safety Focus Areas
             </CardTitle>
           </CardHeader>
@@ -355,10 +351,10 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Inspection Results */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <FileText className="h-6 w-6 text-blue-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <FileText className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Weekly Inspection Scores
             </CardTitle>
           </CardHeader>
@@ -395,17 +391,17 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
       </div>
 
       {/* Recent Activity and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Recent Safety Activities */}
-        <Card className="lg:col-span-2 border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="lg:col-span-2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Clock className="h-6 w-6 text-orange-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Recent Safety Activities
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {[
                 { type: 'inspection', title: 'Weekly Safety Inspection - Floor 8', time: '2 hours ago', status: 'completed' },
                 { type: 'training', title: 'Fall Protection Training Session', time: '1 day ago', status: 'completed' },
@@ -413,16 +409,16 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
                 { type: 'meeting', title: 'Daily Safety Briefing', time: '1 day ago', status: 'completed' },
                 { type: 'drill', title: 'Emergency Evacuation Drill', time: '3 days ago', status: 'completed' }
               ].map((activity, index) => (
-                <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
-                  <div className={`w-3 h-3 rounded-full ${
+                <div key={index} className="flex items-center gap-4 p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                  <div className={`w-2 h-2 rounded-full ${
                     activity.type === 'incident' ? 'bg-orange-500' :
                     activity.type === 'training' ? 'bg-purple-500' :
                     activity.type === 'inspection' ? 'bg-blue-500' :
                     'bg-green-500'
                   }`} />
                   <div className="flex-1">
-                    <div className="font-medium">{activity.title}</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">{activity.time}</div>
+                    <div className="font-medium text-gray-900 dark:text-white">{activity.title}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{activity.time}</div>
                   </div>
                   <Badge variant={activity.status === 'completed' ? 'default' : 'secondary'}>
                     {activity.status}
@@ -434,17 +430,17 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Additional Info Panel */}
-        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Shield className="h-6 w-6 text-green-600" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Shield className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Safety Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+            <div className="p-3 rounded-md bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
               <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <CheckCircle2 className="h-4 w-4 text-green-600" />
                 <span className="font-medium text-green-800 dark:text-green-200">Excellent Safety Record</span>
               </div>
               <div className="text-sm text-green-700 dark:text-green-300">
@@ -453,20 +449,20 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-bold text-blue-600">{safetyMetrics.totalWorkers}</div>
-                <div className="text-slate-600 dark:text-slate-400">Total Workers</div>
+                <div className="font-bold text-gray-900 dark:text-white">{safetyMetrics.totalWorkers}</div>
+                <div className="text-gray-600 dark:text-gray-400">Total Workers</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-purple-600">{safetyMetrics.certifiedWorkers}</div>
-                <div className="text-slate-600 dark:text-slate-400">Certified</div>
+                <div className="font-bold text-gray-900 dark:text-white">{safetyMetrics.certifiedWorkers}</div>
+                <div className="text-gray-600 dark:text-gray-400">Certified</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-orange-600">{safetyMetrics.inspections}</div>
-                <div className="text-slate-600 dark:text-slate-400">Inspections</div>
+                <div className="font-bold text-gray-900 dark:text-white">{safetyMetrics.inspections}</div>
+                <div className="text-gray-600 dark:text-gray-400">Inspections</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-green-600">{safetyMetrics.emergencyDrills}</div>
-                <div className="text-slate-600 dark:text-slate-400">Emergency Drills</div>
+                <div className="font-bold text-gray-900 dark:text-white">{safetyMetrics.emergencyDrills}</div>
+                <div className="text-gray-600 dark:text-gray-400">Emergency Drills</div>
               </div>
             </div>
           </CardContent>

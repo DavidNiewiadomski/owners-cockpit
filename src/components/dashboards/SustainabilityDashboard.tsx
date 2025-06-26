@@ -109,59 +109,59 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950 dark:via-emerald-950 dark:to-teal-950 p-6 space-y-8">
+    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
             Sustainability Dashboard
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             {project.name} • Environmental Impact & ESG Compliance
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-4 py-2 text-sm">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             <Award className="w-4 h-4 mr-2" />
             LEED {project.sustainability.leedTarget} Target
           </Badge>
-          <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 px-4 py-2 text-sm">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             {sustainabilityMetrics.leedScore} Points Earned
           </Badge>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Target className="h-6 w-6 text-teal-600" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Target className="h-5 w-5 text-gray-600 dark:text-gray-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
+            <Button className="justify-start bg-green-600 hover:bg-green-700 text-white">
               <FileText className="w-4 h-4 mr-2" />
               Generate ESG Report
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Award className="w-4 h-4 mr-2" />
               Update LEED Scorecard
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Zap className="w-4 h-4 mr-2" />
               Energy Audit
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Droplets className="w-4 h-4 mr-2" />
               Water Usage Report
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <Recycle className="w-4 h-4 mr-2" />
               Waste Analysis
             </Button>
-            <Button variant="outline" className="justify-start">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
               <TreePine className="w-4 h-4 mr-2" />
               Carbon Calculator
             </Button>
@@ -170,18 +170,17 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </Card>
 
       {/* Key Sustainability KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* LEED Score */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">LEED Score</CardTitle>
-            <Award className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">LEED Score</CardTitle>
+            <Award className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{sustainabilityMetrics.leedScore}</div>
-            <div className="text-sm text-green-100 mt-1">Target: {sustainabilityMetrics.leedTarget} points</div>
-            <div className="flex items-center mt-2 text-green-100">
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.leedScore}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Target: {sustainabilityMetrics.leedTarget} points</div>
+            <div className="flex items-center mt-2 text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">+12 points this quarter</span>
             </div>
@@ -189,30 +188,28 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Energy Efficiency */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-yellow-500 to-orange-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Energy Efficiency</CardTitle>
-            <Zap className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Energy Efficiency</CardTitle>
+            <Zap className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{sustainabilityMetrics.energyEfficiency}%</div>
-            <div className="text-sm text-yellow-100 mt-1">improvement vs baseline</div>
-            <Progress value={sustainabilityMetrics.energyEfficiency} className="mt-3 bg-white/20" />
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.energyEfficiency}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">improvement vs baseline</div>
+            <Progress value={sustainabilityMetrics.energyEfficiency} className="mt-3 h-2" />
           </CardContent>
         </Card>
 
         {/* Water Conservation */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-500 to-cyan-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Water Reduction</CardTitle>
-            <Droplets className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Water Reduction</CardTitle>
+            <Droplets className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{sustainabilityMetrics.waterReduction}%</div>
-            <div className="text-sm text-blue-100 mt-1">usage reduction</div>
-            <div className="flex items-center mt-2 text-blue-100">
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.waterReduction}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">usage reduction</div>
+            <div className="flex items-center mt-2 text-green-600">
               <TrendingDown className="w-4 h-4 mr-1" />
               <span className="text-sm">25K gal/month saved</span>
             </div>
@@ -220,16 +217,15 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Waste Recycling */}
-        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-white/90">Waste Recycling</CardTitle>
-            <Recycle className="h-5 w-5 text-white/80" />
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Waste Recycling</CardTitle>
+            <Recycle className="h-4 w-4 text-gray-400" />
           </CardHeader>
-          <CardContent className="relative z-10">
-            <div className="text-3xl font-bold">{sustainabilityMetrics.wasteRecycling}%</div>
-            <div className="text-sm text-purple-100 mt-1">construction waste recycled</div>
-            <Progress value={sustainabilityMetrics.wasteRecycling} className="mt-3 bg-white/20" />
+          <CardContent>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{sustainabilityMetrics.wasteRecycling}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">construction waste recycled</div>
+            <Progress value={sustainabilityMetrics.wasteRecycling} className="mt-3 h-2" />
           </CardContent>
         </Card>
       </div>
