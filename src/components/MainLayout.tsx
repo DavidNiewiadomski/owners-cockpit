@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppHeader from '@/components/AppHeader';
 import ViewToggle from '@/components/ViewToggle';
 import MainContent from '@/components/MainContent';
@@ -7,6 +7,10 @@ import AIFloatingButton from '@/components/AIFloatingButton';
 import AIChatOverlay from '@/components/AIChatOverlay';
 import AppModals from '@/components/AppModals';
 import VoiceControl from '@/components/VoiceControl';
+import OOUXLayout from '@/components/OOUXLayout';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Eye, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useAppState } from '@/hooks/useAppState';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useRole } from '@/contexts/RoleContext';
@@ -16,6 +20,7 @@ const MainLayout: React.FC = () => {
   const { currentRole } = useRole();
   const _router = useRouter();
   const appState = useAppState();
+  const [showOOUXDemo, setShowOOUXDemo] = useState(false);
 
   useEffect(() => {
     console.log(`Current role: ${currentRole}`);
@@ -37,8 +42,26 @@ const MainLayout: React.FC = () => {
 
   // Ready to render components
 
+  // If OOUX demo is enabled, render the enhanced layout
+  if (showOOUXDemo) {
+    return <OOUXLayout showOOUXDemo={true} />;
+  }
+
   return (
     <div className="min-h-screen bg-background">
+      {/* OOUX Demo Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant={showOOUXDemo ? "default" : "outline"}
+          size="sm"
+          onClick={() => setShowOOUXDemo(!showOOUXDemo)}
+          className="flex items-center gap-2 shadow-lg"
+        >
+          <Eye className="h-4 w-4" />
+          <span>OOUX Demo</span>
+          {showOOUXDemo ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
+        </Button>
+      </div>
       <AppHeader 
         selectedProject={appState.activeView === 'portfolio' ? 'portfolio' : appState.selectedProject}
         onProjectChange={appState.handleProjectChange}
