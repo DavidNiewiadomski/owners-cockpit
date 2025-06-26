@@ -42,6 +42,55 @@ const OOUXLayout: React.FC<OOUXLayoutProps> = ({ showOOUXDemo = false }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [selectedObject, setSelectedObject] = useState<AnyObject | null>(null);
   const [activeObjectType, setActiveObjectType] = useState('overview');
+  const [showOriginalLayout, setShowOriginalLayout] = useState(false);
+
+  // Return to original layout if requested
+  if (showOriginalLayout) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader 
+          selectedProject={appState.activeView === 'portfolio' ? 'portfolio' : appState.selectedProject}
+          onProjectChange={appState.handleProjectChange}
+          onUploadToggle={() => appState.setShowUpload(!appState.showUpload)}
+          onSettingsToggle={() => appState.setShowSettings(!appState.showSettings)}
+          onHeroExit={() => {}}
+        />
+
+        <main className="flex-1">
+          <MainContent 
+            activeView={appState.activeView}
+            selectedProject={appState.selectedProject}
+          />
+        </main>
+
+        <AIFloatingButton onClick={appState.handleAIChat} />
+
+        <AIChatOverlay 
+          isOpen={appState.showChatOverlay}
+          onClose={appState.handleCloseChatOverlay}
+          projectId={appState.selectedProject || 'portfolio'}
+          activeView={appState.activeView}
+          contextData={{
+            selectedProject: appState.selectedProject,
+            timestamp: new Date().toISOString()
+          }}
+        />
+
+        <AppModals
+          showSettings={appState.showSettings}
+          setShowSettings={appState.setShowSettings}
+          showSourceModal={appState.showSourceModal}
+          setShowSourceModal={appState.setShowSourceModal}
+          showDocumentViewer={appState.showDocumentViewer}
+          setShowDocumentViewer={appState.setShowDocumentViewer}
+          selectedDocument={appState.selectedDocument}
+          setSelectedDocument={appState.setSelectedDocument}
+        />
+
+        <VoiceControl />
+      </div>
+    );
+  }
 
   // Sample OOUX data for demonstration
   const sampleObjects: AnyObject[] = [
@@ -196,7 +245,19 @@ const OOUXLayout: React.FC<OOUXLayoutProps> = ({ showOOUXDemo = false }) => {
 
   // OOUX Enhanced Layout
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex relative">
+      {/* Exit OOUX Demo Toggle */}
+      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 z-[9999]">
+        <Button
+          variant="destructive"
+          size="lg"
+          onClick={() => setShowOriginalLayout(true)}
+          className="flex items-center gap-2 shadow-2xl border-2 font-semibold hover:scale-105 transition-all duration-200"
+        >
+          <X className="h-5 w-5" />
+          <span className="text-sm font-bold">Exit OOUX Demo</span>
+        </Button>
+      </div>
       {/* OOUX Object Navigation Sidebar */}
       <div className="w-80 border-r border-border/40">
         <ObjectNavigation

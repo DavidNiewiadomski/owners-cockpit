@@ -48,18 +48,18 @@ const MainLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* OOUX Demo Toggle */}
-      <div className="fixed top-4 right-4 z-50">
+    <div className="min-h-screen bg-background relative">
+      {/* OOUX Demo Toggle - Prominently positioned */}
+      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 z-[9999]">
         <Button
           variant={showOOUXDemo ? "default" : "outline"}
-          size="sm"
+          size="lg"
           onClick={() => setShowOOUXDemo(!showOOUXDemo)}
-          className="flex items-center gap-2 shadow-lg"
+          className="flex items-center gap-2 shadow-2xl border-2 font-semibold bg-white dark:bg-gray-900 hover:scale-105 transition-all duration-200"
         >
-          <Eye className="h-4 w-4" />
-          <span>OOUX Demo</span>
-          {showOOUXDemo ? <ToggleRight className="h-4 w-4" /> : <ToggleLeft className="h-4 w-4" />}
+          <Eye className="h-5 w-5" />
+          <span className="text-sm font-bold">{showOOUXDemo ? "Exit OOUX Demo" : "Try OOUX Demo"}</span>
+          {showOOUXDemo ? <ToggleRight className="h-5 w-5 text-green-500" /> : <ToggleLeft className="h-5 w-5" />}
         </Button>
       </div>
       <AppHeader 
