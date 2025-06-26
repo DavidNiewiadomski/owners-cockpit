@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Box } from 'lucide-react';
 
 interface ViewToggleProps {
-  activeView: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model';
-  onViewChange: (view: 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model') => void;
+  activeView: 'dashboard' | 'chat' | 'action-items' | 'model';
+  onViewChange: (view: 'dashboard' | 'chat' | 'action-items' | 'model') => void;
   selectedProject: string | null;
   onAIChat?: () => void;
 }
@@ -20,14 +20,6 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
     <div className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-1">
-          <Button
-            variant={activeView === 'portfolio' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => onViewChange('portfolio')}
-            className="h-8 px-3 text-sm font-medium transition-all duration-200"
-          >
-            Portfolio
-          </Button>
           {selectedProject && (
             <>
               <Button
@@ -57,18 +49,10 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
               </Button>
             </>
           )}
-          <Button
-            variant={activeView === 'communications' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => onViewChange('communications')}
-            className="h-8 px-3 text-sm font-medium transition-all duration-200"
-          >
-            Communications
-          </Button>
         </div>
-        {(selectedProject || activeView === 'communications') && (
+        {selectedProject && (
           <div className="text-xs text-muted-foreground">
-            Press <kbd className="inline-flex h-5 max-h-full items-center rounded border border-border px-1 font-mono text-[10px] font-medium text-muted-foreground opacity-100">Ctrl+C</kbd> for Communications
+            Use communication icons in header for messaging
           </div>
         )}
       </div>

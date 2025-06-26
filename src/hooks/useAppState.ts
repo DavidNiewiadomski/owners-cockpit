@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 
-export type ActiveView = 'dashboard' | 'chat' | 'portfolio' | 'communications' | 'action-items' | 'model';
+export type ActiveView = 'dashboard' | 'chat' | 'action-items' | 'model';
 
 export interface AppState {
   selectedProject: string | null;
@@ -17,7 +17,7 @@ export interface AppState {
 
 export const useAppState = () => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<ActiveView>('portfolio');
+  const [activeView, setActiveView] = useState<ActiveView>('dashboard');
   const [showSettings, setShowSettings] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showChatOverlay, setShowChatOverlay] = useState(false);
@@ -28,21 +28,16 @@ export const useAppState = () => {
 
   const handleProjectChange = (projectId: string | null) => {
     if (projectId === 'portfolio') {
-      setActiveView('portfolio');
       setSelectedProject(null);
+      setActiveView('dashboard');
     } else {
       setSelectedProject(projectId);
-      if (activeView === 'portfolio') {
-        setActiveView('dashboard');
-      }
+      setActiveView('dashboard');
     }
   };
 
   const handleViewChange = (view: ActiveView) => {
     setActiveView(view);
-    if (view === 'portfolio') {
-      setSelectedProject(null);
-    }
   };
 
   const handleDocumentSelect = (document: unknown) => {

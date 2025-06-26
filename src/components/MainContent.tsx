@@ -2,8 +2,6 @@
 import React from 'react';
 import Dashboard from '@/components/Dashboard';
 import PortfolioDashboard from '@/components/PortfolioDashboard';
-import ChatWindow from '@/components/ChatWindow';
-import CommunicationsIntegration from '@/components/communications/CommunicationsIntegration';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import ModelViewer from '@/components/ModelViewer';
 import type { ActiveView } from '@/hooks/useAppState';
@@ -14,17 +12,7 @@ interface MainContentProps {
 }
 
 const MainContent: React.FC<MainContentProps> = ({ activeView, selectedProject }) => {
-  if (activeView === 'communications') {
-    const communicationsProjectId = selectedProject || 'portfolio';
-    return <CommunicationsIntegration projectId={communicationsProjectId} />;
-  }
-  
-  if (activeView === 'portfolio') {
-    return <PortfolioDashboard />;
-  }
-
-  // Chat view removed - now uses overlay instead
-  
+  // Default to portfolio view when no project is selected
   if (!selectedProject) {
     return <PortfolioDashboard />;
   }

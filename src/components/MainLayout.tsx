@@ -44,7 +44,7 @@ const MainLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-background relative">
       <AppHeader 
-        selectedProject={appState.activeView === 'portfolio' ? 'portfolio' : appState.selectedProject}
+        selectedProject={appState.selectedProject}
         onProjectChange={appState.handleProjectChange}
         onUploadToggle={() => appState.setShowUpload(!appState.showUpload)}
         onSettingsToggle={() => appState.setShowSettings(!appState.showSettings)}
