@@ -38,9 +38,9 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { usePreconstructionMetrics } from '@/hooks/usePreconstructionMetrics';
 
 interface PreconstructionDashboardProps {
   projectId: string;
@@ -48,8 +48,8 @@ interface PreconstructionDashboardProps {
 }
 
 const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  const { data: preconstructionData, error, loading } = usePreconstructionMetrics(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -57,70 +57,48 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
-  // Enhanced preconstruction metrics
+  if (error) {
+    console.error('Error fetching preconstruction metrics:', error);
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-400">Error loading preconstruction data</div>
+      </div>
+    );
+  }
+
+  if (loading || !preconstructionData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-white">Loading preconstruction data...</div>
+      </div>
+    );
+  }
+
+  const {
+    project,
+    keyMetrics,
+    budgetBreakdown,
+    permitStatus,
+    biddingData,
+    scheduleMilestones,
+    costTrends
+  } = preconstructionData;
+
+  // Enhanced preconstruction metrics from Supabase data
   const preconstructionMetrics = {
-    totalBudget: 24000000,
-    softCosts: 3200000,
-    hardCosts: 20800000,
-    contingency: 1200000,
-    designProgress: 85,
-    permitsApproved: 12,
-    totalPermits: 15,
-    bidsReceived: 8,
-    bidsEvaluated: 6,
-    contractorsPrequalified: 12,
-    scheduleVariance: -5,
-    budgetVariance: 2.1
+    totalBudget: project.budget,
+    softCosts: budgetBreakdown.find(b => b.category === 'Soft Costs')?.allocated || 0,
+    hardCosts: budgetBreakdown.find(b => b.category === 'Hard Costs')?.allocated || 0,
+    contingency: budgetBreakdown.find(b => b.category === 'Contingency')?.allocated || 0,
+    designProgress: keyMetrics.designCompletion,
+    permitsApproved: permitStatus.filter(p => p.status === 'approved').length,
+    totalPermits: permitStatus.length,
+    bidsReceived: biddingData.totalBids,
+    bidsEvaluated: biddingData.bids.filter(b => b.status === 'evaluated').length,
+    contractorsPrequalified: biddingData.bids.length,
+    scheduleVariance: scheduleMilestones.reduce((acc, m) => acc + m.daysVariance, 0) / scheduleMilestones.length,
+    budgetVariance: ((project.budget - budgetBreakdown.reduce((acc, b) => acc + b.spent, 0)) / project.budget) * 100
   };
-
-  // Budget breakdown data
-  const budgetBreakdown = [
-    { category: 'Site Work', estimated: 2400000, actual: 2350000, variance: -2.1 },
-    { category: 'Structure', estimated: 8500000, actual: 8750000, variance: 2.9 },
-    { category: 'MEP Systems', estimated: 4200000, actual: 4100000, variance: -2.4 },
-    { category: 'Finishes', estimated: 3800000, actual: 3900000, variance: 2.6 },
-    { category: 'Equipment', estimated: 1900000, actual: 1850000, variance: -2.6 }
-  ];
-
-  // Permit status tracking
-  const permitStatus = [
-    { permit: 'Building Permit', status: 'approved', submittedDate: '2023-10-15', approvalDate: '2024-01-10', cost: 45000 },
-    { permit: 'Zoning Variance', status: 'approved', submittedDate: '2023-09-20', approvalDate: '2023-11-15', cost: 12000 },
-    { permit: 'Environmental Impact', status: 'approved', submittedDate: '2023-08-30', approvalDate: '2023-10-20', cost: 8500 },
-    { permit: 'Fire Department', status: 'pending', submittedDate: '2024-02-15', approvalDate: null, cost: 3500 },
-    { permit: 'Utility Connections', status: 'pending', submittedDate: '2024-03-01', approvalDate: null, cost: 15000 },
-    { permit: 'Traffic Impact', status: 'in-review', submittedDate: '2024-02-20', approvalDate: null, cost: 7500 }
-  ];
-
-  // Bidding process data
-  const biddingData = [
-    { contractor: 'Premium Builders Inc.', bid: 18500000, score: 95, status: 'selected', experience: 25 },
-    { contractor: 'Metro Construction Co.', bid: 19200000, score: 88, status: 'finalist', experience: 18 },
-    { contractor: 'Elite Building Corp.', bid: 18950000, score: 92, status: 'finalist', experience: 22 },
-    { contractor: 'Downtown Developers', bid: 20100000, score: 82, status: 'evaluated', experience: 15 },
-    { contractor: 'City Construction LLC', bid: 19750000, score: 85, status: 'evaluated', experience: 20 },
-    { contractor: 'Modern Build Solutions', bid: 21200000, score: 78, status: 'rejected', experience: 12 }
-  ];
-
-  // Schedule milestones
-  const scheduleMilestones = [
-    { phase: 'Site Analysis', progress: 100, startDate: '2023-06-01', endDate: '2023-08-15', status: 'completed' },
-    { phase: 'Design Development', progress: 95, startDate: '2023-07-15', endDate: '2024-02-28', status: 'nearly-complete' },
-    { phase: 'Permitting', progress: 80, startDate: '2023-09-01', endDate: '2024-04-30', status: 'in-progress' },
-    { phase: 'Contractor Selection', progress: 85, startDate: '2024-01-15', endDate: '2024-05-15', status: 'in-progress' },
-    { phase: 'Final Design', progress: 60, startDate: '2024-03-01', endDate: '2024-06-30', status: 'in-progress' },
-    { phase: 'Construction Start', progress: 0, startDate: '2024-07-15', endDate: '2024-07-15', status: 'upcoming' }
-  ];
-
-  // Cost trends over time
-  const costTrends = [
-    { month: 'Jan', estimate: 22500000, actual: 22650000, variance: 0.7 },
-    { month: 'Feb', estimate: 23000000, actual: 23200000, variance: 0.9 },
-    { month: 'Mar', estimate: 23200000, actual: 23400000, variance: 0.9 },
-    { month: 'Apr', estimate: 23500000, actual: 23650000, variance: 0.6 },
-    { month: 'May', estimate: 23800000, actual: 23950000, variance: 0.6 },
-    { month: 'Jun', estimate: 24000000, actual: 24050000, variance: 0.2 }
-  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -368,8 +346,8 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
                   }} 
                   formatter={(value) => [`$${(value as number / 1000000).toFixed(1)}M`, 'Amount']}
                 />
-                <Bar dataKey="estimated" fill="#6366f1" name="Estimated" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="actual" fill="#3b82f6" name="Actual" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="allocated" fill="#6366f1" name="Allocated" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="spent" fill="#3b82f6" name="Spent" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -401,16 +379,23 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
                 <Legend />
                 <Line 
                   type="monotone" 
-                  dataKey="estimate" 
+                  dataKey="budget" 
                   stroke="#6366f1" 
                   strokeWidth={3}
                   strokeDasharray="5 5"
-                  name="Estimated"
+                  name="Budget"
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="forecast" 
+                  stroke="#3b82f6" 
+                  strokeWidth={3}
+                  name="Forecast"
                 />
                 <Line 
                   type="monotone" 
                   dataKey="actual" 
-                  stroke="#3b82f6" 
+                  stroke="#10b981" 
                   strokeWidth={3}
                   name="Actual"
                 />
@@ -477,15 +462,10 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
                       <span className="font-medium ml-2">{permit.submittedDate}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400">Cost:</span>
-                      <span className="font-medium ml-2">${permit.cost.toLocaleString()}</span>
+                      <span className="text-slate-400">Expected:</span>
+                      <span className="font-medium ml-2">{permit.expectedApproval}</span>
                     </div>
                   </div>
-                  {permit.approvalDate && (
-                    <div className="text-sm text-green-600 mt-2">
-                      ✓ Approved: {permit.approvalDate}
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -505,7 +485,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {biddingData.map((bid, index) => (
+              {biddingData.bids.map((bid, index) => (
                 <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-[#0D1117]/50">
                   <div className={`w-3 h-3 rounded-full ${
                     bid.status === 'selected' ? 'bg-green-500' :
@@ -516,11 +496,11 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
                   <div className="flex-1">
                     <div className="font-medium">{bid.contractor}</div>
                     <div className="text-sm text-slate-400">
-                      {bid.experience} years experience • Score: {bid.score}/100
+                      {bid.timeline} • Score: {bid.score}/100
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-lg">${(bid.bid / 1000000).toFixed(1)}M</div>
+                    <div className="font-bold text-lg">${(bid.amount / 1000000).toFixed(1)}M</div>
                     <Badge className={getStatusColor(bid.status)}>
                       {bid.status}
                     </Badge>

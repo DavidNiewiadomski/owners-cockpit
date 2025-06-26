@@ -7,7 +7,7 @@ import PerformanceTrends from './executive/PerformanceTrends';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
-import { getProjectMetrics } from '@/utils/projectSampleData';
+import { useExecutiveMetrics } from '@/hooks/useExecutiveMetrics';
 
 interface ExecutiveDashboardProps {
   projectId: string;
@@ -15,66 +15,39 @@ interface ExecutiveDashboardProps {
 
 const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) => {
   // Get comprehensive project-specific data based on projectId
-  const projectData = getProjectMetrics(projectId, 'executive');
-  
-  // Fallback data if no project found
-  const fallbackData = {
-    portfolioValue: 68000000,
-    stakeholders: 24,
-    riskScore: 25,
-    strategicAlignment: 88,
-    marketPosition: 92,
-    financial: {
-      totalBudget: 52000000,
-      spentToDate: 35400000,
-      roi: 16.8,
-      monthlySpend: [
-        { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
-        { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
-        { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
-        { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
-        { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
-        { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
-      ]
-    },
-    kpiTrends: [
-      { week: 'W1', efficiency: 78, quality: 92, safety: 98 },
-      { week: 'W2', efficiency: 82, quality: 89, safety: 97 },
-      { week: 'W3', efficiency: 85, quality: 94, safety: 99 },
-      { week: 'W4', efficiency: 88, quality: 96, safety: 98 }
-    ],
-    insights: {
-      summary: 'Project performing well with strong metrics across all areas.',
-      keyPoints: ['Strong ROI performance', 'Stakeholder alignment high', 'Risk levels manageable'],
-      recommendations: ['Continue current trajectory', 'Monitor market conditions'],
-      alerts: ['Quarterly review due next week']
-    },
-    timeline: [
-      { phase: 'Planning', startDate: '2024-01-01', endDate: '2024-03-31', status: 'completed', progress: 100 },
-      { phase: 'Execution', startDate: '2024-04-01', endDate: '2024-10-31', status: 'active', progress: 68 },
-      { phase: 'Completion', startDate: '2024-11-01', endDate: '2024-12-31', status: 'upcoming', progress: 0 }
-    ],
-    team: {
-      projectManager: 'Sarah Johnson',
-      architect: 'Michael Chen',
-      contractor: 'BuildTech Solutions',
-      owner: 'Metro Development Corp'
-    }
-  };
-  
-  const displayData = projectData || fallbackData;
+  const { data: projectData, error } = useExecutiveMetrics(projectId);
+
+  if (error) {
+    console.error('Error fetching executive metrics:', error);
+    // Handle error appropriately
+    return null;
+  }
+
+  if (!projectData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-white">Loading executive data...</div>
+      </div>
+    );
+  }
+
+  const displayData = projectData;
 
   // Prepare data for AIInsightsPanel
+  const activePhase = displayData.timeline?.find(t => t.status === 'active');
+  const completedMilestones = displayData.timeline?.filter(t => t.status === 'completed').length || 0;
+  const totalMilestones = displayData.timeline?.length || 0;
+  
   const aiInsightsData = {
     name: 'Current Project',
-    progress: displayData.timeline?.find(t => t.status === 'active')?.progress || 68,
-    spentBudget: displayData.financial?.spentToDate || 35400000,
-    totalBudget: displayData.financial?.totalBudget || 52000000,
-    riskScore: displayData.riskScore || 25,
-    roi: displayData.financial?.roi || 16.8,
-    milestonesCompleted: 8,
-    totalMilestones: 12,
-    stakeholders: displayData.stakeholders || 24
+    progress: activePhase?.progress || 0,
+    spentBudget: displayData.financial?.spentToDate || 0,
+    totalBudget: displayData.financial?.totalBudget || 0,
+    riskScore: displayData.riskScore || 0,
+    roi: displayData.financial?.roi || 0,
+    milestonesCompleted: completedMilestones,
+    totalMilestones: totalMilestones,
+    stakeholders: displayData.stakeholders || 0
   };
 
   return (
@@ -120,39 +93,27 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
       </Card>
       
       <KPICards projectData={{
-        totalBudget: displayData.financial?.totalBudget || 52000000,
-        spentBudget: displayData.financial?.spentToDate || 35400000,
-        progress: displayData.timeline?.find(t => t.status === 'active')?.progress || 68,
-        timeline: 'On Track',
-        milestonesCompleted: 8,
-        totalMilestones: 12,
-        riskScore: displayData.riskScore || 25,
-        stakeholders: displayData.stakeholders || 24,
-        roi: displayData.financial?.roi || 16.8
+        totalBudget: displayData.financial?.totalBudget || 0,
+        spentBudget: displayData.financial?.spentToDate || 0,
+        progress: activePhase?.progress || 0,
+        timeline: activePhase?.status === 'active' ? 'On Track' : 'TBD',
+        milestonesCompleted: completedMilestones,
+        totalMilestones: totalMilestones,
+        riskScore: displayData.riskScore || 0,
+        stakeholders: displayData.stakeholders || 0,
+        roi: displayData.financial?.roi || 0
       }} />
       <ChartsSection projectData={{
-        monthlySpend: displayData.financial?.monthlySpend || [
-          { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
-          { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
-          { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
-          { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
-          { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
-          { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
-        ],
+        monthlySpend: displayData.financial?.monthlySpend || [],
         riskBreakdown: [
-          { category: 'Technical', value: 35, color: '#3b82f6' },
-          { category: 'Financial', value: 20, color: '#10b981' },
-          { category: 'Schedule', value: 30, color: '#f59e0b' },
-          { category: 'External', value: 15, color: '#ef4444' }
+          { category: 'Technical', value: Math.round(displayData.riskScore * 0.35), color: '#3b82f6' },
+          { category: 'Financial', value: Math.round(displayData.riskScore * 0.20), color: '#10b981' },
+          { category: 'Schedule', value: Math.round(displayData.riskScore * 0.30), color: '#f59e0b' },
+          { category: 'External', value: Math.round(displayData.riskScore * 0.15), color: '#ef4444' }
         ]
       }} />
       <PerformanceTrends projectData={{
-        kpiTrends: displayData.kpiTrends || [
-          { week: 'W1', efficiency: 78, quality: 92, safety: 98 },
-          { week: 'W2', efficiency: 82, quality: 89, safety: 97 },
-          { week: 'W3', efficiency: 85, quality: 94, safety: 99 },
-          { week: 'W4', efficiency: 88, quality: 96, safety: 98 }
-        ]
+        kpiTrends: displayData.kpiTrends || []
       }} />
     </div>
   );
