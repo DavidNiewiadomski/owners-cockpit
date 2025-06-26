@@ -11,7 +11,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router'; // Not available in this project
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -86,7 +86,7 @@ const ObjectNavigation: React.FC<ObjectNavigationProps> = ({
   onObjectSearch,
   className
 }) => {
-  const router = useRouter();
+  // const router = useRouter(); // Not available in this project
   const { currentRole } = useRole();
   const { access } = useRoleBasedAccess();
   const [activeSection, setActiveSection] = useState('overview');
@@ -309,7 +309,7 @@ const ObjectNavigation: React.FC<ObjectNavigationProps> = ({
   };
 
   const isItemActive = (item: NavigationItem): boolean => {
-    return activeSection === item.type || router.pathname.startsWith(item.path);
+    return activeSection === item.type; // || router.pathname.startsWith(item.path);
   };
 
   return (

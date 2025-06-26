@@ -120,7 +120,7 @@ export interface ProjectObject extends BaseObject {
   communications?: CommunicationObject[];
   documents?: DocumentObject[];
   action_items?: ActionItemObject[];
-  contracts?: ContractObject[];
+  contracts?: DocumentObject[]; // Contracts are a type of document
   
   // Metadata
   metadata?: Record<string, unknown>;
