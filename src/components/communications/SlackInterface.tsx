@@ -45,7 +45,7 @@ const SlackInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[600px] bg-background border rounded-lg overflow-hidden">
+    <div className="flex h-full bg-background overflow-hidden">
       {/* Sidebar */}
       <div className="w-64 bg-[#4A154B] text-white flex flex-col">
         <div className="p-4 border-b border-purple-700">

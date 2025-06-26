@@ -166,7 +166,7 @@ const CalendarInterface: React.FC = () => {
   const todayEvents = events.filter(e => e.time.includes('Today'));
 
   return (
-    <div className="h-[600px] bg-background border rounded-lg overflow-hidden">
+    <div className="h-full bg-background overflow-hidden">
       {/* Header */}
       <div className="p-6 border-b border-border bg-[#0078d4] text-white">
         <div className="flex items-center justify-between">

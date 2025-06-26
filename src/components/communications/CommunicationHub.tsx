@@ -99,22 +99,55 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
 
   const totalUnread = connectedProviders.reduce((sum, provider) => sum + provider.unreadCount, 0);
 
-  // Find the active provider
-  const activeProvider = providers.find(p => p.id === activeTab);
-  const Component = activeProvider?.component;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-[95vw] h-[95vh] p-0 gap-0">
-        {/* Only show close button - no other wrapper UI */}
-        <div className="absolute top-4 right-4 z-50">
-          <Button variant="ghost" size="icon" onClick={onClose} className="bg-black/20 hover:bg-black/40 text-white">
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        {/* Render the active component directly */}
-        {Component && <Component />}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+          {/* Communication tabs at top */}
+          <div className="flex items-center justify-between border-b border-border bg-background/95 backdrop-blur-sm px-4 py-2">
+            <TabsList className="grid grid-cols-6 bg-muted/50">
+              {connectedProviders.map((provider) => {
+                const Icon = provider.icon;
+                return (
+                  <TabsTrigger
+                    key={provider.id}
+                    value={provider.id}
+                    className="flex items-center gap-2 relative text-xs px-2 py-1"
+                  >
+                    <Icon className="h-3 w-3" style={{ color: provider.color }} />
+                    <span className="hidden sm:inline">{provider.name}</span>
+                    {provider.unreadCount > 0 && (
+                      <Badge variant="destructive" className="ml-1 h-4 px-1 text-[10px] leading-none">
+                        {provider.unreadCount}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+            
+            {/* Close button */}
+            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+
+          {/* App content - no background wrapper */}
+          <div className="flex-1">
+            {connectedProviders.map((provider) => {
+              const Component = provider.component;
+              return (
+                <TabsContent 
+                  key={provider.id} 
+                  value={provider.id} 
+                  className="h-full m-0 data-[state=active]:flex"
+                >
+                  <Component />
+                </TabsContent>
+              );
+            })}
+          </div>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
