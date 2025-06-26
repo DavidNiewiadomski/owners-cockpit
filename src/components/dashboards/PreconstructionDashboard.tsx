@@ -153,6 +153,44 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Calculator className="h-6 w-6 text-green-600" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button className="justify-start bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Update Budget
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <FileText className="w-4 h-4 mr-2" />
+              Submit Permit
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Gavel className="w-4 h-4 mr-2" />
+              Review Bids
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Calendar className="w-4 h-4 mr-2" />
+              Update Schedule
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Users className="w-4 h-4 mr-2" />
+              Contractor Meeting
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Target className="w-4 h-4 mr-2" />
+              Risk Assessment
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Preconstruction KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Budget */}
@@ -409,39 +447,42 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Project Summary */}
         <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
-              <Calculator className="h-6 w-6 text-green-600" />
-              Quick Actions
+              <ClipboardList className="h-6 w-6 text-indigo-600" />
+              Project Summary
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700">
-              <DollarSign className="w-4 h-4 mr-2" />
-              Update Budget
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <FileText className="w-4 h-4 mr-2" />
-              Submit Permit
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Gavel className="w-4 h-4 mr-2" />
-              Review Bids
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Calendar className="w-4 h-4 mr-2" />
-              Update Schedule
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Users className="w-4 h-4 mr-2" />
-              Contractor Meeting
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Target className="w-4 h-4 mr-2" />
-              Risk Assessment
-            </Button>
+          <CardContent className="space-y-4">
+            <div className="p-4 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle2 className="h-5 w-5 text-indigo-600" />
+                <span className="font-medium text-indigo-800 dark:text-indigo-200">On Track</span>
+              </div>
+              <div className="text-sm text-indigo-700 dark:text-indigo-300">
+                {Math.abs(preconstructionMetrics.scheduleVariance)} days ahead of schedule
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-center">
+                <div className="font-bold text-indigo-600">{preconstructionMetrics.designProgress}%</div>
+                <div className="text-slate-600 dark:text-slate-400">Design Complete</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-blue-600">{preconstructionMetrics.permitsApproved}</div>
+                <div className="text-slate-600 dark:text-slate-400">Permits Approved</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-cyan-600">{preconstructionMetrics.bidsReceived}</div>
+                <div className="text-slate-600 dark:text-slate-400">Bids Received</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-purple-600">{preconstructionMetrics.contractorsPrequalified}</div>
+                <div className="text-slate-600 dark:text-slate-400">Contractors Qualified</div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>

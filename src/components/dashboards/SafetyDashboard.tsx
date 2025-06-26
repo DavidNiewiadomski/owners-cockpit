@@ -122,6 +122,44 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <AlertCircle className="h-6 w-6 text-red-600" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button className="justify-start bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Report Incident
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <FileText className="w-4 h-4 mr-2" />
+              Schedule Inspection
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Users className="w-4 h-4 mr-2" />
+              Safety Training
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Calendar className="w-4 h-4 mr-2" />
+              Emergency Drill
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <Award className="w-4 h-4 mr-2" />
+              View Certifications
+            </Button>
+            <Button variant="outline" className="justify-start">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Safety Analytics
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Safety KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Days Without Incident */}
@@ -395,39 +433,42 @@ const SafetyDashboard: React.FC<SafetyDashboardProps> = ({ projectId }) => {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Additional Info Panel */}
         <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
-              <AlertCircle className="h-6 w-6 text-red-600" />
-              Quick Actions
+              <Shield className="h-6 w-6 text-green-600" />
+              Safety Summary
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <Button className="w-full justify-start bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700">
-              <AlertTriangle className="w-4 h-4 mr-2" />
-              Report Incident
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <FileText className="w-4 h-4 mr-2" />
-              Schedule Inspection
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Users className="w-4 h-4 mr-2" />
-              Safety Training
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Calendar className="w-4 h-4 mr-2" />
-              Emergency Drill
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <Award className="w-4 h-4 mr-2" />
-              View Certifications
-            </Button>
-            <Button variant="outline" className="w-full justify-start">
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Safety Analytics
-            </Button>
+          <CardContent className="space-y-4">
+            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle2 className="h-5 w-5 text-green-600" />
+                <span className="font-medium text-green-800 dark:text-green-200">Excellent Safety Record</span>
+              </div>
+              <div className="text-sm text-green-700 dark:text-green-300">
+                No major incidents in {safetyMetrics.recordableDays} days
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-center">
+                <div className="font-bold text-blue-600">{safetyMetrics.totalWorkers}</div>
+                <div className="text-slate-600 dark:text-slate-400">Total Workers</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-purple-600">{safetyMetrics.certifiedWorkers}</div>
+                <div className="text-slate-600 dark:text-slate-400">Certified</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-orange-600">{safetyMetrics.inspections}</div>
+                <div className="text-slate-600 dark:text-slate-400">Inspections</div>
+              </div>
+              <div className="text-center">
+                <div className="font-bold text-green-600">{safetyMetrics.emergencyDrills}</div>
+                <div className="text-slate-600 dark:text-slate-400">Emergency Drills</div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
