@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -307,6 +307,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   onClick={() => {
                     const targetRole = categoryToRoleMap[category] || category;
                     setActiveCategory(category);
+                    // Store the active category so Dashboard component can access it
+                    sessionStorage.setItem('activeCategory', category);
                     switchRole(targetRole as any);
                   }}
                   className={`

@@ -17,11 +17,42 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { currentRole } = useRole();
+  
+  // Get the active category from localStorage to determine which dashboard to show
+  // This handles the case where UI categories map to different backend roles
+  const getActiveCategory = () => {
+    // Check if there's a stored active category in sessionStorage
+    const storedCategory = sessionStorage.getItem('activeCategory');
+    if (storedCategory) {
+      return storedCategory;
+    }
+    
+    // Fallback to role-based mapping
+    switch (currentRole) {
+      case 'Executive':
+        return 'Overview';
+      case 'Preconstruction':
+        return 'Preconstruction'; // Default to Preconstruction, but could be Design
+      case 'Construction':
+        return 'Construction'; // Default to Construction, but could be Safety
+      case 'Sustainability':
+        return 'Sustainability';
+      case 'Legal':
+        return 'Legal';
+      case 'Finance':
+        return 'Finance';
+      case 'Facilities':
+        return 'Facilities';
+      default:
+        return 'Overview';
+    }
+  };
+  
+  const activeCategory = getActiveCategory();
 
-  // Route to appropriate dashboard based on current role/category
-  switch (currentRole) {
+  // Route to appropriate dashboard based on active category (not just role)
+  switch (activeCategory) {
     case 'Overview':
-    case 'Executive':
       return <OverviewDashboard projectId={projectId} />;
     case 'Design':
       return <DesignDashboard projectId={projectId} />;
