@@ -17,7 +17,7 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
-import { getProjectMetrics } from '@/utils/projectSampleData';
+import { getProjectMetrics } from '@/supabase/functions/getMetrics';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 
