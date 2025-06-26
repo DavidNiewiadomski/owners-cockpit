@@ -66,39 +66,39 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
 
       <AIInsightsPanel projectData={projectData} />
       
-      {/* Quick Actions */}
+      {/* Owner Legal Actions */}
       <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
-            Quick Actions
+            Owner Legal Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <FileText className="w-4 h-4 mr-2" />
-              Review Contracts
+              Review Major Contracts
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
-              Schedule Legal Review
+              Meet with Legal Counsel
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
-              Approve Change Orders
+              Sign Change Orders
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Shield className="w-4 h-4 mr-2" />
-              Update Compliance Status
+              Review Insurance Coverage
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Scale className="w-4 h-4 mr-2" />
-              Resolve Disputes
+              Address Owner Disputes
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
-              Generate Legal Report
+              Generate Compliance Report
             </Button>
           </div>
         </CardContent>

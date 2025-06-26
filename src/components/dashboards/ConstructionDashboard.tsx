@@ -297,31 +297,31 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </div>
       </div>
 
-      {/* AI Construction Insights */}
+      {/* Owner's Construction Overview */}
       <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Activity className="w-5 h-5 text-green-400" />
-              AI Construction Insights
+              Construction Progress & Investment Protection
             </CardTitle>
-            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Owner Dashboard</Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Metrics Grid */}
+          {/* Owner-Focused Metrics */}
           <div className="grid grid-cols-4 gap-4">
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{constructionMetrics.overallProgress}%</div>
               <div className="text-sm text-slate-400">Complete</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{constructionMetrics.totalWorkforce}</div>
-              <div className="text-sm text-slate-400">Workforce</div>
-            </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{constructionMetrics.safetyScore}%</div>
               <div className="text-sm text-slate-400">Safety Score</div>
+            </div>
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{constructionMetrics.qualityScore}%</div>
+              <div className="text-sm text-slate-400">Quality Score</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{Math.abs(constructionMetrics.daysAheadBehind)}</div>
@@ -329,44 +329,44 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             </div>
           </div>
           
-          {/* Summary */}
+          {/* Owner Summary */}
           <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
-              Construction is {constructionMetrics.overallProgress}% complete with {constructionMetrics.totalWorkforce} active workers. Safety performance at {constructionMetrics.safetyScore}% with {safetyMetrics.recordableDays} days without incidents. Project running {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead of' : 'behind'} schedule.
+              Your construction project is {constructionMetrics.overallProgress}% complete and running {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead of' : 'behind'} schedule. Quality standards are maintained at {constructionMetrics.qualityScore}% with excellent safety performance at {constructionMetrics.safetyScore}%. All contractor teams are performing to specifications.
             </p>
           </div>
           
-          {/* Key Insights and Recommendations */}
+          {/* Owner Insights and Actions */}
           <div className="grid grid-cols-2 gap-6">
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span className="text-sm font-medium text-white">Key Insights</span>
+                <span className="text-sm font-medium text-white">Investment Status</span>
               </div>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li>• Construction progress at {constructionMetrics.overallProgress}% with {constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} milestones complete</li>
-                <li>• Safety record excellent with {safetyMetrics.recordableDays} days without recordable incidents</li>
-                <li>• Workforce of {constructionMetrics.totalWorkforce} across {constructionMetrics.activeSubcontractors} subcontractors</li>
-                <li>• Quality metrics showing {constructionMetrics.qualityScore}% score with {constructionMetrics.openRFIs} open RFIs</li>
+                <li>• Project {constructionMetrics.overallProgress}% complete with {constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} major milestones achieved</li>
+                <li>• Contractors maintaining {constructionMetrics.safetyScore}% safety standards - protecting against liability</li>
+                <li>• Quality control at {constructionMetrics.qualityScore}% ensures asset value protection</li>
+                <li>• {constructionMetrics.openRFIs} open information requests - monitor for potential delays</li>
               </ul>
             </div>
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-sm font-medium text-white">Recommendations</span>
+                <span className="text-sm font-medium text-white">Owner Actions Needed</span>
               </div>
               <ul className="space-y-2 text-sm text-slate-300">
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">→</span>
-                  <span>Optimize trade coordination between floors 3-4 for HVAC and electrical</span>
+                  <span>Schedule walk-through with project manager this week</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">→</span>
-                  <span>Continue safety protocols to maintain excellent record</span>
+                  <span>Review and approve pending change orders requiring owner sign-off</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">→</span>
-                  <span>Address {constructionMetrics.openRFIs} open RFIs to prevent delays</span>
+                  <span>Verify contractor insurance and bonding remains current</span>
                 </li>
               </ul>
             </div>

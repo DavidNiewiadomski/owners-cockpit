@@ -251,39 +251,39 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </CardContent>
       </Card>
     
-      {/* Quick Actions */}
+      {/* Owner Financial Actions */}
       <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
-            Quick Actions
+            Owner Financial Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Receipt className="w-4 h-4 mr-2" />
-              Approve Pending Invoices
+              Review Major Invoices
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calculator className="w-4 h-4 mr-2" />
-              Review Budget Variance
+              Monitor ROI Performance
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <TrendingUp className="w-4 h-4 mr-2" />
-              Generate Financial Report
+              Generate Owner Report
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CreditCard className="w-4 h-4 mr-2" />
-              Update Cash Flow Forecast
+              Review Cash Requirements
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <PieChart className="w-4 h-4 mr-2" />
-              Export Cost Analysis
+              Analyze Investment Returns
             </Button>
             <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Banknote className="w-4 h-4 mr-2" />
-              Process Draw Request
+              Approve Draw Requests
             </Button>
           </div>
         </CardContent>
