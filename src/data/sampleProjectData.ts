@@ -479,9 +479,79 @@ export const portfolioProjects = [
     sqft: 380000,
     phase: 'Permitting'
   }
+
+
+export const constructionProjects = [
+  {
+    id: 'construction-project-001',
+    name: 'Skyline Apartments',
+    description: '26-story residential complex featuring luxury amenities.',
+    status: 'active',
+    startDate: '2024-04-01',
+    endDate: '2025-04-01',
+    metrics: {
+      progress: 45,
+      budget: {
+        planned: 18000000,
+        actual: 17000000,
+        variance: 5.5
+      },
+      safety: {
+        incidents: 2,
+        trainingCompletion: 92
+      },
+      quality: {
+        inspectionsPassed: 28,
+        defectsReported: 1
+      }
+    }
+  }
+];
+
+export const financeProjects = [
+  {
+    id: 'finance-project-002',
+    name: 'GreenTech Headquarters',
+    description: 'Eco-friendly company headquarters implementing LEED Platinum standards.',
+    status: 'planning',
+    startDate: '2024-08-01',
+    endDate: '2025-12-01',
+    budget: {
+      total: 35000000,
+      allocated: 23000000,
+      spent: 8000000
+    },
+    financeMetrics: {
+      roi: 12.3,
+      npv: 7500000
+    }
+  }
+];
+
+export const executiveProjects = [
+  {
+    id: 'executive-project-003',
+    name: 'Global Trade Campus',
+    description: 'International trade center with a focus on sustainable architecture.',
+    status: 'active',
+    startDate: '2024-02-01',
+    endDate: '2025-10-15',
+    portfolioKPI: {
+      budgetPlanned: 72000000,
+      budgetActual: 68500000,
+      overallVariance: 4.8
+    },
+    strategyInsights: {
+      opportunities: 'Expansion into new markets',
+      risks: 'Fluctuating material costs'
+    }
+  }
 ];
 
 export default {
   luxuryOfficeProject,
-  portfolioProjects
+  portfolioProjects,
+  constructionProjects,
+  financeProjects,
+  executiveProjects
 };
