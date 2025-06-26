@@ -3,7 +3,7 @@
 -- Add financial metrics table
 CREATE TABLE project_financial_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     total_budget DECIMAL(15, 2),
     spent_to_date DECIMAL(15, 2),
     forecasted_cost DECIMAL(15, 2),
@@ -22,7 +22,7 @@ CREATE TABLE project_financial_metrics (
 -- Add construction metrics table
 CREATE TABLE project_construction_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     overall_progress NUMERIC,
     days_ahead_behind INTEGER,
     total_workforce INTEGER,
@@ -40,7 +40,7 @@ CREATE TABLE project_construction_metrics (
 -- Add executive insights metrics table
 CREATE TABLE project_executive_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     portfolio_value DECIMAL(15, 2),
     stakeholders INTEGER,
     risk_score NUMERIC,
@@ -53,7 +53,7 @@ CREATE TABLE project_executive_metrics (
 -- Add legal metrics table
 CREATE TABLE project_legal_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     contracts_active INTEGER,
     contracts_pending INTEGER,
     compliance_score NUMERIC,
@@ -67,7 +67,7 @@ CREATE TABLE project_legal_metrics (
 -- Add design metrics table
 CREATE TABLE project_design_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     design_progress NUMERIC,
     approved_drawings INTEGER,
     total_drawings INTEGER,
@@ -81,7 +81,7 @@ CREATE TABLE project_design_metrics (
 -- Add sustainability metrics table
 CREATE TABLE project_sustainability_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     leed_target VARCHAR(50),
     current_score NUMERIC,
     energy_efficiency NUMERIC,
@@ -95,7 +95,7 @@ CREATE TABLE project_sustainability_metrics (
 -- Add facilities metrics table
 CREATE TABLE project_facilities_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     operational_readiness NUMERIC,
     systems_commissioned INTEGER,
     maintenance_planned NUMERIC,
@@ -108,7 +108,7 @@ CREATE TABLE project_facilities_metrics (
 -- Add planning metrics table
 CREATE TABLE project_planning_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     master_plan_approval NUMERIC,
     zoning_compliance NUMERIC,
     community_engagement NUMERIC,
@@ -121,7 +121,7 @@ CREATE TABLE project_planning_metrics (
 -- Add preconstruction metrics table
 CREATE TABLE project_preconstruction_metrics (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     design_development NUMERIC,
     bidding_progress NUMERIC,
     contractor_selection NUMERIC,
@@ -261,7 +261,7 @@ CREATE TABLE project_timeline (
 -- Add project team table
 CREATE TABLE project_team (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE UNIQUE,
     project_manager VARCHAR(255),
     architect VARCHAR(255),
     contractor VARCHAR(255),
@@ -269,6 +269,18 @@ CREATE TABLE project_team (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add project insights unique constraint
+ALTER TABLE project_insights ADD CONSTRAINT project_insights_project_id_unique UNIQUE (project_id);
+
+-- Add composite unique constraints for multi-row tables
+ALTER TABLE project_monthly_spend ADD CONSTRAINT project_monthly_spend_project_month_unique UNIQUE (project_id, month);
+ALTER TABLE project_cash_flow ADD CONSTRAINT project_cash_flow_project_month_unique UNIQUE (project_id, month);
+ALTER TABLE project_cost_breakdown ADD CONSTRAINT project_cost_breakdown_project_category_unique UNIQUE (project_id, category);
+ALTER TABLE project_transactions ADD CONSTRAINT project_transactions_project_date_desc_unique UNIQUE (project_id, transaction_date, description);
+ALTER TABLE project_daily_progress ADD CONSTRAINT project_daily_progress_project_date_unique UNIQUE (project_id, progress_date);
+ALTER TABLE project_kpi_trends ADD CONSTRAINT project_kpi_trends_project_week_unique UNIQUE (project_id, week);
+ALTER TABLE project_timeline ADD CONSTRAINT project_timeline_project_phase_unique UNIQUE (project_id, phase);
 
 -- Create indexes for performance
 CREATE INDEX idx_project_financial_metrics_project_id ON project_financial_metrics(project_id);

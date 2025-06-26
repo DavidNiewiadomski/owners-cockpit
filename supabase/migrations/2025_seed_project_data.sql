@@ -1,10 +1,15 @@
 -- Data seeding script to populate all project metrics tables with comprehensive sample data
 
--- First, insert the sample projects if they don't exist
-INSERT INTO projects (id, name, description, status, start_date, end_date, org_id, created_at, updated_at, owner_id) VALUES
-('11111111-1111-1111-1111-111111111111', 'Downtown Office Building', 'A 12-story modern office building project in downtown area with sustainable design features.', 'active', '2024-01-15', '2024-12-31', '00000000-0000-0000-0000-000000000000', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012'),
-('22222222-2222-2222-2222-222222222222', 'Residential Complex Phase 1', 'Construction of 50-unit residential complex with modern amenities and green spaces.', 'planning', '2024-03-01', '2025-02-28', '00000000-0000-0000-0000-000000000000', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012'),
-('33333333-3333-3333-3333-333333333333', 'Highway Bridge Renovation', 'Major renovation and structural upgrades to the Main Street bridge infrastructure.', 'active', '2024-02-01', '2024-10-31', '00000000-0000-0000-0000-000000000000', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012')
+-- First, create a demo user if it doesn't exist
+INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at, created_at, updated_at, aud, role)
+VALUES ('12345678-1234-1234-1234-123456789012', 'demo@example.com', crypt('demo123', gen_salt('bf')), NOW(), NOW(), NOW(), 'authenticated', 'authenticated')
+ON CONFLICT (id) DO NOTHING;
+
+-- Insert the sample projects
+INSERT INTO projects (id, name, description, status, start_date, end_date, created_at, updated_at, owner_id) VALUES
+('11111111-1111-1111-1111-111111111111', 'Downtown Office Building', 'A 12-story modern office building project in downtown area with sustainable design features.', 'active', '2024-01-15', '2024-12-31', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012'),
+('22222222-2222-2222-2222-222222222222', 'Residential Complex Phase 1', 'Construction of 50-unit residential complex with modern amenities and green spaces.', 'planning', '2024-03-01', '2025-02-28', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012'),
+('33333333-3333-3333-3333-333333333333', 'Highway Bridge Renovation', 'Major renovation and structural upgrades to the Main Street bridge infrastructure.', 'active', '2024-02-01', '2024-10-31', '2024-01-01T00:00:00Z', '2024-06-20T00:00:00Z', '12345678-1234-1234-1234-123456789012')
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   description = EXCLUDED.description,

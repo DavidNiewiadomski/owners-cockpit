@@ -39,9 +39,15 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { getProjectMetrics } from '@/utils/projectSampleData';
-import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import {
+  useConstructionMetrics,
+  useDailyProgress,
+  useProjectInsights,
+  useProjectTeam,
+  useProjectTimeline
+} from '@/hooks/useProjectMetrics';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface ConstructionDashboardProps {
   projectId: string;
@@ -51,44 +57,52 @@ interface ConstructionDashboardProps {
 const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
   
-  // Get comprehensive project-specific data based on projectId
-  const projectData = getProjectMetrics(projectId, 'construction');
+  // Fetch all construction data from Supabase
+  const { data: constructionMetrics, isLoading: loadingConstruction } = useConstructionMetrics(projectId);
+  const { data: dailyProgressData, isLoading: loadingProgress } = useDailyProgress(projectId);
+  const { data: insights, isLoading: loadingInsights } = useProjectInsights(projectId);
+  const { data: team, isLoading: loadingTeam } = useProjectTeam(projectId);
+  const { data: timeline, isLoading: loadingTimeline } = useProjectTimeline(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
   const projectName = selectedProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
+  
+  // Show loading state if any data is still loading
+  const isLoading = loadingConstruction || loadingProgress || loadingInsights || loadingTeam || loadingTimeline;
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-white text-lg">Loading construction data...</div>
+      </div>
+    );
+  }
+  
+  if (!constructionMetrics) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-slate-400 text-lg">No construction data available for this project.</div>
+      </div>
+    );
+  }
 
-  // Use project-specific construction metrics or fallback
-  const constructionMetrics = projectData ? {
-    overallProgress: projectData.overallProgress,
-    daysAheadBehind: projectData.daysAheadBehind,
-    totalWorkforce: projectData.totalWorkforce,
-    activeSubcontractors: projectData.activeSubcontractors,
-    completedMilestones: projectData.completedMilestones,
-    totalMilestones: projectData.totalMilestones,
-    qualityScore: projectData.qualityScore,
-    safetyScore: projectData.safetyScore,
-    openRFIs: projectData.openRFIs,
-    pendingSubmittals: projectData.pendingSubmittals,
+  // Format construction metrics from database
+  const metricsData = {
+    overallProgress: constructionMetrics.overall_progress,
+    daysAheadBehind: constructionMetrics.days_ahead_behind,
+    totalWorkforce: constructionMetrics.total_workforce,
+    activeSubcontractors: constructionMetrics.active_subcontractors,
+    completedMilestones: constructionMetrics.completed_milestones,
+    totalMilestones: constructionMetrics.total_milestones,
+    qualityScore: constructionMetrics.quality_score,
+    safetyScore: constructionMetrics.safety_score,
+    openRFIs: constructionMetrics.open_rfis,
+    pendingSubmittals: constructionMetrics.pending_submittals,
     budgetVariance: -2.3,
     scheduleVariance: 1.2,
-    activeWorkOrders: 156,
-    completedInspections: 89
-  } : {
-    overallProgress: 68,
-    daysAheadBehind: -3,
-    totalWorkforce: 145,
-    activeSubcontractors: 12,
-    completedMilestones: 8,
-    totalMilestones: 12,
-    qualityScore: 94,
-    safetyScore: 97,
-    budgetVariance: -2.3,
-    scheduleVariance: 1.2,
-    openRFIs: 23,
-    pendingSubmittals: 8,
     activeWorkOrders: 156,
     completedInspections: 89
   };
@@ -289,10 +303,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <HardHat className="w-4 h-4 mr-2" />
-            {constructionMetrics.overallProgress}% Complete
+            {metricsData.overallProgress}% Complete
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
-            {Math.abs(constructionMetrics.daysAheadBehind)} Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}
+            {Math.abs(metricsData.daysAheadBehind)} Days {metricsData.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}
           </Badge>
         </div>
       </div>
@@ -312,27 +326,27 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           {/* Owner-Focused Metrics */}
           <div className="grid grid-cols-4 gap-4">
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{constructionMetrics.overallProgress}%</div>
-              <div className="text-sm text-slate-400">Complete</div>
-            </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{constructionMetrics.safetyScore}%</div>
-              <div className="text-sm text-slate-400">Safety Score</div>
-            </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{constructionMetrics.qualityScore}%</div>
-              <div className="text-sm text-slate-400">Quality Score</div>
-            </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{Math.abs(constructionMetrics.daysAheadBehind)}</div>
-              <div className="text-sm text-slate-400">Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}</div>
+                <div className="text-2xl font-bold text-white">{metricsData.overallProgress}%</div>
+                <div className="text-sm text-slate-400">Complete</div>
+              </div>
+              <div className="bg-[#0D1117] rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{metricsData.safetyScore}%</div>
+                <div className="text-sm text-slate-400">Safety Score</div>
+              </div>
+              <div className="bg-[#0D1117] rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{metricsData.qualityScore}%</div>
+                <div className="text-sm text-slate-400">Quality Score</div>
+              </div>
+              <div className="bg-[#0D1117] rounded-lg p-4 text-center">
+                <div className="text-2xl font-bold text-white">{Math.abs(metricsData.daysAheadBehind)}</div>
+                <div className="text-sm text-slate-400">Days {metricsData.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}</div>
             </div>
           </div>
           
           {/* Owner Summary */}
           <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
-              Your construction project is {constructionMetrics.overallProgress}% complete and running {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead of' : 'behind'} schedule. Quality standards are maintained at {constructionMetrics.qualityScore}% with excellent safety performance at {constructionMetrics.safetyScore}%. All contractor teams are performing to specifications.
+              Your construction project is {metricsData.overallProgress}% complete and running {Math.abs(metricsData.daysAheadBehind)} days {metricsData.daysAheadBehind < 0 ? 'ahead of' : 'behind'} schedule. Quality standards are maintained at {metricsData.qualityScore}% with excellent safety performance at {metricsData.safetyScore}%. All contractor teams are performing to specifications.
             </p>
           </div>
           
@@ -344,10 +358,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                 <span className="text-sm font-medium text-white">Investment Status</span>
               </div>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li>• Project {constructionMetrics.overallProgress}% complete with {constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} major milestones achieved</li>
-                <li>• Contractors maintaining {constructionMetrics.safetyScore}% safety standards - protecting against liability</li>
-                <li>• Quality control at {constructionMetrics.qualityScore}% ensures asset value protection</li>
-                <li>• {constructionMetrics.openRFIs} open information requests - monitor for potential delays</li>
+                <li>• Project {metricsData.overallProgress}% complete with {metricsData.completedMilestones}/{metricsData.totalMilestones} major milestones achieved</li>
+                <li>• Contractors maintaining {metricsData.safetyScore}% safety standards - protecting against liability</li>
+                <li>• Quality control at {metricsData.qualityScore}% ensures asset value protection</li>
+                <li>• {metricsData.openRFIs} open information requests - monitor for potential delays</li>
               </ul>
             </div>
             <div>
@@ -421,9 +435,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             <Building className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{constructionMetrics.overallProgress}%</div>
-            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} milestones</div>
-            <Progress value={constructionMetrics.overallProgress} className="mt-3 h-2" />
+            <div className="text-2xl font-bold text-white">{metricsData.overallProgress}%</div>
+            <div className="text-xs text-slate-400 mt-1">{metricsData.completedMilestones}/{metricsData.totalMilestones} milestones</div>
+            <Progress value={metricsData.overallProgress} className="mt-3 h-2" />
           </CardContent>
         </Card>
 
@@ -434,8 +448,8 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             <Users className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{constructionMetrics.totalWorkforce}</div>
-            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.activeSubcontractors} subcontractors</div>
+            <div className="text-2xl font-bold text-white">{metricsData.totalWorkforce}</div>
+            <div className="text-xs text-slate-400 mt-1">{metricsData.activeSubcontractors} subcontractors</div>
             <div className="flex items-center mt-2 text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">+8% productivity</span>
@@ -450,7 +464,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             <Shield className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
+            <div className="text-2xl font-bold text-green-600">{metricsData.safetyScore}%</div>
             <div className="text-xs text-slate-400 mt-1">{safetyMetrics.recordableDays} days without incident</div>
             <div className="flex items-center mt-2 text-green-600">
               <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -466,8 +480,8 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             <Clock className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{constructionMetrics.openRFIs + constructionMetrics.pendingSubmittals}</div>
-            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.openRFIs} RFIs, {constructionMetrics.pendingSubmittals} submittals</div>
+            <div className="text-2xl font-bold text-white">{metricsData.openRFIs + metricsData.pendingSubmittals}</div>
+            <div className="text-xs text-slate-400 mt-1">{metricsData.openRFIs} RFIs, {metricsData.pendingSubmittals} submittals</div>
             <div className="flex items-center mt-2 text-green-600">
               <TrendingDown className="w-4 h-4 mr-1" />
               <span className="text-sm">-12% this week</span>
@@ -847,24 +861,24 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                 <span className="font-medium text-orange-300">Ahead of Schedule</span>
               </div>
               <div className="text-sm text-orange-300">
-                {Math.abs(constructionMetrics.daysAheadBehind)} days ahead of planned timeline
+                {Math.abs(metricsData.daysAheadBehind)} days ahead of planned timeline
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-bold text-orange-600">{constructionMetrics.overallProgress}%</div>
+                <div className="font-bold text-orange-600">{metricsData.overallProgress}%</div>
                 <div className="text-slate-400">Complete</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-amber-600">{constructionMetrics.totalWorkforce}</div>
+                <div className="font-bold text-amber-600">{metricsData.totalWorkforce}</div>
                 <div className="text-slate-400">Workers</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
+                <div className="font-bold text-green-600">{metricsData.safetyScore}%</div>
                 <div className="text-slate-400">Safety</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-blue-600">{constructionMetrics.activeWorkOrders}</div>
+                <div className="font-bold text-blue-600">{metricsData.activeWorkOrders}</div>
                 <div className="text-slate-400">Active Work Orders</div>
               </div>
             </div>
