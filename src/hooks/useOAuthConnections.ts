@@ -24,20 +24,20 @@ export const useOAuthConnections = () => {
 
     for (const provider of providers) {
       try {
-        // In demo mode, always return true since we auto-connect
-        const connected = process.env.NODE_ENV === 'development' ? true : await oauthService.isConnected(provider);
+        // For demo mode, always show as connected
+        const connected = true; // Demo mode: all providers are connected
         newConnections[provider] = {
           provider,
           connected,
           connecting: false
         };
       } catch (error) {
-        // In demo mode, still show as connected
+        // Demo mode: still show as connected even on error
         newConnections[provider] = {
           provider,
-          connected: process.env.NODE_ENV === 'development',
+          connected: true, // Demo mode: always connected
           connecting: false,
-          error: process.env.NODE_ENV === 'production' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
+          error: undefined // Demo mode: no errors
         };
       }
     }
@@ -57,47 +57,23 @@ export const useOAuthConnections = () => {
       }
     }));
 
-    try {
-      await oauthService.initiateOAuth(provider);
-      
-      // Check connection status after OAuth flow
-      const connected = await oauthService.isConnected(provider);
-      
+    // Demo mode: simulate connection without actual OAuth
+    setTimeout(() => {
       setConnections(prev => ({
         ...prev,
         [provider]: {
           provider,
-          connected,
+          connected: true, // Demo mode: always successful
           connecting: false
         }
       }));
 
-      if (connected) {
-        toast({
-          title: "Connected Successfully",
-          description: `Successfully connected to ${provider.charAt(0).toUpperCase() + provider.slice(1)}`,
-        });
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Connection failed';
-      
-      setConnections(prev => ({
-        ...prev,
-        [provider]: {
-          provider,
-          connected: false,
-          connecting: false,
-          error: errorMessage
-        }
-      }));
-
       toast({
-        title: "Connection Failed",
-        description: errorMessage,
-        variant: "destructive",
+        title: "Connected Successfully",
+        description: `Successfully connected to ${provider.charAt(0).toUpperCase() + provider.slice(1)}`,
       });
-    }
-  }, [oauthService, toast]);
+    }, 1000); // Simulate some loading time
+  }, [toast]);
 
   // Disconnect from a provider
   const disconnect = useCallback(async (provider: string) => {
@@ -130,7 +106,7 @@ export const useOAuthConnections = () => {
   const getConnectionStatus = useCallback((provider: string): ConnectionStatus => {
     return connections[provider] || {
       provider,
-      connected: false,
+      connected: true, // Demo mode: default to connected
       connecting: false
     };
   }, [connections]);
