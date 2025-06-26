@@ -377,6 +377,44 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </CardContent>
       </Card>
 
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Target className="w-4 h-4 mr-2" />
+              Finalize Site Selection
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Stakeholder Meetings
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Review Business Case
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Shield className="w-4 h-4 mr-2" />
+              Update Risk Mitigation
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Financial Model Review
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Market Analysis Update
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Key Planning KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Overall Planning Progress */}
@@ -705,41 +743,6 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Compass className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Finalize Site Selection
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Schedule Stakeholder Meetings
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Review Business Case
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Update Risk Mitigation
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Financial Model Review
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" className="w-full justify-between text-sm">
-              Market Analysis Update
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

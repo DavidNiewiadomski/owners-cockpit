@@ -15,7 +15,8 @@ import {
   Calculator,
   FileText,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Clock
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
@@ -223,6 +224,44 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
                 </li>
               </ul>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Receipt className="w-4 h-4 mr-2" />
+              Approve Pending Invoices
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Calculator className="w-4 h-4 mr-2" />
+              Review Budget Variance
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Generate Financial Report
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CreditCard className="w-4 h-4 mr-2" />
+              Update Cash Flow Forecast
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <PieChart className="w-4 h-4 mr-2" />
+              Export Cost Analysis
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Banknote className="w-4 h-4 mr-2" />
+              Process Draw Request
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -530,41 +569,6 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              Quick Actions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <Receipt className="h-4 w-4 mr-2" />
-              Approve Pending Invoices
-            </Button>
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <Calculator className="h-4 w-4 mr-2" />
-              Review Budget Variance
-            </Button>
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Generate Financial Report
-            </Button>
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Update Cash Flow Forecast
-            </Button>
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <PieChart className="h-4 w-4 mr-2" />
-              Export Cost Analysis
-            </Button>
-            <Button variant="outline" className="w-full justify-start text-sm">
-              <Banknote className="h-4 w-4 mr-2" />
-              Process Draw Request
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
