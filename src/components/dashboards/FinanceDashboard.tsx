@@ -120,19 +120,79 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* AI Financial Insights */}
-      <Card className="border-l-4 border-l-green-500 bg-gradient-to-r from-green-50 to-white dark:from-green-950 dark:to-gray-900">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <TrendingUp className="w-5 h-5 text-green-600" />
-            AI Financial Intelligence
-          </CardTitle>
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <TrendingUp className="w-5 h-5 text-green-400" />
+              AI Financial Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Budget Performance:</strong> {budgetUtilization.toFixed(1)}% budget utilized with {variancePercent > 0 ? '+' : ''}{variancePercent.toFixed(1)}% variance from forecast. 
-            <strong>Cash Flow:</strong> {contingencyUsed.toFixed(1)}% contingency used, maintaining healthy reserve levels. 
-            <strong>Investment Health:</strong> {project.financial.roi.toFixed(1)}% ROI projection exceeding market benchmarks, consider accelerating pre-leasing initiatives.
-          </p>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{budgetUtilization.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">Budget Used</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{project.financial.roi.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">ROI</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{variancePercent > 0 ? '+' : ''}{variancePercent.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">Variance</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{contingencyUsed.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">Contingency</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {project.financial.roi.toFixed(1)}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• Budget tracking at {budgetUtilization.toFixed(1)}% with ${(project.financial.spentToDate / 1000000).toFixed(1)}M of ${(project.financial.totalBudget / 1000000).toFixed(1)}M spent</li>
+                <li>• Financial variance {variancePercent > 0 ? 'above' : 'below'} forecast by {Math.abs(variancePercent).toFixed(1)}%</li>
+                <li>• Strong ROI projection at {project.financial.roi.toFixed(1)}% vs market average 12-15%</li>
+                <li>• Contingency reserves healthy at {contingencyUsed.toFixed(1)}% utilization</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Accelerate pre-leasing initiatives to capitalize on strong ROI potential</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Monitor budget variance closely to maintain financial targets</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Consider refinancing options to optimize interest expense</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

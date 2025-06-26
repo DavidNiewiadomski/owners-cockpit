@@ -298,19 +298,79 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId }) => {
       </div>
 
       {/* AI Planning Insights */}
-      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-gray-900">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Zap className="w-5 h-5 text-blue-600" />
-            AI Strategic Insights
-          </CardTitle>
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Zap className="w-5 h-5 text-blue-400" />
+              AI Strategic Planning Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Site Recommendation:</strong> Downtown Business District scores highest (92/100) despite higher cost due to prime location and transport access. 
-            <strong>Market Outlook:</strong> Strong demand for Class A office space with 94% occupancy rates. ESG requirements becoming critical for tenant attraction. 
-            <strong>Next Steps:</strong> Finalize site selection by July 1st, secure zoning pre-approval, and begin stakeholder alignment for business case approval.
-          </p>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{planningMetrics.overallProgress}%</div>
+              <div className="text-sm text-slate-400">Planning Progress</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{siteOptions.find(s => s.selected)?.score || 0}</div>
+              <div className="text-sm text-slate-400">Site Score</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">18.2%</div>
+              <div className="text-sm text-slate-400">Projected ROI</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{riskFactors.filter(r => r.level === 'Medium').length}</div>
+              <div className="text-sm text-slate-400">Active Risks</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Strategic planning at {planningMetrics.overallProgress}% completion with Downtown Business District selected (score: 92/100). Market analysis shows strong demand for Class A office space with 94% occupancy rates. Financial projections indicate 18.2% ROI with manageable risk profile.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• Site selection favors Downtown Business District with 92/100 score despite higher cost</li>
+                <li>• Market demand strong with 94% occupancy rates and $65/sq ft target achievable</li>
+                <li>• Financial model projects 18.2% IRR exceeding 15% target threshold</li>
+                <li>• Stakeholder alignment proceeding with {stakeholders.filter(s => s.status === 'Supportive').length} supportive parties</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Finalize site selection by July 1st to maintain project timeline</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Secure zoning pre-approval to mitigate regulatory risks</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Begin stakeholder alignment for business case approval</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

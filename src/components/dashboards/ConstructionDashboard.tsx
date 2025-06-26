@@ -250,19 +250,79 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* AI Construction Insights */}
-      <Card className="border-l-4 border-l-orange-500 bg-gradient-to-r from-orange-50 to-white dark:from-orange-950 dark:to-gray-900">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Activity className="w-5 h-5 text-orange-600" />
-            AI Construction Insights
-          </CardTitle>
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Activity className="w-5 h-5 text-orange-400" />
+              AI Construction Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Progress Status:</strong> {constructionMetrics.overallProgress}% complete, {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead' : 'behind'} schedule with {constructionMetrics.totalWorkforce} active workers. 
-            <strong>Safety Performance:</strong> {constructionMetrics.safetyScore}% safety score, {safetyMetrics.recordableDays} days without incidents. 
-            <strong>Key Focus:</strong> Trade coordination between floors 3-4 requires attention; HVAC and electrical crews need sequencing optimization.
-          </p>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{constructionMetrics.overallProgress}%</div>
+              <div className="text-sm text-slate-400">Complete</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{constructionMetrics.totalWorkforce}</div>
+              <div className="text-sm text-slate-400">Workforce</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{constructionMetrics.safetyScore}%</div>
+              <div className="text-sm text-slate-400">Safety Score</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{Math.abs(constructionMetrics.daysAheadBehind)}</div>
+              <div className="text-sm text-slate-400">Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Construction is {constructionMetrics.overallProgress}% complete with {constructionMetrics.totalWorkforce} active workers. Safety performance at {constructionMetrics.safetyScore}% with {safetyMetrics.recordableDays} days without incidents. Project running {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead of' : 'behind'} schedule.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• Construction progress at {constructionMetrics.overallProgress}% with {constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} milestones complete</li>
+                <li>• Safety record excellent with {safetyMetrics.recordableDays} days without recordable incidents</li>
+                <li>• Workforce of {constructionMetrics.totalWorkforce} across {constructionMetrics.activeSubcontractors} subcontractors</li>
+                <li>• Quality metrics showing {constructionMetrics.qualityScore}% score with {constructionMetrics.openRFIs} open RFIs</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Optimize trade coordination between floors 3-4 for HVAC and electrical</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Continue safety protocols to maintain excellent record</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Address {constructionMetrics.openRFIs} open RFIs to prevent delays</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

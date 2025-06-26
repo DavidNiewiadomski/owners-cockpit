@@ -197,19 +197,79 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
     {/* AI Design Insights */}
-    <Card className="border-l-4 border-l-purple-500 bg-gradient-to-r from-purple-50 to-white dark:from-purple-950 dark:to-gray-900">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-          <Lightbulb className="w-5 h-5 text-purple-600" />
-          AI Design Insights
-        </CardTitle>
+    <Card className="bg-slate-900 border-slate-800">
+      <CardHeader className="pb-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Lightbulb className="w-5 h-5 text-purple-400" />
+            AI Design Insights
+          </CardTitle>
+          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+        </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          <strong>Current Phase:</strong> Construction Documents at {designPhases.find(phase => phase.id === 'construction-docs').progress}% completion. 
-          <strong>Budget Status:</strong> {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% of design budget utilized with {designMetrics.changeOrders} change orders pending. 
-          <strong>Priority Action:</strong> Lobby marble selection requires immediate approval to maintain schedule alignment.
-        </p>
+      <CardContent className="space-y-4">
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-4 gap-4">
+          <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-white">{designPhases.find(phase => phase.id === 'construction-docs')?.progress}%</div>
+            <div className="text-sm text-slate-400">Design Progress</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-white">{((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}%</div>
+            <div className="text-sm text-slate-400">Budget Used</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-white">{designMetrics.changeOrders}</div>
+            <div className="text-sm text-slate-400">Change Orders</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="text-2xl font-bold text-white">{designMetrics.documentsApproved}</div>
+            <div className="text-sm text-slate-400">Docs Approved</div>
+          </div>
+        </div>
+        
+        {/* Summary */}
+        <div className="bg-slate-800/50 rounded-lg p-4">
+          <p className="text-slate-300 text-sm">
+            Design portfolio shows {designPhases.find(phase => phase.id === 'construction-docs')?.progress}% completion with {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% budget utilization. {designMetrics.changeOrders} change orders pending review. Lobby marble selection requires immediate approval for schedule alignment.
+          </p>
+        </div>
+        
+        {/* Key Insights and Recommendations */}
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+              <span className="text-sm font-medium text-white">Key Insights</span>
+            </div>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li>• Construction documents at {designPhases.find(phase => phase.id === 'construction-docs')?.progress}% with {designPhases.find(phase => phase.id === 'construction-docs')?.documents} documents</li>
+              <li>• Material selections {materialSelections.filter(m => m.status === 'approved').length} approved, {materialSelections.filter(m => m.status === 'pending-approval').length} pending</li>
+              <li>• Design team delivering {designProgress.toFixed(1)}% completion across all phases</li>
+              <li>• Quality submissions showing {recentDesignSubmissions.filter(s => s.status === 'approved').length} approvals vs {recentDesignSubmissions.filter(s => s.status === 'pending-approval').length} pending</li>
+            </ul>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span className="text-sm font-medium text-white">Recommendations</span>
+            </div>
+            <ul className="space-y-2 text-sm text-slate-300">
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-0.5">→</span>
+                <span>Prioritize lobby marble selection approval to maintain critical path</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-0.5">→</span>
+                <span>Accelerate shop drawing reviews to prevent downstream delays</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400 mt-0.5">→</span>
+                <span>Schedule material supplier coordination meetings for floors 3-4</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </CardContent>
     </Card>
 

@@ -36,19 +36,79 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* AI Project Insights */}
-      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-gray-900">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
-            AI Project Intelligence
-          </CardTitle>
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <BarChart3 className="w-5 h-5 text-blue-400" />
+              AI Project Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
         </CardHeader>
-        <CardContent>
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <strong>Project Status:</strong> {project.phase} phase, {scheduleProgress}% complete with {roi.toFixed(1)}% projected ROI. 
-            <strong>Financial Health:</strong> {budgetUsed.toFixed(1)}% budget utilized, tracking {budgetUsed <= scheduleProgress ? 'on budget' : 'over budget'}. 
-            <strong>Key Insight:</strong> Pre-leasing momentum at {preLeasingRate.toFixed(1)}% indicates strong market demand, consider accelerating tenant outreach.
-          </p>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{scheduleProgress}%</div>
+              <div className="text-sm text-slate-400">Progress</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{budgetUsed.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">Budget Used</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{roi.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">ROI</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{preLeasingRate.toFixed(1)}%</div>
+              <div className="text-sm text-slate-400">Pre-Leased</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Project is {scheduleProgress}% complete with {budgetUsed.toFixed(1)}% budget utilized and {roi.toFixed(1)}% projected ROI. Pre-leasing at {preLeasingRate.toFixed(1)}% indicates strong market demand. Overall project health is {budgetUsed <= scheduleProgress ? 'on track' : 'requires attention'}.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• Schedule tracking {scheduleProgress}% complete with {project.schedule.remainingDays} days remaining</li>
+                <li>• Financial performance showing {budgetUsed <= scheduleProgress ? 'healthy' : 'elevated'} budget utilization</li>
+                <li>• Pre-leasing momentum exceeding targets at {preLeasingRate.toFixed(1)}% occupancy</li>
+                <li>• Safety record maintained at {project.safety.complianceScore}% compliance rate</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Accelerate tenant outreach to capitalize on strong market demand</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Monitor budget variance closely to maintain financial targets</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Continue current safety protocols to maintain compliance</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

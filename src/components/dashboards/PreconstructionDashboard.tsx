@@ -132,6 +132,83 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* AI Preconstruction Insights */}
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <ClipboardList className="w-5 h-5 text-purple-400" />
+              AI Preconstruction Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{preconstructionMetrics.designProgress}%</div>
+              <div className="text-sm text-slate-400">Design Progress</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{preconstructionMetrics.permitsApproved}/{preconstructionMetrics.totalPermits}</div>
+              <div className="text-sm text-slate-400">Permits</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{preconstructionMetrics.bidsReceived}</div>
+              <div className="text-sm text-slate-400">Bids Received</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{Math.abs(preconstructionMetrics.scheduleVariance)}</div>
+              <div className="text-sm text-slate-400">Days Ahead</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Preconstruction phase at {preconstructionMetrics.designProgress}% design completion with {preconstructionMetrics.permitsApproved} of {preconstructionMetrics.totalPermits} permits approved. Bidding process yielded {preconstructionMetrics.bidsReceived} competitive proposals with {preconstructionMetrics.bidsEvaluated} evaluated. Project running {Math.abs(preconstructionMetrics.scheduleVariance)} days ahead of schedule.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• Design development at {preconstructionMetrics.designProgress}% with strong contractor engagement</li>
+                <li>• Permit approval rate at {Math.round((preconstructionMetrics.permitsApproved / preconstructionMetrics.totalPermits) * 100)}% indicates smooth regulatory process</li>
+                <li>• Bidding competition healthy with {preconstructionMetrics.bidsReceived} proposals from pre-qualified contractors</li>
+                <li>• Budget performance within {preconstructionMetrics.budgetVariance}% variance of forecast</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Finalize contractor selection to maintain schedule advantage</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Expedite remaining permit applications to avoid delays</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Lock in material pricing to mitigate supply chain risks</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

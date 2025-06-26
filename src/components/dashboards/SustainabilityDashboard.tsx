@@ -110,6 +110,83 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* AI Sustainability Insights */}
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Leaf className="w-5 h-5 text-green-400" />
+              AI Sustainability Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{sustainabilityMetrics.leedScore}</div>
+              <div className="text-sm text-slate-400">LEED Score</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{sustainabilityMetrics.energyEfficiency}%</div>
+              <div className="text-sm text-slate-400">Energy Savings</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{sustainabilityMetrics.waterReduction}%</div>
+              <div className="text-sm text-slate-400">Water Reduction</div>
+            </div>
+            <div className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-white">{sustainabilityMetrics.carbonSaved}</div>
+              <div className="text-sm text-slate-400">CO2 Saved (tons)</div>
+            </div>
+          </div>
+          
+          {/* Summary */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              Sustainability performance exceeds targets with LEED score of {sustainabilityMetrics.leedScore} points (target: {sustainabilityMetrics.leedTarget}). Energy efficiency at {sustainabilityMetrics.energyEfficiency}% improvement, water reduction {sustainabilityMetrics.waterReduction}%, saving {sustainabilityMetrics.carbonSaved} tons CO2 annually.
+            </p>
+          </div>
+          
+          {/* Key Insights and Recommendations */}
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Key Insights</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li>• LEED certification on track with {sustainabilityMetrics.leedScore} points vs {sustainabilityMetrics.leedTarget} target</li>
+                <li>• Energy performance {sustainabilityMetrics.energyEfficiency}% above baseline with solar capacity of {sustainabilityMetrics.solarCapacity}kW</li>
+                <li>• Water conservation achieving {sustainabilityMetrics.waterReduction}% reduction vs conventional design</li>
+                <li>• Waste recycling at {sustainabilityMetrics.wasteRecycling}% during construction phase</li>
+              </ul>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-sm font-medium text-white">Recommendations</span>
+              </div>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Continue ESG reporting excellence to maintain certification timeline</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Optimize HVAC scheduling to maximize energy efficiency gains</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>Implement rainwater harvesting to exceed water reduction targets</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
