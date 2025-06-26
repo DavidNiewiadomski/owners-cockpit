@@ -19,6 +19,10 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { currentRole } = useRole();
   const [activeCategory, setActiveCategory] = useState<string>('Overview');
+  
+  console.log('DEBUG Dashboard - projectId:', projectId);
+  console.log('DEBUG Dashboard - currentRole:', currentRole);
+  console.log('DEBUG Dashboard - activeCategory:', activeCategory);
 
   useEffect(() => {
     const getActiveCategory = () => {
@@ -60,32 +64,40 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
 
   const effectiveProjectId = projectId || 'portfolio';
 
-  // When no project is selected, render portfolio-level dashboards based on role
-  if (!projectId) {
-    switch (currentRole) {
-      case 'Executive': return <ExecutiveDashboard projectId={effectiveProjectId} />;
-      case 'Preconstruction': return <PreconstructionDashboard projectId={effectiveProjectId} />;
-      case 'Construction': return <ConstructionDashboard projectId={effectiveProjectId} />;
-      case 'Facilities': return <FacilitiesDashboard projectId={effectiveProjectId} />;
-      case 'Sustainability': return <SustainabilityDashboard projectId={effectiveProjectId} />;
-      case 'Legal': return <LegalDashboard projectId={effectiveProjectId} />;
-      case 'Finance': return <FinanceDashboard projectId={effectiveProjectId} />;
-      default: return <ExecutiveDashboard projectId={effectiveProjectId} />;
-    }
-  }
+  console.log('DEBUG: About to render dashboard for activeCategory:', activeCategory);
 
-  // When a project is selected, use activeCategory to render the correct dashboard
+  // ALWAYS use activeCategory to render the correct dashboard
   switch (activeCategory) {
-    case 'Overview': return <OverviewDashboard projectId={effectiveProjectId} />;
-    case 'Planning': return <PlanningDashboard projectId={effectiveProjectId} />;
-    case 'Design': return <DesignDashboard projectId={effectiveProjectId} />;
-    case 'Preconstruction': return <PreconstructionDashboard projectId={effectiveProjectId} />;
-    case 'Construction': return <ConstructionDashboard projectId={effectiveProjectId} />;
-    case 'Sustainability': return <SustainabilityDashboard projectId={effectiveProjectId} />;
-    case 'Legal': return <LegalDashboard projectId={effectiveProjectId} />;
-    case 'Finance': return <FinanceDashboard projectId={effectiveProjectId} />;
-    case 'Facilities': return <FacilitiesDashboard projectId={effectiveProjectId} />;
-    default: return <OverviewDashboard projectId={effectiveProjectId} />;
+    case 'Overview': 
+      console.log('DEBUG: Rendering OverviewDashboard');
+      return <OverviewDashboard projectId={effectiveProjectId} />;
+    case 'Planning': 
+      console.log('DEBUG: Rendering PlanningDashboard');
+      return <PlanningDashboard projectId={effectiveProjectId} />;
+    case 'Design': 
+      console.log('DEBUG: Rendering DesignDashboard');
+      return <DesignDashboard projectId={effectiveProjectId} />;
+    case 'Preconstruction': 
+      console.log('DEBUG: Rendering PreconstructionDashboard');
+      return <PreconstructionDashboard projectId={effectiveProjectId} />;
+    case 'Construction': 
+      console.log('DEBUG: Rendering ConstructionDashboard');
+      return <ConstructionDashboard projectId={effectiveProjectId} />;
+    case 'Sustainability': 
+      console.log('DEBUG: Rendering SustainabilityDashboard');
+      return <SustainabilityDashboard projectId={effectiveProjectId} />;
+    case 'Legal': 
+      console.log('DEBUG: Rendering LegalDashboard');
+      return <LegalDashboard projectId={effectiveProjectId} />;
+    case 'Finance': 
+      console.log('DEBUG: Rendering FinanceDashboard');
+      return <FinanceDashboard projectId={effectiveProjectId} />;
+    case 'Facilities': 
+      console.log('DEBUG: Rendering FacilitiesDashboard');
+      return <FacilitiesDashboard projectId={effectiveProjectId} />;
+    default: 
+      console.log('DEBUG: Rendering DEFAULT OverviewDashboard for activeCategory:', activeCategory);
+      return <OverviewDashboard projectId={effectiveProjectId} />;
   }
 };
 
