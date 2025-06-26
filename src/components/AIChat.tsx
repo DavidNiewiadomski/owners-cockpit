@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, KeyboardEvent } from 'react';
 import { conversationalAI } from '../services/conversationalAI';
 import { elevenLabsVoiceService } from '../services/elevenLabsVoice';
 
-const AIChat = () => {
-  const [messages, setMessages] = useState([]);
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+const AIChat: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +61,7 @@ const AIChat = () => {
         type="text"
         value={input}
         onChange={e => setInput(e.target.value)}
-        onKeyDown={e => {
+        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Enter') handleSend();
         }}
       />

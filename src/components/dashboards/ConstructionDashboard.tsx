@@ -249,12 +249,33 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* Construction Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            Construction Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {project.name} • Live Construction Progress & Management
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <HardHat className="w-4 h-4 mr-2" />
+            {constructionMetrics.overallProgress}% Complete
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            {Math.abs(constructionMetrics.daysAheadBehind)} Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}
+          </Badge>
+        </div>
+      </div>
+
       {/* AI Construction Insights */}
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-              <Activity className="w-5 h-5 text-orange-400" />
+              <Activity className="w-5 h-5 text-green-400" />
               AI Construction Insights
             </CardTitle>
             <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
@@ -325,27 +346,6 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </div>
         </CardContent>
       </Card>
-
-      {/* Construction Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Construction Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Live Construction Progress & Management
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-            <HardHat className="w-4 h-4 mr-2" />
-            {constructionMetrics.overallProgress}% Complete
-          </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-            {Math.abs(constructionMetrics.daysAheadBehind)} Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}
-          </Badge>
-        </div>
-      </div>
 
       {/* Quick Actions */}
       <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">

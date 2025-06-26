@@ -196,17 +196,38 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
-    {/* AI Design Insights */}
-    <Card className="bg-slate-900 border-slate-800">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-            <Lightbulb className="w-5 h-5 text-purple-400" />
-            AI Design Insights
-          </CardTitle>
-          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+      {/* Design Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            Design & Architecture Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {project.name} • Architectural Design & Materials
+          </p>
         </div>
-      </CardHeader>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <Palette className="w-4 h-4 mr-2" />
+            {designProgress.toFixed(1)}% Complete
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            {designMetrics.changeOrders} Change Orders
+          </Badge>
+        </div>
+      </div>
+
+      {/* AI Design Insights */}
+      <Card className="bg-slate-900 border-slate-800">
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Lightbulb className="w-5 h-5 text-green-400" />
+              AI Design Insights
+            </CardTitle>
+            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+          </div>
+        </CardHeader>
       <CardContent className="space-y-4">
         {/* Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
@@ -273,65 +294,43 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
       </CardContent>
     </Card>
 
-      
-    {/* Design Header */}
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-          Design & Architecture Dashboard
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
-          {project.name} • Architectural Design & Materials
-        </p>
-      </div>
-      <div className="flex items-center gap-3">
-        <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-          <Palette className="w-4 h-4 mr-2" />
-          {designProgress.toFixed(1)}% Complete
-        </Badge>
-        <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-          {designMetrics.changeOrders} Change Orders
-        </Badge>
-      </div>
-    </div>
-
-    {/* Quick Actions */}
-    <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-          <Lightbulb className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-          Quick Actions
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          <Button className="justify-start bg-blue-600 hover:bg-blue-700 text-white">
-            <FileImage className="w-4 h-4 mr-2" />
-            Upload Design
-          </Button>
-          <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-            <Eye className="w-4 h-4 mr-2" />
-            Review Submissions
-          </Button>
-          <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-            <MessageSquare className="w-4 h-4 mr-2" />
-            Designer Meeting
-          </Button>
-          <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-            <Download className="w-4 h-4 mr-2" />
-            Download Plans
-          </Button>
-          <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-            <Ruler className="w-4 h-4 mr-2" />
-            3D Model View
-          </Button>
-          <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-            <CheckCircle2 className="w-4 h-4 mr-2" />
-            Approve Changes
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      {/* Quick Actions */}
+      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Lightbulb className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            Quick Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <Button className="justify-start bg-blue-600 hover:bg-blue-700 text-white">
+              <FileImage className="w-4 h-4 mr-2" />
+              Upload Design
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Eye className="w-4 h-4 mr-2" />
+              Review Submissions
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Designer Meeting
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Download className="w-4 h-4 mr-2" />
+              Download Plans
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <Ruler className="w-4 h-4 mr-2" />
+              3D Model View
+            </Button>
+            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approve Changes
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Design KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

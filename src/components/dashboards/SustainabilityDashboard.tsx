@@ -110,6 +110,27 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            Sustainability Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {project.name} • Environmental Impact & ESG Compliance
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <Award className="w-4 h-4 mr-2" />
+            LEED {project.sustainability.leedTarget} Target
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            {sustainabilityMetrics.leedScore} Points Earned
+          </Badge>
+        </div>
+      </div>
+
       {/* AI Sustainability Insights */}
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader className="pb-4">
@@ -186,27 +207,6 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
           </div>
         </CardContent>
       </Card>
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Sustainability Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Environmental Impact & ESG Compliance
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-            <Award className="w-4 h-4 mr-2" />
-            LEED {project.sustainability.leedTarget} Target
-          </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-            {sustainabilityMetrics.leedScore} Points Earned
-          </Badge>
-        </div>
-      </div>
 
       {/* Quick Actions */}
       <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">

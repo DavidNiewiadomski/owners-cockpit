@@ -35,12 +35,39 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* Project Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{project.name}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{project.description}</p>
+          <div className="flex items-center gap-4 mt-2">
+            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+              {project.status}
+            </Badge>
+            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+              {project.phase}
+            </Badge>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {project.basicInfo.totalSquareFootage.toLocaleString()} sq ft • {project.basicInfo.floors} floors
+            </span>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-green-600">
+            {roi.toFixed(1)}% ROI
+          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            Projected Return
+          </div>
+        </div>
+      </div>
+
       {/* AI Project Insights */}
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-              <BarChart3 className="w-5 h-5 text-blue-400" />
+              <BarChart3 className="w-5 h-5 text-green-400" />
               AI Project Insights
             </CardTitle>
             <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
@@ -111,33 +138,6 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Project Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{project.name}</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{project.description}</p>
-          <div className="flex items-center gap-4 mt-2">
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              {project.status}
-            </Badge>
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              {project.phase}
-            </Badge>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {project.basicInfo.totalSquareFootage.toLocaleString()} sq ft • {project.basicInfo.floors} floors
-            </span>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-green-600">
-            {roi.toFixed(1)}% ROI
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Projected Return
-          </div>
-        </div>
-      </div>
 
       {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
