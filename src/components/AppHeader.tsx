@@ -224,6 +224,22 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                     <Badge className="absolute -top-1 -left-1 h-4 w-4 p-0 bg-red-500 text-xs text-white">2</Badge>
                   )}
                 </Button>
+                
+                {/* Calendar */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                  style={{ backgroundColor: '#0078d4', color: 'white' }}
+                  title="Calendar"
+                  onClick={() => {
+                    setActiveProvider('calendar');
+                    setShowCommunications(true);
+                  }}
+                >
+                  <Calendar className="h-4 w-4" />
+                  <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                </Button>
               </div>
               {selectedProject && access.canManageUsers && (
                 <Button 

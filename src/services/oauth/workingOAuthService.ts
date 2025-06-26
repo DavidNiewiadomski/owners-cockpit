@@ -97,14 +97,14 @@ export class WorkingOAuthService {
     return WorkingOAuthService.instance;
   }
 
-  // Initiate OAuth flow - works immediately
+  // Initiate OAuth flow - auto-connect in demo mode
   async initiateOAuth(providerId: string): Promise<void> {
-    console.log(`Starting OAuth flow for ${providerId}`);
+    console.log(`Auto-connecting ${providerId} in demo mode`);
     
     try {
       if (this.isDemoMode) {
-        // Demo mode - simulate successful OAuth flow
-        await this.simulateOAuthFlow(providerId);
+        // Demo mode - auto-connect immediately without popup
+        await this.autoConnectDemo(providerId);
       } else {
         // Production mode - real OAuth flow
         await this.realOAuthFlow(providerId);
@@ -316,6 +316,24 @@ export class WorkingOAuthService {
     // For now, fallback to demo mode
     console.log('Production OAuth not yet configured, using demo mode');
     await this.simulateOAuthFlow(providerId);
+  }
+
+  // Auto-connect demo without popup
+  private async autoConnectDemo(providerId: string): Promise<void> {
+    const provider = oauthProviders[providerId];
+    if (!provider) {
+      throw new Error(`Provider ${providerId} not supported`);
+    }
+
+    console.log(`🚀 Auto-connecting to ${provider.name}...`);
+    
+    // Simulate brief delay for realism
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Store connection immediately
+    await this.storeDemoConnection(providerId);
+    
+    console.log(`✅ Auto-connected to ${provider.name}`);
   }
 
   // Store demo connection
