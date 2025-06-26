@@ -249,6 +249,23 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* AI Construction Insights */}
+      <Card className="border-l-4 border-l-orange-500 bg-gradient-to-r from-orange-50 to-white dark:from-orange-950 dark:to-gray-900">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <Activity className="w-5 h-5 text-orange-600" />
+            AI Construction Insights
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <strong>Progress Status:</strong> {constructionMetrics.overallProgress}% complete, {Math.abs(constructionMetrics.daysAheadBehind)} days {constructionMetrics.daysAheadBehind < 0 ? 'ahead' : 'behind'} schedule with {constructionMetrics.totalWorkforce} active workers. 
+            <strong>Safety Performance:</strong> {constructionMetrics.safetyScore}% safety score, {safetyMetrics.recordableDays} days without incidents. 
+            <strong>Key Focus:</strong> Trade coordination between floors 3-4 requires attention; HVAC and electrical crews need sequencing optimization.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Construction Header */}
       <div className="flex items-center justify-between">
         <div>

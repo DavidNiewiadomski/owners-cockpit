@@ -119,6 +119,23 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* AI Financial Insights */}
+      <Card className="border-l-4 border-l-green-500 bg-gradient-to-r from-green-50 to-white dark:from-green-950 dark:to-gray-900">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <TrendingUp className="w-5 h-5 text-green-600" />
+            AI Financial Intelligence
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <strong>Budget Performance:</strong> {budgetUtilization.toFixed(1)}% budget utilized with {variancePercent > 0 ? '+' : ''}{variancePercent.toFixed(1)}% variance from forecast. 
+            <strong>Cash Flow:</strong> {contingencyUsed.toFixed(1)}% contingency used, maintaining healthy reserve levels. 
+            <strong>Investment Health:</strong> {project.financial.roi.toFixed(1)}% ROI projection exceeding market benchmarks, consider accelerating pre-leasing initiatives.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Finance Header */}
       <div className="flex items-center justify-between">
         <div>

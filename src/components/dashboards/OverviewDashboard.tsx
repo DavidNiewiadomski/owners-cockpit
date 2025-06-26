@@ -35,6 +35,23 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* AI Project Insights */}
+      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-white dark:from-blue-950 dark:to-gray-900">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <BarChart3 className="w-5 h-5 text-blue-600" />
+            AI Project Intelligence
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <strong>Project Status:</strong> {project.phase} phase, {scheduleProgress}% complete with {roi.toFixed(1)}% projected ROI. 
+            <strong>Financial Health:</strong> {budgetUsed.toFixed(1)}% budget utilized, tracking {budgetUsed <= scheduleProgress ? 'on budget' : 'over budget'}. 
+            <strong>Key Insight:</strong> Pre-leasing momentum at {preLeasingRate.toFixed(1)}% indicates strong market demand, consider accelerating tenant outreach.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Project Header */}
       <div className="flex items-center justify-between">
         <div>
