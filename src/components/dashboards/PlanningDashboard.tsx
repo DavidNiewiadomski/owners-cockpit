@@ -298,7 +298,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </div>
 
       {/* AI Planning Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -375,7 +375,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
@@ -415,7 +415,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Key Planning KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Overall Planning Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Planning Progress</CardTitle>
             <Target className="h-4 w-4 text-slate-400" />
@@ -428,7 +428,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Investment Analysis */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Projected ROI</CardTitle>
             <TrendingUp className="h-4 w-4 text-slate-400" />
@@ -444,7 +444,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Market Demand */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Market Demand</CardTitle>
             <BarChart3 className="h-4 w-4 text-slate-400" />
@@ -460,7 +460,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Risk Level */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Risk Assessment</CardTitle>
             <Shield className="h-4 w-4 text-slate-400" />
@@ -477,7 +477,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </div>
 
       {/* Site Selection Analysis */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <MapPin className="h-5 w-5 text-slate-400" />
@@ -547,7 +547,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Financial Projections and Market Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Financial Projections */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <DollarSign className="h-5 w-5 text-slate-400" />
@@ -578,7 +578,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Market Analysis */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Globe className="h-5 w-5 text-slate-400" />
@@ -628,7 +628,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Risk Assessment and Stakeholder Management */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Risk Assessment */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Shield className="h-5 w-5 text-orange-500" />
@@ -661,7 +661,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Stakeholder Management */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Users className="h-5 w-5 text-blue-500" />
@@ -703,7 +703,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Planning Timeline and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Planning Milestones */}
-        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
+        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Calendar className="h-5 w-5 text-slate-400" />

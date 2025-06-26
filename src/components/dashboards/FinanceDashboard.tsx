@@ -151,7 +151,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       </div>
 
       {/* AI Financial Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -228,7 +228,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       </Card>
     
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
@@ -267,7 +267,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
 
       {/* Key Financial Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Total Budget</CardTitle>
             <Calculator className="h-4 w-4 text-slate-400" />
@@ -283,7 +283,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Forecast</CardTitle>
             <TrendingUp className="h-4 w-4 text-slate-400" />
@@ -301,7 +301,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Market Value</CardTitle>
             <Banknote className="h-4 w-4 text-slate-400" />
@@ -319,7 +319,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Contingency</CardTitle>
             <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -339,7 +339,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Cost Breakdown & Cash Flow */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cost Breakdown */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <PieChart className="h-5 w-5 text-slate-400" />
@@ -367,7 +367,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Monthly Budget vs Actual */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Calendar className="h-5 w-5 text-slate-400" />
@@ -409,7 +409,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Recent Transactions & Financial Projections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Transactions */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Receipt className="h-5 w-5 text-slate-400" />
@@ -446,7 +446,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Financial Projections */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <TrendingUp className="h-5 w-5 text-slate-400" />
@@ -499,7 +499,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Financial Controls & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Financial Controls */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <CheckCircle2 className="h-5 w-5 text-slate-400" />
@@ -540,7 +540,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Cash Flow Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <CreditCard className="h-5 w-5 text-slate-400" />

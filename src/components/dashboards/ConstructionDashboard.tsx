@@ -281,7 +281,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       </div>
 
       {/* AI Construction Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -358,7 +358,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Wrench className="h-5 w-5 text-slate-400" />
@@ -398,7 +398,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Key Construction KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Overall Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Overall Progress</CardTitle>
             <Building className="h-4 w-4 text-slate-400" />
@@ -411,7 +411,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Workforce */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Active Workforce</CardTitle>
             <Users className="h-4 w-4 text-slate-400" />
@@ -427,7 +427,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Safety Score */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Safety Score</CardTitle>
             <Shield className="h-4 w-4 text-slate-400" />
@@ -443,7 +443,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Open Items */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Open Items</CardTitle>
             <Clock className="h-4 w-4 text-slate-400" />
@@ -462,7 +462,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Daily Progress Chart */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Activity className="h-5 w-5 text-slate-400" />
@@ -514,7 +514,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Quality Metrics */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <BarChart3 className="h-5 w-5 text-slate-400" />
@@ -557,7 +557,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Trade Progress and Material Deliveries */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Trade Progress by Floor */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Building className="h-5 w-5 text-slate-400" />
@@ -608,7 +608,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Material Deliveries Schedule */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Truck className="h-5 w-5 text-slate-400" />
@@ -659,7 +659,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         
         {/* Safety KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Days Without Incident</CardTitle>
               <Shield className="h-4 w-4 text-green-600" />
@@ -670,7 +670,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             </CardContent>
           </Card>
           
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Compliance Score</CardTitle>
               <Clipboard className="h-4 w-4 text-green-600" />
@@ -681,7 +681,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             </CardContent>
           </Card>
           
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Training Hours</CardTitle>
               <UserCheck className="h-4 w-4 text-blue-600" />
@@ -692,7 +692,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             </CardContent>
           </Card>
           
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-slate-400">Near Misses</CardTitle>
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
@@ -707,7 +707,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         {/* Safety Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Safety Incidents */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
                 <AlertTriangle className="h-5 w-5 text-yellow-600" />
@@ -743,7 +743,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </Card>
           
           {/* Safety Training Progress */}
-          <Card className="bg-slate-900 border-slate-800">
+          <Card className="bg-[#0D1117] border-slate-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
                 <UserCheck className="h-5 w-5 text-blue-600" />
@@ -776,7 +776,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Recent Activities and Construction Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Construction Activities */}
-        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
+        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Activity className="h-5 w-5 text-slate-400" />
@@ -816,7 +816,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Construction Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <HardHat className="h-5 w-5 text-slate-400" />

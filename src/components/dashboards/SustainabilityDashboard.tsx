@@ -142,7 +142,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </div>
 
       {/* AI Sustainability Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -219,7 +219,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Target className="h-5 w-5 text-slate-400" />
@@ -259,7 +259,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       {/* Key Sustainability KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* LEED Score */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">LEED Score</CardTitle>
             <Award className="h-4 w-4 text-slate-400" />
@@ -275,7 +275,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Energy Efficiency */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Energy Efficiency</CardTitle>
             <Zap className="h-4 w-4 text-slate-400" />
@@ -288,7 +288,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Water Conservation */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Water Reduction</CardTitle>
             <Droplets className="h-4 w-4 text-slate-400" />
@@ -304,7 +304,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Waste Recycling */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Waste Recycling</CardTitle>
             <Recycle className="h-4 w-4 text-slate-400" />
@@ -320,7 +320,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Energy Consumption Trends */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Zap className="h-5 w-5 text-slate-400" />
@@ -371,7 +371,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Carbon Footprint */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <TreePine className="h-5 w-5 text-slate-400" />
@@ -430,7 +430,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       {/* LEED Categories and Water Usage */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* LEED Categories Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Award className="h-5 w-5 text-slate-400" />
@@ -458,7 +458,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Water Usage Breakdown */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Droplets className="h-5 w-5 text-slate-400" />
@@ -495,7 +495,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       {/* Green Features and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Green Building Features */}
-        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
+        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Building className="h-5 w-5 text-slate-400" />
@@ -535,7 +535,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </Card>
 
         {/* Sustainability Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Leaf className="h-5 w-5 text-slate-400" />

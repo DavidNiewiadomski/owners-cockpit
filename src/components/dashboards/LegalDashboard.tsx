@@ -53,7 +53,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
       <AIInsightsPanel projectData={projectData} />
       
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
@@ -91,7 +91,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
       </Card>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="text-sm font-medium text-slate-400">Contract Management</CardTitle>
           </CardHeader>
@@ -115,7 +115,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
           </CardContent>
         </Card>
 
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="text-sm font-medium text-slate-400">Compliance & Risk</CardTitle>
           </CardHeader>
@@ -147,7 +147,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         </Card>
       </div>
 
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="text-sm font-medium text-slate-400">Legal Operations</CardTitle>
         </CardHeader>

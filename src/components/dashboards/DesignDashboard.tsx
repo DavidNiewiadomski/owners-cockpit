@@ -228,7 +228,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       </div>
 
       {/* AI Design Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -305,7 +305,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Lightbulb className="h-5 w-5 text-slate-400" />
@@ -345,7 +345,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Design KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Design Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Design Progress</CardTitle>
             <Palette className="h-4 w-4 text-slate-400" />
@@ -358,7 +358,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Design Budget */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Design Budget</CardTitle>
             <PaintBucket className="h-4 w-4 text-slate-400" />
@@ -373,7 +373,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Change Orders */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Change Orders</CardTitle>
             <AlertCircle className="h-4 w-4 text-slate-400" />
@@ -385,7 +385,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Pending Approvals */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Pending Approvals</CardTitle>
             <Clock className="h-4 w-4 text-slate-400" />
@@ -400,7 +400,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Design Phase Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Layers className="h-5 w-5 text-slate-400" />
@@ -430,7 +430,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Material Selection Status */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Square className="h-5 w-5 text-slate-400" />
@@ -464,7 +464,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Recent Submissions and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Recent Design Submissions */}
-        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
+        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <FileImage className="h-5 w-5 text-slate-400" />
@@ -500,7 +500,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Design Team Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Users className="h-5 w-5 text-slate-400" />
@@ -540,7 +540,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       </div>
 
       {/* Design Team Performance */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Palette className="h-5 w-5 text-slate-400" />

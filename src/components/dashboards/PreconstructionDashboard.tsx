@@ -165,7 +165,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       </div>
 
       {/* AI Preconstruction Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -242,7 +242,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Calculator className="h-5 w-5 text-slate-400" />
@@ -282,7 +282,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       {/* Key Preconstruction KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Budget */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Total Budget</CardTitle>
             <DollarSign className="h-4 w-4 text-slate-400" />
@@ -298,7 +298,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Design Progress */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Design Progress</CardTitle>
             <Building className="h-4 w-4 text-slate-400" />
@@ -311,7 +311,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Bidding Status */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Bidding Process</CardTitle>
             <Gavel className="h-4 w-4 text-slate-400" />
@@ -327,7 +327,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Schedule Status */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Schedule</CardTitle>
             <Calendar className="h-4 w-4 text-slate-400" />
@@ -346,7 +346,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Budget Breakdown */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <PieChart className="h-5 w-5 text-slate-400" />
@@ -376,7 +376,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Cost Trends */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <TrendingUp className="h-5 w-5 text-slate-400" />
@@ -423,7 +423,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       {/* Schedule Milestones and Permit Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Schedule Milestones */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Target className="h-5 w-5 text-slate-400" />
@@ -454,7 +454,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Permit Status */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <FileText className="h-5 w-5 text-slate-400" />
@@ -496,7 +496,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       {/* Bidding Process and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Contractor Bidding */}
-        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
+        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Gavel className="h-5 w-5 text-slate-400" />
@@ -532,7 +532,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </Card>
 
         {/* Project Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <ClipboardList className="h-5 w-5 text-slate-400" />

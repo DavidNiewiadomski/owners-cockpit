@@ -63,7 +63,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
       </div>
 
       {/* AI Project Insights */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
@@ -140,7 +140,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-slate-900 border-slate-800">
+      <Card className="bg-[#0D1117] border-slate-800">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
             <Clock className="h-5 w-5 text-slate-400" />
@@ -180,7 +180,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
       {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Budget Performance */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Budget Used</CardTitle>
             <DollarSign className="h-4 w-4 text-slate-400" />
@@ -200,7 +200,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Schedule Performance */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Schedule Progress</CardTitle>
             <Calendar className="h-4 w-4 text-slate-400" />
@@ -218,7 +218,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Pre-Leasing Status */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Pre-Leasing</CardTitle>
             <Building className="h-4 w-4 text-slate-400" />
@@ -236,7 +236,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Safety Record */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-400">Safety Record</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-slate-400" />
@@ -261,7 +261,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
       {/* Project Timeline & Financial Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Major Milestones */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Target className="h-5 w-5 text-slate-400" />
@@ -297,7 +297,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Financial Summary */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <BarChart3 className="h-5 w-5 text-slate-400" />
@@ -349,7 +349,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
       {/* Risk & Issues Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active Risks */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <AlertTriangle className="h-5 w-5 text-orange-400" />
@@ -382,7 +382,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Team Performance */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Users className="h-5 w-5 text-slate-400" />
@@ -413,7 +413,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Quick Actions */}
-        <Card className="bg-slate-900 border-slate-800">
+        <Card className="bg-[#0D1117] border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Clock className="h-5 w-5 text-slate-400" />
