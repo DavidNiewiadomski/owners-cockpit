@@ -226,38 +226,38 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </div>
         </CardContent>
       </Card>
-
+    
       {/* Quick Actions */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Clock className="h-5 w-5 text-slate-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Receipt className="w-4 h-4 mr-2" />
               Approve Pending Invoices
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Calculator className="w-4 h-4 mr-2" />
               Review Budget Variance
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <TrendingUp className="w-4 h-4 mr-2" />
               Generate Financial Report
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <CreditCard className="w-4 h-4 mr-2" />
               Update Cash Flow Forecast
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <PieChart className="w-4 h-4 mr-2" />
               Export Cost Analysis
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Banknote className="w-4 h-4 mr-2" />
               Process Draw Request
             </Button>
@@ -267,68 +267,68 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
 
       {/* Key Financial Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</CardTitle>
-            <Calculator className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Total Budget</CardTitle>
+            <Calculator className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               ${(project.financial.totalBudget / 1000000).toFixed(1)}M
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-slate-400">
               ${(project.financial.spentToDate / 1000000).toFixed(1)}M spent ({budgetUtilization.toFixed(1)}%)
             </div>
             <Progress value={budgetUtilization} className="mt-2" />
           </CardContent>
         </Card>
 
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Forecast</CardTitle>
-            <TrendingUp className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Forecast</CardTitle>
+            <TrendingUp className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               ${(project.financial.forecastedCost / 1000000).toFixed(1)}M
             </div>
-            <div className={`text-xs mt-1 ${variancePercent > 0 ? 'text-red-600' : 'text-green-600'}`}>
+            <div className={`text-xs mt-1 ${variancePercent > 0 ? 'text-red-400' : 'text-green-400'}`}>
               {variancePercent > 0 ? '+' : ''}${(forecastVariance / 1000).toFixed(0)}K variance
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-slate-400">
               {variancePercent > 0 ? 'Over' : 'Under'} budget by {Math.abs(variancePercent).toFixed(1)}%
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Market Value</CardTitle>
-            <Banknote className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Market Value</CardTitle>
+            <Banknote className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-400">
               ${(project.financial.marketValue / 1000000).toFixed(1)}M
             </div>
-            <div className="text-xs text-green-600 mt-1">
+            <div className="text-xs text-green-400 mt-1">
               +${((project.financial.marketValue - project.financial.totalBudget) / 1000000).toFixed(1)}M gain
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-slate-400">
               {((project.financial.marketValue / project.financial.totalBudget - 1) * 100).toFixed(1)}% appreciation
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Contingency</CardTitle>
-            <AlertCircle className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Contingency</CardTitle>
+            <AlertCircle className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-white">
               {contingencyUsed.toFixed(1)}%
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-slate-400">
               ${(project.financial.contingencyRemaining / 1000).toFixed(0)}K remaining
             </div>
             <Progress value={contingencyUsed} className="mt-2" />
@@ -339,10 +339,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Cost Breakdown & Cash Flow */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Cost Breakdown */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PieChart className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <PieChart className="h-5 w-5 text-slate-400" />
               Cost Breakdown
             </CardTitle>
           </CardHeader>
@@ -350,12 +350,12 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             {costBreakdown.map((item, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{item.category}</span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm font-medium text-white">{item.category}</span>
+                  <span className="text-sm text-slate-400">
                     ${(item.amount / 1000000).toFixed(1)}M ({item.percentage}%)
                   </span>
                 </div>
-                <div className="w-full bg-muted rounded-full h-2">
+                <div className="w-full bg-slate-800 rounded-full h-2">
                   <div 
                     className={`h-2 rounded-full ${item.color}`}
                     style={{ width: `${item.percentage}%` }}
@@ -367,18 +367,18 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Monthly Budget vs Actual */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Calendar className="h-5 w-5 text-slate-400" />
               Monthly Budget vs Actual
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {monthlyBudgetData.map((month, index) => (
-              <div key={index} className="p-3 rounded-lg border">
+              <div key={index} className="p-3 rounded-lg border border-slate-700 bg-slate-800/50">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-sm">{month.month} 2024</span>
+                  <span className="font-medium text-sm text-white">{month.month} 2024</span>
                   <div className="flex items-center gap-2">
                     {getTrendIcon(month.variance)}
                     <span className={`text-xs font-medium ${getVarianceColor(month.variance)}`}>
@@ -388,14 +388,14 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <span className="text-muted-foreground">Budgeted:</span>
-                    <span className="font-medium ml-1">
+                    <span className="text-slate-400">Budgeted:</span>
+                    <span className="font-medium ml-1 text-white">
                       ${(month.budgeted / 1000).toFixed(0)}K
                     </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Actual:</span>
-                    <span className="font-medium ml-1">
+                    <span className="text-slate-400">Actual:</span>
+                    <span className="font-medium ml-1 text-white">
                       ${(month.actual / 1000).toFixed(0)}K
                     </span>
                   </div>
@@ -409,33 +409,33 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Recent Transactions & Financial Projections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Transactions */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Receipt className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Receipt className="h-5 w-5 text-slate-400" />
               Recent Transactions
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {recentTransactions.map((transaction) => (
-              <div key={transaction.id} className="p-3 rounded-lg border hover:shadow-sm transition-shadow">
+              <div key={transaction.id} className="p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800/70 transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <div className="font-medium text-sm">{transaction.description}</div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="font-medium text-sm text-white">{transaction.description}</div>
+                    <div className="text-xs text-slate-400">
                       {transaction.vendor} • {transaction.date}
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="text-xs text-slate-400">
                       {transaction.invoiceNumber} • {transaction.category}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className={`text-sm font-medium ${
-                      transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
+                      transaction.amount > 0 ? 'text-green-400' : 'text-red-400'
                     }`}>
                       {transaction.amount > 0 ? '+' : ''}${Math.abs(transaction.amount).toLocaleString()}
                     </div>
-                    <Badge variant={transaction.status === 'paid' ? 'default' : 'secondary'} className="text-xs">
+                    <Badge variant={transaction.status === 'paid' ? 'default' : 'secondary'} className="text-xs bg-slate-700 text-slate-300">
                       {transaction.status}
                     </Badge>
                   </div>
@@ -446,49 +446,49 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Financial Projections */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <TrendingUp className="h-5 w-5 text-slate-400" />
               Financial Projections
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">Net Present Value</div>
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-sm text-slate-400">Net Present Value</div>
+                <div className="text-xl font-bold text-green-400">
                   ${(project.financial.npv / 1000000).toFixed(1)}M
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">Internal Rate of Return</div>
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-sm text-slate-400">Internal Rate of Return</div>
+                <div className="text-xl font-bold text-green-400">
                   {project.financial.irr}%
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">Cost per Sq Ft</div>
-                <div className="text-lg font-semibold">
+                <div className="text-sm text-slate-400">Cost per Sq Ft</div>
+                <div className="text-lg font-semibold text-white">
                   ${project.financial.costPerSqft}
                 </div>
               </div>
               <div className="space-y-2">
-                <div className="text-sm text-muted-foreground">10-Year Projection</div>
-                <div className="text-lg font-semibold text-green-600">
+                <div className="text-sm text-slate-400">10-Year Projection</div>
+                <div className="text-lg font-semibold text-green-400">
                   ${(project.financial.leasingProjections / 1000000).toFixed(1)}M
                 </div>
               </div>
             </div>
             
-            <div className="pt-4 border-t">
-              <div className="text-sm text-muted-foreground mb-2">Pre-Leasing Revenue</div>
+            <div className="pt-4 border-t border-slate-700">
+              <div className="text-sm text-slate-400 mb-2">Pre-Leasing Revenue</div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm">Current: {project.leasing.preLeasingRate.toFixed(1)}%</span>
-                <span className="text-sm">Target: {project.leasing.targetOccupancy}%</span>
+                <span className="text-sm text-white">Current: {project.leasing.preLeasingRate.toFixed(1)}%</span>
+                <span className="text-sm text-white">Target: {project.leasing.targetOccupancy}%</span>
               </div>
               <Progress value={project.leasing.preLeasingRate} className="h-2" />
-              <div className="text-xs text-muted-foreground mt-1">
+              <div className="text-xs text-slate-400 mt-1">
                 ${(project.leasing.preLeasedSpace * project.leasing.averageRent / 1000000).toFixed(1)}M annual revenue secured
               </div>
             </div>
@@ -499,40 +499,40 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
       {/* Financial Controls & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Financial Controls */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <CheckCircle2 className="h-5 w-5 text-slate-400" />
               Financial Controls
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="p-3 rounded-lg border border-green-200 bg-green-50">
+            <div className="p-3 rounded-lg border border-green-500/30 bg-green-500/10">
               <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Budget Approval Process</span>
+                <CheckCircle2 className="h-4 w-4 text-green-400" />
+                <span className="text-sm font-medium text-white">Budget Approval Process</span>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-slate-400">
                 All expenditures &gt;$10K require approval
               </div>
             </div>
             
-            <div className="p-3 rounded-lg border border-green-200 bg-green-50">
+            <div className="p-3 rounded-lg border border-green-500/30 bg-green-500/10">
               <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-medium">Monthly Reporting</span>
+                <CheckCircle2 className="h-4 w-4 text-green-400" />
+                <span className="text-sm font-medium text-white">Monthly Reporting</span>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-slate-400">
                 Automated financial reports generated
               </div>
             </div>
             
-            <div className="p-3 rounded-lg border border-yellow-200 bg-yellow-50">
+            <div className="p-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10">
               <div className="flex items-center gap-2 mb-1">
-                <AlertCircle className="h-4 w-4 text-yellow-600" />
-                <span className="text-sm font-medium">Variance Monitoring</span>
+                <AlertCircle className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm font-medium text-white">Variance Monitoring</span>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-slate-400">
                 Alert if &gt;5% budget variance detected
               </div>
             </div>
@@ -540,30 +540,30 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </Card>
 
         {/* Cash Flow Summary */}
-        <Card>
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-white">
+              <CreditCard className="h-5 w-5 text-slate-400" />
               Cash Flow Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="p-2 rounded border">
-              <div className="text-sm font-medium">Current Month</div>
-              <div className="text-xs text-muted-foreground">Jun 2024</div>
-              <div className="text-lg font-bold text-red-600">-$1.4M</div>
+            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+              <div className="text-sm font-medium text-white">Current Month</div>
+              <div className="text-xs text-slate-400">Jun 2024</div>
+              <div className="text-lg font-bold text-red-400">-$1.4M</div>
             </div>
             
-            <div className="p-2 rounded border">
-              <div className="text-sm font-medium">Next Month</div>
-              <div className="text-xs text-muted-foreground">Jul 2024 (Projected)</div>
-              <div className="text-lg font-bold text-green-600">+$0.6M</div>
+            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+              <div className="text-sm font-medium text-white">Next Month</div>
+              <div className="text-xs text-slate-400">Jul 2024 (Projected)</div>
+              <div className="text-lg font-bold text-green-400">+$0.6M</div>
             </div>
             
-            <div className="p-2 rounded border">
-              <div className="text-sm font-medium">Year to Date</div>
-              <div className="text-xs text-muted-foreground">Jan - Jun 2024</div>
-              <div className="text-lg font-bold text-red-600">-$8.2M</div>
+            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+              <div className="text-sm font-medium text-white">Year to Date</div>
+              <div className="text-xs text-slate-400">Jan - Jun 2024</div>
+              <div className="text-lg font-bold text-red-400">-$8.2M</div>
             </div>
           </CardContent>
         </Card>
