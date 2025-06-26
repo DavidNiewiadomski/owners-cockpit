@@ -42,7 +42,14 @@ import {
 import { useProjects } from '@/hooks/useProjects';
 import {
   useConstructionMetrics,
-  useDailyProgress,
+  useConstructionDailyProgress,
+  useConstructionTradeProgress,
+  useConstructionActivities,
+  useConstructionQualityMetrics,
+  useMaterialDeliveries,
+  useSafetyMetrics,
+  useSafetyIncidents,
+  useSafetyTraining,
   useProjectInsights,
   useProjectTeam,
   useProjectTimeline
@@ -59,10 +66,16 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
   
   // Fetch all construction data from Supabase
   const { data: constructionMetrics, isLoading: loadingConstruction } = useConstructionMetrics(projectId);
-  const { data: dailyProgressData, isLoading: loadingProgress } = useDailyProgress(projectId);
+  const { data: dailyProgressData, isLoading: loadingProgress } = useConstructionDailyProgress(projectId);
+  const { data: tradeProgressData, isLoading: loadingTradeProgress } = useConstructionTradeProgress(projectId);
+  const { data: activitiesData, isLoading: loadingActivities } = useConstructionActivities(projectId);
+  const { data: qualityMetricsData, isLoading: loadingQuality } = useConstructionQualityMetrics(projectId);
+  const { data: materialDeliveriesData, isLoading: loadingMaterials } = useMaterialDeliveries(projectId);
+  const { data: safetyMetricsData, isLoading: loadingSafety } = useSafetyMetrics(projectId);
+  const { data: safetyIncidentsData, isLoading: loadingIncidents } = useSafetyIncidents(projectId);
+  const { data: safetyTrainingData, isLoading: loadingTraining } = useSafetyTraining(projectId);
   const { data: insights, isLoading: loadingInsights } = useProjectInsights(projectId);
   const { data: team, isLoading: loadingTeam } = useProjectTeam(projectId);
-  const { data: timeline, isLoading: loadingTimeline } = useProjectTimeline(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -71,7 +84,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
   
   // Show loading state if any data is still loading
-  const isLoading = loadingConstruction || loadingProgress || loadingInsights || loadingTeam || loadingTimeline;
+  const isLoading = loadingConstruction || loadingProgress || loadingTradeProgress || loadingActivities || 
+                    loadingQuality || loadingMaterials || loadingSafety || loadingIncidents || 
+                    loadingTraining || loadingInsights || loadingTeam;
   
   if (isLoading) {
     return (
@@ -101,175 +116,103 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
     safetyScore: constructionMetrics.safety_score,
     openRFIs: constructionMetrics.open_rfis,
     pendingSubmittals: constructionMetrics.pending_submittals,
-    budgetVariance: -2.3,
-    scheduleVariance: 1.2,
-    activeWorkOrders: 156,
-    completedInspections: 89
+    budgetVariance: -2.3, // TODO: Connect to financial metrics
+    scheduleVariance: 1.2, // TODO: Connect to schedule metrics
+    activeWorkOrders: 156, // TODO: Connect to work order system
+    completedInspections: 89 // TODO: Connect to inspection system
   };
 
-  // Safety metrics and data
-  const safetyMetrics = {
-    recordableDays: 287,
-    totalIncidents: 2,
-    nearMisses: 8,
-    safetyTrainingHours: 1240,
-    complianceScore: 97,
-    oshaRating: 'Excellent',
-    lastIncidentDate: '2024-01-15',
-    activeSafetyPrograms: 6,
-    monthlyInspections: 12,
-    correctiveActions: 3
+  // Safety metrics from database
+  const safetyMetrics = safetyMetricsData ? {
+    recordableDays: safetyMetricsData.recordable_days,
+    totalIncidents: safetyMetricsData.total_incidents,
+    nearMisses: safetyMetricsData.near_misses,
+    safetyTrainingHours: safetyMetricsData.safety_training_hours,
+    complianceScore: safetyMetricsData.compliance_score,
+    oshaRating: safetyMetricsData.osha_rating,
+    lastIncidentDate: safetyMetricsData.last_incident_date,
+    activeSafetyPrograms: safetyMetricsData.active_safety_programs,
+    monthlyInspections: safetyMetricsData.monthly_inspections,
+    correctiveActions: safetyMetricsData.corrective_actions
+  } : {
+    recordableDays: 0,
+    totalIncidents: 0,
+    nearMisses: 0,
+    safetyTrainingHours: 0,
+    complianceScore: 0,
+    oshaRating: 'N/A',
+    lastIncidentDate: null,
+    activeSafetyPrograms: 0,
+    monthlyInspections: 0,
+    correctiveActions: 0
   };
 
-  // Safety incidents and near misses
-  const safetyIncidents = [
-    {
-      id: 1,
-      type: 'Near Miss',
-      description: 'Tool dropped from height - caught by safety net',
-      date: '2024-06-18',
-      severity: 'Low',
-      status: 'Investigated',
-      corrective: 'Reinforced tool tethering protocol'
-    },
-    {
-      id: 2,
-      type: 'Minor Injury',
-      description: 'Cut finger on metal edge',
-      date: '2024-06-10',
-      severity: 'Low',
-      status: 'Closed',
-      corrective: 'Enhanced PPE training, edge guards installed'
-    },
-    {
-      id: 3,
-      type: 'Near Miss',
-      description: 'Crane load swing too close to workers',
-      date: '2024-06-05',
-      severity: 'Medium',
-      status: 'Closed',
-      corrective: 'Revised crane operation procedures'
-    }
-  ];
+  // Safety incidents from database
+  const safetyIncidents = safetyIncidentsData?.map(incident => ({
+    id: incident.id,
+    type: incident.incident_type,
+    description: incident.description,
+    date: incident.incident_date,
+    severity: incident.severity,
+    status: incident.status,
+    corrective: incident.corrective_action
+  })) || [];
 
-  // Safety training progress
-  const safetyTraining = [
-    { program: 'OSHA 30-Hour', completed: 95, required: 100, deadline: '2024-07-01' },
-    { program: 'Fall Protection', completed: 142, required: 145, deadline: '2024-06-30' },
-    { program: 'Electrical Safety', completed: 38, required: 45, deadline: '2024-07-15' },
-    { program: 'Confined Space', completed: 25, required: 30, deadline: '2024-08-01' }
-  ];
+  // Safety training from database
+  const safetyTraining = safetyTrainingData?.map(training => ({
+    program: training.program_name,
+    completed: training.completed_count,
+    required: training.required_count,
+    deadline: training.deadline
+  })) || [];
 
-  // Daily progress tracking
-  const dailyProgress = [
-    { date: 'Jun 15', planned: 65, actual: 67, workforce: 142 },
-    { date: 'Jun 16', planned: 65.5, actual: 67.2, workforce: 145 },
-    { date: 'Jun 17', planned: 66, actual: 67.8, workforce: 148 },
-    { date: 'Jun 18', planned: 66.5, actual: 68.1, workforce: 144 },
-    { date: 'Jun 19', planned: 67, actual: 68.5, workforce: 149 },
-    { date: 'Jun 20', planned: 67.5, actual: 68.8, workforce: 145 },
-    { date: 'Jun 21', planned: 68, actual: 69.2, workforce: 152 }
-  ];
+  // Daily progress from database
+  const dailyProgress = dailyProgressData?.map(progress => ({
+    date: new Date(progress.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    planned: progress.planned_progress,
+    actual: progress.actual_progress,
+    workforce: progress.workforce_count
+  })).slice(-7) || []; // Show last 7 days
 
-  // Trade progress by floor
-  const tradeProgress = [
-    { floor: 'Foundation', structural: 100, mechanical: 95, electrical: 90, plumbing: 85, finishes: 0 },
-    { floor: 'Floor 1', structural: 100, mechanical: 88, electrical: 85, plumbing: 80, finishes: 25 },
-    { floor: 'Floor 2', structural: 95, mechanical: 82, electrical: 78, plumbing: 75, finishes: 15 },
-    { floor: 'Floor 3', structural: 90, mechanical: 75, electrical: 70, plumbing: 65, finishes: 5 },
-    { floor: 'Floor 4', structural: 85, mechanical: 60, electrical: 55, plumbing: 50, finishes: 0 },
-    { floor: 'Floor 5', structural: 70, mechanical: 40, electrical: 35, plumbing: 30, finishes: 0 }
-  ];
+  // Trade progress from database
+  const tradeProgress = tradeProgressData?.map(trade => ({
+    floor: trade.floor_level,
+    structural: trade.structural_progress,
+    mechanical: trade.mechanical_progress,
+    electrical: trade.electrical_progress,
+    plumbing: trade.plumbing_progress,
+    finishes: trade.finishes_progress
+  })) || [];
 
-  // Recent construction activities
-  const recentActivities = [
-    {
-      id: 1,
-      activity: 'Concrete Pour - Floor 4 Slab',
-      trade: 'Structural',
-      status: 'completed',
-      date: '2024-06-20',
-      crew: 'Team Alpha',
-      duration: '8 hours',
-      notes: 'Quality inspection passed'
-    },
-    {
-      id: 2,
-      activity: 'HVAC Duct Installation - Floor 3',
-      trade: 'Mechanical',
-      status: 'in-progress',
-      date: '2024-06-19',
-      crew: 'HVAC Specialists',
-      duration: '12 hours',
-      notes: 'On schedule'
-    },
-    {
-      id: 3,
-      activity: 'Electrical Rough-in - Floor 2',
-      trade: 'Electrical',
-      status: 'completed',
-      date: '2024-06-18',
-      crew: 'Electrical Crew B',
-      duration: '10 hours',
-      notes: 'Minor cable routing adjustment'
-    },
-    {
-      id: 4,
-      activity: 'Plumbing Installation - Floor 3',
-      trade: 'Plumbing',
-      status: 'scheduled',
-      date: '2024-06-22',
-      crew: 'Plumbing Team 1',
-      duration: '14 hours',
-      notes: 'Materials confirmed delivered'
-    }
-  ];
+  // Recent construction activities from database
+  const recentActivities = activitiesData?.map(activity => ({
+    id: activity.id,
+    activity: activity.activity_name,
+    trade: activity.trade,
+    status: activity.status,
+    date: activity.activity_date,
+    crew: activity.crew_name,
+    duration: `${activity.duration_hours} hours`,
+    notes: activity.notes || 'No notes'
+  })).slice(0, 10) || []; // Show most recent 10 activities
 
-  // Quality and safety metrics
-  const qualityMetrics = [
-    { week: 'Week 1', qualityScore: 92, reworkItems: 5, inspectionPass: 94 },
-    { week: 'Week 2', qualityScore: 94, reworkItems: 3, inspectionPass: 96 },
-    { week: 'Week 3', qualityScore: 91, reworkItems: 7, inspectionPass: 93 },
-    { week: 'Week 4', qualityScore: 95, reworkItems: 2, inspectionPass: 98 },
-    { week: 'Week 5', qualityScore: 93, reworkItems: 4, inspectionPass: 95 },
-    { week: 'Week 6', qualityScore: 96, reworkItems: 1, inspectionPass: 99 }
-  ];
+  // Quality metrics from database
+  const qualityMetrics = qualityMetricsData?.map((metrics, index) => ({
+    week: `Week ${index + 1}`,
+    qualityScore: metrics.quality_score,
+    reworkItems: metrics.rework_items,
+    inspectionPass: metrics.inspection_pass_rate
+  })) || [];
 
-  // Material deliveries schedule
-  const materialDeliveries = [
-    {
-      material: 'Steel Beams - Floor 5',
-      supplier: 'Metropolitan Steel',
-      scheduledDate: '2024-06-24',
-      status: 'confirmed',
-      quantity: '45 tons',
-      cost: 89500
-    },
-    {
-      material: 'Concrete - Floor 4 Pour',
-      supplier: 'Ready Mix Corp',
-      scheduledDate: '2024-06-22',
-      status: 'delivered',
-      quantity: '120 cubic yards',
-      cost: 18400
-    },
-    {
-      material: 'HVAC Units - Floors 2-3',
-      supplier: 'Climate Solutions',
-      scheduledDate: '2024-06-26',
-      status: 'in-transit',
-      quantity: '8 units',
-      cost: 125000
-    },
-    {
-      material: 'Electrical Panels',
-      supplier: 'Power Systems Inc',
-      scheduledDate: '2024-06-23',
-      status: 'pending',
-      quantity: '12 panels',
-      cost: 45200
-    }
-  ];
+  // Material deliveries from database
+  const materialDeliveries = materialDeliveriesData?.map(delivery => ({
+    material: delivery.material_name,
+    supplier: delivery.supplier,
+    scheduledDate: delivery.scheduled_date,
+    status: delivery.status,
+    quantity: delivery.quantity,
+    cost: delivery.cost
+  })) || [];
 
   const getStatusColor = (status: string) => {
     switch (status) {

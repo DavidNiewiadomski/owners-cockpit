@@ -586,3 +586,188 @@ export function useProjectTeam(projectId: string | null) {
     enabled: !!projectId,
   });
 }
+
+// Construction-specific data hooks
+export function useConstructionDailyProgress(projectId: string | null) {
+  return useQuery({
+    queryKey: ['construction-daily-progress', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('construction_daily_progress')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('date', { ascending: true });
+      
+      if (error) {
+        console.error('Error fetching construction daily progress:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useConstructionTradeProgress(projectId: string | null) {
+  return useQuery({
+    queryKey: ['construction-trade-progress', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('construction_trade_progress')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('floor_level', { ascending: true });
+      
+      if (error) {
+        console.error('Error fetching construction trade progress:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useConstructionActivities(projectId: string | null) {
+  return useQuery({
+    queryKey: ['construction-activities', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('construction_activities')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('activity_date', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching construction activities:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useConstructionQualityMetrics(projectId: string | null) {
+  return useQuery({
+    queryKey: ['construction-quality-metrics', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('construction_quality_metrics')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('week_ending', { ascending: true });
+      
+      if (error) {
+        console.error('Error fetching construction quality metrics:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useMaterialDeliveries(projectId: string | null) {
+  return useQuery({
+    queryKey: ['material-deliveries', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('material_deliveries')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('scheduled_date', { ascending: true });
+      
+      if (error) {
+        console.error('Error fetching material deliveries:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useSafetyMetrics(projectId: string | null) {
+  return useQuery({
+    queryKey: ['safety-metrics', projectId],
+    queryFn: async () => {
+      if (!projectId) return null;
+      
+      const { data, error } = await supabase
+        .from('safety_metrics')
+        .select('*')
+        .eq('project_id', projectId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching safety metrics:', error);
+        return null;
+      }
+      
+      return data;
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useSafetyIncidents(projectId: string | null) {
+  return useQuery({
+    queryKey: ['safety-incidents', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('safety_incidents')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('incident_date', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching safety incidents:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+export function useSafetyTraining(projectId: string | null) {
+  return useQuery({
+    queryKey: ['safety-training', projectId],
+    queryFn: async () => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('safety_training')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('deadline', { ascending: true });
+      
+      if (error) {
+        console.error('Error fetching safety training:', error);
+        return [];
+      }
+      
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
