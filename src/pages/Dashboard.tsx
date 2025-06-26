@@ -15,16 +15,16 @@ import {
   Bell,
   Search,
   Brain,
-  Zap
+  Mail,
+  Video,
+  Phone,
+  MessageCircle
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import PremiumAIChat from '@/components/PremiumAIChat';
-import ProjectAnalytics from '@/components/ProjectAnalytics';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [aiChatOpen, setAiChatOpen] = useState(false);
 
   const stats = [
     {
@@ -136,6 +136,22 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Communication Icons */}
+            <div className="flex items-center gap-1 border-r border-border/40 pr-2 mr-2">
+              <Button variant="ghost" size="icon" className="relative" title="Outlook">
+                <Mail className="h-4 w-4" style={{ color: '#0078d4' }} />
+              </Button>
+              <Button variant="ghost" size="icon" className="relative" title="Teams">
+                <MessageCircle className="h-4 w-4" style={{ color: '#6264a7' }} />
+              </Button>
+              <Button variant="ghost" size="icon" className="relative" title="Zoom">
+                <Video className="h-4 w-4" style={{ color: '#2D8CFF' }} />
+              </Button>
+              <Button variant="ghost" size="icon" className="relative" title="Phone">
+                <Phone className="h-4 w-4" style={{ color: '#25D366' }} />
+              </Button>
+            </div>
+            
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center bg-red-500 text-xs">
@@ -206,9 +222,6 @@ const Dashboard: React.FC = () => {
                   );
                 })}
               </div>
-
-              {/* Real-time Analytics */}
-              <ProjectAnalytics />
 
               {/* Recent Projects & Notifications */}
               <div className="grid gap-6 md:grid-cols-2">
@@ -303,20 +316,9 @@ const Dashboard: React.FC = () => {
         </main>
       </div>
 
-      {/* Premium AI Chat Integration */}
-      <PremiumAIChat 
-        isOpen={aiChatOpen}
-        onClose={() => setAiChatOpen(false)}
-        projectContext={{
-          projectId: 'overview',
-          projectName: 'Construction Portfolio',
-          currentView: activeTab
-        }}
-      />
-
-      {/* Floating AI Assistant Button */}
+      {/* AI Assistant Coming Soon */}
       <Button
-        onClick={() => setAiChatOpen(true)}
+        onClick={() => alert('AI Assistant coming soon!')}
         className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 z-40"
         size="icon"
       >
