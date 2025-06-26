@@ -64,9 +64,22 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
   
   const displayData = projectData || fallbackData;
 
+  // Prepare data for AIInsightsPanel
+  const aiInsightsData = {
+    name: 'Current Project',
+    progress: displayData.timeline?.find(t => t.status === 'active')?.progress || 68,
+    spentBudget: displayData.financial?.spentToDate || 35400000,
+    totalBudget: displayData.financial?.totalBudget || 52000000,
+    riskScore: displayData.riskScore || 25,
+    roi: displayData.financial?.roi || 16.8,
+    milestonesCompleted: 8,
+    totalMilestones: 12,
+    stakeholders: displayData.stakeholders || 24
+  };
+
   return (
     <div className="space-y-6">
-      <AIInsightsPanel projectData={projectData} />
+      <AIInsightsPanel projectData={aiInsightsData} />
       
       {/* Owner Quick Actions */}
       <Card className="bg-[#0D1117] border-slate-800">
@@ -106,9 +119,41 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
         </CardContent>
       </Card>
       
-      <KPICards projectData={projectData} />
-      <ChartsSection projectData={projectData} />
-      <PerformanceTrends projectData={projectData} />
+      <KPICards projectData={{
+        totalBudget: displayData.financial?.totalBudget || 52000000,
+        spentBudget: displayData.financial?.spentToDate || 35400000,
+        progress: displayData.timeline?.find(t => t.status === 'active')?.progress || 68,
+        timeline: 'On Track',
+        milestonesCompleted: 8,
+        totalMilestones: 12,
+        riskScore: displayData.riskScore || 25,
+        stakeholders: displayData.stakeholders || 24,
+        roi: displayData.financial?.roi || 16.8
+      }} />
+      <ChartsSection projectData={{
+        monthlySpend: displayData.financial?.monthlySpend || [
+          { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
+          { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
+          { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
+          { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
+          { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
+          { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
+        ],
+        riskBreakdown: [
+          { category: 'Technical', value: 35, color: '#3b82f6' },
+          { category: 'Financial', value: 20, color: '#10b981' },
+          { category: 'Schedule', value: 30, color: '#f59e0b' },
+          { category: 'External', value: 15, color: '#ef4444' }
+        ]
+      }} />
+      <PerformanceTrends projectData={{
+        kpiTrends: displayData.kpiTrends || [
+          { week: 'W1', efficiency: 78, quality: 92, safety: 98 },
+          { week: 'W2', efficiency: 82, quality: 89, safety: 97 },
+          { week: 'W3', efficiency: 85, quality: 94, safety: 99 },
+          { week: 'W4', efficiency: 88, quality: 96, safety: 98 }
+        ]
+      }} />
     </div>
   );
 };

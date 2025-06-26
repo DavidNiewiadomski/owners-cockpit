@@ -64,7 +64,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         </div>
       </div>
 
-      <AIInsightsPanel projectData={projectData} />
+      <AIInsightsPanel projectData={demoData} />
       
       {/* Owner Legal Actions */}
       <Card className="bg-[#0D1117] border-slate-800">
