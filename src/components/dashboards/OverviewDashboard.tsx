@@ -50,25 +50,15 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{title}</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">{subtitle}</p>
-          <div className="flex items-center gap-4 mt-2">
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              {project.status}
-            </Badge>
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              {project.phase}
-            </Badge>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
-              {project.basicInfo.totalSquareFootage.toLocaleString()} sq ft • {project.basicInfo.floors} floors
-            </span>
-          </div>
         </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-green-600">
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <BarChart3 className="w-4 h-4 mr-2" />
+            {scheduleProgress}% Complete
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             {roi.toFixed(1)}% ROI
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Projected Return
-          </div>
+          </Badge>
         </div>
       </div>
 

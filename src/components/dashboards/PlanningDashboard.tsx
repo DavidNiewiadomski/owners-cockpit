@@ -288,22 +288,15 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             {subtitle}
           </p>
-          <div className="flex items-center gap-4 mt-2">
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              Phase: {planningMetrics.projectPhase}
-            </Badge>
-            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
-              {planningMetrics.overallProgress}% Planning Complete
-            </Badge>
-          </div>
         </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-blue-600">
-            Phase 1
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Strategic Planning
-          </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <Target className="w-4 h-4 mr-2" />
+            {planningMetrics.overallProgress}% Complete
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            Phase: {planningMetrics.projectPhase}
+          </Badge>
         </div>
       </div>
 
