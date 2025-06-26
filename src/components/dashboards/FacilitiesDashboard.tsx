@@ -32,7 +32,7 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             <Building className="w-4 h-4 mr-2" />
-            {project.details.totalFloors} Floors
+            {project.basicInfo.floors} Floors
           </Badge>
           <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
             <Zap className="w-4 h-4 mr-2" />
