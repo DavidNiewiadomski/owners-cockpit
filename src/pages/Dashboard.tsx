@@ -13,13 +13,18 @@ import {
   Settings,
   Menu,
   Bell,
-  Search
+  Search,
+  Brain,
+  Zap
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import PremiumAIChat from '@/components/PremiumAIChat';
+import ProjectAnalytics from '@/components/ProjectAnalytics';
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
 
   const stats = [
     {
@@ -202,6 +207,9 @@ const Dashboard: React.FC = () => {
                 })}
               </div>
 
+              {/* Real-time Analytics */}
+              <ProjectAnalytics />
+
               {/* Recent Projects & Notifications */}
               <div className="grid gap-6 md:grid-cols-2">
                 <Card>
@@ -294,6 +302,29 @@ const Dashboard: React.FC = () => {
           </Tabs>
         </main>
       </div>
+
+      {/* Premium AI Chat Integration */}
+      <PremiumAIChat 
+        isOpen={aiChatOpen}
+        onClose={() => setAiChatOpen(false)}
+        projectContext={{
+          projectId: 'overview',
+          projectName: 'Construction Portfolio',
+          currentView: activeTab
+        }}
+      />
+
+      {/* Floating AI Assistant Button */}
+      <Button
+        onClick={() => setAiChatOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 z-40"
+        size="icon"
+      >
+        <Brain className="w-6 h-6" />
+        <div className="absolute -top-1 -right-1">
+          <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+        </div>
+      </Button>
     </div>
   );
 };
