@@ -118,15 +118,15 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* Finance Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
             <DollarSign className="h-8 w-8 text-green-600" />
             Financial Management
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Budget tracking, cash flow analysis, and financial performance
           </p>
         </div>
@@ -134,7 +134,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
           <div className="text-2xl font-bold text-green-600">
             {project.financial.roi.toFixed(1)}% ROI
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             Projected Return
           </div>
         </div>
@@ -142,10 +142,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
 
       {/* Key Financial Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Budget</CardTitle>
-            <Calculator className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</CardTitle>
+            <Calculator className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -158,10 +158,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Forecast</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Forecast</CardTitle>
+            <TrendingUp className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -176,10 +176,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Market Value</CardTitle>
-            <Banknote className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Market Value</CardTitle>
+            <Banknote className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
@@ -194,10 +194,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Contingency</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Contingency</CardTitle>
+            <AlertCircle className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">

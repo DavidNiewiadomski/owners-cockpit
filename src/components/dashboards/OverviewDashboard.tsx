@@ -34,20 +34,20 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
   const roi = project.financial.roi;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
       {/* Project Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{project.name}</h1>
-          <p className="text-muted-foreground mt-1">{project.description}</p>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{project.name}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{project.description}</p>
           <div className="flex items-center gap-4 mt-2">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
               {project.status}
             </Badge>
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
               {project.phase}
             </Badge>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
               {project.basicInfo.totalSquareFootage.toLocaleString()} sq ft • {project.basicInfo.floors} floors
             </span>
           </div>
@@ -56,7 +56,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
           <div className="text-2xl font-bold text-green-600">
             {roi.toFixed(1)}% ROI
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
             Projected Return
           </div>
         </div>
@@ -65,10 +65,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
       {/* Key Performance Indicators */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Budget Performance */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Budget Used</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Budget Used</CardTitle>
+            <DollarSign className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -85,10 +85,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Schedule Performance */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Schedule Progress</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Schedule Progress</CardTitle>
+            <Calendar className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{scheduleProgress}%</div>
@@ -103,10 +103,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Pre-Leasing Status */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pre-Leasing</CardTitle>
-            <Building className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Pre-Leasing</CardTitle>
+            <Building className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{preLeasingRate.toFixed(1)}%</div>
@@ -121,10 +121,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Safety Record */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Safety Record</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Safety Record</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
@@ -146,10 +146,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
       {/* Project Timeline & Financial Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Major Milestones */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Target className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Major Milestones
             </CardTitle>
           </CardHeader>
@@ -182,10 +182,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Financial Summary */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <BarChart3 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Financial Summary
             </CardTitle>
           </CardHeader>
@@ -234,9 +234,9 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
       {/* Risk & Issues Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Active Risks */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
               <AlertTriangle className="h-5 w-5 text-orange-500" />
               Active Risks
             </CardTitle>
@@ -267,10 +267,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Team Performance */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Users className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Key Team Members
             </CardTitle>
           </CardHeader>
@@ -298,10 +298,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
         </Card>
 
         {/* Quick Actions */}
-        <Card>
+        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               Quick Actions
             </CardTitle>
           </CardHeader>
