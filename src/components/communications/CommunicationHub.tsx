@@ -33,14 +33,7 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
   initialProvider = 'outlook' 
 }) => {
   const [activeTab, setActiveTab] = useState(initialProvider);
-  const { getConnectionStatus, connect } = useOAuthConnections();
-  
-  // Update active tab when initialProvider changes
-  React.useEffect(() => {
-    if (isOpen && initialProvider) {
-      setActiveTab(initialProvider);
-    }
-  }, [isOpen, initialProvider]);
+  const { getConnectionStatus } = useOAuthConnections();
 
   const providers = [
     {
@@ -88,9 +81,6 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
   const connectedProviders = providers.filter(provider => 
     getConnectionStatus(provider.id).connected
   );
-  
-  // Show all providers in tabs, but highlight connected ones
-  const allProviders = providers;
 
   const totalUnread = connectedProviders.reduce((sum, provider) => sum + provider.unreadCount, 0);
 
@@ -115,79 +105,73 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
         </DialogHeader>
 
         <div className="flex-1 p-6 pt-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-            <TabsList className="grid w-full grid-cols-5 mb-4">
-              {allProviders.map((provider) => {
-                const Icon = provider.icon;
-                const isConnected = getConnectionStatus(provider.id).connected;
-                const isConnecting = getConnectionStatus(provider.id).connecting;
-                
+          {connectedProviders.length === 0 ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <Users className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No Connected Services</h3>
+                <p className="text-muted-foreground mb-4">
+                  Connect to communication services to access your messages and meetings
+                </p>
+                <div className="flex gap-2 justify-center">
+                  {providers.map((provider) => {
+                    const Icon = provider.icon;
+                    return (
+                      <Button
+                        key={provider.id}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                        onClick={() => {
+                          // This would trigger the OAuth flow
+                          console.log(`Connect to ${provider.name}`);
+                        }}
+                      >
+                        <Icon className="h-4 w-4" style={{ color: provider.color }} />
+                        Connect {provider.name}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
+              <TabsList className="grid w-full grid-cols-5 mb-4">
+                {connectedProviders.map((provider) => {
+                  const Icon = provider.icon;
+                  return (
+                    <TabsTrigger
+                      key={provider.id}
+                      value={provider.id}
+                      className="flex items-center gap-2 relative"
+                    >
+                      <Icon className="h-4 w-4" style={{ color: provider.color }} />
+                      <span>{provider.name}</span>
+                      {provider.unreadCount > 0 && (
+                        <Badge variant="destructive" className="ml-1 h-5 px-1.5 text-xs">
+                          {provider.unreadCount}
+                        </Badge>
+                      )}
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
+
+              {connectedProviders.map((provider) => {
+                const Component = provider.component;
                 return (
-                  <TabsTrigger
-                    key={provider.id}
-                    value={provider.id}
-                    className={`flex items-center gap-2 relative transition-all ${
-                      !isConnected ? 'opacity-60 hover:opacity-100' : ''
-                    }`}
-                    onClick={() => {
-                      if (!isConnected && !isConnecting) {
-                        connect(provider.id);
-                      }
-                    }}
+                  <TabsContent 
+                    key={provider.id} 
+                    value={provider.id} 
+                    className="h-[calc(100%-60px)] mt-0"
                   >
-                    <Icon className="h-4 w-4" style={{ color: provider.color }} />
-                    <span>{provider.name}</span>
-                    {isConnected && provider.unreadCount > 0 && (
-                      <Badge variant="destructive" className="ml-1 h-5 px-1.5 text-xs">
-                        {provider.unreadCount}
-                      </Badge>
-                    )}
-                    {!isConnected && (
-                      <Badge variant="outline" className="ml-1 h-5 px-1.5 text-xs">
-                        {isConnecting ? 'Connecting...' : 'Connect'}
-                      </Badge>
-                    )}
-                  </TabsTrigger>
+                    <Component />
+                  </TabsContent>
                 );
               })}
-            </TabsList>
-
-            {allProviders.map((provider) => {
-              const Component = provider.component;
-              const isConnected = getConnectionStatus(provider.id).connected;
-              
-              return (
-                <TabsContent 
-                  key={provider.id} 
-                  value={provider.id} 
-                  className="h-[calc(100%-60px)] mt-0"
-                >
-                  {isConnected ? (
-                    <Component />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <div className="text-center">
-                        <Icon className="h-16 w-16 mx-auto mb-4 text-muted-foreground" style={{ color: provider.color }} />
-                        <h3 className="text-lg font-semibold mb-2">Connect to {provider.name}</h3>
-                        <p className="text-muted-foreground mb-4">
-                          Connect your {provider.name} account to access your messages and communications.
-                        </p>
-                        <Button
-                          onClick={() => connect(provider.id)}
-                          disabled={getConnectionStatus(provider.id).connecting}
-                          className="flex items-center gap-2"
-                          style={{ backgroundColor: provider.color }}
-                        >
-                          <Icon className="h-4 w-4" />
-                          {getConnectionStatus(provider.id).connecting ? 'Connecting...' : `Connect ${provider.name}`}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-              );
-            })}
-          </Tabs>
+            </Tabs>
+          )}
         </div>
       </DialogContent>
     </Dialog>

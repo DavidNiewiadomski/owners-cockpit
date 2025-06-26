@@ -59,9 +59,9 @@ const TeamsInterface: React.FC = () => {
   );
 
   return (
-    <div className="flex h-[600px] bg-background rounded-lg overflow-hidden border border-border/40">
+    <div className="flex h-[600px] bg-background border rounded-lg overflow-hidden">
       {/* Sidebar */}
-      <div className="w-72 bg-[#6264a7] text-white flex flex-col border-r border-border/20">
+      <div className="w-72 bg-[#6264a7] text-white flex flex-col">
         <div className="p-4 border-b border-purple-600">
           <div className="flex items-center gap-2 mb-4">
             <MessageCircle className="h-6 w-6" />

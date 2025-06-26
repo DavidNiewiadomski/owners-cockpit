@@ -23,9 +23,9 @@ const SlackInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[600px] bg-background rounded-lg overflow-hidden border border-border/40">
+    <div className="flex h-[600px] bg-background border rounded-lg overflow-hidden">
       {/* Sidebar */}
-      <div className="w-64 bg-[#4A154B] text-white flex flex-col border-r border-border/20">
+      <div className="w-64 bg-[#4A154B] text-white flex flex-col">
         <div className="p-4 border-b border-purple-700">
           <div className="flex items-center gap-2 mb-4">
             <MessageSquare className="h-6 w-6" />
@@ -97,7 +97,7 @@ const SlackInterface: React.FC = () => {
         {selectedChannel && (
           <>
             {/* Channel Header */}
-            <div className="p-4 border-b border-border bg-background/50 backdrop-blur-sm">
+            <div className="p-4 border-b border-border bg-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Hash className="h-5 w-5 text-muted-foreground" />
