@@ -24,12 +24,22 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface PlanningDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId }) => {
+const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, activeCategory }) => {
+  const { data: projects = [] } = useProjects();
+  
+  // Get the actual project name from the projects data
+  const selectedProject = projects.find(p => p.id === projectId);
+  const projectName = selectedProject?.name;
+  
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
   // Comprehensive planning phase data
   const planningMetrics = {
     projectPhase: 'Site Selection',
@@ -273,10 +283,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Strategic Planning Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Site Selection, Business Case Development & Feasibility Analysis
+            {subtitle}
           </p>
           <div className="flex items-center gap-4 mt-2">
             <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">

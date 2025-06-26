@@ -6,8 +6,21 @@ export interface DashboardTitleInfo {
 }
 
 export const getDashboardTitle = (category: string, projectName?: string): DashboardTitleInfo => {
-  // Always show "[Tab Name] Dashboard" as the main title
-  const title = `${category} Dashboard`;
+  // Map category names to proper dashboard titles
+  const categoryTitleMap: Record<string, string> = {
+    'Overview': 'Overview Dashboard',
+    'Planning': 'Planning Dashboard',
+    'Preconstruction': 'Preconstruction Dashboard',
+    'Design': 'Design Dashboard',
+    'Construction': 'Construction Dashboard',
+    'Sustainability': 'Sustainability Dashboard',
+    'Legal': 'Legal & Insurance Dashboard',
+    'Finance': 'Finance Dashboard',
+    'Facilities': 'Facilities Dashboard'
+  };
+  
+  // Get the proper title or fallback to "[category] Dashboard"
+  const title = categoryTitleMap[category] || `${category} Dashboard`;
   
   // Subtitle shows either Portfolio Overview or selected project name
   const subtitle = projectName || 'Portfolio Overview';
