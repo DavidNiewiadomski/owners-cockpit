@@ -198,30 +198,30 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       case 'revisions-requested':
         return 'bg-orange-100 text-orange-700 border-orange-200';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-slate-800 text-slate-300 border-slate-700';
     }
   };
 
   const designProgress = (designMetrics.documentsApproved / designMetrics.totalDocuments) * 100;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+    <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
       {/* Design Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-semibold text-white">
             {title}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-slate-400 mt-1">
             {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             <Palette className="w-4 h-4 mr-2" />
             {designProgress.toFixed(1)}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             {designMetrics.changeOrders} Change Orders
           </Badge>
         </div>
@@ -305,10 +305,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     </Card>
 
       {/* Quick Actions */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Lightbulb className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Lightbulb className="h-5 w-5 text-slate-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
@@ -318,23 +318,23 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
               <FileImage className="w-4 h-4 mr-2" />
               Upload Design
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Eye className="w-4 h-4 mr-2" />
               Review Submissions
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <MessageSquare className="w-4 h-4 mr-2" />
               Designer Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Download className="w-4 h-4 mr-2" />
               Download Plans
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Ruler className="w-4 h-4 mr-2" />
               3D Model View
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Changes
             </Button>
@@ -345,54 +345,54 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Design KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Design Progress */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Design Progress</CardTitle>
-            <Palette className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Design Progress</CardTitle>
+            <Palette className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{designProgress.toFixed(1)}%</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{designMetrics.documentsApproved}/{designMetrics.totalDocuments} documents</div>
+            <div className="text-2xl font-bold text-white">{designProgress.toFixed(1)}%</div>
+            <div className="text-xs text-slate-400 mt-1">{designMetrics.documentsApproved}/{designMetrics.totalDocuments} documents</div>
             <Progress value={designProgress} className="mt-3 h-2" />
           </CardContent>
         </Card>
 
         {/* Design Budget */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Design Budget</CardTitle>
-            <PaintBucket className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Design Budget</CardTitle>
+            <PaintBucket className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">${(designMetrics.spentToDate / 1000).toFixed(0)}K</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">of ${(designMetrics.totalDesignBudget / 1000).toFixed(0)}K budget</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <div className="text-2xl font-bold text-white">${(designMetrics.spentToDate / 1000).toFixed(0)}K</div>
+            <div className="text-xs text-slate-400 mt-1">of ${(designMetrics.totalDesignBudget / 1000).toFixed(0)}K budget</div>
+            <div className="text-xs text-slate-400 mt-1">
               {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% used
             </div>
           </CardContent>
         </Card>
 
         {/* Change Orders */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Change Orders</CardTitle>
-            <AlertCircle className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Change Orders</CardTitle>
+            <AlertCircle className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{designMetrics.changeOrders}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">${(designMetrics.totalChangeOrderValue / 1000).toFixed(0)}K total value</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.changeOrders}</div>
+            <div className="text-xs text-slate-400 mt-1">${(designMetrics.totalChangeOrderValue / 1000).toFixed(0)}K total value</div>
           </CardContent>
         </Card>
 
         {/* Pending Approvals */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Approvals</CardTitle>
-            <Clock className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Pending Approvals</CardTitle>
+            <Clock className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{recentDesignSubmissions.filter(s => s.status === 'pending-approval').length}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">submissions waiting</div>
+            <div className="text-2xl font-bold text-white">{recentDesignSubmissions.filter(s => s.status === 'pending-approval').length}</div>
+            <div className="text-xs text-slate-400 mt-1">submissions waiting</div>
           </CardContent>
         </Card>
       </div>
@@ -400,10 +400,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Design Phase Progress */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Layers className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Layers className="h-5 w-5 text-slate-400" />
               Design Phase Progress
             </CardTitle>
           </CardHeader>
@@ -412,14 +412,14 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
               {designPhases.map((phase) => (
                 <div key={phase.id} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900 dark:text-white">{phase.name}</span>
+                    <span className="font-medium text-white">{phase.name}</span>
                     <Badge className={getStatusColor(phase.status)}>
                       {phase.status === 'completed' ? 'Complete' : 
                        phase.status === 'in-progress' ? `${phase.progress}%` : 'Pending'}
                     </Badge>
                   </div>
                   <Progress value={phase.progress} className="h-2" />
-                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex justify-between text-sm text-slate-400">
                     <span>{phase.documents} documents</span>
                     <span>Due: {phase.dueDate}</span>
                   </div>
@@ -430,29 +430,29 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Material Selection Status */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Square className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Square className="h-5 w-5 text-slate-400" />
               Material Selection Status
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {materialSelections.map((material, index) => (
-                <div key={index} className="p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <div key={index} className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-gray-900 dark:text-white">{material.category}</span>
+                    <span className="font-medium text-white">{material.category}</span>
                     <Badge className={getStatusColor(material.status)}>
                       {material.status.replace('-', ' ')}
                     </Badge>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <div className="text-sm text-slate-400 mb-2">
                     Selected: {material.selected}
                   </div>
-                  <div className="text-sm text-gray-900 dark:text-white">
+                  <div className="text-sm text-white">
                     <span className="font-medium">${material.cost.toLocaleString()}</span> per {material.unit} • 
-                    <span className="text-gray-600 dark:text-gray-400">{material.quantity.toLocaleString()} {material.unit}s</span>
+                    <span className="text-slate-400">{material.quantity.toLocaleString()} {material.unit}s</span>
                   </div>
                 </div>
               ))}
@@ -464,17 +464,17 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       {/* Recent Submissions and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Recent Design Submissions */}
-        <Card className="lg:col-span-2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <FileImage className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <FileImage className="h-5 w-5 text-slate-400" />
               Recent Design Submissions
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {recentDesignSubmissions.map((submission) => (
-                <div key={submission.id} className="flex items-center gap-4 p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <div key={submission.id} className="flex items-center gap-4 p-3 rounded-md bg-slate-800/50 border border-slate-700">
                   <div className={`w-2 h-2 rounded-full ${
                     submission.status === 'approved' ? 'bg-green-500' :
                     submission.status === 'pending-approval' ? 'bg-yellow-500' :
@@ -482,11 +482,11 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
                     'bg-blue-500'
                   }`} />
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 dark:text-white">{submission.title}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="font-medium text-white">{submission.title}</div>
+                    <div className="text-sm text-slate-400">
                       {submission.type} • {submission.submittedBy} • {submission.submittedDate}
                     </div>
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <div className="text-sm font-medium text-white">
                       ${submission.estimatedCost.toLocaleString()}
                     </div>
                   </div>
@@ -500,39 +500,39 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </Card>
 
         {/* Design Team Summary */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Users className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Users className="h-5 w-5 text-slate-400" />
               Design Team Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <div className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
-                <Palette className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                <span className="font-medium text-gray-900 dark:text-white">Overall Performance</span>
+                <Palette className="h-4 w-4 text-slate-400" />
+                <span className="font-medium text-white">Overall Performance</span>
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-sm text-slate-400">
                 {designMetrics.documentsApproved} of {designMetrics.totalDocuments} documents approved
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-bold text-gray-900 dark:text-white">6</div>
-                <div className="text-gray-600 dark:text-gray-400">Team Members</div>
+                <div className="font-bold text-white">6</div>
+                <div className="text-slate-400">Team Members</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-gray-900 dark:text-white">95%</div>
-                <div className="text-gray-600 dark:text-gray-400">Avg Performance</div>
+                <div className="font-bold text-white">95%</div>
+                <div className="text-slate-400">Avg Performance</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-gray-900 dark:text-white">{designMetrics.changeOrders}</div>
-                <div className="text-gray-600 dark:text-gray-400">Change Orders</div>
+                <div className="font-bold text-white">{designMetrics.changeOrders}</div>
+                <div className="text-slate-400">Change Orders</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-gray-900 dark:text-white">18</div>
-                <div className="text-gray-600 dark:text-gray-400">Active Projects</div>
+                <div className="font-bold text-white">18</div>
+                <div className="text-slate-400">Active Projects</div>
               </div>
             </div>
           </CardContent>
@@ -540,10 +540,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       </div>
 
       {/* Design Team Performance */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Palette className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Palette className="h-5 w-5 text-slate-400" />
             Design Team & Consultants
           </CardTitle>
         </CardHeader>
@@ -557,18 +557,18 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
               { name: 'Landscape Plus', role: 'Landscape Architect', contact: 'Maria Garcia', performance: 90, deliverables: 8 },
               { name: 'Lighting Experts', role: 'Lighting Consultant', contact: 'Tom Wilson', performance: 94, deliverables: 12 }
             ].map((team, index) => (
-              <div key={index} className="p-3 rounded-md bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <div className="font-medium text-gray-900 dark:text-white">{team.name}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{team.role}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{team.contact}</div>
+              <div key={index} className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+                <div className="font-medium text-white">{team.name}</div>
+                <div className="text-sm text-slate-400">{team.role}</div>
+                <div className="text-sm text-slate-400">{team.contact}</div>
                 <div className="mt-2">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600 dark:text-gray-400">Performance</span>
-                    <span className="text-gray-900 dark:text-white">{team.performance}%</span>
+                    <span className="text-slate-400">Performance</span>
+                    <span className="text-white">{team.performance}%</span>
                   </div>
                   <Progress value={team.performance} className="h-2" />
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                <div className="text-sm text-slate-400 mt-2">
                   {team.deliverables} deliverables
                 </div>
               </div>

@@ -253,28 +253,28 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       case 'pending':
         return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       default:
-        return 'bg-gray-100 text-gray-700 border-gray-200';
+        return 'bg-slate-800 text-slate-300 border-slate-700';
     }
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+    <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
       {/* Construction Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-semibold text-white">
             {title}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-slate-400 mt-1">
             {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             <HardHat className="w-4 h-4 mr-2" />
             {constructionMetrics.overallProgress}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
             {Math.abs(constructionMetrics.daysAheadBehind)} Days {constructionMetrics.daysAheadBehind < 0 ? 'Ahead' : 'Behind'}
           </Badge>
         </div>
@@ -358,10 +358,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       </Card>
 
       {/* Quick Actions */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Wrench className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Wrench className="h-5 w-5 text-slate-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
@@ -371,23 +371,23 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
               <FileText className="w-4 h-4 mr-2" />
               Daily Report
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Users className="w-4 h-4 mr-2" />
               Crew Management
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Truck className="w-4 h-4 mr-2" />
               Material Delivery
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <AlertTriangle className="w-4 h-4 mr-2" />
               Safety Inspection
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Update
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Quality Check
             </Button>
@@ -398,27 +398,27 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Key Construction KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Overall Progress */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Overall Progress</CardTitle>
-            <Building className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Overall Progress</CardTitle>
+            <Building className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{constructionMetrics.overallProgress}%</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} milestones</div>
+            <div className="text-2xl font-bold text-white">{constructionMetrics.overallProgress}%</div>
+            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.completedMilestones}/{constructionMetrics.totalMilestones} milestones</div>
             <Progress value={constructionMetrics.overallProgress} className="mt-3 h-2" />
           </CardContent>
         </Card>
 
         {/* Workforce */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Workforce</CardTitle>
-            <Users className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Active Workforce</CardTitle>
+            <Users className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{constructionMetrics.totalWorkforce}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{constructionMetrics.activeSubcontractors} subcontractors</div>
+            <div className="text-2xl font-bold text-white">{constructionMetrics.totalWorkforce}</div>
+            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.activeSubcontractors} subcontractors</div>
             <div className="flex items-center mt-2 text-green-600">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">+8% productivity</span>
@@ -427,14 +427,14 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Safety Score */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Safety Score</CardTitle>
-            <Shield className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Safety Score</CardTitle>
+            <Shield className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{safetyMetrics.recordableDays} days without incident</div>
+            <div className="text-xs text-slate-400 mt-1">{safetyMetrics.recordableDays} days without incident</div>
             <div className="flex items-center mt-2 text-green-600">
               <CheckCircle2 className="w-4 h-4 mr-1" />
               <span className="text-sm">{safetyMetrics.oshaRating}</span>
@@ -443,14 +443,14 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Open Items */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Open Items</CardTitle>
-            <Clock className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-slate-400">Open Items</CardTitle>
+            <Clock className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{constructionMetrics.openRFIs + constructionMetrics.pendingSubmittals}</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{constructionMetrics.openRFIs} RFIs, {constructionMetrics.pendingSubmittals} submittals</div>
+            <div className="text-2xl font-bold text-white">{constructionMetrics.openRFIs + constructionMetrics.pendingSubmittals}</div>
+            <div className="text-xs text-slate-400 mt-1">{constructionMetrics.openRFIs} RFIs, {constructionMetrics.pendingSubmittals} submittals</div>
             <div className="flex items-center mt-2 text-green-600">
               <TrendingDown className="w-4 h-4 mr-1" />
               <span className="text-sm">-12% this week</span>
@@ -462,10 +462,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Daily Progress Chart */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Activity className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Activity className="h-5 w-5 text-slate-400" />
               Daily Progress Tracking
             </CardTitle>
           </CardHeader>
@@ -514,10 +514,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Quality Metrics */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <BarChart3 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <BarChart3 className="h-5 w-5 text-slate-400" />
               Quality & Inspection Metrics
             </CardTitle>
           </CardHeader>
@@ -557,10 +557,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Trade Progress and Material Deliveries */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Trade Progress by Floor */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Building className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Building className="h-5 w-5 text-slate-400" />
               Trade Progress by Floor
             </CardTitle>
           </CardHeader>
@@ -570,7 +570,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                 <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{floor.floor}</span>
-                    <span className="text-sm text-slate-600 dark:text-slate-400">
+                    <span className="text-sm text-slate-400">
                       Avg: {Math.round((floor.structural + floor.mechanical + floor.electrical + floor.plumbing + floor.finishes) / 5)}%
                     </span>
                   </div>
@@ -578,27 +578,27 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                     <div className="text-center">
                       <div className="text-xs text-slate-500 mb-1">Struct</div>
                       <Progress value={floor.structural} className="h-2" />
-                      <div className="text-xs text-slate-600 mt-1">{floor.structural}%</div>
+                    <div className="text-xs text-slate-400 mt-1">{floor.structural}%</div>
                     </div>
                     <div className="text-center">
                       <div className="text-xs text-slate-500 mb-1">Mech</div>
                       <Progress value={floor.mechanical} className="h-2" />
-                      <div className="text-xs text-slate-600 mt-1">{floor.mechanical}%</div>
+                    <div className="text-xs text-slate-400 mt-1">{floor.mechanical}%</div>
                     </div>
                     <div className="text-center">
                       <div className="text-xs text-slate-500 mb-1">Elec</div>
                       <Progress value={floor.electrical} className="h-2" />
-                      <div className="text-xs text-slate-600 mt-1">{floor.electrical}%</div>
+                    <div className="text-xs text-slate-400 mt-1">{floor.electrical}%</div>
                     </div>
                     <div className="text-center">
                       <div className="text-xs text-slate-500 mb-1">Plumb</div>
                       <Progress value={floor.plumbing} className="h-2" />
-                      <div className="text-xs text-slate-600 mt-1">{floor.plumbing}%</div>
+                    <div className="text-xs text-slate-400 mt-1">{floor.plumbing}%</div>
                     </div>
                     <div className="text-center">
                       <div className="text-xs text-slate-500 mb-1">Finish</div>
                       <Progress value={floor.finishes} className="h-2" />
-                      <div className="text-xs text-slate-600 mt-1">{floor.finishes}%</div>
+                    <div className="text-xs text-slate-400 mt-1">{floor.finishes}%</div>
                     </div>
                   </div>
                 </div>
@@ -608,10 +608,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Material Deliveries Schedule */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Truck className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Truck className="h-5 w-5 text-slate-400" />
               Material Deliveries Schedule
             </CardTitle>
           </CardHeader>
@@ -627,19 +627,19 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Supplier:</span>
+                      <span className="text-slate-400">Supplier:</span>
                       <span className="font-medium ml-2">{delivery.supplier}</span>
                     </div>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Date:</span>
+                      <span className="text-slate-400">Date:</span>
                       <span className="font-medium ml-2">{delivery.scheduledDate}</span>
                     </div>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Quantity:</span>
+                      <span className="text-slate-400">Quantity:</span>
                       <span className="font-medium ml-2">{delivery.quantity}</span>
                     </div>
                     <div>
-                      <span className="text-slate-600 dark:text-slate-400">Cost:</span>
+                      <span className="text-slate-400">Cost:</span>
                       <span className="font-medium ml-2">${delivery.cost.toLocaleString()}</span>
                     </div>
                   </div>
@@ -654,52 +654,52 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       <div className="space-y-6">
         <div className="flex items-center gap-2">
           <Shield className="h-6 w-6 text-green-600" />
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Safety & Compliance</h2>
+          <h2 className="text-2xl font-semibold text-white">Safety & Compliance</h2>
         </div>
         
         {/* Safety KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Days Without Incident</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Days Without Incident</CardTitle>
               <Shield className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{safetyMetrics.recordableDays}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Last incident: {safetyMetrics.lastIncidentDate}</div>
+            <div className="text-xs text-slate-400 mt-1">Last incident: {safetyMetrics.lastIncidentDate}</div>
             </CardContent>
           </Card>
           
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Compliance Score</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Compliance Score</CardTitle>
               <Clipboard className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">{safetyMetrics.complianceScore}%</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{safetyMetrics.oshaRating} OSHA rating</div>
+            <div className="text-xs text-slate-400 mt-1">{safetyMetrics.oshaRating} OSHA rating</div>
             </CardContent>
           </Card>
           
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Training Hours</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Training Hours</CardTitle>
               <UserCheck className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-blue-600">{safetyMetrics.safetyTrainingHours}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">This quarter</div>
+            <div className="text-xs text-slate-400 mt-1">This quarter</div>
             </CardContent>
           </Card>
           
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Near Misses</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-400">Near Misses</CardTitle>
               <AlertTriangle className="h-4 w-4 text-yellow-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">{safetyMetrics.nearMisses}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">All investigated</div>
+            <div className="text-xs text-slate-400 mt-1">All investigated</div>
             </CardContent>
           </Card>
         </div>
@@ -707,9 +707,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         {/* Safety Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Safety Incidents */}
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
                 <AlertTriangle className="h-5 w-5 text-yellow-600" />
                 Recent Safety Events
               </CardTitle>
@@ -717,15 +717,15 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
             <CardContent>
               <div className="space-y-4">
                 {safetyIncidents.map((incident) => (
-                  <div key={incident.id} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                  <div key={incident.id} className="p-4 rounded-lg bg-slate-800/50">
                     <div className="flex items-center justify-between mb-2">
                       <Badge className={incident.type === 'Near Miss' ? 'bg-yellow-100 text-yellow-700' : 'bg-orange-100 text-orange-700'}>
                         {incident.type}
                       </Badge>
-                      <span className="text-sm text-slate-600 dark:text-slate-400">{incident.date}</span>
+                      <span className="text-sm text-slate-400">{incident.date}</span>
                     </div>
                     <div className="font-medium text-sm mb-1">{incident.description}</div>
-                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                    <div className="text-xs text-slate-400">
                       <strong>Corrective Action:</strong> {incident.corrective}
                     </div>
                     <div className="flex items-center gap-2">
@@ -743,9 +743,9 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </Card>
           
           {/* Safety Training Progress */}
-          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+          <Card className="bg-slate-900 border-slate-800">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+              <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
                 <UserCheck className="h-5 w-5 text-blue-600" />
                 Safety Training Progress
               </CardTitle>
@@ -776,17 +776,17 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
       {/* Recent Activities and Construction Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Construction Activities */}
-        <Card className="lg:col-span-2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Activity className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Activity className="h-5 w-5 text-slate-400" />
               Recent Construction Activities
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                <div key={activity.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
                   <div className={`w-3 h-3 rounded-full ${
                     activity.status === 'completed' ? 'bg-green-500' :
                     activity.status === 'in-progress' ? 'bg-blue-500' :
@@ -794,10 +794,10 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                   }`} />
                   <div className="flex-1">
                     <div className="font-medium">{activity.activity}</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="text-sm text-slate-400">
                       {activity.trade} • {activity.crew} • {activity.duration}
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="text-sm text-slate-400">
                       {activity.notes}
                     </div>
                   </div>
@@ -805,7 +805,7 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                     <Badge className={getStatusColor(activity.status)}>
                       {activity.status.replace('-', ' ')}
                     </Badge>
-                    <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                    <div className="text-sm text-slate-400 mt-1">
                       {activity.date}
                     </div>
                   </div>
@@ -816,39 +816,39 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
 
         {/* Construction Summary */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <HardHat className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <HardHat className="h-5 w-5 text-slate-400" />
               Construction Summary
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
+            <div className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="h-5 w-5 text-orange-600" />
-                <span className="font-medium text-orange-800 dark:text-orange-200">Ahead of Schedule</span>
+                <span className="font-medium text-orange-300">Ahead of Schedule</span>
               </div>
-              <div className="text-sm text-orange-700 dark:text-orange-300">
+              <div className="text-sm text-orange-300">
                 {Math.abs(constructionMetrics.daysAheadBehind)} days ahead of planned timeline
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="text-center">
                 <div className="font-bold text-orange-600">{constructionMetrics.overallProgress}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Complete</div>
+                <div className="text-slate-400">Complete</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-amber-600">{constructionMetrics.totalWorkforce}</div>
-                <div className="text-slate-600 dark:text-slate-400">Workers</div>
+                <div className="text-slate-400">Workers</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Safety</div>
+                <div className="text-slate-400">Safety</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-blue-600">{constructionMetrics.activeWorkOrders}</div>
-                <div className="text-slate-600 dark:text-slate-400">Active Work Orders</div>
+                <div className="text-slate-400">Active Work Orders</div>
               </div>
             </div>
           </CardContent>

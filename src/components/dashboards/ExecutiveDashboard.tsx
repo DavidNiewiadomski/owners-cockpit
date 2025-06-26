@@ -91,36 +91,36 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
       <AIInsightsPanel projectData={projectData} />
       
       {/* Quick Actions */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Clock className="h-5 w-5 text-slate-400" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <BarChart3 className="w-4 h-4 mr-2" />
               Review Budget Variance
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Board Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Strategic Decisions
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Building className="w-4 h-4 mr-2" />
               Review Portfolio Performance
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <DollarSign className="w-4 h-4 mr-2" />
               Update Financial Forecasts
             </Button>
-            <Button variant="outline" className="justify-start border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Generate Executive Report
             </Button>

@@ -258,7 +258,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Low': return 'bg-green-100 text-green-700';
       case 'Medium': return 'bg-yellow-100 text-yellow-700';
       case 'High': return 'bg-red-100 text-red-700';
-      default: return 'bg-gray-100 text-gray-700';
+      default: return 'bg-slate-800 text-gray-700';
     }
   };
   
@@ -270,7 +270,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Supportive': return 'bg-green-100 text-green-700';
       case 'Neutral': return 'bg-yellow-100 text-yellow-700';
       case 'Interested': return 'bg-blue-100 text-blue-700';
-      default: return 'bg-gray-100 text-gray-700';
+      default: return 'bg-slate-800 text-gray-700';
     }
   };
   
@@ -477,17 +477,17 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </div>
 
       {/* Site Selection Analysis */}
-      <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <Card className="bg-slate-900 border-slate-800">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-            <MapPin className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <MapPin className="h-5 w-5 text-slate-400" />
             Site Selection Analysis
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {siteOptions.map((site) => (
-              <div key={site.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+              <div key={site.id} className="border rounded-lg p-4 hover:bg-slate-800/50 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -497,7 +497,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                         Score: {site.score}/100
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{site.address}</p>
+                    <p className="text-sm text-slate-400 mb-2">{site.address}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="font-medium">Size:</span> {site.size}
@@ -547,10 +547,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Financial Projections and Market Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Financial Projections */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <DollarSign className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <DollarSign className="h-5 w-5 text-slate-400" />
               5-Year Financial Projections
             </CardTitle>
           </CardHeader>
@@ -578,10 +578,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Market Analysis */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Globe className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Globe className="h-5 w-5 text-slate-400" />
               Market Analysis
             </CardTitle>
           </CardHeader>
@@ -609,10 +609,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <h4 className="font-medium mb-3">Market Trends</h4>
               <div className="space-y-2">
                 {marketAnalysis.marketTrends.map((trend, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded bg-gray-50 dark:bg-gray-800">
+                  <div key={index} className="flex items-center justify-between p-2 rounded bg-slate-800/50">
                     <div>
                       <div className="font-medium text-sm">{trend.trend}</div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">Impact: {trend.impact}</div>
+                      <div className="text-xs text-slate-400">Impact: {trend.impact}</div>
                     </div>
                     <Badge variant="outline" className="text-xs">
                       {trend.status}
@@ -628,9 +628,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Risk Assessment and Stakeholder Management */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Risk Assessment */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Shield className="h-5 w-5 text-orange-500" />
               Risk Assessment Matrix
             </CardTitle>
@@ -645,10 +645,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                       {risk.level} Risk
                     </Badge>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{risk.description}</p>
+                  <p className="text-sm text-slate-400 mb-2">{risk.description}</p>
                   <div className="text-sm">
                     <div className="font-medium text-green-700 dark:text-green-400">Mitigation:</div>
-                    <div className="text-gray-600 dark:text-gray-400">{risk.mitigation}</div>
+                    <div className="text-slate-400">{risk.mitigation}</div>
                   </div>
                   <div className="flex items-center gap-4 mt-2 text-xs">
                     <span>Probability: {risk.probability}%</span>
@@ -661,9 +661,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Stakeholder Management */}
-        <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
               <Users className="h-5 w-5 text-blue-500" />
               Stakeholder Management
             </CardTitle>
@@ -678,7 +678,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                       {stakeholder.status}
                     </Badge>
                   </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{stakeholder.role}</div>
+                  <div className="text-sm text-slate-400 mb-2">{stakeholder.role}</div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="font-medium">Influence:</span> {stakeholder.influence}
@@ -703,17 +703,17 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Planning Timeline and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Planning Milestones */}
-        <Card className="lg:col-span-2 border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+        <Card className="lg:col-span-2 bg-slate-900 border-slate-800">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
-              <Calendar className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+              <Calendar className="h-5 w-5 text-slate-400" />
               Planning Milestones & Timeline
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {planningMilestones.map((milestone) => (
-                <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                  <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
                   <div className={`w-3 h-3 rounded-full ${
                     milestone.status === 'completed' ? 'bg-green-500' :
                     milestone.status === 'in-progress' ? 'bg-blue-500' :
@@ -721,7 +721,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                   }`} />
                   <div className="flex-1">
                     <div className="font-medium">{milestone.milestone}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="text-sm text-slate-400">
                       Due: {milestone.dueDate} • Owner: {milestone.owner}
                     </div>
                     <Progress value={milestone.progress} className="mt-2 h-2" />
@@ -730,7 +730,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                     <Badge className={getStatusColor(milestone.status)}>
                       {milestone.status.replace('-', ' ')}
                     </Badge>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    <div className="text-sm text-slate-400 mt-1">
                       {milestone.progress}%
                     </div>
                   </div>
