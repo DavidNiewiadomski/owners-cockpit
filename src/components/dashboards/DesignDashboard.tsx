@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
-import { useDesignMetrics } from '@/hooks/useDesignMetrics';
+import { useDesignMetrics } from '@/hooks/useProjectMetrics';
 
 interface DesignDashboardProps {
   projectId: string;
@@ -30,7 +30,8 @@ interface DesignDashboardProps {
 
 const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
-  const { data: designData, error, loading } = useDesignMetrics(projectId);
+  const { data: designMetrics, error, isLoading } = useDesignMetrics(projectId);
+  const loading = isLoading;
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -47,20 +48,13 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     );
   }
 
-  if (loading || !designData) {
+  if (loading || !designMetrics) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-white">Loading design data...</div>
       </div>
     );
   }
-
-  const {
-    designPhases,
-    recentDesignSubmissions,
-    materialSelections,
-    designMetrics
-  } = designData;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -78,7 +72,26 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     }
   };
 
-  const designProgress = (designMetrics.documentsApproved / designMetrics.totalDocuments) * 100;
+  const designProgress = (designMetrics.approved_drawings / designMetrics.total_drawings) * 100;
+  
+  // Mock data for components not yet in backend
+  const designPhases = [
+    { id: 'schematic', name: 'Schematic Design', status: 'completed', progress: 100, documents: 25, dueDate: '2024-03-01' },
+    { id: 'design-dev', name: 'Design Development', status: 'completed', progress: 100, documents: 38, dueDate: '2024-05-15' },
+    { id: 'construction-docs', name: 'Construction Documents', status: 'in-progress', progress: designProgress, documents: designMetrics.total_drawings, dueDate: '2024-09-30' }
+  ];
+  
+  const recentDesignSubmissions = [
+    { id: 1, title: 'Facade Detail Package', type: 'Construction Documents', submittedBy: 'Arc Design Studio', submittedDate: '2024-08-15', status: 'pending-approval', priority: 'high', category: 'Architectural', estimatedCost: 85000 },
+    { id: 2, title: 'MEP Coordination Drawings', type: 'Design Review', submittedBy: 'MEP Solutions', submittedDate: '2024-08-14', status: 'approved', priority: 'medium', category: 'Engineering', estimatedCost: 42000 },
+    { id: 3, title: 'Structural Shop Drawings', type: 'Submittal', submittedBy: 'Structural Pro', submittedDate: '2024-08-13', status: 'revisions-requested', priority: 'high', category: 'Structural', estimatedCost: 67000 }
+  ];
+  
+  const materialSelections = [
+    { category: 'Flooring', selected: 'Premium Marble', alternatives: ['Standard Marble', 'Luxury Vinyl'], cost: 120, unit: 'sq ft', quantity: 2500, status: 'pending-approval', supplier: 'Stone Supply Co.' },
+    { category: 'Windows', selected: 'High-Performance Glass', alternatives: ['Standard Glass', 'Energy Glass'], cost: 450, unit: 'sq ft', quantity: 1800, status: 'approved', supplier: 'Window Systems Inc.' },
+    { category: 'Exterior Cladding', selected: 'Premium Aluminum', alternatives: ['Standard Aluminum', 'Composite'], cost: 85, unit: 'sq ft', quantity: 3200, status: 'approved', supplier: 'Cladding Solutions LLC' }
+  ];
 
   return (
     <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
@@ -98,7 +111,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
             {designProgress.toFixed(1)}% Complete
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
-            {designMetrics.changeOrders} Change Orders
+            {designMetrics.design_changes} Design Changes
           </Badge>
         </div>
       </div>
@@ -122,15 +135,15 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
             <div className="text-sm text-slate-400">Design Progress</div>
           </div>
           <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.design_progress}%</div>
             <div className="text-sm text-slate-400">Budget Used</div>
           </div>
           <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{designMetrics.changeOrders}</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.design_changes}</div>
             <div className="text-sm text-slate-400">Change Orders</div>
           </div>
           <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-white">{designMetrics.documentsApproved}</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.approved_drawings}</div>
             <div className="text-sm text-slate-400">Docs Approved</div>
           </div>
         </div>
@@ -138,7 +151,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         {/* Summary */}
         <div className="bg-[#0D1117]/50 rounded-lg p-4">
           <p className="text-slate-300 text-sm">
-            Design portfolio shows {designPhases.find(phase => phase.id === 'construction-docs')?.progress}% completion with {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% budget utilization. {designMetrics.changeOrders} change orders pending review. Lobby marble selection requires immediate approval for schedule alignment.
+            Design portfolio shows {designProgress.toFixed(1)}% completion with {designMetrics.design_changes} design changes submitted. {designMetrics.revision_cycles} revision cycles completed.
           </p>
         </div>
         
@@ -228,7 +241,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">{designProgress.toFixed(1)}%</div>
-            <div className="text-xs text-slate-400 mt-1">{designMetrics.documentsApproved}/{designMetrics.totalDocuments} documents</div>
+            <div className="text-xs text-slate-400 mt-1">{designMetrics.approved_drawings}/{designMetrics.total_drawings} documents</div>
             <Progress value={designProgress} className="mt-3 h-2" />
           </CardContent>
         </Card>
@@ -240,10 +253,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
             <PaintBucket className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">${(designMetrics.spentToDate / 1000).toFixed(0)}K</div>
-            <div className="text-xs text-slate-400 mt-1">of ${(designMetrics.totalDesignBudget / 1000).toFixed(0)}K budget</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.stakeholder_approvals}</div>
+            <div className="text-xs text-slate-400 mt-1">stakeholder approvals</div>
             <div className="text-xs text-slate-400 mt-1">
-              {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% used
+              {designMetrics.revision_cycles} revision cycles
             </div>
           </CardContent>
         </Card>
@@ -255,8 +268,8 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
             <AlertCircle className="h-4 w-4 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{designMetrics.changeOrders}</div>
-            <div className="text-xs text-slate-400 mt-1">${(designMetrics.totalChangeOrderValue / 1000).toFixed(0)}K total value</div>
+            <div className="text-2xl font-bold text-white">{designMetrics.design_changes}</div>
+            <div className="text-xs text-slate-400 mt-1">{designMetrics.revision_cycles} revision cycles</div>
           </CardContent>
         </Card>
 
@@ -390,7 +403,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
                 <span className="font-medium text-white">Overall Performance</span>
               </div>
               <div className="text-sm text-slate-400">
-                {designMetrics.documentsApproved} of {designMetrics.totalDocuments} documents approved
+                {designMetrics.approved_drawings} of {designMetrics.total_drawings} documents approved
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -403,7 +416,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
                 <div className="text-slate-400">Avg Performance</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-white">{designMetrics.changeOrders}</div>
+                <div className="font-bold text-white">{designMetrics.design_changes}</div>
                 <div className="text-slate-400">Change Orders</div>
               </div>
               <div className="text-center">

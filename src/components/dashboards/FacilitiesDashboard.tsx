@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Building, Wrench, Zap, Clock, BarChart3, Calendar, CheckCircle2, DollarSign, Target } from 'lucide-react';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
-import { useFacilitiesMetrics } from '@/hooks/useFacilitiesMetrics';
+import { useFacilitiesMetrics } from '@/hooks/useProjectMetrics';
 import WorkOrders from '@/widgets/components/WorkOrders';
 import EnergyUsage from '@/widgets/components/EnergyUsage';
 
@@ -18,7 +18,8 @@ interface FacilitiesDashboardProps {
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
-  const { data: facilitiesData, error, loading } = useFacilitiesMetrics(projectId);
+  const { data: facilitiesData, error, isLoading } = useFacilitiesMetrics(projectId);
+  const loading = isLoading;
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -58,11 +59,11 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Building className="w-4 h-4 mr-2" />
-            {facilitiesData.buildingInfo.floors} Floors
+            {Math.floor(facilitiesData.operational_readiness)}% Ready
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Zap className="w-4 h-4 mr-2" />
-            {facilitiesData.buildingInfo.operationalStatus}
+            {facilitiesData.systems_commissioned} Systems
           </Badge>
         </div>
       </div>

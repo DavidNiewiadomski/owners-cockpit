@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Scale, Shield, FileText, Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
-import { useLegalMetrics } from '@/hooks/useLegalMetrics';
+import { useLegalMetrics } from '@/hooks/useProjectMetrics';
 
 interface LegalDashboardProps {
   projectId: string;
@@ -16,7 +16,8 @@ interface LegalDashboardProps {
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
-  const { data: legalData, error, loading } = useLegalMetrics(projectId);
+  const { data: legalData, error, isLoading } = useLegalMetrics(projectId);
+  const loading = isLoading;
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -56,11 +57,11 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Scale className="w-4 h-4 mr-2" />
-            {legalData.complianceScore}% Compliant
+            {legalData.compliance_score}% Compliant
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Shield className="w-4 h-4 mr-2" />
-            {legalData.legalRisks} Legal Risks
+            {legalData.legal_risks} Legal Risks
           </Badge>
         </div>
       </div>
@@ -114,17 +115,17 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Active Contracts</span>
-                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.contractsActive}</Badge>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.contracts_active}</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Pending Reviews</span>
-                <Badge variant={legalData.contractsPending > 3 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {legalData.contractsPending}
+                <Badge variant={legalData.contracts_pending > 3 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.contracts_pending}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Documentation Complete</span>
-                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.documentationComplete}%</Badge>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{legalData.documentation_complete}%</Badge>
               </div>
             </div>
           </CardContent>
@@ -138,23 +139,23 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Compliance Score</span>
-                <Badge variant={legalData.complianceScore > 90 ? "default" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {legalData.complianceScore}%
+                <Badge variant={legalData.compliance_score > 90 ? "default" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.compliance_score}%
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Risk Level</span>
                 <Badge variant={
-                  legalData.complianceScore > 90 ? 'default' : 
-                  legalData.complianceScore > 75 ? 'secondary' : 'destructive'
+                  legalData.compliance_score > 90 ? 'default' : 
+                  legalData.compliance_score > 75 ? 'secondary' : 'destructive'
                 } className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {legalData.complianceScore > 90 ? 'low' : legalData.complianceScore > 75 ? 'medium' : 'high'}
+                  {legalData.compliance_score > 90 ? 'low' : legalData.compliance_score > 75 ? 'medium' : 'high'}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Open Disputes</span>
-                <Badge variant={legalData.legalRisks > 2 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
-                  {legalData.legalRisks}
+                <Badge variant={legalData.legal_risks > 2 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
+                  {legalData.legal_risks}
                 </Badge>
               </div>
             </div>
