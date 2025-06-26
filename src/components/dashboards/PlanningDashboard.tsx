@@ -273,7 +273,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            🎯 PLANNING DASHBOARD 🎯 Strategic Planning Dashboard
+            Strategic Planning Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
             Site Selection, Business Case Development & Feasibility Analysis
