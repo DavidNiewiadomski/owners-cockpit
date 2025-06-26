@@ -194,10 +194,264 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
   const designProgress = (designMetrics.documentsApproved / designMetrics.totalDocuments) * 100;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 dark:from-purple-950 dark:via-pink-950 dark:to-rose-950 p-6 space-y-8">
       {/* Design Header */}
       <div className="flex items-center justify-between">
         <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">
+            Design Dashboard
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
+            {project.name} • Architectural Design & Materials
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 px-4 py-2 text-sm">
+            <Palette className="w-4 h-4 mr-2" />
+            {designProgress.toFixed(1)}% Complete
+          </Badge>
+          <Badge variant="outline" className="bg-pink-50 text-pink-700 border-pink-200 px-4 py-2 text-sm">
+            {designMetrics.changeOrders} Change Orders
+          </Badge>
+        </div>
+      </div>
+
+      {/* Design KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Design Progress */}
+        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white/90">Design Progress</CardTitle>
+            <Palette className="h-5 w-5 text-white/80" />
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold">{designProgress.toFixed(1)}%</div>
+            <div className="text-sm text-purple-100 mt-1">{designMetrics.documentsApproved}/{designMetrics.totalDocuments} documents</div>
+            <Progress value={designProgress} className="mt-3 bg-white/20" />
+          </CardContent>
+        </Card>
+
+        {/* Design Budget */}
+        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-pink-500 to-pink-600 text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white/90">Design Budget</CardTitle>
+            <PaintBucket className="h-5 w-5 text-white/80" />
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold">${(designMetrics.spentToDate / 1000).toFixed(0)}K</div>
+            <div className="text-sm text-pink-100 mt-1">of ${(designMetrics.totalDesignBudget / 1000).toFixed(0)}K budget</div>
+            <div className="flex items-center mt-2 text-pink-100">
+              <span className="text-sm">{((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% used</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Change Orders */}
+        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-rose-500 to-rose-600 text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white/90">Change Orders</CardTitle>
+            <AlertCircle className="h-5 w-5 text-white/80" />
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold">{designMetrics.changeOrders}</div>
+            <div className="text-sm text-rose-100 mt-1">${(designMetrics.totalChangeOrderValue / 1000).toFixed(0)}K total value</div>
+          </CardContent>
+        </Card>
+
+        {/* Pending Approvals */}
+        <Card className="relative overflow-hidden border-0 shadow-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+          <CardHeader className="relative z-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white/90">Pending Approvals</CardTitle>
+            <Clock className="h-5 w-5 text-white/80" />
+          </CardHeader>
+          <CardContent className="relative z-10">
+            <div className="text-3xl font-bold">{recentDesignSubmissions.filter(s => s.status === 'pending-approval').length}</div>
+            <div className="text-sm text-orange-100 mt-1">submissions waiting</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Design Phase Progress */}
+        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Layers className="h-6 w-6 text-purple-600" />
+              Design Phase Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {designPhases.map((phase) => (
+                <div key={phase.id} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{phase.name}</span>
+                    <Badge className={getStatusColor(phase.status)}>
+                      {phase.status === 'completed' ? 'Complete' : 
+                       phase.status === 'in-progress' ? `${phase.progress}%` : 'Pending'}
+                    </Badge>
+                  </div>
+                  <Progress value={phase.progress} className="h-3" />
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>{phase.documents} documents</span>
+                    <span>Due: {phase.dueDate}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Material Selection Status */}
+        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Square className="h-6 w-6 text-pink-600" />
+              Material Selection Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {materialSelections.map((material, index) => (
+                <div key={index} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium">{material.category}</span>
+                    <Badge className={getStatusColor(material.status)}>
+                      {material.status.replace('-', ' ')}
+                    </Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    Selected: {material.selected}
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-medium">${material.cost.toLocaleString()}</span> per {material.unit} • 
+                    <span className="text-muted-foreground">{material.quantity.toLocaleString()} {material.unit}s</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Submissions and Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Recent Design Submissions */}
+        <Card className="lg:col-span-2 border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <FileImage className="h-6 w-6 text-rose-600" />
+              Recent Design Submissions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentDesignSubmissions.map((submission) => (
+                <div key={submission.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                  <div className={`w-3 h-3 rounded-full ${
+                    submission.status === 'approved' ? 'bg-green-500' :
+                    submission.status === 'pending-approval' ? 'bg-yellow-500' :
+                    submission.status === 'revisions-requested' ? 'bg-orange-500' :
+                    'bg-blue-500'
+                  }`} />
+                  <div className="flex-1">
+                    <div className="font-medium">{submission.title}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {submission.type} • {submission.submittedBy} • {submission.submittedDate}
+                    </div>
+                    <div className="text-sm font-medium text-green-600">
+                      ${submission.estimatedCost.toLocaleString()}
+                    </div>
+                  </div>
+                  <Badge className={getStatusColor(submission.status)}>
+                    {submission.status.replace('-', ' ')}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Lightbulb className="h-6 w-6 text-orange-600" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button className="w-full justify-start bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700">
+              <FileImage className="w-4 h-4 mr-2" />
+              Upload Design
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <Eye className="w-4 h-4 mr-2" />
+              Review Submissions
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Designer Meeting
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <Download className="w-4 h-4 mr-2" />
+              Download Plans
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <Ruler className="w-4 h-4 mr-2" />
+              3D Model View
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approve Changes
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Design Team Performance */}
+      <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Palette className="h-6 w-6 text-purple-600" />
+            Design Team & Consultants
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { name: 'Arc Design Studio', role: 'Lead Architect', contact: 'Sarah Chen', performance: 95, deliverables: 28 },
+              { name: 'Structural Pro', role: 'Structural Engineer', contact: 'James Wright', performance: 92, deliverables: 15 },
+              { name: 'MEP Solutions', role: 'MEP Engineer', contact: 'Lisa Rodriguez', performance: 88, deliverables: 22 },
+              { name: 'Interior Concepts', role: 'Interior Designer', contact: 'David Kim', performance: 96, deliverables: 18 },
+              { name: 'Landscape Plus', role: 'Landscape Architect', contact: 'Maria Garcia', performance: 90, deliverables: 8 },
+              { name: 'Lighting Experts', role: 'Lighting Consultant', contact: 'Tom Wilson', performance: 94, deliverables: 12 }
+            ].map((team, index) => (
+              <div key={index} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                <div className="font-medium">{team.name}</div>
+                <div className="text-sm text-muted-foreground">{team.role}</div>
+                <div className="text-sm text-muted-foreground">{team.contact}</div>
+                <div className="mt-2">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Performance</span>
+                    <span>{team.performance}%</span>
+                  </div>
+                  <Progress value={team.performance} className="h-2" />
+                </div>
+                <div className="text-sm text-muted-foreground mt-2">
+                  {team.deliverables} deliverables
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Palette className="h-8 w-8 text-purple-600" />
             Design Management
