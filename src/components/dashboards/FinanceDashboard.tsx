@@ -187,7 +187,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               <div className="text-sm text-slate-400">Budget Used</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{(financialData.roi || 16.8).toFixed(1)}%</div>
+              <div className="text-2xl font-bold text-white">{financialData.roi ? financialData.roi.toFixed(1) : 0}%</div>
               <div className="text-sm text-slate-400">ROI</div>
             </div>
             <div className="bg-[#0D1117] rounded-lg p-4 text-center">
@@ -203,7 +203,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           {/* Summary */}
           <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
-              Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {(financialData.roi || 16.8).toFixed(1)}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
+              Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {financialData.roi ? financialData.roi.toFixed(1) : 0}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
             </p>
           </div>
           
@@ -217,7 +217,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               <ul className="space-y-2 text-sm text-slate-300">
                 <li>• Budget tracking at {budgetUtilization.toFixed(1)}% with ${(financialData.spentToDate / 1000000).toFixed(1)}M of ${(financialData.totalBudget / 1000000).toFixed(1)}M spent</li>
                 <li>• Financial variance {variancePercent > 0 ? 'above' : 'below'} forecast by {Math.abs(variancePercent).toFixed(1)}%</li>
-                <li>• Strong ROI projection at {(financialData.roi || 16.8).toFixed(1)}% vs market average 12-15%</li>
+                <li>• Strong ROI projection at {financialData.roi ? financialData.roi.toFixed(1) : 0}% vs market average 12-15%</li>
                 <li>• Contingency reserves healthy at {contingencyUsed.toFixed(1)}% utilization</li>
               </ul>
             </div>
@@ -482,7 +482,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Internal Rate of Return</div>
                 <div className="text-xl font-bold text-green-400">
-                  {(financialData.roi || 16.8).toFixed(1)}%
+                  {financialData.roi ? financialData.roi.toFixed(1) : 0}%
                 </div>
               </div>
               <div className="space-y-2">
@@ -502,12 +502,12 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             <div className="pt-4 border-t border-slate-700">
               <div className="text-sm text-slate-400 mb-2">Pre-Leasing Revenue</div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm text-white">Current: 29.8%</span>
+                <span className="text-sm text-white">Current: {financialMetrics.leasing_projections ? financialMetrics.leasing_projections.toFixed(1) : 0}%</span>
                 <span className="text-sm text-white">Target: 95%</span>
               </div>
-              <Progress value={29.8} className="h-2" />
+              <Progress value={financialMetrics.leasing_projections || 0} className="h-2" />
               <div className="text-xs text-slate-400 mt-1">
-                $6.0M annual revenue secured
+                Revenue projections based on current leasing rate
               </div>
             </div>
           </CardContent>
@@ -566,23 +566,21 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
-              <div className="text-sm font-medium text-white">Current Month</div>
-              <div className="text-xs text-slate-400">Jun 2024</div>
-              <div className="text-lg font-bold text-red-400">-$1.4M</div>
-            </div>
-            
-            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
-              <div className="text-sm font-medium text-white">Next Month</div>
-              <div className="text-xs text-slate-400">Jul 2024 (Projected)</div>
-              <div className="text-lg font-bold text-green-400">+$0.6M</div>
-            </div>
-            
-            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
-              <div className="text-sm font-medium text-white">Year to Date</div>
-              <div className="text-xs text-slate-400">Jan - Jun 2024</div>
-              <div className="text-lg font-bold text-red-400">-$8.2M</div>
-            </div>
+            {cashFlow && cashFlow.length > 0 ? (
+              cashFlow.slice(-3).map((flow, index) => (
+                <div key={index} className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
+                  <div className="text-sm font-medium text-white">{flow.month}</div>
+                  <div className="text-xs text-slate-400">2024</div>
+                  <div className={`text-lg font-bold ${flow.cumulative >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {flow.cumulative >= 0 ? '+' : ''}${(flow.cumulative / 1000000).toFixed(1)}M
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
+                <div className="text-sm font-medium text-white">No cash flow data available</div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

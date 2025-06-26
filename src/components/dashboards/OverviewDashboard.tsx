@@ -17,9 +17,17 @@ import {
   Building,
   Target
 } from 'lucide-react';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import {
+  useFinancialMetrics,
+  useConstructionMetrics,
+  useExecutiveMetrics,
+  useLegalMetrics,
+  useProjectInsights,
+  useProjectTimeline,
+  useProjectTeam
+} from '@/hooks/useProjectMetrics';
 
 interface OverviewDashboardProps {
   projectId: string;
@@ -27,21 +35,50 @@ interface OverviewDashboardProps {
 }
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  
+  // Fetch all project data from Supabase
+  const { data: financialMetrics, isLoading: loadingFinancial } = useFinancialMetrics(projectId);
+  const { data: constructionMetrics, isLoading: loadingConstruction } = useConstructionMetrics(projectId);
+  const { data: executiveMetrics, isLoading: loadingExecutive } = useExecutiveMetrics(projectId);
+  const { data: legalMetrics, isLoading: loadingLegal } = useLegalMetrics(projectId);
+  const { data: insights, isLoading: loadingInsights } = useProjectInsights(projectId);
+  const { data: timeline, isLoading: loadingTimeline } = useProjectTimeline(projectId);
+  const { data: team, isLoading: loadingTeam } = useProjectTeam(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
   const projectName = selectedProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
+  
+  // Show loading state if any data is still loading
+  const isLoading = loadingFinancial || loadingConstruction || loadingExecutive || loadingLegal || 
+                    loadingInsights || loadingTimeline || loadingTeam;
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-white text-lg">Loading project overview...</div>
+      </div>
+    );
+  }
+  
+  if (!financialMetrics || !constructionMetrics) {
+    return (
+      <div className="min-h-screen bg-[#0D1117] p-6 flex items-center justify-center">
+        <div className="text-slate-400 text-lg">No project data available.</div>
+      </div>
+    );
+  }
 
-  // Calculate key metrics
-  const budgetUsed = (project.financial.spentToDate / project.financial.totalBudget) * 100;
-  const scheduleProgress = project.schedule.percentComplete;
-  const contingencyUsed = (project.financial.contingencyUsed / project.financial.contingencyTotal) * 100;
-  const preLeasingRate = project.leasing.preLeasingRate;
-  const roi = project.financial.roi;
+  // Calculate key metrics from Supabase data
+  const budgetUsed = financialMetrics ? (financialMetrics.spent_to_date / financialMetrics.total_budget) * 100 : 0;
+  const scheduleProgress = constructionMetrics ? constructionMetrics.overall_progress : 0;
+  const contingencyTotal = financialMetrics ? (financialMetrics.contingency_used + financialMetrics.contingency_remaining) : 0;
+  const contingencyUsed = contingencyTotal > 0 ? (financialMetrics.contingency_used / contingencyTotal) * 100 : 0;
+  const preLeasingRate = financialMetrics ? financialMetrics.leasing_projections : 0;
+  const roi = financialMetrics ? financialMetrics.roi : 0;
 
   return (
     <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
@@ -109,10 +146,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
                 <span className="text-sm font-medium text-white">Key Insights</span>
               </div>
               <ul className="space-y-2 text-sm text-slate-300">
-                <li>• Schedule tracking {scheduleProgress}% complete with {project.schedule.remainingDays} days remaining</li>
+                <li>• Schedule tracking {scheduleProgress}% complete with construction progressing well</li>
                 <li>• Financial performance showing {budgetUsed <= scheduleProgress ? 'healthy' : 'elevated'} budget utilization</li>
                 <li>• Pre-leasing momentum exceeding targets at {preLeasingRate.toFixed(1)}% occupancy</li>
-                <li>• Safety record maintained at {project.safety.complianceScore}% compliance rate</li>
+                <li>• Safety record maintained at {constructionMetrics ? constructionMetrics.safety_score : 95}% compliance rate</li>
               </ul>
             </div>
             <div>
@@ -187,10 +224,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ${(project.financial.spentToDate / 1000000).toFixed(1)}M
+              ${(financialMetrics.spent_to_date / 1000000).toFixed(1)}M
             </div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
-              <span>of ${(project.financial.totalBudget / 1000000).toFixed(1)}M</span>
+              <span>of ${(financialMetrics.total_budget / 1000000).toFixed(1)}M</span>
               <Badge variant={budgetUsed <= scheduleProgress ? "default" : "destructive"} className="text-xs bg-[#0D1117] text-slate-300">
                 {budgetUsed.toFixed(1)}%
               </Badge>
@@ -208,8 +245,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           <CardContent>
             <div className="text-2xl font-bold text-white">{scheduleProgress}%</div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
-              <span>{project.schedule.remainingDays} days remaining</span>
-              <Badge variant={project.schedule.criticalPathDelay === 0 ? "default" : "destructive"} className="text-xs bg-[#0D1117] text-slate-300">
+              <span>Construction in progress</span>
+              <Badge variant="default" className="text-xs bg-[#0D1117] text-slate-300">
                 On Track
               </Badge>
             </div>
@@ -226,7 +263,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           <CardContent>
             <div className="text-2xl font-bold text-white">{preLeasingRate.toFixed(1)}%</div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
-              <span>{(project.leasing.preLeasedSpace / 1000).toFixed(0)}K sq ft</span>
+              <span>Pre-leased space available</span>
               <Badge variant={preLeasingRate >= 25 ? "default" : "secondary"} className="text-xs bg-[#0D1117] text-slate-300">
                 {preLeasingRate >= 25 ? "Strong" : "Building"}
               </Badge>
@@ -243,16 +280,16 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-400">
-              {project.safety.recordableDays}
+              {constructionMetrics ? constructionMetrics.safety_score : 95}
             </div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
-              <span>Days without incident</span>
+              <span>Safety score</span>
               <Badge variant="default" className="text-xs bg-green-500/20 text-green-400">
                 Excellent
               </Badge>
             </div>
             <div className="mt-2 text-xs text-green-400">
-              ↗ {project.safety.complianceScore}% compliance
+              ↗ {constructionMetrics ? constructionMetrics.safety_score : 95}% compliance
             </div>
           </CardContent>
         </Card>
@@ -269,8 +306,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {project.schedule.milestones.slice(0, 5).map((milestone) => (
-              <div key={milestone.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
+            {timeline?.slice(0, 5).map((milestone) => (
+              <div key={milestone.phase} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${
                     milestone.status === 'completed' ? 'bg-green-400' :
@@ -278,8 +315,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
                     'bg-slate-500'
                   }`} />
                   <div>
-                    <div className="font-medium text-sm text-white">{milestone.name}</div>
-                    <div className="text-xs text-slate-400">{milestone.date}</div>
+                    <div className="font-medium text-sm text-white">{milestone.phase}</div>
+                    <div className="text-xs text-slate-400">{milestone.start_date}</div>
                   </div>
                 </div>
                 <Badge variant={
@@ -292,7 +329,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
                    'Upcoming'}
                 </Badge>
               </div>
-            ))}
+            )) || [
+              <div key="no-milestones" className="text-center text-slate-400 py-4">
+                No milestone data available
+              </div>
+            ]}
           </CardContent>
         </Card>
 
@@ -309,25 +350,25 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Total Investment</div>
                 <div className="text-xl font-bold text-white">
-                  ${(project.financial.totalBudget / 1000000).toFixed(1)}M
+                  ${(financialMetrics.total_budget / 1000000).toFixed(1)}M
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">Market Value</div>
                 <div className="text-xl font-bold text-green-400">
-                  ${(project.financial.marketValue / 1000000).toFixed(1)}M
+                  ${(financialMetrics.market_value / 1000000).toFixed(1)}M
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">NPV</div>
                 <div className="text-lg font-semibold text-green-400">
-                  ${(project.financial.npv / 1000000).toFixed(1)}M
+                  ${(financialMetrics.npv / 1000000).toFixed(1)}M
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-slate-400">IRR</div>
                 <div className="text-lg font-semibold text-green-400">
-                  {project.financial.irr}%
+                  {financialMetrics.irr}%
                 </div>
               </div>
             </div>
@@ -339,7 +380,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
               </div>
               <Progress value={contingencyUsed} className="h-2" />
               <div className="text-xs text-slate-400 mt-1">
-                ${(project.financial.contingencyRemaining / 1000).toFixed(0)}K remaining
+                ${(financialMetrics.contingency_remaining / 1000).toFixed(0)}K remaining
               </div>
             </div>
           </CardContent>
@@ -357,27 +398,25 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {project.risks.filter(r => r.status !== 'closed').map((risk) => (
-              <div key={risk.id} className="p-3 rounded-lg border border-orange-500/30 bg-orange-500/10">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="font-medium text-sm text-white">{risk.title}</div>
-                  <Badge variant="outline" className="text-xs bg-[#0D1117] text-slate-300 border-slate-600">
-                    Score: {risk.riskScore}
-                  </Badge>
-                </div>
-                <div className="text-xs text-slate-400 mb-2">
-                  {risk.description}
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
-                    {risk.probability} probability
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
-                    {risk.impact} impact
-                  </Badge>
-                </div>
+            <div className="p-3 rounded-lg border border-orange-500/30 bg-orange-500/10">
+              <div className="flex items-center justify-between mb-1">
+                <div className="font-medium text-sm text-white">Budget Variance</div>
+                <Badge variant="outline" className="text-xs bg-[#0D1117] text-slate-300 border-slate-600">
+                  Score: Medium
+                </Badge>
               </div>
-            ))}
+              <div className="text-xs text-slate-400 mb-2">
+                Monitor budget utilization vs schedule progress
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
+                  Low probability
+                </Badge>
+                <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
+                  Medium impact
+                </Badge>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -390,25 +429,42 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {Object.values(project.team).map((member, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
-                <div>
-                  <div className="font-medium text-sm text-white">{member.contact}</div>
-                  <div className="text-xs text-slate-400">{member.role}</div>
-                  <div className="text-xs text-slate-400">{member.company}</div>
-                </div>
-                <div className="text-right">
-                  {member.contractValue && (
-                    <div className="text-sm font-medium text-white">
-                      ${(member.contractValue / 1000000).toFixed(1)}M
-                    </div>
-                  )}
-                  <Badge variant="default" className="text-xs bg-green-500/20 text-green-400">
-                    Active
-                  </Badge>
-                </div>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
+              <div>
+                <div className="font-medium text-sm text-white">{team?.project_manager || 'Project Manager'}</div>
+                <div className="text-xs text-slate-400">Project Manager</div>
+                <div className="text-xs text-slate-400">Construction Management</div>
               </div>
-            ))}
+              <div className="text-right">
+                <Badge variant="default" className="text-xs bg-green-500/20 text-green-400">
+                  Active
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
+              <div>
+                <div className="font-medium text-sm text-white">{team?.architect || 'Lead Architect'}</div>
+                <div className="text-xs text-slate-400">Architect</div>
+                <div className="text-xs text-slate-400">Design Team</div>
+              </div>
+              <div className="text-right">
+                <Badge variant="default" className="text-xs bg-green-500/20 text-green-400">
+                  Active
+                </Badge>
+              </div>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
+              <div>
+                <div className="font-medium text-sm text-white">{team?.contractor || 'General Contractor'}</div>
+                <div className="text-xs text-slate-400">General Contractor</div>
+                <div className="text-xs text-slate-400">Construction</div>
+              </div>
+              <div className="text-right">
+                <Badge variant="default" className="text-xs bg-green-500/20 text-green-400">
+                  Active
+                </Badge>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
