@@ -2,13 +2,12 @@
 import React from 'react';
 import AIInsightsPanel from './legal/AIInsightsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { generateLegalDemoData } from '@/utils/legalDemoData';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Scale, Shield, FileText, Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
-import { getProjectMetrics } from '@/utils/projectSampleData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useLegalMetrics } from '@/hooks/useLegalMetrics';
 
 interface LegalDashboardProps {
   projectId: string;
@@ -17,28 +16,30 @@ interface LegalDashboardProps {
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
-  
-  // Get comprehensive project-specific data based on projectId
-  const projectData = getProjectMetrics(projectId, 'legal');
+  const { data: legalData, error, loading } = useLegalMetrics(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
   const projectName = selectedProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
-  
-  // Use project-specific legal data or fallback
-  const legalData = projectData || {
-    contractsActive: 15,
-    contractsPending: 2,
-    complianceScore: 96,
-    permitStatus: 'All Approved',
-    legalRisks: 2,
-    documentationComplete: 94
-  };
-  
-  // Generate demo data for display
-  const demoData = generateLegalDemoData();
+
+  if (error) {
+    console.error('Error fetching legal metrics:', error);
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-400">Error loading legal data</div>
+      </div>
+    );
+  }
+
+  if (loading || !legalData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-white">Loading legal data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
@@ -64,7 +65,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         </div>
       </div>
 
-      <AIInsightsPanel projectData={demoData} />
+      <AIInsightsPanel projectData={legalData} />
       
       {/* Owner Legal Actions */}
       <Card className="bg-[#0D1117] border-slate-800">

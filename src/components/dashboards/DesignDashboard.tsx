@@ -19,9 +19,9 @@ import {
   Square,
   Users
 } from 'lucide-react';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useDesignMetrics } from '@/hooks/useDesignMetrics';
 
 interface DesignDashboardProps {
   projectId: string;
@@ -29,8 +29,8 @@ interface DesignDashboardProps {
 }
 
 const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  const { data: designData, error, loading } = useDesignMetrics(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -38,153 +38,29 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
-  // Design-specific data
-  const designPhases = [
-    { 
-      id: 'concept', 
-      name: 'Conceptual Design', 
-      status: 'completed', 
-      progress: 100, 
-      documents: 15,
-      dueDate: '2023-09-15',
-      approvalDate: '2023-09-20'
-    },
-    { 
-      id: 'schematic', 
-      name: 'Schematic Design', 
-      status: 'completed', 
-      progress: 100, 
-      documents: 28,
-      dueDate: '2023-11-30',
-      approvalDate: '2023-12-05'
-    },
-    { 
-      id: 'design-dev', 
-      name: 'Design Development', 
-      status: 'completed', 
-      progress: 100, 
-      documents: 45,
-      dueDate: '2024-02-15',
-      approvalDate: '2024-02-18'
-    },
-    { 
-      id: 'construction-docs', 
-      name: 'Construction Documents', 
-      status: 'in-progress', 
-      progress: 85, 
-      documents: 67,
-      dueDate: '2024-07-30',
-      approvalDate: null
-    },
-    { 
-      id: 'shop-drawings', 
-      name: 'Shop Drawings Review', 
-      status: 'in-progress', 
-      progress: 45, 
-      documents: 23,
-      dueDate: '2024-10-15',
-      approvalDate: null
-    }
-  ];
+  if (error) {
+    console.error('Error fetching design metrics:', error);
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-400">Error loading design data</div>
+      </div>
+    );
+  }
 
-  const recentDesignSubmissions = [
-    {
-      id: 1,
-      title: 'Lobby Marble Selection - Final',
-      type: 'Material Selection',
-      submittedBy: 'Sarah Chen',
-      submittedDate: '2024-06-20',
-      status: 'pending-approval',
-      priority: 'high',
-      category: 'Interior Finishes',
-      estimatedCost: 125000
-    },
-    {
-      id: 2,
-      title: 'Elevator Cab Design Options',
-      type: 'Design Review',
-      submittedBy: 'Arc Design Studio',
-      submittedDate: '2024-06-18',
-      status: 'approved',
-      priority: 'medium',
-      category: 'Vertical Transportation',
-      estimatedCost: 85000
-    },
-    {
-      id: 3,
-      title: 'Rooftop Garden Layout',
-      type: 'Landscape Design',
-      submittedBy: 'Green Space Designs',
-      submittedDate: '2024-06-15',
-      status: 'revisions-requested',
-      priority: 'medium',
-      category: 'Landscape',
-      estimatedCost: 45000
-    },
-    {
-      id: 4,
-      title: 'Exterior Lighting Scheme',
-      type: 'Lighting Design',
-      submittedBy: 'Illumination Experts',
-      submittedDate: '2024-06-12',
-      status: 'approved',
-      priority: 'low',
-      category: 'Exterior',
-      estimatedCost: 35000
-    }
-  ];
+  if (loading || !designData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-white">Loading design data...</div>
+      </div>
+    );
+  }
 
-  const materialSelections = [
-    {
-      category: 'Lobby Flooring',
-      selected: 'Calacatta Gold Marble',
-      alternatives: ['Nero Marquina', 'Carrara White'],
-      cost: 45,
-      unit: 'sq ft',
-      quantity: 2800,
-      status: 'pending-approval',
-      supplier: 'Premium Stone Co.'
-    },
-    {
-      category: 'Exterior Cladding',
-      selected: 'Curtain Wall - Clear Glass',
-      alternatives: ['Tinted Glass', 'Ceramic Panel'],
-      cost: 85,
-      unit: 'sq ft',
-      quantity: 35000,
-      status: 'approved',
-      supplier: 'Modern Facades Ltd.'
-    },
-    {
-      category: 'Interior Doors',
-      selected: 'Walnut Wood Veneer',
-      alternatives: ['Oak Veneer', 'Painted Steel'],
-      cost: 1200,
-      unit: 'door',
-      quantity: 180,
-      status: 'approved',
-      supplier: 'Custom Millwork Inc.'
-    },
-    {
-      category: 'Lighting Fixtures',
-      selected: 'LED Recessed + Pendant',
-      alternatives: ['Traditional Fluorescent', 'Track Lighting'],
-      cost: 450,
-      unit: 'fixture',
-      quantity: 850,
-      status: 'in-review',
-      supplier: 'Lighting Solutions Pro'
-    }
-  ];
-
-  const designMetrics = {
-    totalDesignBudget: 1200000,
-    spentToDate: 850000,
-    documentsApproved: 143,
-    totalDocuments: 178,
-    changeOrders: 8,
-    totalChangeOrderValue: 125000
-  };
+  const {
+    designPhases,
+    recentDesignSubmissions,
+    materialSelections,
+    designMetrics
+  } = designData;
 
   const getStatusColor = (status: string) => {
     switch (status) {

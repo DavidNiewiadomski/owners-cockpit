@@ -5,10 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Building, Wrench, Zap, Clock, BarChart3, Calendar, CheckCircle2, DollarSign, Target } from 'lucide-react';
-import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useFacilitiesMetrics } from '@/hooks/useFacilitiesMetrics';
 import WorkOrders from '@/widgets/components/WorkOrders';
 import EnergyUsage from '@/widgets/components/EnergyUsage';
 
@@ -18,15 +17,31 @@ interface FacilitiesDashboardProps {
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
-  const projectData = generateFacilitiesDemoData();
   const { data: projects = [] } = useProjects();
+  const { data: facilitiesData, error, loading } = useFacilitiesMetrics(projectId);
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
   const projectName = selectedProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
+
+  if (error) {
+    console.error('Error fetching facilities metrics:', error);
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-red-400">Error loading facilities data</div>
+      </div>
+    );
+  }
+
+  if (loading || !facilitiesData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-white">Loading facilities data...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
@@ -43,16 +58,16 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Building className="w-4 h-4 mr-2" />
-            {project.basicInfo.floors} Floors
+            {facilitiesData.buildingInfo.floors} Floors
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Zap className="w-4 h-4 mr-2" />
-            Operational
+            {facilitiesData.buildingInfo.operationalStatus}
           </Badge>
         </div>
       </div>
 
-      <AIInsightsPanel projectData={projectData} />
+      <AIInsightsPanel projectData={facilitiesData} />
       
       {/* Quick Actions */}
       <Card className="bg-[#0D1117] border-slate-800">
