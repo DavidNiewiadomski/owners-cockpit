@@ -18,16 +18,6 @@ export function useProjects() {
   return useQuery({
     queryKey: ['projects'],
     queryFn: async (): Promise<Project[]> => {
-      console.log('Loading projects for demo...');
-      
-      // For demo purposes, prioritize sample data
-      const sampleData = getAllProjects();
-      if (sampleData && sampleData.length > 0) {
-        console.log('Using comprehensive sample data:', sampleData);
-        return sampleData;
-      }
-      
-      // Fallback to Supabase if sample data is not available
       console.log('Fetching projects from Supabase...');
       
       const { data, error } = await supabase
@@ -37,19 +27,12 @@ export function useProjects() {
 
       if (error) {
         console.error('Error fetching projects:', error);
-        // Return sample data as fallback even on error
-        return getAllProjects();
+        throw error;
       }
 
-      console.log('Raw projects data from database:', data);
+      console.log('Projects data from database:', data);
       
-      // If no data from database, seed with sample data
-      if (!data || data.length === 0) {
-        console.log('No projects found, using sample data...');
-        return getAllProjects();
-      }
-
-      return data || getAllProjects();
+      return data || [];
     },
   });
 }
