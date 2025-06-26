@@ -48,7 +48,7 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   ];
 
   return (
-    <Card className="bg-slate-900 border-slate-800">
+    <Card className="bg-[#0D1117] border-slate-800">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
