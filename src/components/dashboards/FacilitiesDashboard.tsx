@@ -6,16 +6,19 @@ import { Badge } from '@/components/ui/badge';
 import { Building, Wrench, Zap } from 'lucide-react';
 import { generateFacilitiesDemoData } from '@/utils/facilitiesDemoData';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 import WorkOrders from '@/widgets/components/WorkOrders';
 import EnergyUsage from '@/widgets/components/EnergyUsage';
 
 interface FacilitiesDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) => {
+const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
   const projectData = generateFacilitiesDemoData();
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
@@ -23,10 +26,10 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId }) 
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Facilities Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Building Operations & Maintenance
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">

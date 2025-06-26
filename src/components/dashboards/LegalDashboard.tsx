@@ -6,13 +6,16 @@ import { generateLegalDemoData } from '@/utils/legalDemoData';
 import { Badge } from '@/components/ui/badge';
 import { Scale, Shield, FileText } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface LegalDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId: _projectId }) => {
+const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
   const projectData = generateLegalDemoData();
 
   return (
@@ -21,10 +24,10 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId: _projectId }
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Legal & Insurance Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Contracts, Compliance & Risk Management
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">

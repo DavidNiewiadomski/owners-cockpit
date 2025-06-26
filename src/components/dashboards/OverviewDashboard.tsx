@@ -18,13 +18,16 @@ import {
   Target
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface OverviewDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
+const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   // Calculate key metrics
   const budgetUsed = (project.financial.spentToDate / project.financial.totalBudget) * 100;
@@ -38,8 +41,8 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId }) => {
       {/* Project Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{project.name}</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{project.description}</p>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">{title}</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{subtitle}</p>
           <div className="flex items-center gap-4 mt-2">
             <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
               {project.status}

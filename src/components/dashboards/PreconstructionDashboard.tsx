@@ -39,13 +39,16 @@ import {
   Legend
 } from 'recharts';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface PreconstructionDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId }) => {
+const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   // Enhanced preconstruction metrics
   const preconstructionMetrics = {
@@ -136,10 +139,10 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Preconstruction Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Design, Permits & Bidding
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">

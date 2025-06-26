@@ -18,13 +18,16 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface FinanceDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
+const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   // Financial metrics calculations
   const budgetUtilization = (project.financial.spentToDate / project.financial.totalBudget) * 100;
@@ -123,10 +126,10 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Finance Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Financial Performance & Budget Management
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">

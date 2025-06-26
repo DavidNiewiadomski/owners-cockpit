@@ -70,34 +70,34 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   switch (activeCategory) {
     case 'Overview': 
       console.log('DEBUG: Rendering OverviewDashboard');
-      return <OverviewDashboard projectId={effectiveProjectId} />;
+      return <OverviewDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Planning': 
       console.log('DEBUG: Rendering PlanningDashboard');
-      return <PlanningDashboard projectId={effectiveProjectId} />;
+      return <PlanningDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Design': 
       console.log('DEBUG: Rendering DesignDashboard');
-      return <DesignDashboard projectId={effectiveProjectId} />;
+      return <DesignDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Preconstruction': 
       console.log('DEBUG: Rendering PreconstructionDashboard');
-      return <PreconstructionDashboard projectId={effectiveProjectId} />;
+      return <PreconstructionDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Construction': 
       console.log('DEBUG: Rendering ConstructionDashboard');
-      return <ConstructionDashboard projectId={effectiveProjectId} />;
+      return <ConstructionDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Sustainability': 
       console.log('DEBUG: Rendering SustainabilityDashboard');
-      return <SustainabilityDashboard projectId={effectiveProjectId} />;
+      return <SustainabilityDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Legal': 
       console.log('DEBUG: Rendering LegalDashboard');
-      return <LegalDashboard projectId={effectiveProjectId} />;
+      return <LegalDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Finance': 
       console.log('DEBUG: Rendering FinanceDashboard');
-      return <FinanceDashboard projectId={effectiveProjectId} />;
+      return <FinanceDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Facilities': 
       console.log('DEBUG: Rendering FacilitiesDashboard');
-      return <FacilitiesDashboard projectId={effectiveProjectId} />;
+      return <FacilitiesDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     default: 
       console.log('DEBUG: Rendering DEFAULT OverviewDashboard for activeCategory:', activeCategory);
-      return <OverviewDashboard projectId={effectiveProjectId} />;
+      return <OverviewDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
   }
 };
 

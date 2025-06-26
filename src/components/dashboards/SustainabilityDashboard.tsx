@@ -40,13 +40,16 @@ import {
   Legend
 } from 'recharts';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface SustainabilityDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId }) => {
+const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   // Enhanced sustainability metrics
   const sustainabilityMetrics = {
@@ -114,10 +117,10 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Sustainability Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Environmental Impact & ESG Compliance
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">

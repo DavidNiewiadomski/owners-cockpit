@@ -20,13 +20,16 @@ import {
   Users
 } from 'lucide-react';
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getDashboardTitle } from '@/utils/dashboardUtils';
 
 interface DesignDashboardProps {
   projectId: string;
+  activeCategory: string;
 }
 
-const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
+const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const { title, subtitle } = getDashboardTitle(activeCategory, projectId);
 
   // Design-specific data
   const designPhases = [
@@ -200,10 +203,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
-            Design & Architecture Dashboard
+            {title}
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">
-            {project.name} • Architectural Design & Materials
+            {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
