@@ -195,23 +195,23 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
   const designProgress = (designMetrics.documentsApproved / designMetrics.totalDocuments) * 100;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 dark:from-purple-950 dark:via-pink-950 dark:to-rose-950 p-6 space-y-8">
       {/* Design Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">
             Design Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-slate-600 dark:text-slate-400 mt-2 text-lg">
             {project.name} • Architectural Design & Materials
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-4">
+          <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 px-4 py-2 text-sm">
             <Palette className="w-4 h-4 mr-2" />
             {designProgress.toFixed(1)}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+          <Badge variant="outline" className="bg-pink-50 text-pink-700 border-pink-200 px-4 py-2 text-sm">
             {designMetrics.changeOrders} Change Orders
           </Badge>
         </div>
