@@ -49,6 +49,11 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   };
   
   const activeCategory = getActiveCategory();
+  
+  // Debug logging
+  console.log('Dashboard: currentRole =', currentRole);
+  console.log('Dashboard: activeCategory =', activeCategory);
+  console.log('Dashboard: sessionStorage activeCategory =', sessionStorage.getItem('activeCategory'));
 
   // Route to appropriate dashboard based on active category (not just role)
   switch (activeCategory) {

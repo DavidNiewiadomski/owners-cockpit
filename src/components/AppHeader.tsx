@@ -76,6 +76,14 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const [activeProvider, setActiveProvider] = useState<string>('outlook');
   const [activeCategory, setActiveCategory] = useState<string>('Overview');
 
+  // Initialize activeCategory from sessionStorage on mount
+  useEffect(() => {
+    const storedCategory = sessionStorage.getItem('activeCategory');
+    if (storedCategory) {
+      setActiveCategory(storedCategory);
+    }
+  }, []);
+
   return (
     <MotionWrapper animation="slideUp" className="sticky top-0 z-50">
       <header className="border-b border-border/40 glass backdrop-blur-sm">
@@ -306,9 +314,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   key={category}
                   onClick={() => {
                     const targetRole = categoryToRoleMap[category] || category;
+                    console.log('AppHeader: Clicking category:', category, 'mapping to role:', targetRole);
                     setActiveCategory(category);
                     // Store the active category so Dashboard component can access it
                     sessionStorage.setItem('activeCategory', category);
+                    console.log('AppHeader: Stored activeCategory in sessionStorage:', category);
                     switchRole(targetRole as any);
                   }}
                   className={`
