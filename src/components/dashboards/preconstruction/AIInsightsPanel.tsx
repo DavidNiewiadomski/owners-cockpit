@@ -44,85 +44,72 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   ];
 
   return (
-    <Card>
+    <Card className="bg-slate-900 border-slate-800">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2">
-          <Brain className="h-5 w-5 text-blue-600" />
-          AI Preconstruction Insights
-          <Badge variant="secondary" className="ml-auto text-xs">
-            Live Analysis
-          </Badge>
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <Brain className="w-5 h-5 text-blue-400" />
+            AI Preconstruction Insights
+          </CardTitle>
+          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Live Analysis</Badge>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
           {keyMetrics.map((metric, index) => (
-            <div key={index} className="text-center p-3 bg-muted/50 rounded-lg">
-              <div className={`text-lg font-semibold ${
-                metric.status === 'positive' ? 'text-green-600' : 
-                metric.status === 'warning' ? 'text-yellow-600' : 
-                'text-foreground'
+            <div key={index} className="bg-slate-800 rounded-lg p-4 text-center">
+              <div className={`text-2xl font-bold ${
+                metric.status === 'positive' ? 'text-green-400' : 
+                metric.status === 'warning' ? 'text-yellow-400' : 
+                'text-white'
               }`}>
                 {metric.value}
               </div>
-              <div className="text-xs text-muted-foreground mt-1">{metric.label}</div>
+              <div className="text-sm text-slate-400">{metric.label}</div>
             </div>
           ))}
         </div>
 
         {/* Executive Summary */}
-        <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <p className="text-sm leading-relaxed">
+        <div className="bg-slate-800/50 rounded-lg p-4">
+          <p className="text-slate-300 text-sm">
             <strong>{projectData.name}</strong> preconstruction analysis shows{' '}
-            <strong className={avgFeasibility > 80 ? 'text-green-600' : avgFeasibility > 60 ? 'text-foreground' : 'text-yellow-600'}>
-              {avgFeasibility}% average feasibility
-            </strong>{' '}
+            <strong>{avgFeasibility}% average feasibility</strong>{' '}
             across {projectData.siteCount} evaluated sites. Development costs averaging{' '}
             <strong>${(projectData.averageCost / 1000).toFixed(0)}K</strong> with{' '}
             <strong>{projectData.averageTimeline}-month</strong> timeline projections.{' '}
-            <strong className={projectData.permitComplexity === 'high' ? 'text-yellow-600' : 'text-green-600'}>
-              {projectData.permitComplexity.charAt(0).toUpperCase() + projectData.permitComplexity.slice(1)} permit complexity
-            </strong>{' '}
+            <strong>{projectData.permitComplexity.charAt(0).toUpperCase() + projectData.permitComplexity.slice(1)} permit complexity</strong>{' '}
             identified across portfolio.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Key Insights */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <Info className="h-4 w-4 text-blue-600" />
-              Key Insights
+        {/* Key Insights and Recommendations */}
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+              <span className="text-sm font-medium text-white">Key Insights</span>
             </div>
-            <div className="space-y-2">
+            <ul className="space-y-2 text-sm text-slate-300">
               {insights.slice(0, 3).map((insight, index) => (
-                <div key={index} className="flex items-start gap-2 text-xs">
-                  <Badge variant="outline" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
-                    •
-                  </Badge>
-                  <span className="text-muted-foreground leading-relaxed">{insight}</span>
-                </div>
+                <li key={index}>• {insight}</li>
               ))}
-            </div>
+            </ul>
           </div>
-
-          {/* Recommendations */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <ArrowRight className="h-4 w-4 text-green-600" />
-              Recommendations
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span className="text-sm font-medium text-white">Recommendations</span>
             </div>
-            <div className="space-y-2">
+            <ul className="space-y-2 text-sm text-slate-300">
               {recommendations.slice(0, 3).map((rec, index) => (
-                <div key={index} className="flex items-start gap-2 text-xs">
-                  <Badge variant="secondary" className="mt-0.5 h-4 w-4 p-0 flex items-center justify-center">
-                    →
-                  </Badge>
-                  <span className="text-muted-foreground leading-relaxed">{rec}</span>
-                </div>
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-green-400 mt-0.5">→</span>
+                  <span>{rec}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </CardContent>
