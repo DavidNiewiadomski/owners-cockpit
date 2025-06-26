@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Settings, Plus, Users, Mail, FolderOpen, Loader2 } from 'lucide-react';
 import { Calendar, MessageCircle, Phone, Video, MessageSquare } from 'lucide-react';
 import { Slack } from 'lucide-react';
-import { BarChart3, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, DollarSign, Building } from 'lucide-react';
+import { BarChart3, MapPin, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, DollarSign, Building } from 'lucide-react';
 import ProjectSwitcher from '@/components/ProjectSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
@@ -25,6 +25,7 @@ interface AppHeaderProps {
 
 const categoryIcons = {
   Overview: BarChart3,
+  Planning: MapPin,
   Design: Palette,
   Preconstruction: ClipboardList,
   Construction: HardHat,
@@ -37,6 +38,7 @@ const categoryIcons = {
 // Map UI category names to actual role names
 const categoryToRoleMap: Record<string, string> = {
   Overview: 'Executive',
+  Planning: 'Executive',
   Design: 'Preconstruction',
   Preconstruction: 'Preconstruction',
   Construction: 'Construction',
@@ -49,7 +51,7 @@ const categoryToRoleMap: Record<string, string> = {
 // Map role names back to categories for active state
 // Note: Design maps to Preconstruction role but should show DesignDashboard
 const roleToCategoryMap: Record<string, string[]> = {
-  Executive: ['Overview'],
+  Executive: ['Overview', 'Planning'],
   Preconstruction: ['Design', 'Preconstruction'],
   Construction: ['Construction'],
   Sustainability: ['Sustainability'],

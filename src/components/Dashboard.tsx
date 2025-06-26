@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRole } from '@/contexts/RoleContext';
 import OverviewDashboard from '@/components/dashboards/OverviewDashboard';
+import PlanningDashboard from '@/components/dashboards/PlanningDashboard';
 import DesignDashboard from '@/components/dashboards/DesignDashboard';
 import PreconstructionDashboard from '@/components/dashboards/PreconstructionDashboard';
 import ConstructionDashboard from '@/components/dashboards/ConstructionDashboard';
@@ -33,7 +34,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
       case 'Preconstruction':
         return 'Preconstruction'; // Default to Preconstruction, but could be Design
       case 'Construction':
-        return 'Construction'; // Default to Construction, but could be Safety
+        return 'Construction';
       case 'Sustainability':
         return 'Sustainability';
       case 'Legal':
@@ -58,6 +59,8 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   switch (activeCategory) {
     case 'Overview':
       return <OverviewDashboard projectId={projectId} />;
+    case 'Planning':
+      return <PlanningDashboard projectId={projectId} />;
     case 'Design':
       return <DesignDashboard projectId={projectId} />;
     case 'Preconstruction':
