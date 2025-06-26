@@ -20,7 +20,10 @@ import {
   Building,
   BarChart3,
   Activity,
-  DollarSign
+  DollarSign,
+  Shield,
+  UserCheck,
+  Clipboard
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -62,6 +65,59 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
     activeWorkOrders: 156,
     completedInspections: 89
   };
+
+  // Safety metrics and data
+  const safetyMetrics = {
+    recordableDays: 287,
+    totalIncidents: 2,
+    nearMisses: 8,
+    safetyTrainingHours: 1240,
+    complianceScore: 97,
+    oshaRating: 'Excellent',
+    lastIncidentDate: '2024-01-15',
+    activeSafetyPrograms: 6,
+    monthlyInspections: 12,
+    correctiveActions: 3
+  };
+
+  // Safety incidents and near misses
+  const safetyIncidents = [
+    {
+      id: 1,
+      type: 'Near Miss',
+      description: 'Tool dropped from height - caught by safety net',
+      date: '2024-06-18',
+      severity: 'Low',
+      status: 'Investigated',
+      corrective: 'Reinforced tool tethering protocol'
+    },
+    {
+      id: 2,
+      type: 'Minor Injury',
+      description: 'Cut finger on metal edge',
+      date: '2024-06-10',
+      severity: 'Low',
+      status: 'Closed',
+      corrective: 'Enhanced PPE training, edge guards installed'
+    },
+    {
+      id: 3,
+      type: 'Near Miss',
+      description: 'Crane load swing too close to workers',
+      date: '2024-06-05',
+      severity: 'Medium',
+      status: 'Closed',
+      corrective: 'Revised crane operation procedures'
+    }
+  ];
+
+  // Safety training progress
+  const safetyTraining = [
+    { program: 'OSHA 30-Hour', completed: 95, required: 100, deadline: '2024-07-01' },
+    { program: 'Fall Protection', completed: 142, required: 145, deadline: '2024-06-30' },
+    { program: 'Electrical Safety', completed: 38, required: 45, deadline: '2024-07-15' },
+    { program: 'Confined Space', completed: 25, required: 30, deadline: '2024-08-01' }
+  ];
 
   // Daily progress tracking
   const dailyProgress = [
@@ -283,18 +339,18 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
           </CardContent>
         </Card>
 
-        {/* Quality Score */}
+        {/* Safety Score */}
         <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Quality Score</CardTitle>
-            <Target className="h-4 w-4 text-gray-400" />
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Safety Score</CardTitle>
+            <Shield className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{constructionMetrics.qualityScore}%</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{constructionMetrics.completedInspections} inspections passed</div>
+            <div className="text-2xl font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{safetyMetrics.recordableDays} days without incident</div>
             <div className="flex items-center mt-2 text-green-600">
               <CheckCircle2 className="w-4 h-4 mr-1" />
-              <span className="text-sm">Above target</span>
+              <span className="text-sm">{safetyMetrics.oshaRating}</span>
             </div>
           </CardContent>
         </Card>
@@ -507,6 +563,129 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
         </Card>
       </div>
 
+      {/* Safety Section */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-2">
+          <Shield className="h-6 w-6 text-green-600" />
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Safety & Compliance</h2>
+        </div>
+        
+        {/* Safety KPIs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Days Without Incident</CardTitle>
+              <Shield className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{safetyMetrics.recordableDays}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Last incident: {safetyMetrics.lastIncidentDate}</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Compliance Score</CardTitle>
+              <Clipboard className="h-4 w-4 text-green-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{safetyMetrics.complianceScore}%</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{safetyMetrics.oshaRating} OSHA rating</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Training Hours</CardTitle>
+              <UserCheck className="h-4 w-4 text-blue-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">{safetyMetrics.safetyTrainingHours}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">This quarter</div>
+            </CardContent>
+          </Card>
+          
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Near Misses</CardTitle>
+              <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-yellow-600">{safetyMetrics.nearMisses}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">All investigated</div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Safety Details */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Recent Safety Incidents */}
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+                <AlertTriangle className="h-5 w-5 text-yellow-600" />
+                Recent Safety Events
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {safetyIncidents.map((incident) => (
+                  <div key={incident.id} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge className={incident.type === 'Near Miss' ? 'bg-yellow-100 text-yellow-700' : 'bg-orange-100 text-orange-700'}>
+                        {incident.type}
+                      </Badge>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">{incident.date}</span>
+                    </div>
+                    <div className="font-medium text-sm mb-1">{incident.description}</div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                      <strong>Corrective Action:</strong> {incident.corrective}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="text-xs">
+                        {incident.severity} Severity
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {incident.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Safety Training Progress */}
+          <Card className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-medium text-gray-900 dark:text-white">
+                <UserCheck className="h-5 w-5 text-blue-600" />
+                Safety Training Progress
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {safetyTraining.map((training, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-sm">{training.program}</span>
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        {training.completed}/{training.required}
+                      </span>
+                    </div>
+                    <Progress value={(training.completed / training.required) * 100} className="h-2" />
+                    <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                      <span>{((training.completed / training.required) * 100).toFixed(1)}% complete</span>
+                      <span>Due: {training.deadline}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       {/* Recent Activities and Construction Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Construction Activities */}
@@ -577,8 +756,8 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
                 <div className="text-slate-600 dark:text-slate-400">Workers</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-yellow-600">{constructionMetrics.qualityScore}%</div>
-                <div className="text-slate-600 dark:text-slate-400">Quality</div>
+                <div className="font-bold text-green-600">{constructionMetrics.safetyScore}%</div>
+                <div className="text-slate-600 dark:text-slate-400">Safety</div>
               </div>
               <div className="text-center">
                 <div className="font-bold text-blue-600">{constructionMetrics.activeWorkOrders}</div>

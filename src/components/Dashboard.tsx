@@ -6,7 +6,6 @@ import DesignDashboard from '@/components/dashboards/DesignDashboard';
 import PreconstructionDashboard from '@/components/dashboards/PreconstructionDashboard';
 import ConstructionDashboard from '@/components/dashboards/ConstructionDashboard';
 import SustainabilityDashboard from '@/components/dashboards/SustainabilityDashboard';
-import SafetyDashboard from '@/components/dashboards/SafetyDashboard';
 import LegalDashboard from '@/components/dashboards/LegalDashboard';
 import FinanceDashboard from '@/components/dashboards/FinanceDashboard';
 import FacilitiesDashboard from '@/components/dashboards/FacilitiesDashboard';
@@ -67,8 +66,6 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
       return <ConstructionDashboard projectId={projectId} />;
     case 'Sustainability':
       return <SustainabilityDashboard projectId={projectId} />;
-    case 'Safety':
-      return <SafetyDashboard projectId={projectId} />;
     case 'Legal':
       return <LegalDashboard projectId={projectId} />;
     case 'Finance':

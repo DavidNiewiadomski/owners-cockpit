@@ -29,7 +29,6 @@ const categoryIcons = {
   Preconstruction: ClipboardList,
   Construction: HardHat,
   Sustainability: Leaf,
-  Safety: Shield,
   Legal: Scale,
   Finance: DollarSign,
   Facilities: Building,
@@ -42,19 +41,17 @@ const categoryToRoleMap: Record<string, string> = {
   Preconstruction: 'Preconstruction',
   Construction: 'Construction',
   Sustainability: 'Sustainability',
-  Safety: 'Construction',
   Legal: 'Legal',
   Finance: 'Finance',
   Facilities: 'Facilities',
 };
 
 // Map role names back to categories for active state
-// Note: This is tricky because 'Design' and 'Safety' map to existing roles
-// We'll handle this in the component logic
+// Note: Design maps to Preconstruction role but should show DesignDashboard
 const roleToCategoryMap: Record<string, string[]> = {
   Executive: ['Overview'],
   Preconstruction: ['Design', 'Preconstruction'],
-  Construction: ['Construction', 'Safety'],
+  Construction: ['Construction'],
   Sustainability: ['Sustainability'],
   Legal: ['Legal'],
   Finance: ['Finance'],
