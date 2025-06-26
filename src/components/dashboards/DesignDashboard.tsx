@@ -493,7 +493,6 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId }) => {
           </div>
         </CardContent>
       </Card>
-      </div>
     </div>
   );
 };
