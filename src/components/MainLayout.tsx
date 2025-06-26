@@ -7,7 +7,6 @@ import AIFloatingButton from '@/components/AIFloatingButton';
 import AIChatOverlay from '@/components/AIChatOverlay';
 import AppModals from '@/components/AppModals';
 import VoiceControl from '@/components/VoiceControl';
-import OOUXLayout from '@/components/OOUXLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, ToggleLeft, ToggleRight } from 'lucide-react';
@@ -20,7 +19,6 @@ const MainLayout: React.FC = () => {
   const { currentRole } = useRole();
   const _router = useRouter();
   const appState = useAppState();
-  const [showOOUXDemo, setShowOOUXDemo] = useState(false);
 
   useEffect(() => {
     console.log(`Current role: ${currentRole}`);
@@ -42,26 +40,9 @@ const MainLayout: React.FC = () => {
 
   // Ready to render components
 
-  // If OOUX demo is enabled, render the enhanced layout
-  if (showOOUXDemo) {
-    return <OOUXLayout showOOUXDemo={true} />;
-  }
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* OOUX Demo Toggle - Prominently positioned */}
-      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 z-[9999]">
-        <Button
-          variant={showOOUXDemo ? "default" : "outline"}
-          size="lg"
-          onClick={() => setShowOOUXDemo(!showOOUXDemo)}
-          className="flex items-center gap-2 shadow-2xl border-2 font-semibold bg-white dark:bg-gray-900 hover:scale-105 transition-all duration-200"
-        >
-          <Eye className="h-5 w-5" />
-          <span className="text-sm font-bold">{showOOUXDemo ? "Exit OOUX Demo" : "Try OOUX Demo"}</span>
-          {showOOUXDemo ? <ToggleRight className="h-5 w-5 text-green-500" /> : <ToggleLeft className="h-5 w-5" />}
-        </Button>
-      </div>
       <AppHeader 
         selectedProject={appState.activeView === 'portfolio' ? 'portfolio' : appState.selectedProject}
         onProjectChange={appState.handleProjectChange}

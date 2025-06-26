@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Settings, Plus, Users, Mail, FolderOpen } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Settings, Plus, Users, Mail, FolderOpen, Loader2 } from 'lucide-react';
 import { Calendar, MessageCircle, Phone, Video, MessageSquare } from 'lucide-react';
 import { Slack } from 'lucide-react';
 import { BarChart3, Palette, ClipboardList, HardHat, Leaf, Shield, Scale, DollarSign, Building } from 'lucide-react';
@@ -12,6 +13,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import MotionWrapper from '@/components/MotionWrapper';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
 import { useRole } from '@/contexts/RoleContext';
+import { useOAuthConnections } from '@/hooks/useOAuthConnections';
 
 interface AppHeaderProps {
   selectedProject: string | null;
@@ -43,6 +45,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   const { t } = useTranslation();
   const { access } = useRoleBasedAccess();
   const { currentRole, switchRole } = useRole();
+  const { connections, connect, getConnectionStatus } = useOAuthConnections();
 
   return (
     <MotionWrapper animation="slideUp" className="sticky top-0 z-50">
@@ -77,45 +80,245 @@ const AppHeader: React.FC<AppHeaderProps> = ({
               
               {/* Communication Provider Icons */}
               <div className="flex items-center gap-1 border-l border-border/40 pl-2 ml-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                  style={{ backgroundColor: '#0078d4', color: 'white' }}
-                  title="Microsoft Outlook"
-                >
-                  <Mail className="h-4 w-4" />
-                </Button>
+                {/* Microsoft Outlook */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                      style={{ backgroundColor: getConnectionStatus('outlook').connected ? '#0078d4' : undefined, color: getConnectionStatus('outlook').connected ? 'white' : undefined }}
+                      title="Microsoft Outlook"
+                    >
+                      {getConnectionStatus('outlook').connecting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Mail className="h-4 w-4" />
+                      )}
+                      {getConnectionStatus('outlook').connected && (
+                        <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Microsoft Outlook</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Connect your Outlook account to sync emails and calendar events.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${getConnectionStatus('outlook').connected ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span className="text-sm">
+                            {getConnectionStatus('outlook').connected ? 'Connected' : 'Not connected'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => connect('outlook')}
+                          disabled={getConnectionStatus('outlook').connecting || getConnectionStatus('outlook').connected}
+                        >
+                          {getConnectionStatus('outlook').connecting ? 'Connecting...' : 
+                           getConnectionStatus('outlook').connected ? 'Connected' : 'Connect'}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
                 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                  style={{ backgroundColor: '#6264a7', color: 'white' }}
-                  title="Microsoft Teams"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                </Button>
+                {/* Microsoft Teams */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                      style={{ backgroundColor: getConnectionStatus('teams').connected ? '#6264a7' : undefined, color: getConnectionStatus('teams').connected ? 'white' : undefined }}
+                      title="Microsoft Teams"
+                    >
+                      {getConnectionStatus('teams').connecting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <MessageCircle className="h-4 w-4" />
+                      )}
+                      {getConnectionStatus('teams').connected && (
+                        <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Microsoft Teams</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Connect to Teams to access chats, meetings, and collaboration.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${getConnectionStatus('teams').connected ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span className="text-sm">
+                            {getConnectionStatus('teams').connected ? 'Connected' : 'Not connected'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => connect('teams')}
+                          disabled={getConnectionStatus('teams').connecting || getConnectionStatus('teams').connected}
+                        >
+                          {getConnectionStatus('teams').connecting ? 'Connecting...' : 
+                           getConnectionStatus('teams').connected ? 'Connected' : 'Connect'}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
                 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                  style={{ backgroundColor: '#2D8CFF', color: 'white' }}
-                  title="Zoom"
-                >
-                  <Video className="h-4 w-4" />
-                </Button>
+                {/* Zoom */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                      style={{ backgroundColor: getConnectionStatus('zoom').connected ? '#2D8CFF' : undefined, color: getConnectionStatus('zoom').connected ? 'white' : undefined }}
+                      title="Zoom"
+                    >
+                      {getConnectionStatus('zoom').connecting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Video className="h-4 w-4" />
+                      )}
+                      {getConnectionStatus('zoom').connected && (
+                        <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Zoom</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Connect to Zoom for video conferencing and meeting management.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${getConnectionStatus('zoom').connected ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span className="text-sm">
+                            {getConnectionStatus('zoom').connected ? 'Connected' : 'Not connected'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => connect('zoom')}
+                          disabled={getConnectionStatus('zoom').connecting || getConnectionStatus('zoom').connected}
+                        >
+                          {getConnectionStatus('zoom').connecting ? 'Connecting...' : 
+                           getConnectionStatus('zoom').connected ? 'Connected' : 'Connect'}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
                 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                  style={{ backgroundColor: '#25D366', color: 'white' }}
-                  title="Phone & Text"
-                >
-                  <Phone className="h-4 w-4" />
-                </Button>
+                {/* Slack */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                      style={{ backgroundColor: getConnectionStatus('slack').connected ? '#4A154B' : undefined, color: getConnectionStatus('slack').connected ? 'white' : undefined }}
+                      title="Slack"
+                    >
+                      {getConnectionStatus('slack').connecting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Slack className="h-4 w-4" />
+                      )}
+                      {getConnectionStatus('slack').connected && (
+                        <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">Slack</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Connect to Slack for team communication and notifications.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${getConnectionStatus('slack').connected ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span className="text-sm">
+                            {getConnectionStatus('slack').connected ? 'Connected' : 'Not connected'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => connect('slack')}
+                          disabled={getConnectionStatus('slack').connecting || getConnectionStatus('slack').connected}
+                        >
+                          {getConnectionStatus('slack').connecting ? 'Connecting...' : 
+                           getConnectionStatus('slack').connected ? 'Connected' : 'Connect'}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                {/* WhatsApp */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
+                      style={{ backgroundColor: getConnectionStatus('whatsapp').connected ? '#25D366' : undefined, color: getConnectionStatus('whatsapp').connected ? 'white' : undefined }}
+                      title="WhatsApp Business"
+                    >
+                      {getConnectionStatus('whatsapp').connecting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Phone className="h-4 w-4" />
+                      )}
+                      {getConnectionStatus('whatsapp').connected && (
+                        <Badge className="absolute -top-1 -right-1 h-3 w-3 p-0 bg-green-500" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium leading-none">WhatsApp Business</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Connect WhatsApp Business for client communication.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className={`h-2 w-2 rounded-full ${getConnectionStatus('whatsapp').connected ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span className="text-sm">
+                            {getConnectionStatus('whatsapp').connected ? 'Connected' : 'Not connected'}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => connect('whatsapp')}
+                          disabled={getConnectionStatus('whatsapp').connecting || getConnectionStatus('whatsapp').connected}
+                        >
+                          {getConnectionStatus('whatsapp').connecting ? 'Connecting...' : 
+                           getConnectionStatus('whatsapp').connected ? 'Connected' : 'Connect'}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
               {selectedProject && access.canManageUsers && (
                 <Button 

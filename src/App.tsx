@@ -15,6 +15,7 @@ import CommunicationsPage from '@/pages/CommunicationsPage';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import SettingsAccessPage from '@/pages/SettingsAccessPage';
 import SettingsAuditPage from '@/pages/SettingsAuditPage';
+import OAuthCallback from '@/pages/auth/OAuthCallback';
 import NotFound from '@/pages/NotFound';
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ function App() {
                   <Route path="/action-items" element={<ActionItemsPage />} />
                   <Route path="/settings/access" element={<SettingsAccessPage />} />
                   <Route path="/settings/audit" element={<SettingsAuditPage />} />
+                  <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SettingsProvider>
