@@ -4,16 +4,41 @@ import AIInsightsPanel from './legal/AIInsightsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { generateLegalDemoData } from '@/utils/legalDemoData';
 import { Badge } from '@/components/ui/badge';
+import { Scale, Shield, FileText } from 'lucide-react';
+import { luxuryOfficeProject } from '@/data/sampleProjectData';
 
 interface LegalDashboardProps {
   projectId: string;
 }
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId: _projectId }) => {
+  const project = luxuryOfficeProject;
   const projectData = generateLegalDemoData();
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            Legal & Insurance Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {project.name} • Contracts, Compliance & Risk Management
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <Scale className="w-4 h-4 mr-2" />
+            {projectData.summary.complianceScore}% Compliant
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <Shield className="w-4 h-4 mr-2" />
+            {projectData.summary.activeClaims} Active Claims
+          </Badge>
+        </div>
+      </div>
+
       <AIInsightsPanel projectData={projectData} />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

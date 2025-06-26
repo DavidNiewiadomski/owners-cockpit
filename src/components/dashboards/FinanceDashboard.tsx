@@ -119,6 +119,27 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#0D1117] p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+            Finance Dashboard
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {project.name} • Financial Performance & Budget Management
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            <DollarSign className="w-4 h-4 mr-2" />
+            ${(project.financial.totalBudget / 1000000).toFixed(1)}M Budget
+          </Badge>
+          <Badge variant="outline" className="bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700">
+            {project.financial.roi.toFixed(1)}% ROI
+          </Badge>
+        </div>
+      </div>
+
       {/* AI Financial Insights */}
       <Card className="bg-slate-900 border-slate-800">
         <CardHeader className="pb-4">
@@ -195,27 +216,6 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId }) => {
           </div>
         </CardContent>
       </Card>
-
-      {/* Finance Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-gray-900 dark:text-white flex items-center gap-3">
-            <DollarSign className="h-8 w-8 text-green-600" />
-            Financial Management
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
-            Budget tracking, cash flow analysis, and financial performance
-          </p>
-        </div>
-        <div className="text-right">
-          <div className="text-2xl font-bold text-green-600">
-            {project.financial.roi.toFixed(1)}% ROI
-          </div>
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            Projected Return
-          </div>
-        </div>
-      </div>
 
       {/* Key Financial Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
