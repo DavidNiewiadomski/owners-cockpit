@@ -11,7 +11,6 @@ import EnhancedErrorBoundary from '@/components/EnhancedErrorBoundary';
 import Index from '@/pages/Index';
 import LandingPage from '@/pages/LandingPage';
 import ExecutiveDashboard from '@/pages/ExecutiveDashboard';
-import CommunicationsPage from '@/pages/CommunicationsPage';
 import ActionItemsPage from '@/pages/ActionItemsPage';
 import SettingsAccessPage from '@/pages/SettingsAccessPage';
 import SettingsAuditPage from '@/pages/SettingsAuditPage';
@@ -44,7 +43,6 @@ function App() {
                   <Route path="/projects/:projectId" element={<Navigate to="/" replace />} />
                   <Route path="/projects/:projectId/model" element={<Navigate to="/" replace />} />
                   <Route path="/executive-dashboard" element={<ExecutiveDashboard />} />
-                  <Route path="/communications" element={<CommunicationsPage />} />
                   <Route path="/action-items" element={<ActionItemsPage />} />
                   <Route path="/settings/access" element={<SettingsAccessPage />} />
                   <Route path="/settings/audit" element={<SettingsAuditPage />} />

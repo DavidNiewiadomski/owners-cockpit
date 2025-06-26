@@ -274,6 +274,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 </button>
               );
             })}
+            {/* Remove Portfolio and Communications buttons - these were causing navigation issues */}
           </div>
         </div>
       </header>

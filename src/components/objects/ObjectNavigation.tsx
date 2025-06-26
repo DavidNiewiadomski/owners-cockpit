@@ -133,38 +133,6 @@ const ObjectNavigation: React.FC<ObjectNavigationProps> = ({
       ]
     },
     {
-      type: 'communications',
-      label: 'Communications',
-      icon: <MessageSquare className="h-5 w-5" />,
-      path: '/communications',
-      count: 45,
-      createAction: 'communication',
-      permission: 'canViewCommunications',
-      children: [
-        {
-          type: 'recent',
-          label: 'Recent',
-          icon: <Clock className="h-4 w-4" />,
-          path: '/communications?filter=recent',
-          count: 12
-        },
-        {
-          type: 'meetings',
-          label: 'Meetings',
-          icon: <Calendar className="h-4 w-4" />,
-          path: '/communications?type=meeting',
-          count: 8
-        },
-        {
-          type: 'emails',
-          label: 'Emails',
-          icon: <MessageSquare className="h-4 w-4" />,
-          path: '/communications?type=email',
-          count: 25
-        }
-      ]
-    },
-    {
       type: 'documents',
       label: 'Documents',
       icon: <FileText className="h-5 w-5" />,
