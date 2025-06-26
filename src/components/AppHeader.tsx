@@ -80,6 +80,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     const storedCategory = sessionStorage.getItem('activeCategory');
     if (storedCategory) {
       setActiveCategory(storedCategory);
+    } else {
+      // Set default to Overview and store it
+      sessionStorage.setItem('activeCategory', 'Overview');
+      setActiveCategory('Overview');
     }
   }, []);
 
@@ -315,9 +319,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                     const targetRole = categoryToRoleMap[category] || category;
                     console.log('AppHeader: Clicking category:', category, 'mapping to role:', targetRole);
                     setActiveCategory(category);
-                    // Store the active category so Dashboard component can access it
                     sessionStorage.setItem('activeCategory', category);
-                    console.log('AppHeader: Stored activeCategory in sessionStorage:', category);
+                    
+                    // Dispatch custom event for immediate Dashboard update
+                    window.dispatchEvent(new CustomEvent('activeCategoryChange', { detail: category }));
+                    
+                    console.log('AppHeader: Stored activeCategory in sessionStorage and dispatched event:', category);
                     switchRole(targetRole as any);
                   }}
                   className={`
