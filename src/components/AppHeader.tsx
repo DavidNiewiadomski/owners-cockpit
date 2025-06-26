@@ -299,7 +299,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="border-t border-border/20 bg-background/50">
           <div className="flex overflow-x-auto scrollbar-hide px-6">
             {Object.entries(categoryIcons).map(([category, Icon]) => {
-              const isActive = roleToCategoryMap[currentRole]?.includes(category) || false;
+              const isActive = activeCategory === category;
               
               return (
                 <button
