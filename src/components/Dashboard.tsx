@@ -21,6 +21,7 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   // Route to appropriate dashboard based on current role/category
   switch (currentRole) {
     case 'Overview':
+    case 'Executive':
       return <OverviewDashboard projectId={projectId} />;
     case 'Design':
       return <DesignDashboard projectId={projectId} />;

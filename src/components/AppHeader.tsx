@@ -35,6 +35,32 @@ const categoryIcons = {
   Facilities: Building,
 };
 
+// Map UI category names to actual role names
+const categoryToRoleMap: Record<string, string> = {
+  Overview: 'Executive',
+  Design: 'Design',
+  Preconstruction: 'Preconstruction',
+  Construction: 'Construction',
+  Sustainability: 'Sustainability',
+  Safety: 'Safety',
+  Legal: 'Legal',
+  Finance: 'Finance',
+  Facilities: 'Facilities',
+};
+
+// Map role names back to categories for active state
+const roleToCategoryMap: Record<string, string> = {
+  Executive: 'Overview',
+  Design: 'Design',
+  Preconstruction: 'Preconstruction',
+  Construction: 'Construction',
+  Sustainability: 'Sustainability',
+  Safety: 'Safety',
+  Legal: 'Legal',
+  Finance: 'Finance',
+  Facilities: 'Facilities',
+};
+
 const AppHeader: React.FC<AppHeaderProps> = ({
   selectedProject,
   onProjectChange,
@@ -272,12 +298,15 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         <div className="border-t border-border/20 bg-background/50">
           <div className="flex overflow-x-auto scrollbar-hide px-6">
             {Object.entries(categoryIcons).map(([category, Icon]) => {
-              const isActive = currentRole === category;
+              const isActive = roleToCategoryMap[currentRole] === category || currentRole === category;
               
               return (
                 <button
                   key={category}
-                  onClick={() => switchRole(category as any)}
+                  onClick={() => {
+                    const targetRole = categoryToRoleMap[category] || category;
+                    switchRole(targetRole as any);
+                  }}
                   className={`
                     flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 whitespace-nowrap relative
                     ${isActive 
