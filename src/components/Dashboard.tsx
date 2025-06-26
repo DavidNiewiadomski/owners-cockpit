@@ -75,33 +75,48 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
     };
   }, []); // Remove currentRole dependency to prevent reset on role changes
   
-  // Debug logging
-  console.log('Dashboard: currentRole =', currentRole);
-  console.log('Dashboard: activeCategory =', activeCategory);
-  console.log('Dashboard: sessionStorage activeCategory =', sessionStorage.getItem('activeCategory'));
+  // AGGRESSIVE DEBUG LOGGING
+  console.log('===========================================');
+  console.log('Dashboard RENDER - currentRole =', currentRole);
+  console.log('Dashboard RENDER - activeCategory =', activeCategory);
+  console.log('Dashboard RENDER - sessionStorage activeCategory =', sessionStorage.getItem('activeCategory'));
+  console.log('Dashboard RENDER - activeCategory type =', typeof activeCategory);
+  console.log('Dashboard RENDER - activeCategory length =', activeCategory?.length);
+  console.log('Dashboard RENDER - Planning check =', activeCategory === 'Planning');
+  console.log('Dashboard RENDER - Design check =', activeCategory === 'Design');
+  console.log('===========================================');
 
   // Route to appropriate dashboard based on active category (not just role)
-  switch (activeCategory) {
-    case 'Overview':
-      return <OverviewDashboard projectId={projectId} />;
-    case 'Planning':
-      return <PlanningDashboard projectId={projectId} />;
-    case 'Design':
-      return <DesignDashboard projectId={projectId} />;
-    case 'Preconstruction':
-      return <PreconstructionDashboard projectId={projectId} />;
-    case 'Construction':
-      return <ConstructionDashboard projectId={projectId} />;
-    case 'Sustainability':
-      return <SustainabilityDashboard projectId={projectId} />;
-    case 'Legal':
-      return <LegalDashboard projectId={projectId} />;
-    case 'Finance':
-      return <FinanceDashboard projectId={projectId} />;
-    case 'Facilities':
-      return <FacilitiesDashboard projectId={projectId} />;
-    default:
-      return <OverviewDashboard projectId={projectId} />;
+  if (activeCategory === 'Overview') {
+    console.log('Dashboard: Rendering OverviewDashboard');
+    return <OverviewDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Planning') {
+    console.log('Dashboard: Rendering PlanningDashboard');
+    return <PlanningDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Design') {
+    console.log('Dashboard: Rendering DesignDashboard');
+    return <DesignDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Preconstruction') {
+    console.log('Dashboard: Rendering PreconstructionDashboard');
+    return <PreconstructionDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Construction') {
+    console.log('Dashboard: Rendering ConstructionDashboard');
+    return <ConstructionDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Sustainability') {
+    console.log('Dashboard: Rendering SustainabilityDashboard');
+    return <SustainabilityDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Legal') {
+    console.log('Dashboard: Rendering LegalDashboard');
+    return <LegalDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Finance') {
+    console.log('Dashboard: Rendering FinanceDashboard');
+    return <FinanceDashboard projectId={projectId} />;
+  } else if (activeCategory === 'Facilities') {
+    console.log('Dashboard: Rendering FacilitiesDashboard');
+    return <FacilitiesDashboard projectId={projectId} />;
+  } else {
+    console.log('Dashboard: Rendering DEFAULT OverviewDashboard, activeCategory was:', activeCategory);
+    return <OverviewDashboard projectId={projectId} />;
   }
 };
 
