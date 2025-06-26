@@ -163,7 +163,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             ${(financialData.totalBudget / 1000000).toFixed(1)}M Budget
           </Badge>
           <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
-            {(financialData.roi || 16.8).toFixed(1)}% ROI
+            {financialMetrics.irr?.toFixed(1) || 'N/A'}% IRR
           </Badge>
         </div>
       </div>
