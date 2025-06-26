@@ -7,84 +7,62 @@ import PerformanceTrends from './executive/PerformanceTrends';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
+import { getProjectMetrics } from '@/utils/projectSampleData';
 
 interface ExecutiveDashboardProps {
   projectId: string;
 }
 
 const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) => {
-  // Project-specific data based on projectId
-  const getProjectData = (id: string) => {
-    const projectsData = {
-      'lotus': {
-        name: 'Project Lotus',
-        totalBudget: 25000000,
-        spentBudget: 17000000,
-        progress: 68,
-        timeline: 'On Track',
-        roi: 16.8,
-        riskScore: 25,
-        stakeholders: 24,
-        milestonesCompleted: 8,
-        totalMilestones: 12,
-        monthlySpend: [
-          { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
-          { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
-          { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
-          { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
-          { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
-          { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
-        ],
-        riskBreakdown: [
-          { category: 'Technical', value: 35, color: '#3b82f6' },
-          { category: 'Financial', value: 20, color: '#10b981' },
-          { category: 'Schedule', value: 30, color: '#f59e0b' },
-          { category: 'External', value: 15, color: '#ef4444' }
-        ],
-        kpiTrends: [
-          { week: 'W1', efficiency: 78, quality: 92, safety: 98 },
-          { week: 'W2', efficiency: 82, quality: 89, safety: 97 },
-          { week: 'W3', efficiency: 85, quality: 94, safety: 99 },
-          { week: 'W4', efficiency: 88, quality: 96, safety: 98 }
-        ]
-      },
-      'portfolio': {
-        name: 'Portfolio Overview',
-        totalBudget: 75000000,
-        spentBudget: 56250000,
-        progress: 72,
-        timeline: 'Mixed',
-        roi: 14.2,
-        riskScore: 35,
-        stakeholders: 68,
-        milestonesCompleted: 28,
-        totalMilestones: 42,
-        monthlySpend: [
-          { month: 'Jan', budget: 6300000, actual: 5850000, forecast: 6000000 },
-          { month: 'Feb', budget: 6300000, actual: 6750000, forecast: 6600000 },
-          { month: 'Mar', budget: 6300000, actual: 6150000, forecast: 6300000 },
-          { month: 'Apr', budget: 6300000, actual: 6540000, forecast: 6450000 },
-          { month: 'May', budget: 6300000, actual: 6060000, forecast: 6240000 },
-          { month: 'Jun', budget: 6300000, actual: 6600000, forecast: 6540000 }
-        ],
-        riskBreakdown: [
-          { category: 'Technical', value: 28, color: '#3b82f6' },
-          { category: 'Financial', value: 32, color: '#10b981' },
-          { category: 'Schedule', value: 25, color: '#f59e0b' },
-          { category: 'External', value: 15, color: '#ef4444' }
-        ],
-        kpiTrends: [
-          { week: 'W1', efficiency: 74, quality: 88, safety: 96 },
-          { week: 'W2', efficiency: 78, quality: 91, safety: 95 },
-          { week: 'W3', efficiency: 81, quality: 89, safety: 97 },
-          { week: 'W4', efficiency: 79, quality: 92, safety: 96 }
-        ]
-      }
-    };
-    return projectsData[id as keyof typeof projectsData] || projectsData.lotus;
+  // Get comprehensive project-specific data based on projectId
+  const projectData = getProjectMetrics(projectId, 'executive');
+  
+  // Fallback data if no project found
+  const fallbackData = {
+    portfolioValue: 68000000,
+    stakeholders: 24,
+    riskScore: 25,
+    strategicAlignment: 88,
+    marketPosition: 92,
+    financial: {
+      totalBudget: 52000000,
+      spentToDate: 35400000,
+      roi: 16.8,
+      monthlySpend: [
+        { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
+        { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
+        { month: 'Mar', budget: 2100000, actual: 2050000, forecast: 2100000 },
+        { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
+        { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
+        { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
+      ]
+    },
+    kpiTrends: [
+      { week: 'W1', efficiency: 78, quality: 92, safety: 98 },
+      { week: 'W2', efficiency: 82, quality: 89, safety: 97 },
+      { week: 'W3', efficiency: 85, quality: 94, safety: 99 },
+      { week: 'W4', efficiency: 88, quality: 96, safety: 98 }
+    ],
+    insights: {
+      summary: 'Project performing well with strong metrics across all areas.',
+      keyPoints: ['Strong ROI performance', 'Stakeholder alignment high', 'Risk levels manageable'],
+      recommendations: ['Continue current trajectory', 'Monitor market conditions'],
+      alerts: ['Quarterly review due next week']
+    },
+    timeline: [
+      { phase: 'Planning', startDate: '2024-01-01', endDate: '2024-03-31', status: 'completed', progress: 100 },
+      { phase: 'Execution', startDate: '2024-04-01', endDate: '2024-10-31', status: 'active', progress: 68 },
+      { phase: 'Completion', startDate: '2024-11-01', endDate: '2024-12-31', status: 'upcoming', progress: 0 }
+    ],
+    team: {
+      projectManager: 'Sarah Johnson',
+      architect: 'Michael Chen',
+      contractor: 'BuildTech Solutions',
+      owner: 'Metro Development Corp'
+    }
   };
-
-  const projectData = getProjectData(projectId);
+  
+  const displayData = projectData || fallbackData;
 
   return (
     <div className="space-y-6">

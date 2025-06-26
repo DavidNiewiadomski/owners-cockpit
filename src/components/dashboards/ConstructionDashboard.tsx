@@ -39,7 +39,7 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { luxuryOfficeProject } from '@/data/sampleProjectData';
+import { getProjectMetrics } from '@/utils/projectSampleData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 
@@ -49,8 +49,10 @@ interface ConstructionDashboardProps {
 }
 
 const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId, activeCategory }) => {
-  const project = luxuryOfficeProject;
   const { data: projects = [] } = useProjects();
+  
+  // Get comprehensive project-specific data based on projectId
+  const projectData = getProjectMetrics(projectId, 'construction');
   
   // Get the actual project name from the projects data
   const selectedProject = projects.find(p => p.id === projectId);
@@ -58,8 +60,23 @@ const ConstructionDashboard: React.FC<ConstructionDashboardProps> = ({ projectId
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
 
-  // Enhanced construction metrics
-  const constructionMetrics = {
+  // Use project-specific construction metrics or fallback
+  const constructionMetrics = projectData ? {
+    overallProgress: projectData.overallProgress,
+    daysAheadBehind: projectData.daysAheadBehind,
+    totalWorkforce: projectData.totalWorkforce,
+    activeSubcontractors: projectData.activeSubcontractors,
+    completedMilestones: projectData.completedMilestones,
+    totalMilestones: projectData.totalMilestones,
+    qualityScore: projectData.qualityScore,
+    safetyScore: projectData.safetyScore,
+    openRFIs: projectData.openRFIs,
+    pendingSubmittals: projectData.pendingSubmittals,
+    budgetVariance: -2.3,
+    scheduleVariance: 1.2,
+    activeWorkOrders: 156,
+    completedInspections: 89
+  } : {
     overallProgress: 68,
     daysAheadBehind: -3,
     totalWorkforce: 145,

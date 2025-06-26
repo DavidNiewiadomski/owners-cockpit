@@ -479,7 +479,7 @@ export const portfolioProjects = [
     sqft: 380000,
     phase: 'Permitting'
   }
-
+];
 
 export const constructionProjects = [
   {
