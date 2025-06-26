@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { OAuthService } from '@/services/oauth/oauthService';
+import { WorkingOAuthService } from '@/services/oauth/workingOAuthService';
 import { useToast } from '@/hooks/use-toast';
 
 export interface ConnectionStatus {
@@ -13,7 +13,7 @@ export const useOAuthConnections = () => {
   const [connections, setConnections] = useState<Record<string, ConnectionStatus>>({});
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const oauthService = OAuthService.getInstance();
+  const oauthService = WorkingOAuthService.getInstance();
 
   const providers = ['outlook', 'teams', 'zoom', 'slack', 'whatsapp'];
 
