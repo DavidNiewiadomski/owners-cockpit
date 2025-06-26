@@ -48,7 +48,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
     { category: 'Architecture/Engineering', amount: 2050000, percentage: 8.5, color: 'bg-green-500' },
     { category: 'Site Work', amount: 1200000, percentage: 5.0, color: 'bg-yellow-500' },
     { category: 'Permits & Fees', amount: 850000, percentage: 3.5, color: 'bg-purple-500' },
-    { category: 'Other/Contingency', amount: 1400000, percentage: 5.9, color: 'bg-gray-500' }
+    { category: 'Other/Contingency', amount: 1400000, percentage: 5.9, color: 'bg-slate-500' }
   ];
 
   // Recent financial transactions
@@ -140,11 +140,11 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <DollarSign className="w-4 h-4 mr-2" />
             ${(project.financial.totalBudget / 1000000).toFixed(1)}M Budget
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             {project.financial.roi.toFixed(1)}% ROI
           </Badge>
         </div>
@@ -164,26 +164,26 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{budgetUtilization.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">Budget Used</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{project.financial.roi.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">ROI</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{variancePercent > 0 ? '+' : ''}{variancePercent.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">Variance</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{contingencyUsed.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">Contingency</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
+          <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
               Financial performance shows {budgetUtilization.toFixed(1)}% budget utilization with {variancePercent > 0 ? 'over' : 'under'} budget variance of {Math.abs(variancePercent).toFixed(1)}%. ROI projection at {project.financial.roi.toFixed(1)}% exceeds market benchmarks. Contingency usage at {contingencyUsed.toFixed(1)}% maintains healthy reserves.
             </p>
@@ -237,27 +237,27 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Receipt className="w-4 h-4 mr-2" />
               Approve Pending Invoices
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calculator className="w-4 h-4 mr-2" />
               Review Budget Variance
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <TrendingUp className="w-4 h-4 mr-2" />
               Generate Financial Report
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CreditCard className="w-4 h-4 mr-2" />
               Update Cash Flow Forecast
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <PieChart className="w-4 h-4 mr-2" />
               Export Cost Analysis
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Banknote className="w-4 h-4 mr-2" />
               Process Draw Request
             </Button>
@@ -355,7 +355,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
                     ${(item.amount / 1000000).toFixed(1)}M ({item.percentage}%)
                   </span>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-2">
+                <div className="w-full bg-[#0D1117] rounded-full h-2">
                   <div 
                     className={`h-2 rounded-full ${item.color}`}
                     style={{ width: `${item.percentage}%` }}
@@ -376,7 +376,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardHeader>
           <CardContent className="space-y-3">
             {monthlyBudgetData.map((month, index) => (
-              <div key={index} className="p-3 rounded-lg border border-slate-700 bg-slate-800/50">
+              <div key={index} className="p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-medium text-sm text-white">{month.month} 2024</span>
                   <div className="flex items-center gap-2">
@@ -418,7 +418,7 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
           </CardHeader>
           <CardContent className="space-y-3">
             {recentTransactions.map((transaction) => (
-              <div key={transaction.id} className="p-3 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800/70 transition-colors">
+              <div key={transaction.id} className="p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50 hover:bg-[#0D1117]/70 transition-colors">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="font-medium text-sm text-white">{transaction.description}</div>
@@ -548,19 +548,19 @@ const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ projectId, activeCa
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
               <div className="text-sm font-medium text-white">Current Month</div>
               <div className="text-xs text-slate-400">Jun 2024</div>
               <div className="text-lg font-bold text-red-400">-$1.4M</div>
             </div>
             
-            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
               <div className="text-sm font-medium text-white">Next Month</div>
               <div className="text-xs text-slate-400">Jul 2024 (Projected)</div>
               <div className="text-lg font-bold text-green-400">+$0.6M</div>
             </div>
             
-            <div className="p-2 rounded border border-slate-700 bg-slate-800/50">
+            <div className="p-2 rounded border border-slate-700 bg-[#0D1117]/50">
               <div className="text-sm font-medium text-white">Year to Date</div>
               <div className="text-xs text-slate-400">Jan - Jun 2024</div>
               <div className="text-lg font-bold text-red-400">-$8.2M</div>

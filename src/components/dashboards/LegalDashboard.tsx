@@ -39,11 +39,11 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Scale className="w-4 h-4 mr-2" />
             {projectData.summary.complianceScore}% Compliant
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Shield className="w-4 h-4 mr-2" />
             {projectData.summary.activeClaims} Active Claims
           </Badge>
@@ -62,27 +62,27 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <FileText className="w-4 h-4 mr-2" />
               Review Contracts
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Legal Review
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Shield className="w-4 h-4 mr-2" />
               Update Compliance Status
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Scale className="w-4 h-4 mr-2" />
               Resolve Disputes
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Generate Legal Report
             </Button>
@@ -99,17 +99,17 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Active Contracts</span>
-                <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">{projectData.summary.activeContracts}</Badge>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{projectData.summary.activeContracts}</Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Pending Reviews</span>
-                <Badge variant={projectData.summary.pendingChangeOrders > 10 ? "destructive" : "secondary"} className="bg-slate-800 text-slate-300 border-slate-700">
+                <Badge variant={projectData.summary.pendingChangeOrders > 10 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
                   {projectData.summary.pendingChangeOrders}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Renewals Next Quarter</span>
-                <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">{projectData.summary.contractsEndingSoon}</Badge>
+                <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">{projectData.summary.contractsEndingSoon}</Badge>
               </div>
             </div>
           </CardContent>
@@ -123,7 +123,7 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Compliance Score</span>
-                <Badge variant={projectData.summary.complianceScore > 90 ? "default" : "secondary"} className="bg-slate-800 text-slate-300 border-slate-700">
+                <Badge variant={projectData.summary.complianceScore > 90 ? "default" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
                   {projectData.summary.complianceScore}%
                 </Badge>
               </div>
@@ -132,13 +132,13 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
                 <Badge variant={
                   projectData.summary.complianceScore > 90 ? 'default' : 
                   projectData.summary.complianceScore > 75 ? 'secondary' : 'destructive'
-                } className="bg-slate-800 text-slate-300 border-slate-700">
+                } className="bg-[#0D1117] text-slate-300 border-slate-700">
                   {projectData.summary.complianceScore > 90 ? 'low' : projectData.summary.complianceScore > 75 ? 'medium' : 'high'}
                 </Badge>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Open Disputes</span>
-                <Badge variant={projectData.summary.activeClaims > 2 ? "destructive" : "secondary"} className="bg-slate-800 text-slate-300 border-slate-700">
+                <Badge variant={projectData.summary.activeClaims > 2 ? "destructive" : "secondary"} className="bg-[#0D1117] text-slate-300 border-slate-700">
                   {projectData.summary.activeClaims}
                 </Badge>
               </div>

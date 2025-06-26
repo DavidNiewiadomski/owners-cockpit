@@ -198,7 +198,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       case 'revisions-requested':
         return 'bg-orange-100 text-orange-700 border-orange-200';
       default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
+        return 'bg-[#0D1117] text-slate-300 border-slate-700';
     }
   };
 
@@ -217,11 +217,11 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Palette className="w-4 h-4 mr-2" />
             {designProgress.toFixed(1)}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             {designMetrics.changeOrders} Change Orders
           </Badge>
         </div>
@@ -241,26 +241,26 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
       <CardContent className="space-y-4">
         {/* Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-slate-800 rounded-lg p-4 text-center">
+          <div className="bg-[#0D1117] rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-white">{designPhases.find(phase => phase.id === 'construction-docs')?.progress}%</div>
             <div className="text-sm text-slate-400">Design Progress</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 text-center">
+          <div className="bg-[#0D1117] rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-white">{((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}%</div>
             <div className="text-sm text-slate-400">Budget Used</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 text-center">
+          <div className="bg-[#0D1117] rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-white">{designMetrics.changeOrders}</div>
             <div className="text-sm text-slate-400">Change Orders</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 text-center">
+          <div className="bg-[#0D1117] rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-white">{designMetrics.documentsApproved}</div>
             <div className="text-sm text-slate-400">Docs Approved</div>
           </div>
         </div>
         
         {/* Summary */}
-        <div className="bg-slate-800/50 rounded-lg p-4">
+        <div className="bg-[#0D1117]/50 rounded-lg p-4">
           <p className="text-slate-300 text-sm">
             Design portfolio shows {designPhases.find(phase => phase.id === 'construction-docs')?.progress}% completion with {((designMetrics.spentToDate / designMetrics.totalDesignBudget) * 100).toFixed(1)}% budget utilization. {designMetrics.changeOrders} change orders pending review. Lobby marble selection requires immediate approval for schedule alignment.
           </p>
@@ -318,23 +318,23 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
               <FileImage className="w-4 h-4 mr-2" />
               Upload Design
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Eye className="w-4 h-4 mr-2" />
               Review Submissions
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <MessageSquare className="w-4 h-4 mr-2" />
               Designer Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Download className="w-4 h-4 mr-2" />
               Download Plans
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Ruler className="w-4 h-4 mr-2" />
               3D Model View
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Changes
             </Button>
@@ -440,7 +440,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
           <CardContent>
             <div className="space-y-4">
               {materialSelections.map((material, index) => (
-                <div key={index} className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+                <div key={index} className="p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-white">{material.category}</span>
                     <Badge className={getStatusColor(material.status)}>
@@ -474,7 +474,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
           <CardContent>
             <div className="space-y-3">
               {recentDesignSubmissions.map((submission) => (
-                <div key={submission.id} className="flex items-center gap-4 p-3 rounded-md bg-slate-800/50 border border-slate-700">
+                <div key={submission.id} className="flex items-center gap-4 p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
                   <div className={`w-2 h-2 rounded-full ${
                     submission.status === 'approved' ? 'bg-green-500' :
                     submission.status === 'pending-approval' ? 'bg-yellow-500' :
@@ -508,7 +508,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+            <div className="p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
                 <Palette className="h-4 w-4 text-slate-400" />
                 <span className="font-medium text-white">Overall Performance</span>
@@ -557,7 +557,7 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
               { name: 'Landscape Plus', role: 'Landscape Architect', contact: 'Maria Garcia', performance: 90, deliverables: 8 },
               { name: 'Lighting Experts', role: 'Lighting Consultant', contact: 'Tom Wilson', performance: 94, deliverables: 12 }
             ].map((team, index) => (
-              <div key={index} className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+              <div key={index} className="p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
                 <div className="font-medium text-white">{team.name}</div>
                 <div className="text-sm text-slate-400">{team.role}</div>
                 <div className="text-sm text-slate-400">{team.contact}</div>

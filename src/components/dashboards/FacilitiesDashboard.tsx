@@ -41,11 +41,11 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Building className="w-4 h-4 mr-2" />
             {project.basicInfo.floors} Floors
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Zap className="w-4 h-4 mr-2" />
             Operational
           </Badge>
@@ -64,27 +64,27 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Wrench className="w-4 h-4 mr-2" />
               Create Work Order
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Maintenance
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Review Energy Reports
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Building className="w-4 h-4 mr-2" />
               Inspect Building Systems
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <DollarSign className="w-4 h-4 mr-2" />
               Update Operating Costs
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Generate Facilities Report
             </Button>

@@ -258,7 +258,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Low': return 'bg-green-100 text-green-700';
       case 'Medium': return 'bg-yellow-100 text-yellow-700';
       case 'High': return 'bg-red-100 text-red-700';
-      default: return 'bg-slate-800 text-gray-700';
+      default: return 'bg-[#0D1117] text-gray-700';
     }
   };
   
@@ -270,7 +270,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Supportive': return 'bg-green-100 text-green-700';
       case 'Neutral': return 'bg-yellow-100 text-yellow-700';
       case 'Interested': return 'bg-blue-100 text-blue-700';
-      default: return 'bg-slate-800 text-gray-700';
+      default: return 'bg-[#0D1117] text-gray-700';
     }
   };
   
@@ -287,11 +287,11 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Target className="w-4 h-4 mr-2" />
             {planningMetrics.overallProgress}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             Phase: {planningMetrics.projectPhase}
           </Badge>
         </div>
@@ -311,26 +311,26 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{planningMetrics.overallProgress}%</div>
               <div className="text-sm text-slate-400">Planning Progress</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{siteOptions.find(s => s.selected)?.score || 0}</div>
               <div className="text-sm text-slate-400">Site Score</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">18.2%</div>
               <div className="text-sm text-slate-400">Projected ROI</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{riskFactors.filter(r => r.level === 'Medium').length}</div>
               <div className="text-sm text-slate-400">Active Risks</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
+          <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
               Strategic planning at {planningMetrics.overallProgress}% completion with Downtown Business District selected (score: 92/100). Market analysis shows strong demand for Class A office space with 94% occupancy rates. Financial projections indicate 18.2% ROI with manageable risk profile.
             </p>
@@ -384,27 +384,27 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Finalize Site Selection
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Stakeholder Meetings
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Review Business Case
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Shield className="w-4 h-4 mr-2" />
               Update Risk Mitigation
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <DollarSign className="w-4 h-4 mr-2" />
               Financial Model Review
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <BarChart3 className="w-4 h-4 mr-2" />
               Market Analysis Update
             </Button>
@@ -487,7 +487,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         <CardContent>
           <div className="space-y-6">
             {siteOptions.map((site) => (
-              <div key={site.id} className="border rounded-lg p-4 hover:bg-slate-800/50 transition-colors">
+              <div key={site.id} className="border rounded-lg p-4 hover:bg-[#0D1117]/50 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -609,7 +609,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <h4 className="font-medium mb-3">Market Trends</h4>
               <div className="space-y-2">
                 {marketAnalysis.marketTrends.map((trend, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded bg-slate-800/50">
+                  <div key={index} className="flex items-center justify-between p-2 rounded bg-[#0D1117]/50">
                     <div>
                       <div className="font-medium text-sm">{trend.trend}</div>
                       <div className="text-xs text-slate-400">Impact: {trend.impact}</div>
@@ -713,11 +713,11 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
           <CardContent>
             <div className="space-y-4">
               {planningMilestones.map((milestone) => (
-                  <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
+                  <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-[#0D1117]/50">
                   <div className={`w-3 h-3 rounded-full ${
                     milestone.status === 'completed' ? 'bg-green-500' :
                     milestone.status === 'in-progress' ? 'bg-blue-500' :
-                    'bg-gray-300'
+                    'bg-slate-600'
                   }`} />
                   <div className="flex-1">
                     <div className="font-medium">{milestone.milestone}</div>

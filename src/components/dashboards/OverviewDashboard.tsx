@@ -52,11 +52,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           <p className="text-slate-400 mt-1">{subtitle}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <BarChart3 className="w-4 h-4 mr-2" />
             {scheduleProgress}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             {roi.toFixed(1)}% ROI
           </Badge>
         </div>
@@ -76,26 +76,26 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{scheduleProgress}%</div>
               <div className="text-sm text-slate-400">Progress</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{budgetUsed.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">Budget Used</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{roi.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">ROI</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{preLeasingRate.toFixed(1)}%</div>
               <div className="text-sm text-slate-400">Pre-Leased</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
+          <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
               Project is {scheduleProgress}% complete with {budgetUsed.toFixed(1)}% budget utilized and {roi.toFixed(1)}% projected ROI. Pre-leasing at {preLeasingRate.toFixed(1)}% indicates strong market demand. Overall project health is {budgetUsed <= scheduleProgress ? 'on track' : 'requires attention'}.
             </p>
@@ -149,27 +149,27 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <BarChart3 className="w-4 h-4 mr-2" />
               Review Budget Variance
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Site Visit
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Building className="w-4 h-4 mr-2" />
               Review Tenant Applications
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <DollarSign className="w-4 h-4 mr-2" />
               Update Insurance Coverage
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Generate Progress Report
             </Button>
@@ -191,7 +191,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
               <span>of ${(project.financial.totalBudget / 1000000).toFixed(1)}M</span>
-              <Badge variant={budgetUsed <= scheduleProgress ? "default" : "destructive"} className="text-xs bg-slate-800 text-slate-300">
+              <Badge variant={budgetUsed <= scheduleProgress ? "default" : "destructive"} className="text-xs bg-[#0D1117] text-slate-300">
                 {budgetUsed.toFixed(1)}%
               </Badge>
             </div>
@@ -209,7 +209,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             <div className="text-2xl font-bold text-white">{scheduleProgress}%</div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
               <span>{project.schedule.remainingDays} days remaining</span>
-              <Badge variant={project.schedule.criticalPathDelay === 0 ? "default" : "destructive"} className="text-xs bg-slate-800 text-slate-300">
+              <Badge variant={project.schedule.criticalPathDelay === 0 ? "default" : "destructive"} className="text-xs bg-[#0D1117] text-slate-300">
                 On Track
               </Badge>
             </div>
@@ -227,7 +227,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             <div className="text-2xl font-bold text-white">{preLeasingRate.toFixed(1)}%</div>
             <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1">
               <span>{(project.leasing.preLeasedSpace / 1000).toFixed(0)}K sq ft</span>
-              <Badge variant={preLeasingRate >= 25 ? "default" : "secondary"} className="text-xs bg-slate-800 text-slate-300">
+              <Badge variant={preLeasingRate >= 25 ? "default" : "secondary"} className="text-xs bg-[#0D1117] text-slate-300">
                 {preLeasingRate >= 25 ? "Strong" : "Building"}
               </Badge>
             </div>
@@ -270,7 +270,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           </CardHeader>
           <CardContent className="space-y-3">
             {project.schedule.milestones.slice(0, 5).map((milestone) => (
-              <div key={milestone.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-slate-800/50">
+              <div key={milestone.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${
                     milestone.status === 'completed' ? 'bg-green-400' :
@@ -361,7 +361,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
               <div key={risk.id} className="p-3 rounded-lg border border-orange-500/30 bg-orange-500/10">
                 <div className="flex items-center justify-between mb-1">
                   <div className="font-medium text-sm text-white">{risk.title}</div>
-                  <Badge variant="outline" className="text-xs bg-slate-800 text-slate-300 border-slate-600">
+                  <Badge variant="outline" className="text-xs bg-[#0D1117] text-slate-300 border-slate-600">
                     Score: {risk.riskScore}
                   </Badge>
                 </div>
@@ -369,10 +369,10 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
                   {risk.description}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-300 capitalize">
+                  <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
                     {risk.probability} probability
                   </Badge>
-                  <Badge variant="secondary" className="text-xs bg-slate-800 text-slate-300 capitalize">
+                  <Badge variant="secondary" className="text-xs bg-[#0D1117] text-slate-300 capitalize">
                     {risk.impact} impact
                   </Badge>
                 </div>
@@ -391,7 +391,7 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
           </CardHeader>
           <CardContent className="space-y-3">
             {Object.values(project.team).map((member, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-slate-800/50">
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-slate-700 bg-[#0D1117]/50">
                 <div>
                   <div className="font-medium text-sm text-white">{member.contact}</div>
                   <div className="text-xs text-slate-400">{member.role}</div>
@@ -421,27 +421,27 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Review Budget Variance
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Schedule Site Visit
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Approve Change Orders
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Review Tenant Applications
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Update Insurance Coverage
               <ArrowRight className="h-4 w-4" />
             </Button>
-            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="w-full justify-between text-sm border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               Generate Progress Report
               <ArrowRight className="h-4 w-4" />
             </Button>

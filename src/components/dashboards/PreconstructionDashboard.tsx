@@ -136,7 +136,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
       case 'rejected':
         return 'bg-red-100 text-red-700 border-red-200';
       default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
+        return 'bg-[#0D1117] text-slate-300 border-slate-700';
     }
   };
 
@@ -153,11 +153,11 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <ClipboardList className="w-4 h-4 mr-2" />
             {preconstructionMetrics.designProgress}% Design
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <CheckCircle2 className="w-4 h-4 mr-2" />
             {preconstructionMetrics.permitsApproved}/{preconstructionMetrics.totalPermits} Permits
           </Badge>
@@ -178,26 +178,26 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{preconstructionMetrics.designProgress}%</div>
               <div className="text-sm text-slate-400">Design Progress</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{preconstructionMetrics.permitsApproved}/{preconstructionMetrics.totalPermits}</div>
               <div className="text-sm text-slate-400">Permits</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{preconstructionMetrics.bidsReceived}</div>
               <div className="text-sm text-slate-400">Bids Received</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{Math.abs(preconstructionMetrics.scheduleVariance)}</div>
               <div className="text-sm text-slate-400">Days Ahead</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
+          <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
               Preconstruction phase at {preconstructionMetrics.designProgress}% design completion with {preconstructionMetrics.permitsApproved} of {preconstructionMetrics.totalPermits} permits approved. Bidding process yielded {preconstructionMetrics.bidsReceived} competitive proposals with {preconstructionMetrics.bidsEvaluated} evaluated. Project running {Math.abs(preconstructionMetrics.scheduleVariance)} days ahead of schedule.
             </p>
@@ -255,23 +255,23 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
               <DollarSign className="w-4 h-4 mr-2" />
               Update Budget
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <FileText className="w-4 h-4 mr-2" />
               Submit Permit
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Gavel className="w-4 h-4 mr-2" />
               Review Bids
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Calendar className="w-4 h-4 mr-2" />
               Update Schedule
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Users className="w-4 h-4 mr-2" />
               Contractor Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Target className="w-4 h-4 mr-2" />
               Risk Assessment
             </Button>
@@ -464,7 +464,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           <CardContent>
             <div className="space-y-4">
               {permitStatus.map((permit, index) => (
-                <div key={index} className="p-4 rounded-lg bg-slate-800/50">
+                <div key={index} className="p-4 rounded-lg bg-[#0D1117]/50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">{permit.permit}</span>
                     <Badge className={getStatusColor(permit.status)}>
@@ -506,7 +506,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
           <CardContent>
             <div className="space-y-4">
               {biddingData.map((bid, index) => (
-                <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-slate-800/50">
+                <div key={index} className="flex items-center gap-4 p-4 rounded-lg bg-[#0D1117]/50">
                   <div className={`w-3 h-3 rounded-full ${
                     bid.status === 'selected' ? 'bg-green-500' :
                     bid.status === 'finalist' ? 'bg-yellow-500' :
@@ -540,7 +540,7 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
+            <div className="p-4 rounded-lg bg-[#0D1117]/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="h-5 w-5 text-indigo-600" />
                 <span className="font-medium text-indigo-300">On Track</span>

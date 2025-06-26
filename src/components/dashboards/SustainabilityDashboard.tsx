@@ -131,11 +131,11 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             <Award className="w-4 h-4 mr-2" />
             LEED {project.sustainability.leedTarget} Target
           </Badge>
-          <Badge variant="outline" className="bg-slate-800 text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
             {sustainabilityMetrics.leedScore} Points Earned
           </Badge>
         </div>
@@ -155,26 +155,26 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{sustainabilityMetrics.leedScore}</div>
               <div className="text-sm text-slate-400">LEED Score</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{sustainabilityMetrics.energyEfficiency}%</div>
               <div className="text-sm text-slate-400">Energy Savings</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{sustainabilityMetrics.waterReduction}%</div>
               <div className="text-sm text-slate-400">Water Reduction</div>
             </div>
-            <div className="bg-slate-800 rounded-lg p-4 text-center">
+            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-white">{sustainabilityMetrics.carbonSaved}</div>
               <div className="text-sm text-slate-400">CO2 Saved (tons)</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-slate-800/50 rounded-lg p-4">
+          <div className="bg-[#0D1117]/50 rounded-lg p-4">
             <p className="text-slate-300 text-sm">
               Sustainability performance exceeds targets with LEED score of {sustainabilityMetrics.leedScore} points (target: {sustainabilityMetrics.leedTarget}). Energy efficiency at {sustainabilityMetrics.energyEfficiency}% improvement, water reduction {sustainabilityMetrics.waterReduction}%, saving {sustainabilityMetrics.carbonSaved} tons CO2 annually.
             </p>
@@ -232,23 +232,23 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
               <FileText className="w-4 h-4 mr-2" />
               Generate ESG Report
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Award className="w-4 h-4 mr-2" />
               Update LEED Scorecard
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Zap className="w-4 h-4 mr-2" />
               Energy Audit
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Droplets className="w-4 h-4 mr-2" />
               Water Usage Report
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <Recycle className="w-4 h-4 mr-2" />
               Waste Analysis
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-slate-800 text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
               <TreePine className="w-4 h-4 mr-2" />
               Carbon Calculator
             </Button>
@@ -468,10 +468,10 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
           <CardContent>
             <div className="space-y-4">
               {waterUsage.map((usage, index) => (
-                  <div key={index} className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+                  <div key={index} className="p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-white">{usage.category}</span>
-                    <Badge className="bg-slate-800 text-slate-300 border-slate-700">
+                    <Badge className="bg-[#0D1117] text-slate-300 border-slate-700">
                       -{usage.reduction}%
                     </Badge>
                   </div>
@@ -505,13 +505,13 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {project.sustainability.greenFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-md bg-slate-800/50 border border-slate-700">
+                <div key={index} className="flex items-center gap-3 p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                   <span className="text-sm font-medium text-white">{feature}</span>
                 </div>
               ))}
             </div>
-            <div className="mt-6 p-3 rounded-md bg-slate-800/50 border border-slate-700">
+            <div className="mt-6 p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
                 <Sun className="h-4 w-4 text-green-600" />
                 <span className="font-medium text-green-300">Environmental Impact</span>
@@ -543,7 +543,7 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="p-3 rounded-md bg-slate-800/50 border border-slate-700">
+            <div className="p-3 rounded-md bg-[#0D1117]/50 border border-slate-700">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle2 className="h-4 w-4 text-green-600" />
                 <span className="font-medium text-green-300">Exceeding Targets</span>

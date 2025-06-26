@@ -50,7 +50,7 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
           {keyMetrics.map((metric, index) => (
-            <div key={index} className="bg-slate-800 rounded-lg p-4 text-center">
+            <div key={index} className="bg-[#0D1117] rounded-lg p-4 text-center">
               <div className={`text-2xl font-bold ${
                 metric.status === 'positive' ? 'text-green-400' : 
                 metric.status === 'warning' ? 'text-yellow-400' : 
@@ -64,7 +64,7 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         </div>
 
         {/* Executive Summary */}
-        <div className="bg-slate-800/50 rounded-lg p-4">
+        <div className="bg-[#0D1117]/50 rounded-lg p-4">
           <p className="text-slate-300 text-sm">
             {insights.summary}
           </p>
