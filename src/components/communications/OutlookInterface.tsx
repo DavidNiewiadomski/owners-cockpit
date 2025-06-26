@@ -116,7 +116,12 @@ const OutlookInterface: React.FC = () => {
           <div className="space-y-1">
             <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-600">
               <Inbox className="h-4 w-4 mr-2" />
-              Inbox ({emails.filter(e => !e.read).length})
+              Inbox
+              {emails.filter(e => !e.read).length > 0 && (
+                <Badge variant="secondary" className="ml-auto bg-white text-blue-600 h-5 px-1.5 text-xs">
+                  {emails.filter(e => !e.read).length}
+                </Badge>
+              )}
             </Button>
             <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-600">
               <DraftingCompass className="h-4 w-4 mr-2" />

@@ -58,6 +58,38 @@ export class WorkingOAuthService {
   private connections: Map<string, any> = new Map();
   private isDemoMode: boolean = process.env.NODE_ENV === 'development';
 
+  constructor() {
+    // Auto-connect all providers in demo mode for immediate functionality
+    if (this.isDemoMode) {
+      this.initializeDemoConnections();
+    }
+  }
+
+  // Initialize all demo connections automatically
+  private initializeDemoConnections(): void {
+    const providers = ['outlook', 'teams', 'zoom', 'slack', 'whatsapp'];
+    
+    providers.forEach(providerId => {
+      const demoToken = {
+        access_token: `demo_token_${providerId}_${Date.now()}`,
+        refresh_token: `demo_refresh_${providerId}_${Date.now()}`,
+        expires_at: new Date(Date.now() + 24 * 3600000).toISOString(), // 24 hours
+        provider: providerId,
+        user_id: 'demo_user',
+        demo: true,
+        connected_at: new Date().toISOString()
+      };
+
+      // Store in memory
+      this.connections.set(providerId, demoToken);
+      
+      // Store in localStorage for persistence
+      localStorage.setItem(`oauth_${providerId}`, JSON.stringify(demoToken));
+    });
+
+    console.log('🎯 All communication providers auto-connected in demo mode');
+  }
+
   static getInstance(): WorkingOAuthService {
     if (!WorkingOAuthService.instance) {
       WorkingOAuthService.instance = new WorkingOAuthService();

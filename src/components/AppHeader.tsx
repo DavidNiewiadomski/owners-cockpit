@@ -113,7 +113,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   variant="ghost"
                   size="icon"
                   className="relative overflow-hidden bg-background/50 backdrop-blur-sm border border-primary/30 hover:border-primary/60 hover:bg-primary/10 transition-all duration-300 hover:shadow-glow-md hover:scale-105"
-                  style={{ backgroundColor: getConnectionStatus('teams').connected ? '#6264a7' : undefined, color: getConnectionStatus('teams').connected ? 'white' : undefined }}
+                    style={{ 
+                      backgroundColor: getConnectionStatus('teams').connected ? '#6264a7' : undefined, 
+                      color: getConnectionStatus('teams').connected ? 'white' : undefined,
+                      boxShadow: getConnectionStatus('teams').connected ? '0 0 10px rgba(98, 100, 167, 0.3)' : undefined
+                    }}
                   title="Microsoft Teams"
                   onClick={() => {
                     if (getConnectionStatus('teams').connected) {

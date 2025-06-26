@@ -8,14 +8,99 @@ import { Phone, Send, Paperclip, Smile, Search, Video, MoreVertical } from 'luci
 import { sampleWhatsAppChats } from '@/data/sampleCommunications';
 
 const WhatsAppInterface: React.FC = () => {
-  const [chats] = useState(sampleWhatsAppChats);
+  const [chats, setChats] = useState(sampleWhatsAppChats);
   const [selectedChat, setSelectedChat] = useState(sampleWhatsAppChats[0]);
   const [newMessage, setNewMessage] = useState('');
 
   const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-    console.log(`Sending WhatsApp message: ${newMessage}`);
+    if (!newMessage.trim() || !selectedChat) return;
+
+    const message = {
+      id: Date.now().toString(),
+      sender: 'You',
+      content: newMessage,
+      timestamp: 'Just now',
+      type: 'text' as const
+    };
+
+    // Update the selected chat
+    const updatedChat = {
+      ...selectedChat,
+      messages: [...selectedChat.messages, message],
+      lastMessage: newMessage,
+      timestamp: 'Just now',
+      unread: 0 // Clear unread count since we're in the chat
+    };
+
+    setChats(prev => prev.map(chat => 
+      chat.id === selectedChat.id ? updatedChat : chat
+    ));
+    
+    setSelectedChat(updatedChat);
     setNewMessage('');
+
+    // Simulate reply from contact after 2-3 seconds
+    if (selectedChat.name !== 'Project Investors Group') {
+      setTimeout(() => {
+        const replyMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: selectedChat.name.split(' - ')[1] || selectedChat.name,
+          content: getAutoReply(newMessage, selectedChat.name),
+          timestamp: 'Just now',
+          type: 'text' as const
+        };
+
+        const updatedChatWithReply = {
+          ...updatedChat,
+          messages: [...updatedChat.messages, replyMessage],
+          lastMessage: replyMessage.content,
+          timestamp: 'Just now'
+        };
+
+        setChats(prev => prev.map(chat => 
+          chat.id === selectedChat.id ? updatedChatWithReply : chat
+        ));
+        
+        if (selectedChat.id === updatedChatWithReply.id) {
+          setSelectedChat(updatedChatWithReply);
+        }
+      }, 2000 + Math.random() * 2000); // 2-4 seconds delay
+    }
+  };
+
+  const getAutoReply = (message: string, contactName: string): string => {
+    const lowerMsg = message.toLowerCase();
+    
+    if (contactName.includes('Tony')) {
+      if (lowerMsg.includes('ready') || lowerMsg.includes('delivery')) {
+        return 'All set! Equipment is staged and crew will be here at 5:30 AM to prepare.';
+      }
+      if (lowerMsg.includes('time') || lowerMsg.includes('when')) {
+        return 'Steel delivery truck should arrive exactly at 6 AM. I\'ll call you 15 min before.';
+      }
+      return 'Roger that! Everything is on schedule for tomorrow morning. 👍';
+    }
+    
+    if (contactName.includes('Electrical')) {
+      if (lowerMsg.includes('inspection') || lowerMsg.includes('ready')) {
+        return 'Perfect timing! Inspector confirmed for Wednesday 10 AM. All circuits tested and labeled.';
+      }
+      if (lowerMsg.includes('great') || lowerMsg.includes('good')) {
+        return 'Thanks! The team did excellent work. Moving to floors 4-6 next week.';
+      }
+      return 'Thanks for the update! Will coordinate with the inspector this week.';
+    }
+    
+    // Default replies
+    const replies = [
+      'Got it, thanks for the update!',
+      'Sounds good, let me know if you need anything else.',
+      'Perfect, appreciate the quick response.',
+      'Thanks! Will follow up on this.',
+      'Excellent work, keep me posted on progress.'
+    ];
+    
+    return replies[Math.floor(Math.random() * replies.length)];
   };
 
   const getInitials = (name: string) => {

@@ -8,13 +8,35 @@ import { MessageSquare, Send, Hash, Lock, Plus, Smile, Paperclip, Search } from 
 import { sampleSlackChannels } from '@/data/sampleCommunications';
 
 const SlackInterface: React.FC = () => {
-  const [channels] = useState(sampleSlackChannels);
+  const [channels, setChannels] = useState(sampleSlackChannels);
   const [selectedChannel, setSelectedChannel] = useState(sampleSlackChannels[0]);
   const [newMessage, setNewMessage] = useState('');
 
   const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-    console.log(`Sending message: ${newMessage}`);
+    if (!newMessage.trim() || !selectedChannel) return;
+
+    // Create new message
+    const message = {
+      id: Date.now().toString(),
+      user: 'david_johnson',
+      displayName: 'David Johnson (You)',
+      content: newMessage,
+      timestamp: 'Just now',
+      reactions: []
+    };
+
+    // Update the selected channel
+    const updatedChannel = {
+      ...selectedChannel,
+      messages: [...selectedChannel.messages, message],
+      lastActivity: 'Just now'
+    };
+
+    setChannels(prev => prev.map(channel => 
+      channel.id === selectedChannel.id ? updatedChannel : channel
+    ));
+    
+    setSelectedChannel(updatedChannel);
     setNewMessage('');
   };
 
