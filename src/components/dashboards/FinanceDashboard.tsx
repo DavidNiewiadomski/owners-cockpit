@@ -13,7 +13,6 @@ import {
   Receipt,
   Banknote,
   Calculator,
-  FileText,
   AlertCircle,
   CheckCircle2,
   Clock

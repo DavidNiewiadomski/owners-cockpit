@@ -5,14 +5,12 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { 
   MapPin,
-  Briefcase,
   Globe,
   DollarSign,
   Users,
-  Compass,
   Clock,
-  FileText,
   CheckCircle,
+  CheckCircle2,
   TrendingUp,
   Shield,
   AlertTriangle,
@@ -20,10 +18,9 @@ import {
   Calendar,
   Building,
   Zap,
-  BarChart3,
-  ArrowRight
+  BarChart3
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 
@@ -564,7 +561,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                 <XAxis dataKey="year" className="text-sm" />
                 <YAxis className="text-sm" tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`} />
                 <Tooltip 
-                  formatter={(value: any) => [`$${(value / 1000000).toFixed(1)}M`, '']}
+                  formatter={(value: number) => [`$${(value / 1000000).toFixed(1)}M`, '']}
                   contentStyle={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.95)', 
                     borderRadius: '12px', 
