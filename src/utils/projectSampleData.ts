@@ -1,5 +1,6 @@
 // Comprehensive project sample data for all dashboards
 // This creates realistic, detailed project data that changes when projects are switched
+// Mimics how live system would pull from backend database
 
 import { Project } from '@/hooks/useProjects';
 
@@ -12,13 +13,35 @@ export interface ProjectMetrics {
     contingencyRemaining: number;
     roi: number;
     npv: number;
+    irr: number;
     costPerSqft: number;
     marketValue: number;
+    leasingProjections: number;
     monthlySpend: Array<{
       month: string;
       budget: number;
       actual: number;
       forecast: number;
+    }>;
+    cashFlow: Array<{
+      month: string;
+      inflow: number;
+      outflow: number;
+      cumulative: number;
+    }>;
+    costBreakdown: Array<{
+      category: string;
+      amount: number;
+      percentage: number;
+    }>;
+    recentTransactions: Array<{
+      id: string;
+      date: string;
+      description: string;
+      vendor: string;
+      amount: number;
+      category: string;
+      status: string;
     }>;
   };
   construction: {
@@ -32,11 +55,39 @@ export interface ProjectMetrics {
     safetyScore: number;
     openRFIs: number;
     pendingSubmittals: number;
+    safetyIncidents: number;
+    recordableDays: number;
+    materialDeliveries: Array<{
+      material: string;
+      supplier: string;
+      date: string;
+      status: string;
+      quantity: string;
+      cost: number;
+    }>;
+    recentActivities: Array<{
+      id: string;
+      activity: string;
+      trade: string;
+      status: string;
+      date: string;
+      crew: string;
+      duration: string;
+      notes: string;
+    }>;
     dailyProgress: Array<{
       date: string;
       planned: number;
       actual: number;
       workforce: number;
+    }>;
+    tradeProgress: Array<{
+      floor: string;
+      structural: number;
+      mechanical: number;
+      electrical: number;
+      plumbing: number;
+      finishes: number;
     }>;
   };
   executive: {
@@ -177,6 +228,8 @@ export const sampleProjects: DetailedProject[] = [
         npv: 8500000,
         costPerSqft: 347,
         marketValue: 68000000,
+        irr: 22.1,
+        leasingProjections: 28800000,
         monthlySpend: [
           { month: 'Jan', budget: 2100000, actual: 1950000, forecast: 2000000 },
           { month: 'Feb', budget: 2100000, actual: 2250000, forecast: 2200000 },
@@ -184,6 +237,50 @@ export const sampleProjects: DetailedProject[] = [
           { month: 'Apr', budget: 2100000, actual: 2180000, forecast: 2150000 },
           { month: 'May', budget: 2100000, actual: 2020000, forecast: 2080000 },
           { month: 'Jun', budget: 2100000, actual: 2200000, forecast: 2180000 }
+        ],
+        cashFlow: [
+          { month: 'Jan 2024', inflow: 0, outflow: 1200000, cumulative: -1200000 },
+          { month: 'Feb 2024', inflow: 0, outflow: 1450000, cumulative: -2650000 },
+          { month: 'Mar 2024', inflow: 0, outflow: 1680000, cumulative: -4330000 },
+          { month: 'Apr 2024', inflow: 0, outflow: 1520000, cumulative: -5850000 },
+          { month: 'May 2024', inflow: 0, outflow: 1750000, cumulative: -7600000 },
+          { month: 'Jun 2024', inflow: 2400000, outflow: 1800000, cumulative: -7000000 }
+        ],
+        costBreakdown: [
+          { category: 'Construction', amount: 18500000, percentage: 77.1 },
+          { category: 'Architecture/Engineering', amount: 2050000, percentage: 8.5 },
+          { category: 'Site Work', amount: 1200000, percentage: 5.0 },
+          { category: 'Permits & Fees', amount: 850000, percentage: 3.5 },
+          { category: 'Other/Contingency', amount: 1400000, percentage: 5.9 }
+        ],
+        recentTransactions: [
+          {
+            id: '1',
+            date: '2024-06-20',
+            description: 'Steel Supplier Payment - Floors 7-9',
+            vendor: 'Metropolitan Steel Supply',
+            amount: -89450,
+            category: 'Materials',
+            status: 'paid'
+          },
+          {
+            id: '2',
+            date: '2024-06-18',
+            description: 'Monthly Progress Payment - GC',
+            vendor: 'BuildTech Solutions',
+            amount: -1850000,
+            category: 'Construction',
+            status: 'paid'
+          },
+          {
+            id: '3',
+            date: '2024-06-15',
+            description: 'Tenant Deposit - TechCorp',
+            vendor: 'TechCorp Solutions',
+            amount: 137500,
+            category: 'Pre-leasing',
+            status: 'received'
+          }
         ]
       },
       construction: {
@@ -320,6 +417,8 @@ export const sampleProjects: DetailedProject[] = [
         npv: 5200000,
         costPerSqft: 285,
         marketValue: 35000000,
+        irr: 18.5,
+        leasingProjections: 18200000,
         monthlySpend: [
           { month: 'Mar', budget: 500000, actual: 475000, forecast: 480000 },
           { month: 'Apr', budget: 600000, actual: 625000, forecast: 610000 },
@@ -327,6 +426,50 @@ export const sampleProjects: DetailedProject[] = [
           { month: 'Jun', budget: 750000, actual: 780000, forecast: 765000 },
           { month: 'Jul', budget: 850000, actual: 0, forecast: 850000 },
           { month: 'Aug', budget: 900000, actual: 0, forecast: 900000 }
+        ],
+        cashFlow: [
+          { month: 'Mar 2024', inflow: 0, outflow: 475000, cumulative: -475000 },
+          { month: 'Apr 2024', inflow: 0, outflow: 625000, cumulative: -1100000 },
+          { month: 'May 2024', inflow: 0, outflow: 540000, cumulative: -1640000 },
+          { month: 'Jun 2024', inflow: 0, outflow: 780000, cumulative: -2420000 },
+          { month: 'Jul 2024', inflow: 850000, outflow: 850000, cumulative: -2420000 },
+          { month: 'Aug 2024', inflow: 1200000, outflow: 900000, cumulative: -2120000 }
+        ],
+        costBreakdown: [
+          { category: 'Construction', amount: 22000000, percentage: 78.5 },
+          { category: 'Architecture/Engineering', amount: 2280000, percentage: 8.0 },
+          { category: 'Site Work', amount: 1425000, percentage: 5.0 },
+          { category: 'Permits & Fees', amount: 855000, percentage: 3.0 },
+          { category: 'Other/Contingency', amount: 1540000, percentage: 5.5 }
+        ],
+        recentTransactions: [
+          {
+            id: '1',
+            date: '2024-06-18',
+            description: 'Architectural Design Services Payment',
+            vendor: 'Elena Rodriguez Architecture',
+            amount: -125000,
+            category: 'Design',
+            status: 'paid'
+          },
+          {
+            id: '2',
+            date: '2024-06-10',
+            description: 'Site Survey and Soil Testing',
+            vendor: 'GeoTech Engineering',
+            amount: -45000,
+            category: 'Site Work',
+            status: 'paid'
+          },
+          {
+            id: '3',
+            date: '2024-06-05',
+            description: 'Pre-development Deposit',
+            vendor: 'City Planning Department',
+            amount: -25000,
+            category: 'Permits',
+            status: 'paid'
+          }
         ]
       },
       construction: {
@@ -462,6 +605,8 @@ export const sampleProjects: DetailedProject[] = [
         npv: 2100000,
         costPerSqft: 156,
         marketValue: 18000000,
+        irr: 12.3,
+        leasingProjections: 0,
         monthlySpend: [
           { month: 'Feb', budget: 800000, actual: 750000, forecast: 775000 },
           { month: 'Mar', budget: 1200000, actual: 1250000, forecast: 1225000 },
@@ -469,6 +614,50 @@ export const sampleProjects: DetailedProject[] = [
           { month: 'May', budget: 1600000, actual: 1620000, forecast: 1610000 },
           { month: 'Jun', budget: 1800000, actual: 1850000, forecast: 1825000 },
           { month: 'Jul', budget: 2000000, actual: 0, forecast: 2000000 }
+        ],
+        cashFlow: [
+          { month: 'Feb 2024', inflow: 12500000, outflow: 750000, cumulative: 11750000 },
+          { month: 'Mar 2024', inflow: 0, outflow: 1250000, cumulative: 10500000 },
+          { month: 'Apr 2024', inflow: 0, outflow: 1380000, cumulative: 9120000 },
+          { month: 'May 2024', inflow: 0, outflow: 1620000, cumulative: 7500000 },
+          { month: 'Jun 2024', inflow: 0, outflow: 1850000, cumulative: 5650000 },
+          { month: 'Jul 2024', inflow: 0, outflow: 2000000, cumulative: 3650000 }
+        ],
+        costBreakdown: [
+          { category: 'Structural Work', amount: 8500000, percentage: 68.0 },
+          { category: 'Engineering', amount: 1875000, percentage: 15.0 },
+          { category: 'Traffic Management', amount: 1250000, percentage: 10.0 },
+          { category: 'Materials', amount: 625000, percentage: 5.0 },
+          { category: 'Other/Contingency', amount: 250000, percentage: 2.0 }
+        ],
+        recentTransactions: [
+          {
+            id: '1',
+            date: '2024-06-19',
+            description: 'Steel Reinforcement Materials',
+            vendor: 'Industrial Steel Corp',
+            amount: -340000,
+            category: 'Materials',
+            status: 'paid'
+          },
+          {
+            id: '2',
+            date: '2024-06-15',
+            description: 'Monthly Progress Payment',
+            vendor: 'Heavy Construction LLC',
+            amount: -1550000,
+            category: 'Construction',
+            status: 'paid'
+          },
+          {
+            id: '3',
+            date: '2024-06-10',
+            description: 'Traffic Control Services',
+            vendor: 'Metro Traffic Solutions',
+            amount: -85000,
+            category: 'Traffic Management',
+            status: 'paid'
+          }
         ]
       },
       construction: {
