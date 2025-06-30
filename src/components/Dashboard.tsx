@@ -11,6 +11,7 @@ import LegalDashboard from '@/components/dashboards/LegalDashboard';
 import FinanceDashboard from '@/components/dashboards/FinanceDashboard';
 import FacilitiesDashboard from '@/components/dashboards/FacilitiesDashboard';
 import ExecutiveDashboard from '@/components/dashboards/ExecutiveDashboard';
+import PortfolioDashboard from '@/components/dashboards/PortfolioDashboard';
 
 interface DashboardProps {
   projectId: string | null; // Allow null for portfolio view
@@ -20,9 +21,10 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   const { currentRole } = useRole();
   const [activeCategory, setActiveCategory] = useState<string>('Overview');
   
-  console.log('DEBUG Dashboard - projectId:', projectId);
-  console.log('DEBUG Dashboard - currentRole:', currentRole);
-  console.log('DEBUG Dashboard - activeCategory:', activeCategory);
+  console.log('🚨 CRITICAL DEBUG - Dashboard received projectId:', projectId);
+  console.log('🚨 CRITICAL DEBUG - projectId type:', typeof projectId);
+  console.log('🚨 CRITICAL DEBUG - currentRole:', currentRole);
+  console.log('🚨 CRITICAL DEBUG - activeCategory:', activeCategory);
 
   useEffect(() => {
     const getActiveCategory = () => {
@@ -63,8 +65,10 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
   }, []);
 
   const effectiveProjectId = projectId || 'portfolio';
+  const isPortfolioView = effectiveProjectId === 'portfolio';
 
   console.log('DEBUG: About to render dashboard for activeCategory:', activeCategory);
+  console.log('DEBUG: isPortfolioView:', isPortfolioView);
 
   // ALWAYS use activeCategory to render the correct dashboard
   switch (activeCategory) {

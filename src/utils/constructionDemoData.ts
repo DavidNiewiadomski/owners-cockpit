@@ -39,6 +39,22 @@ export interface CriticalDocument {
   priority: 'high' | 'medium' | 'low';
 }
 
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: 'Open' | 'In Progress' | 'Done';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  due_date?: string;
+  assignee?: string;
+  source_type?: string;
+  source_id?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ConstructionDashboardData {
   projects: ConstructionProject[];
   portfolioSummary: {
@@ -59,6 +75,7 @@ export interface ConstructionDashboardData {
     projectsDelayed: number;
   };
   criticalDocuments: CriticalDocument[];
+  actionItems: ActionItem[];
   insightFactors: {
     mostDelayedProject: string;
     largestCostOverrun: string;
@@ -341,10 +358,135 @@ export const generateConstructionDemoData = (): ConstructionDashboardData => {
     { month: 'Jun', incidents: 1, nearMiss: 1, training: 9 }
   ];
 
+  // Generate action items
+  const actionItems: ActionItem[] = [
+    {
+      id: 'cai-001',
+      project_id: 'zeta',
+      title: 'Resolve structural beam RFI #123',
+      description: 'Clarify structural beam specifications with architect for Project Zeta foundation work',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-08',
+      assignee: 'Mike Johnson - Structural Engineer',
+      source_type: 'rfi_overdue',
+      source_id: 'rfi-123',
+      created_by: 'system',
+      created_at: '2024-09-28T09:00:00Z',
+      updated_at: '2024-09-28T09:00:00Z'
+    },
+    {
+      id: 'cai-002',
+      project_id: 'beta',
+      title: 'Expedite elevator submittal review',
+      description: 'Follow up on Submittal #567 for elevator specifications - 12 days pending approval',
+      status: 'In Progress',
+      priority: 'Critical',
+      due_date: '2024-10-05',
+      assignee: 'Sarah Chen - Project Manager',
+      source_type: 'submittal_delay',
+      source_id: 'sub-567',
+      created_by: 'system',
+      created_at: '2024-09-25T14:30:00Z',
+      updated_at: '2024-09-30T11:15:00Z'
+    },
+    {
+      id: 'cai-003',
+      project_id: 'zeta',
+      title: 'Review Change Order CO #789',
+      description: 'Assess $450K structural modifications change order for approval',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-10',
+      assignee: 'David Park - Cost Control Manager',
+      source_type: 'change_order',
+      source_id: 'co-789',
+      created_by: 'system',
+      created_at: '2024-09-24T10:45:00Z',
+      updated_at: '2024-09-24T10:45:00Z'
+    },
+    {
+      id: 'cai-004',
+      project_id: 'beta',
+      title: 'Address safety incident investigation',
+      description: 'Complete investigation report for major safety incident on Project Beta',
+      status: 'In Progress',
+      priority: 'Critical',
+      due_date: '2024-10-07',
+      assignee: 'Tom Wilson - Safety Director',
+      source_type: 'safety_incident',
+      source_id: 'si-beta-001',
+      created_by: 'system',
+      created_at: '2024-09-22T16:20:00Z',
+      updated_at: '2024-09-29T08:30:00Z'
+    },
+    {
+      id: 'cai-005',
+      project_id: 'lotus',
+      title: 'Coordinate MEP systems installation',
+      description: 'Resolve RFI #456 MEP coordination conflicts in mechanical room layout',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-10-12',
+      assignee: 'Jennifer Lee - MEP Coordinator',
+      source_type: 'rfi_coordination',
+      source_id: 'rfi-456',
+      created_by: 'system',
+      created_at: '2024-09-28T13:15:00Z',
+      updated_at: '2024-09-28T13:15:00Z'
+    },
+    {
+      id: 'cai-006',
+      project_id: 'beta',
+      title: 'Implement quality improvement plan',
+      description: 'Develop corrective action plan for 4.1% defect rate on Project Beta',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-10-15',
+      assignee: 'Lisa Rodriguez - QA Manager',
+      source_type: 'quality_metrics',
+      source_id: 'qa-beta-metrics',
+      created_by: 'system',
+      created_at: '2024-09-26T11:00:00Z',
+      updated_at: '2024-09-26T11:00:00Z'
+    },
+    {
+      id: 'cai-007',
+      project_id: 'zeta',
+      title: 'Schedule recovery plan implementation',
+      description: 'Execute schedule recovery plan to reduce 10-day delay on Project Zeta',
+      status: 'In Progress',
+      priority: 'High',
+      due_date: '2024-10-14',
+      assignee: 'Mark Thompson - Schedule Manager',
+      source_type: 'schedule_delay',
+      source_id: 'sched-zeta-recovery',
+      created_by: 'system',
+      created_at: '2024-09-20T15:45:00Z',
+      updated_at: '2024-09-27T09:20:00Z'
+    },
+    {
+      id: 'cai-008',
+      project_id: 'gamma',
+      title: 'Prepare project closeout documentation',
+      description: 'Begin closeout documentation process for Project Gamma nearing completion at 91%',
+      status: 'Open',
+      priority: 'Low',
+      due_date: '2024-10-20',
+      assignee: 'Rachel Kim - Project Coordinator',
+      source_type: 'project_closeout',
+      source_id: 'gamma-closeout',
+      created_by: 'system',
+      created_at: '2024-09-29T14:00:00Z',
+      updated_at: '2024-09-29T14:00:00Z'
+    }
+  ];
+
   return {
     projects,
     portfolioSummary,
     criticalDocuments,
+    actionItems,
     insightFactors,
     materialDeliveries,
     constructionProgress,

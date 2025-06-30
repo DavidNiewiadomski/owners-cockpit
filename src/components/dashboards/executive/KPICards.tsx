@@ -67,7 +67,7 @@ const KPICards: React.FC<KPICardsProps> = ({ projectData }) => {
           <Target className="h-4 w-4 text-purple-600" />
         </CardHeader>
         <CardContent>
-          <div className="linear-kpi-value text-purple-700">{projectData.progress}%</div>
+          <div className="linear-kpi-value text-purple-700">{projectData.progress.toFixed(2)}%</div>
           <div className="mt-2">
             <Progress value={projectData.progress} className="h-2" />
           </div>

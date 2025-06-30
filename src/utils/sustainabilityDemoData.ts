@@ -61,6 +61,22 @@ export interface SustainabilityReport {
   status: 'Available' | 'Due Soon' | 'Overdue';
 }
 
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: 'Open' | 'In Progress' | 'Done';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  due_date?: string;
+  assignee?: string;
+  source_type?: string;
+  source_id?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SustainabilityDemoData {
   energyData: EnergyData[];
   carbonData: CarbonData[];
@@ -70,6 +86,7 @@ export interface SustainabilityDemoData {
   certifications: Certification[];
   alerts: SustainabilityAlert[];
   reports: SustainabilityReport[];
+  actionItems: ActionItem[];
   kpis: {
     currentEnergyUsage: number;
     energyTarget: number;
@@ -309,6 +326,130 @@ export const generateSustainabilityDemoData = (): SustainabilityDemoData => {
   const compliantBuildings = buildingsEfficiency.filter(b => b.energyStarScore >= 75).length;
   const totalBuildings = buildingsEfficiency.length;
 
+  // Generate action items
+  const actionItems: ActionItem[] = [
+    {
+      id: 'sai-001',
+      project_id: 'building-a',
+      title: 'Implement energy efficiency upgrades in Building A',
+      description: 'Install smart HVAC controls and LED lighting to reduce 15% energy overconsumption',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-20',
+      assignee: 'Tom Green - Energy Manager',
+      source_type: 'energy_alert',
+      source_id: '1',
+      created_by: 'system',
+      created_at: '2024-09-25T08:00:00Z',
+      updated_at: '2024-09-25T08:00:00Z'
+    },
+    {
+      id: 'sai-002',
+      project_id: 'portfolio',
+      title: 'Prepare quarterly sustainability report',
+      description: 'Compile Q3 2024 sustainability metrics and prepare quarterly report for stakeholders',
+      status: 'In Progress',
+      priority: 'Medium',
+      due_date: '2024-10-14',
+      assignee: 'Sarah Wilson - Sustainability Coordinator',
+      source_type: 'report_due',
+      source_id: '2',
+      created_by: 'system',
+      created_at: '2024-09-15T10:30:00Z',
+      updated_at: '2024-09-28T14:45:00Z'
+    },
+    {
+      id: 'sai-003',
+      project_id: 'gamma',
+      title: 'Accelerate LEED Silver certification for Residential Gamma',
+      description: 'Implement missing sustainability features to improve certification progress from at-risk status',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-11-15',
+      assignee: 'Lisa Martinez - LEED Coordinator',
+      source_type: 'certification_risk',
+      source_id: 'gamma-leed',
+      created_by: 'system',
+      created_at: '2024-09-20T09:15:00Z',
+      updated_at: '2024-09-20T09:15:00Z'
+    },
+    {
+      id: 'sai-004',
+      project_id: 'building-b',
+      title: 'Schedule annual emissions audit for Building B',
+      description: 'Coordinate with third-party auditor for required annual carbon emissions audit',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-10-30',
+      assignee: 'Mike Johnson - Facilities Manager',
+      source_type: 'audit_reminder',
+      source_id: '4',
+      created_by: 'system',
+      created_at: '2024-09-22T11:00:00Z',
+      updated_at: '2024-09-22T11:00:00Z'
+    },
+    {
+      id: 'sai-005',
+      project_id: 'portfolio',
+      title: 'Develop carbon reduction strategy',
+      description: 'Create action plan to address 7% carbon emissions overage and align with 2030 targets',
+      status: 'Open',
+      priority: 'Critical',
+      due_date: '2024-10-15',
+      assignee: 'Jennifer Chen - Sustainability Director',
+      source_type: 'emissions_critical',
+      source_id: '5',
+      created_by: 'system',
+      created_at: '2024-09-18T16:20:00Z',
+      updated_at: '2024-09-18T16:20:00Z'
+    },
+    {
+      id: 'sai-006',
+      project_id: 'alpha',
+      title: 'Finalize LEED Gold documentation for Project Alpha',
+      description: 'Complete remaining 12 points worth of documentation for LEED Gold certification',
+      status: 'In Progress',
+      priority: 'Medium',
+      due_date: '2024-11-01',
+      assignee: 'David Park - Project Manager',
+      source_type: 'certification_progress',
+      source_id: 'alpha-leed',
+      created_by: 'system',
+      created_at: '2024-09-10T13:30:00Z',
+      updated_at: '2024-09-25T10:15:00Z'
+    },
+    {
+      id: 'sai-007',
+      project_id: 'portfolio',
+      title: 'Expand renewable energy capacity',
+      description: 'Plan additional solar installations to reach 25% renewable energy target by year-end',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-12-31',
+      assignee: 'Rachel Kim - Energy Development',
+      source_type: 'renewable_target',
+      source_id: 'renewable-expansion',
+      created_by: 'system',
+      created_at: '2024-09-05T14:00:00Z',
+      updated_at: '2024-09-05T14:00:00Z'
+    },
+    {
+      id: 'sai-008',
+      project_id: 'beta',
+      title: 'Improve construction waste diversion rate',
+      description: 'Implement enhanced recycling procedures to increase Project Beta waste diversion from 72% to 80%',
+      status: 'Open',
+      priority: 'Low',
+      due_date: '2024-11-30',
+      assignee: 'Mark Thompson - Site Supervisor',
+      source_type: 'waste_improvement',
+      source_id: 'beta-waste',
+      created_by: 'system',
+      created_at: '2024-09-12T11:45:00Z',
+      updated_at: '2024-09-12T11:45:00Z'
+    }
+  ];
+
   // Generate insights
   const insights = {
     summary: `Overall energy consumption is ${energyDeviationPercent}% above target (${currentEnergyUsage} MWh vs ${energyTarget} MWh goal), primarily due to increased cooling demands in Building A. Renewable energy contribution has increased to ${renewablePercentage}% after new solar panel installations. Carbon emissions are ${emissionsDeviationPercent}% above the 2030 reduction trajectory. Water usage is ${Math.abs(waterUsage.changePercent)}% below last year, and average waste recycling across all facilities is ${totalRecyclingRate}%. ${compliantBuildings}/${totalBuildings} buildings meet Energy Star compliance standards.`,
@@ -337,6 +478,7 @@ export const generateSustainabilityDemoData = (): SustainabilityDemoData => {
     certifications,
     alerts,
     reports,
+    actionItems,
     kpis: {
       currentEnergyUsage,
       energyTarget,

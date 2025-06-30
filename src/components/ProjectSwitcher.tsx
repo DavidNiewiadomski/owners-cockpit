@@ -35,6 +35,10 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
   const { data: projects = [], isLoading } = useProjects();
   const { access } = useRoleBasedAccess();
 
+  console.log('🚨 ProjectSwitcher - projects loaded:', projects);
+  console.log('🚨 ProjectSwitcher - isLoading:', isLoading);
+  console.log('🚨 ProjectSwitcher - selectedProject:', selectedProject);
+
   const currentProject = projects.find(p => p.id === selectedProject);
 
   const handleProjectSelect = (projectId: string | null) => {
@@ -50,57 +54,62 @@ const ProjectSwitcher: React.FC<ProjectSwitcherProps> = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-[300px] justify-between"
+            className="w-[300px] justify-between text-high-contrast border-2 border-charter-navy/20 dark:border-white/20 hover:border-charter-navy/40 dark:hover:border-white/40 bg-white dark:bg-card font-medium"
           >
-            {currentProject ? currentProject.name : "Select project..."}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <span className="text-charter-navy dark:text-white font-medium">
+              {currentProject ? currentProject.name : "Select project..."}
+            </span>
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-70" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[300px] p-0">
-          <Command>
-            <CommandInput placeholder="Search projects..." />
+        <PopoverContent className="w-[300px] p-0 bg-white dark:bg-card border-2 border-charter-navy/20 dark:border-white/20">
+          <Command className="bg-white dark:bg-card">
+            <CommandInput 
+              placeholder="Search projects..." 
+              className="text-charter-navy dark:text-white placeholder:text-charter-navy/60 dark:placeholder:text-white/60"
+            />
             <CommandList>
-              <CommandEmpty>
+              <CommandEmpty className="text-charter-navy dark:text-white py-4 text-center">
                 {isLoading ? "Loading projects..." : "No projects found."}
               </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   onSelect={() => handleProjectSelect(null)}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-charter-navy dark:text-white hover:bg-charter-navy/10 dark:hover:bg-white/10 data-[selected]:bg-charter-navy/10 dark:data-[selected]:bg-white/10"
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
+                      "mr-2 h-4 w-4 text-charter-navy dark:text-white",
                       !selectedProject ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  Portfolio View
+                  <span className="font-medium">Portfolio View</span>
                 </CommandItem>
-                <CommandSeparator />
+                <CommandSeparator className="bg-charter-navy/20 dark:bg-white/20" />
                 {projects.map((project) => (
                   <CommandItem
                     key={project.id}
                     value={project.name}
                     onSelect={() => handleProjectSelect(project.id)}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-charter-navy dark:text-white hover:bg-charter-navy/10 dark:hover:bg-white/10 data-[selected]:bg-charter-navy/10 dark:data-[selected]:bg-white/10"
                   >
                     <Check
                       className={cn(
-                        "mr-2 h-4 w-4",
+                        "mr-2 h-4 w-4 text-charter-navy dark:text-white",
                         selectedProject === project.id ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    {project.name}
+                    <span className="font-medium">{project.name}</span>
                   </CommandItem>
                 ))}
               </CommandGroup>
               {access.canCreateProjects && (
                 <>
-                  <CommandSeparator />
+                  <CommandSeparator className="bg-charter-navy/20 dark:bg-white/20" />
                   <CommandGroup>
-                    <CommandItem className="cursor-pointer">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Project
+                    <CommandItem className="cursor-pointer text-charter-navy dark:text-white hover:bg-charter-navy/10 dark:hover:bg-white/10 data-[selected]:bg-charter-navy/10 dark:data-[selected]:bg-white/10">
+                      <Plus className="mr-2 h-4 w-4 text-charter-navy dark:text-white" />
+                      <span className="font-medium">Create Project</span>
                     </CommandItem>
                   </CommandGroup>
                 </>

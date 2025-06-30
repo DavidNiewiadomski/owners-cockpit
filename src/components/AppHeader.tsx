@@ -89,7 +89,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 
   return (
     <MotionWrapper animation="slideUp" className="sticky top-0 z-50">
-      <header className="border-b border-border/40 glass backdrop-blur-sm">
+      <header className="border-b border-border/40 bg-[#1A2B49] text-white backdrop-blur-sm dark:glass light:bg-[#1A2B49] light:text-white">
         {/* Main Header Row */}
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">

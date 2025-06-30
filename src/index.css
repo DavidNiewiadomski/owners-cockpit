@@ -59,46 +59,67 @@
   }
 
   .light {
-    /* Light theme - Clean Linear.app inspired */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
-
-    --shadow-light: 0 0% 100%;
-    --shadow-dark: 210 20% 92%;
+    /* Light theme - Charter AI branded heritage palette 
+     * Color mappings for cohesive system branding:
+     * - Ivory White (#F7F3ED) - HSL: 32 36% 95% - Primary background
+     * - Tumbled Marble (#D9D6D0) - HSL: 29 13% 84% - Subtle surfaces
+     * - Heritage Navy (#1A2B49) - HSL: 215 46% 20% - Primary text
+     * - Verdigris Accent (#7C9C95) - HSL: 179 16% 55% - Secondary brand
+     * - Modern Orange (#E98B2A) - HSL: 21 67% 54% - Primary brand
+     */
     
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 217 91% 60%;
+    /* Main background: Warm ivory for sophisticated feel */
+    --background: 32 36% 95%;
+    /* Primary text: Deep navy for strong contrast and readability */
+    --foreground: 215 46% 15%;
+
+    /* Cards: Clean white for Charter AI look */
+    --card: 0 0% 100%;
+    --card-foreground: 215 46% 20%;
+
+    /* Popovers: Clean white for focus */
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 46% 20%;
+
+    /* Primary: Charter orange for key actions */
+    --primary: 21 67% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Sophisticated verdigris for supporting elements */
+    --secondary: 179 16% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted: Marble for subtle backgrounds */
+    --muted: 29 13% 84%;
+    --muted-foreground: 215 46% 30%;
+
+    /* Accent: Verdigris for branded highlights */
+    --accent: 179 16% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Destructive: Warm red that fits the palette */
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders: Subtle marble for clean separation */
+    --border: 29 13% 78%;
+    --input: 29 13% 88%;
+    /* Focus ring: Orange for branded interaction */
+    --ring: 21 67% 54%;
+
+    /* Shadows: Warm tones for depth */
+    --shadow-light: 32 36% 98%;
+    --shadow-dark: 29 13% 75%;
+    
+    /* Sidebar: Cohesive with main interface */
+    --sidebar-background: 29 13% 90%;
+    --sidebar-foreground: 215 46% 20%;
+    --sidebar-primary: 21 67% 54%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 179 16% 55%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 29 13% 78%;
+    --sidebar-ring: 21 67% 54%;
   }
 }
 
@@ -246,5 +267,41 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* High contrast utilities for Charter AI readability */
+  .text-high-contrast {
+    @apply text-[#1A2B49] dark:text-white;
+    font-weight: 500;
+  }
+  
+  .text-body-high-contrast {
+    @apply text-[#0F1B2F] dark:text-gray-100;
+    font-weight: 400;
+  }
+  
+  .text-muted-high-contrast {
+    @apply text-[#1A2B49]/80 dark:text-gray-300;
+    font-weight: 400;
+  }
+  
+  .bg-charter-ivory {
+    background-color: #F7F3ED;
+  }
+  
+  .bg-charter-navy {
+    background-color: #1A2B49;
+  }
+  
+  .bg-charter-white {
+    background-color: #FFFFFF;
+  }
+  
+  .text-charter-navy {
+    color: #1A2B49;
+  }
+  
+  .text-charter-white {
+    color: #FFFFFF;
   }
 }

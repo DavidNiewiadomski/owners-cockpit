@@ -27,14 +27,14 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   const riskColor = riskLevel === 'low' ? 'text-green-600' : riskLevel === 'medium' ? 'text-yellow-600' : 'text-red-600';
   
   const keyMetrics = [
-    { label: 'Progress', value: `${projectData.progress}%`, status: 'normal' },
+    { label: 'Progress', value: `${projectData.progress.toFixed(2)}%`, status: 'normal' },
     { label: 'Budget', value: `${budgetUtilization}%`, status: budgetUtilizationNum > 95 ? 'warning' : 'normal' },
     { label: 'ROI', value: `${projectData.roi}%`, status: 'positive' },
     { label: 'Risk', value: `${riskLevel}`, status: riskLevel === 'high' ? 'warning' : 'normal' }
   ];
 
   const insights = [
-    `Project ${projectData.progress >= 75 ? 'on track' : 'needs attention'} with ${projectData.progress}% completion`,
+    `Project ${projectData.progress >= 75 ? 'on track' : 'needs attention'} with ${projectData.progress.toFixed(2)}% completion`,
     `Budget utilization at ${budgetUtilization}% ${budgetUtilizationNum > 100 ? 'over target' : 'within limits'}`,
     `ROI projection of ${projectData.roi}% exceeds 12% baseline by ${(projectData.roi - 12).toFixed(1)}%`,
     `${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} risk profile requires ${riskLevel === 'high' ? 'immediate' : 'standard'} monitoring`
@@ -48,10 +48,10 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   ];
 
   return (
-    <Card className="bg-[#0D1117] border-slate-800">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
             <Brain className="w-5 h-5 text-blue-400" />
             AI Strategic Insights
           </CardTitle>
@@ -62,24 +62,24 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
           {keyMetrics.map((metric, index) => (
-            <div key={index} className="bg-[#0D1117] rounded-lg p-4 text-center">
+            <div key={index} className="bg-card rounded-lg p-4 text-center">
               <div className={`text-2xl font-bold ${
                 metric.status === 'positive' ? 'text-green-400' : 
                 metric.status === 'warning' ? 'text-yellow-400' : 
-                'text-white'
+                'text-foreground'
               }`}>
                 {metric.value}
               </div>
-              <div className="text-sm text-slate-400">{metric.label}</div>
+              <div className="text-sm text-muted-foreground">{metric.label}</div>
             </div>
           ))}
         </div>
 
         {/* Executive Summary */}
-        <div className="bg-[#0D1117]/50 rounded-lg p-4">
-          <p className="text-slate-300 text-sm">
+        <div className="bg-card/50 rounded-lg p-4">
+          <p className="text-foreground text-sm">
             Strategic portfolio analysis shows <strong>{projectData.name}</strong> maintaining 
-            <strong>{projectData.progress}%</strong> completion rate with 
+            <strong>{projectData.progress.toFixed(2)}%</strong> completion rate with
             <strong>${(projectData.spentBudget / 1000000).toFixed(1)}M</strong> of 
             <strong>${(projectData.totalBudget / 1000000).toFixed(1)}M</strong> budget utilized. 
             ROI projection at <strong>{projectData.roi}%</strong> exceeds market expectations 
@@ -91,9 +91,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <span className="text-sm font-medium text-white">Key Insights</span>
+              <span className="text-sm font-medium text-foreground">Key Insights</span>
             </div>
-            <ul className="space-y-2 text-sm text-slate-300">
+            <ul className="space-y-2 text-sm text-foreground">
               {insights.slice(0, 3).map((insight, index) => (
                 <li key={index}>• {insight}</li>
               ))}
@@ -102,9 +102,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm font-medium text-white">Recommendations</span>
+              <span className="text-sm font-medium text-foreground">Recommendations</span>
             </div>
-            <ul className="space-y-2 text-sm text-slate-300">
+            <ul className="space-y-2 text-sm text-foreground">
               {recommendations.slice(0, 3).map((rec, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">→</span>

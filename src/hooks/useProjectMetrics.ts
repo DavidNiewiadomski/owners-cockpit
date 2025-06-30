@@ -159,22 +159,34 @@ export function useFinancialMetrics(projectId: string | null) {
   return useQuery({
     queryKey: ['financial-metrics', projectId],
     queryFn: async (): Promise<FinancialMetrics | null> => {
-      if (!projectId) return null;
-      
-      const { data, error } = await supabase
-        .from('project_financial_metrics')
-        .select('*')
-        .eq('project_id', projectId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching financial metrics:', error);
+      console.log('💰 FETCHING FINANCIAL METRICS for project:', projectId);
+      if (!projectId) {
+        console.log('💰 No project ID provided');
         return null;
       }
+      
+      try {
+        const { data, error } = await supabase
+          .from('project_financial_metrics')
+          .select('*')
+          .eq('project_id', projectId)
+          .single();
 
-      return data;
+        if (error) {
+          console.error('💰 ERROR fetching financial metrics:', error);
+          return null;
+        }
+
+        console.log('💰 SUCCESS - Financial metrics:', data);
+        return data;
+      } catch (err) {
+        console.error('💰 UNEXPECTED ERROR:', err);
+        return null;
+      }
     },
     enabled: !!projectId,
+    retry: 1,
+    staleTime: 0,
   });
 }
 
@@ -582,6 +594,263 @@ export function useProjectTeam(projectId: string | null) {
       }
 
       return data;
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Legal and Insurance specific interfaces
+export interface InsurancePolicy {
+  id: string;
+  project_id: string;
+  policy_type: string;
+  policy_number: string;
+  insurance_company: string;
+  policy_holder: string;
+  coverage_amount: number;
+  deductible: number;
+  premium_amount: number;
+  effective_date: string;
+  expiration_date: string;
+  status: string;
+  certificate_provided: boolean;
+  auto_renewal: boolean;
+  notes?: string;
+}
+
+export interface InsuranceClaim {
+  id: string;
+  project_id: string;
+  policy_id?: string;
+  claim_number: string;
+  claim_type: string;
+  incident_date: string;
+  reported_date: string;
+  claim_amount?: number;
+  settled_amount?: number;
+  status: string;
+  description: string;
+  adjuster_name?: string;
+  adjuster_contact?: string;
+  estimated_resolution_date?: string;
+}
+
+export interface LegalContract {
+  id: string;
+  project_id: string;
+  contract_type: string;
+  contract_number?: string;
+  title: string;
+  counterparty: string;
+  contract_value?: number;
+  start_date: string;
+  end_date?: string;
+  execution_date: string;
+  status: string;
+  renewal_terms?: string;
+  key_obligations?: string;
+  termination_clauses?: string;
+  change_order_count: number;
+  total_change_orders: number;
+  performance_bond_required: boolean;
+  performance_bond_amount?: number;
+  retention_percentage: number;
+  payment_terms?: string;
+  governing_law?: string;
+  dispute_resolution?: string;
+}
+
+export interface LegalDispute {
+  id: string;
+  project_id: string;
+  contract_id?: string;
+  dispute_type: string;
+  dispute_number?: string;
+  counterparty: string;
+  amount_in_dispute?: number;
+  status: string;
+  filed_date: string;
+  description: string;
+  legal_counsel?: string;
+  estimated_resolution_date?: string;
+  resolution_method?: string;
+  resolution_amount?: number;
+  resolution_date?: string;
+}
+
+export interface PermitCompliance {
+  id: string;
+  project_id: string;
+  permit_type: string;
+  permit_number?: string;
+  issuing_authority: string;
+  application_date?: string;
+  issued_date?: string;
+  expiration_date?: string;
+  status: string;
+  cost?: number;
+  requirements?: string;
+  conditions?: string;
+  inspection_required: boolean;
+  inspection_date?: string;
+  inspection_status?: string;
+}
+
+export interface LegalRiskAssessment {
+  id: string;
+  project_id: string;
+  risk_category: string;
+  risk_description: string;
+  probability: string;
+  impact: string;
+  risk_score: number;
+  mitigation_strategy?: string;
+  responsible_party?: string;
+  target_date?: string;
+  status: string;
+  last_review_date?: string;
+  next_review_date?: string;
+}
+
+// Hook for insurance policies
+export function useInsurancePolicies(projectId: string | null) {
+  return useQuery({
+    queryKey: ['insurance-policies', projectId],
+    queryFn: async (): Promise<InsurancePolicy[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('insurance_policies')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('policy_type');
+
+      if (error) {
+        console.error('Error fetching insurance policies:', error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Hook for insurance claims
+export function useInsuranceClaims(projectId: string | null) {
+  return useQuery({
+    queryKey: ['insurance-claims', projectId],
+    queryFn: async (): Promise<InsuranceClaim[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('insurance_claims')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('reported_date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching insurance claims:', error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Hook for legal contracts
+export function useLegalContracts(projectId: string | null) {
+  return useQuery({
+    queryKey: ['legal-contracts', projectId],
+    queryFn: async (): Promise<LegalContract[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('legal_contracts')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('execution_date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching legal contracts:', error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Hook for legal disputes
+export function useLegalDisputes(projectId: string | null) {
+  return useQuery({
+    queryKey: ['legal-disputes', projectId],
+    queryFn: async (): Promise<LegalDispute[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('legal_disputes')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('filed_date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching legal disputes:', error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Hook for permit compliance
+export function usePermitCompliance(projectId: string | null) {
+  return useQuery({
+    queryKey: ['permit-compliance', projectId],
+    queryFn: async (): Promise<PermitCompliance[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('permit_compliance')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('application_date', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching permit compliance:', error);
+        return [];
+      }
+
+      return data || [];
+    },
+    enabled: !!projectId,
+  });
+}
+
+// Hook for legal risk assessments
+export function useLegalRiskAssessments(projectId: string | null) {
+  return useQuery({
+    queryKey: ['legal-risk-assessments', projectId],
+    queryFn: async (): Promise<LegalRiskAssessment[]> => {
+      if (!projectId) return [];
+      
+      const { data, error } = await supabase
+        .from('legal_risk_assessments')
+        .select('*')
+        .eq('project_id', projectId)
+        .order('risk_score', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching legal risk assessments:', error);
+        return [];
+      }
+
+      return data || [];
     },
     enabled: !!projectId,
   });

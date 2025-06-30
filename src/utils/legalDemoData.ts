@@ -55,12 +55,29 @@ export interface LegalAlert {
   daysRemaining: number;
 }
 
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: 'Open' | 'In Progress' | 'Done';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  due_date?: string;
+  assignee?: string;
+  source_type?: string;
+  source_id?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface LegalDemoData {
   contracts: LegalContract[];
   insuranceStatuses: InsuranceStatus[];
   claims: LegalClaim[];
   changeOrders: ChangeOrder[];
   alerts: LegalAlert[];
+  actionItems: ActionItem[];
   summary: {
     totalContracts: number;
     activeContracts: number;
@@ -319,6 +336,100 @@ export const generateLegalDemoData = (): LegalDemoData => {
     complianceScore
   };
 
+  // Generate action items
+  const actionItems: ActionItem[] = [
+    {
+      id: 'lai-001',
+      project_id: 'proj-001',
+      title: 'Renew ACME Concrete insurance policy',
+      description: 'Follow up with ACME Concrete to renew General Liability policy expiring in 22 days',
+      status: 'Open',
+      priority: 'High',
+      due_date: format(addDays(today, 15), 'yyyy-MM-dd'),
+      assignee: 'Legal Team - Insurance Coordinator',
+      source_type: 'insurance_expiry',
+      source_id: 'A003',
+      created_by: 'system',
+      created_at: format(subDays(today, 2), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(subDays(today, 2), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    },
+    {
+      id: 'lai-002',
+      project_id: 'proj-002',
+      title: 'Obtain lien release for Tower Alpha',
+      description: 'Secure final lien release documentation from ABC Construction Corp for Tower Alpha project payment',
+      status: 'In Progress',
+      priority: 'Critical',
+      due_date: format(addDays(today, 7), 'yyyy-MM-dd'),
+      assignee: 'Sarah Martinez - Legal Counsel',
+      source_type: 'lien_release',
+      source_id: 'A002',
+      created_by: 'system',
+      created_at: format(subDays(today, 5), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(today, "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    },
+    {
+      id: 'lai-003',
+      project_id: 'proj-003',
+      title: 'Execute Change Order CO-002',
+      description: 'Obtain signature on pending Change Order CO-002 for electrical system upgrade on Project Beta',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: format(addDays(today, 14), 'yyyy-MM-dd'),
+      assignee: 'Tom Wilson - Contracts Manager',
+      source_type: 'change_order',
+      source_id: 'CO002',
+      created_by: 'system',
+      created_at: format(subDays(today, 3), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(subDays(today, 1), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    },
+    {
+      id: 'lai-004',
+      project_id: 'proj-001',
+      title: 'Review delay claim from ABC Construction',
+      description: 'Evaluate weather delay claim for $200,000 from ABC Construction Corp and prepare response',
+      status: 'In Progress',
+      priority: 'High',
+      due_date: format(addDays(today, 10), 'yyyy-MM-dd'),
+      assignee: 'Jennifer Park - Claims Specialist',
+      source_type: 'legal_claim',
+      source_id: 'CL001',
+      created_by: 'system',
+      created_at: format(subDays(today, 7), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(subDays(today, 2), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    },
+    {
+      id: 'lai-005',
+      project_id: 'proj-003',
+      title: 'Prepare contract renewal for Design Partners',
+      description: 'Draft renewal agreement for Design Partners LLC architect contract ending in 45 days',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: format(addDays(today, 30), 'yyyy-MM-dd'),
+      assignee: 'Michael Chen - Contract Administrator',
+      source_type: 'contract_expiry',
+      source_id: 'A001',
+      created_by: 'system',
+      created_at: format(subDays(today, 1), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(subDays(today, 1), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    },
+    {
+      id: 'lai-006',
+      project_id: 'proj-001',
+      title: 'Audit SecureGuard contract performance',
+      description: 'Review SecureGuard Inc over-budget status and assess contract terms for future projects',
+      status: 'Open',
+      priority: 'Low',
+      due_date: format(addDays(today, 21), 'yyyy-MM-dd'),
+      assignee: 'Legal Team - Contract Review',
+      source_type: 'budget_variance',
+      source_id: 'C004',
+      created_by: 'system',
+      created_at: format(subDays(today, 3), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      updated_at: format(subDays(today, 3), "yyyy-MM-dd'T'HH:mm:ss'Z'")
+    }
+  ];
+
   const insights = {
     contractCompliance: `All contracts are on track with no major issues. ${contractsEndingSoon} contract${contractsEndingSoon !== 1 ? 's' : ''} ending within 60 days - start reviewing close-out terms and renewal options.`,
     insuranceCompliance: `Insurance compliance is strong with ${compliantCOIs}/${totalCOIs} contractor COIs current. ${insuranceStatuses.filter(i => i.status === 'expiring').length} insurance policies expiring within 35 days (reminders sent). Overall risk exposure is minimal.`,
@@ -334,6 +445,7 @@ export const generateLegalDemoData = (): LegalDemoData => {
     claims,
     changeOrders,
     alerts,
+    actionItems,
     summary,
     insights
   };

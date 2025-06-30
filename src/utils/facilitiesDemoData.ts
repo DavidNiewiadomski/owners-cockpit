@@ -138,12 +138,29 @@ export interface ComplianceItem {
   }>;
 }
 
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: 'Open' | 'In Progress' | 'Done';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  due_date?: string;
+  assignee?: string;
+  source_type?: string;
+  source_id?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface FacilitiesDashboardData {
   occupancy: BuildingOccupancy[];
   workOrders: WorkOrderSummary;
   energy: EnergyMetrics;
   sensors: BuildingSensors[];
   compliance: ComplianceItem[];
+  actionItems: ActionItem[];
   portfolioSummary: {
     totalBuildings: number;
     totalUnits: number;
@@ -467,6 +484,130 @@ export const generateFacilitiesDemoData = (): FacilitiesDashboardData => {
     lowestOccupancyBuilding: lowestOccupancyBuilding.buildingName
   };
 
+  // Generate action items
+  const actionItems: ActionItem[] = [
+    {
+      id: 'fai-001',
+      project_id: 'bldg-002',
+      title: 'Complete overdue elevator inspection',
+      description: 'Schedule and complete annual elevator inspection for Commerce Center B - 7 days overdue',
+      status: 'Open',
+      priority: 'Critical',
+      due_date: getRandomDate(3),
+      assignee: 'Mike Johnson - Facilities Manager',
+      source_type: 'compliance_overdue',
+      source_id: 'comp-002',
+      created_by: 'system',
+      created_at: '2024-09-23T08:00:00Z',
+      updated_at: '2024-09-23T08:00:00Z'
+    },
+    {
+      id: 'fai-002',
+      project_id: 'bldg-001',
+      title: 'Address overdue HVAC system overhaul',
+      description: 'Complete critical HVAC maintenance for Plaza Tower A - work order WO-007 is 12 days overdue',
+      status: 'In Progress',
+      priority: 'Critical',
+      due_date: getRandomDate(2),
+      assignee: 'John Smith - HVAC Technician',
+      source_type: 'work_order_overdue',
+      source_id: 'WO-007',
+      created_by: 'system',
+      created_at: '2024-09-18T10:30:00Z',
+      updated_at: '2024-09-30T14:20:00Z'
+    },
+    {
+      id: 'fai-003',
+      project_id: 'bldg-002',
+      title: 'Improve humidity control in Commerce Center B',
+      description: 'Address low humidity levels (38% vs 50% optimal) detected by building sensors',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: getRandomDate(14),
+      assignee: 'Sarah Davis - Building Engineer',
+      source_type: 'sensor_alert',
+      source_id: 'bldg-002-humidity',
+      created_by: 'system',
+      created_at: '2024-09-26T11:15:00Z',
+      updated_at: '2024-09-26T11:15:00Z'
+    },
+    {
+      id: 'fai-004',
+      project_id: 'bldg-002',
+      title: 'Develop leasing strategy for vacant units',
+      description: 'Create marketing plan for 4 vacant units in Commerce Center B (88% occupancy)',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: getRandomDate(21),
+      assignee: 'Lisa Brown - Leasing Manager',
+      source_type: 'occupancy_low',
+      source_id: 'bldg-002-occupancy',
+      created_by: 'system',
+      created_at: '2024-09-24T09:45:00Z',
+      updated_at: '2024-09-24T09:45:00Z'
+    },
+    {
+      id: 'fai-005',
+      project_id: 'bldg-001',
+      title: 'Schedule fire safety inspection',
+      description: 'Coordinate annual fire safety inspection for Plaza Tower A due in 22 days',
+      status: 'Open',
+      priority: 'High',
+      due_date: getRandomDate(15),
+      assignee: 'David Lee - Safety Coordinator',
+      source_type: 'compliance_due_soon',
+      source_id: 'comp-001',
+      created_by: 'system',
+      created_at: '2024-09-25T13:00:00Z',
+      updated_at: '2024-09-25T13:00:00Z'
+    },
+    {
+      id: 'fai-006',
+      project_id: 'bldg-002',
+      title: 'Prepare lease renewal negotiations',
+      description: 'Begin renewal discussions with Marketing Pro LLC - lease expires in 15 days',
+      status: 'Open',
+      priority: 'High',
+      due_date: getRandomDate(7),
+      assignee: 'Tom Wilson - Property Manager',
+      source_type: 'lease_expiring',
+      source_id: 'lease-marketing-pro',
+      created_by: 'system',
+      created_at: '2024-09-20T14:30:00Z',
+      updated_at: '2024-09-20T14:30:00Z'
+    },
+    {
+      id: 'fai-007',
+      project_id: 'bldg-001',
+      title: 'Investigate energy usage increase',
+      description: 'Analyze and address ${Math.abs(energy.electricity.percentChange).toFixed(1)}% energy usage increase in Plaza Tower A',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: getRandomDate(18),
+      assignee: 'Jennifer Park - Energy Manager',
+      source_type: 'energy_variance',
+      source_id: 'energy-increase-alert',
+      created_by: 'system',
+      created_at: '2024-09-27T10:00:00Z',
+      updated_at: '2024-09-27T10:00:00Z'
+    },
+    {
+      id: 'fai-008',
+      project_id: 'bldg-003',
+      title: 'Conduct quarterly tenant satisfaction survey',
+      description: 'Deploy quarterly tenant satisfaction survey for Executive Suites C',
+      status: 'Open',
+      priority: 'Low',
+      due_date: getRandomDate(30),
+      assignee: 'Rachel Kim - Tenant Relations',
+      source_type: 'routine_survey',
+      source_id: 'q3-tenant-survey',
+      created_by: 'system',
+      created_at: '2024-09-15T16:45:00Z',
+      updated_at: '2024-09-15T16:45:00Z'
+    }
+  ];
+
   // Generate AI insights
   const insights = {
     summary: `Portfolio operating at ${overallOccupancy}% occupancy across ${buildings.length} buildings (${totalOccupied}/${totalUnits} units occupied). ${workOrders.open} open work orders with ${workOrders.overdue} overdue. Energy usage is ${energy.electricity.percentChange.toFixed(1)}% ${energy.electricity.percentChange > 0 ? 'above' : 'below'} last month at ${energy.electricity.currentMonth.toLocaleString()} kWh. ${complianceIssues} compliance items need attention.`,
@@ -497,6 +638,7 @@ export const generateFacilitiesDemoData = (): FacilitiesDashboardData => {
     energy,
     sensors,
     compliance,
+    actionItems,
     portfolioSummary,
     insights
   };

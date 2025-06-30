@@ -125,11 +125,6 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
                 );
               })}
             </TabsList>
-            
-            {/* Close button */}
-            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
-              <X className="h-4 w-4" />
-            </Button>
           </div>
 
           {/* App content - no background wrapper */}

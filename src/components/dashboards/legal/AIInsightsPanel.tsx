@@ -36,10 +36,10 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
   ];
 
   return (
-    <Card className="bg-[#0D1117] border-slate-800">
+    <Card className="bg-card border-border">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
             <Brain className="w-5 h-5 text-blue-400" />
             AI Legal Insights
           </CardTitle>
@@ -50,22 +50,22 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-4 gap-4">
           {keyMetrics.map((metric, index) => (
-            <div key={index} className="bg-[#0D1117] rounded-lg p-4 text-center">
+            <div key={index} className="bg-card rounded-lg p-4 text-center">
               <div className={`text-2xl font-bold ${
                 metric.status === 'positive' ? 'text-green-400' : 
                 metric.status === 'warning' ? 'text-yellow-400' : 
-                'text-white'
+                'text-foreground'
               }`}>
                 {metric.value}
               </div>
-              <div className="text-sm text-slate-400">{metric.label}</div>
+              <div className="text-sm text-muted-foreground">{metric.label}</div>
             </div>
           ))}
         </div>
 
         {/* Executive Summary */}
-        <div className="bg-[#0D1117]/50 rounded-lg p-4">
-          <p className="text-slate-300 text-sm">
+        <div className="bg-card/50 rounded-lg p-4">
+          <p className="text-foreground text-sm">
             Portfolio includes <strong>{summary.totalContracts}</strong> contracts with total value of <strong>${(summary.totalContractValue / 1000000).toFixed(1)}M</strong>. 
             Compliance score at <strong>{summary.complianceScore}%</strong> with <strong>{summary.activeClaims}</strong> active claims. 
             <strong>{summary.contractsEndingSoon}</strong> contracts ending within 60 days requiring attention.
@@ -77,9 +77,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <span className="text-sm font-medium text-white">Key Insights</span>
+              <span className="text-sm font-medium text-foreground">Key Insights</span>
             </div>
-            <ul className="space-y-2 text-sm text-slate-300">
+            <ul className="space-y-2 text-sm text-foreground">
               <li>• {insights.contractCompliance}</li>
               <li>• {insights.insuranceCompliance}</li>
               <li>• {insights.claimsStatus}</li>
@@ -88,9 +88,9 @@ const AIInsightsPanel: React.FC<AIInsightsPanelProps> = ({ projectData }) => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm font-medium text-white">Recommendations</span>
+              <span className="text-sm font-medium text-foreground">Recommendations</span>
             </div>
-            <ul className="space-y-2 text-sm text-slate-300">
+            <ul className="space-y-2 text-sm text-foreground">
               <li className="flex items-start gap-2">
                 <span className="text-green-400 mt-0.5">→</span>
                 <span>Monitor upcoming contract expirations and prepare renewal strategies</span>

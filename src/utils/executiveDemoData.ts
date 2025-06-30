@@ -61,18 +61,35 @@ export interface RiskMetric {
   description: string;
 }
 
+export interface ActionItem {
+  id: string;
+  project_id: string;
+  title: string;
+  description?: string;
+  status: 'Open' | 'In Progress' | 'Done';
+  priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  due_date?: string;
+  assignee?: string;
+  source_type?: string;
+  source_id?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ExecutiveDashboardData {
   projects: ProjectData[];
   portfolioKPIs: PortfolioKPIs;
   pendingApprovals: PendingApproval[];
   recentReports: RecentReport[];
   riskMetrics: RiskMetric[];
-  monthlyTrend: Array<{
+  monthlyTrend: Array<{    
     month: string;
     planned: number;
     actual: number;
     variance: number;
   }>;
+  actionItems: ActionItem[];
   insights: {
     summary: string;
     keyPoints: string[];
@@ -402,6 +419,130 @@ export function generateExecutiveDemoData(): ExecutiveDashboardData {
     project.scheduleDelayDays > max.scheduleDelayDays ? project : max
   );
 
+  // Generate action items
+  const actionItems: ActionItem[] = [
+    {
+      id: 'ai-001',
+      project_id: 'proj-002',
+      title: 'Review material procurement contracts',
+      description: 'Analyze steel and concrete supplier contracts to address price escalations affecting budget',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-15',
+      assignee: 'Sarah Johnson - Procurement Manager',
+      source_type: 'budget_analysis',
+      source_id: 'app-002',
+      created_by: 'system',
+      created_at: '2024-09-25T10:30:00Z',
+      updated_at: '2024-09-25T10:30:00Z'
+    },
+    {
+      id: 'ai-002',
+      project_id: 'proj-008',
+      title: 'Conduct safety protocol review',
+      description: 'Implement enhanced safety measures following recent incidents on Mixed-Use Development',
+      status: 'In Progress',
+      priority: 'Critical',
+      due_date: '2024-10-08',
+      assignee: 'Mike Chen - Safety Director',
+      source_type: 'safety_incident',
+      source_id: 'rep-002',
+      created_by: 'system',
+      created_at: '2024-09-20T14:15:00Z',
+      updated_at: '2024-09-28T09:45:00Z'
+    },
+    {
+      id: 'ai-003',
+      project_id: 'proj-001',
+      title: 'Approve elevator system upgrade',
+      description: 'Review and approve Change Order #CO-2024-15 for elevator system upgrade and safety features',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-10',
+      assignee: 'David Wilson - Project Owner',
+      source_type: 'change_order',
+      source_id: 'app-001',
+      created_by: 'system',
+      created_at: '2024-09-22T11:20:00Z',
+      updated_at: '2024-09-22T11:20:00Z'
+    },
+    {
+      id: 'ai-004',
+      project_id: 'proj-008',
+      title: 'Expedite environmental permit application',
+      description: 'Follow up with regulatory agencies on environmental impact permit for Mixed-Use Development',
+      status: 'Open',
+      priority: 'Critical',
+      due_date: '2024-10-05',
+      assignee: 'Lisa Rodriguez - Regulatory Affairs',
+      source_type: 'permit_delay',
+      source_id: 'app-004',
+      created_by: 'system',
+      created_at: '2024-09-18T16:00:00Z',
+      updated_at: '2024-09-28T13:30:00Z'
+    },
+    {
+      id: 'ai-005',
+      project_id: 'proj-003',
+      title: 'Negotiate contract amendment scope',
+      description: 'Finalize networking infrastructure requirements for Tech Campus Phase 2 contract amendment',
+      status: 'In Progress',
+      priority: 'Medium',
+      due_date: '2024-10-12',
+      assignee: 'Tom Anderson - Contracts Manager',
+      source_type: 'contract_amendment',
+      source_id: 'app-003',
+      created_by: 'system',
+      created_at: '2024-09-24T08:45:00Z',
+      updated_at: '2024-09-27T14:20:00Z'
+    },
+    {
+      id: 'ai-006',
+      project_id: 'proj-006',
+      title: 'Coordinate medical equipment integration',
+      description: 'Work with medical equipment vendors to finalize power and integration requirements',
+      status: 'Open',
+      priority: 'Medium',
+      due_date: '2024-10-18',
+      assignee: 'Jennifer Park - Technical Coordinator',
+      source_type: 'change_order',
+      source_id: 'app-005',
+      created_by: 'system',
+      created_at: '2024-09-26T12:10:00Z',
+      updated_at: '2024-09-26T12:10:00Z'
+    },
+    {
+      id: 'ai-007',
+      project_id: 'proj-002',
+      title: 'Develop schedule recovery plan',
+      description: 'Create detailed plan to recover 18-day delay on Riverside Residential Complex',
+      status: 'Open',
+      priority: 'High',
+      due_date: '2024-10-08',
+      assignee: 'Mark Thompson - Project Manager',
+      source_type: 'schedule_analysis',
+      source_id: 'rep-005',
+      created_by: 'system',
+      created_at: '2024-09-21T09:15:00Z',
+      updated_at: '2024-09-21T09:15:00Z'
+    },
+    {
+      id: 'ai-008',
+      project_id: 'proj-001',
+      title: 'Conduct quarterly owner walkthrough',
+      description: 'Schedule and conduct quarterly progress walkthrough with owner for Metro Office Tower',
+      status: 'Done',
+      priority: 'Low',
+      due_date: '2024-09-30',
+      assignee: 'Rachel Kim - Owner Relations',
+      source_type: 'routine',
+      source_id: null,
+      created_by: 'system',
+      created_at: '2024-09-10T10:00:00Z',
+      updated_at: '2024-09-30T15:45:00Z'
+    }
+  ];
+
   const insights = {
     summary: `Portfolio performance shows ${overallVariancePercent > 0 ? 'budget overruns' : 'savings'} of ${Math.abs(overallVariancePercent).toFixed(1)}% (${Math.abs(overallVarianceAmount / 1000000).toFixed(1)}M). ${onTrackProjects.length} of ${activeProjects.length} active projects are on schedule. Key concern: ${mostDelayedProject.projectName} is ${mostDelayedProject.scheduleDelayDays} days behind schedule.`,
     keyPoints: [
@@ -430,6 +571,7 @@ export function generateExecutiveDemoData(): ExecutiveDashboardData {
     recentReports,
     riskMetrics,
     monthlyTrend,
+    actionItems,
     insights
   };
 }

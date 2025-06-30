@@ -18,22 +18,30 @@ export function useProjects() {
   return useQuery({
     queryKey: ['projects'],
     queryFn: async (): Promise<Project[]> => {
-      console.log('Fetching projects from Supabase...');
+      console.log('🔥 STARTING PROJECT FETCH');
+      console.log('🔥 Supabase URL:', supabase.supabaseUrl);
+      console.log('🔥 Supabase Key:', supabase.supabaseKey?.substring(0, 20) + '...');
       
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching projects:', error);
-        throw error;
+        if (error) {
+          console.error('🔥 ERROR fetching projects:', error);
+          throw error;
+        }
+
+        console.log('🔥 SUCCESS - Projects data from database:', data);
+        return data || [];
+      } catch (err) {
+        console.error('🔥 UNEXPECTED ERROR:', err);
+        throw err;
       }
-
-      console.log('Projects data from database:', data);
-      
-      return data || [];
     },
+    retry: 1,
+    staleTime: 0,
   });
 }
 

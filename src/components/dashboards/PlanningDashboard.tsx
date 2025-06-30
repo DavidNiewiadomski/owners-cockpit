@@ -32,9 +32,15 @@ interface PlanningDashboardProps {
 const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, activeCategory }) => {
   const { data: projects = [] } = useProjects();
   
+  // Handle portfolio view
+  const isPortfolioView = projectId === 'portfolio';
+  const firstActiveProject = projects.find(p => p.status === 'active') || projects[0];
+  const displayProjectId = isPortfolioView ? (firstActiveProject?.id || null) : projectId;
+  
   // Get the actual project name from the projects data
-  const selectedProject = projects.find(p => p.id === projectId);
-  const projectName = selectedProject?.name;
+  const selectedProject = isPortfolioView ? null : projects.find(p => p.id === projectId);
+  const displayProject = selectedProject || firstActiveProject;
+  const projectName = isPortfolioView ? 'Portfolio Planning Overview' : displayProject?.name;
   
   const { title, subtitle } = getDashboardTitle(activeCategory, projectName);
   // Comprehensive planning phase data
@@ -258,7 +264,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Low': return 'bg-green-100 text-green-700';
       case 'Medium': return 'bg-yellow-100 text-yellow-700';
       case 'High': return 'bg-red-100 text-red-700';
-      default: return 'bg-[#0D1117] text-gray-700';
+      default: return 'bg-card text-gray-700';
     }
   };
   
@@ -270,38 +276,38 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       case 'Supportive': return 'bg-green-100 text-green-700';
       case 'Neutral': return 'bg-yellow-100 text-yellow-700';
       case 'Interested': return 'bg-blue-100 text-blue-700';
-      default: return 'bg-[#0D1117] text-gray-700';
+      default: return 'bg-card text-gray-700';
     }
   };
   
   return (
-    <div className="min-h-screen bg-[#0D1117] p-6 space-y-6">
+    <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Planning Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-semibold text-white">
+          <h1 className="text-3xl font-semibold text-foreground">
             {title}
           </h1>
-          <p className="text-slate-400 mt-1">
+          <p className="text-muted-foreground mt-1">
             {subtitle}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-card text-foreground border-border">
             <Target className="w-4 h-4 mr-2" />
             {planningMetrics.overallProgress}% Complete
           </Badge>
-          <Badge variant="outline" className="bg-[#0D1117] text-slate-300 border-slate-700">
+          <Badge variant="outline" className="bg-card text-foreground border-border">
             Phase: {planningMetrics.projectPhase}
           </Badge>
         </div>
       </div>
 
       {/* AI Planning Insights */}
-      <Card className="bg-[#0D1117] border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
               <Zap className="w-5 h-5 text-blue-400" />
               AI Strategic Planning Insights
             </CardTitle>
@@ -311,27 +317,27 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         <CardContent className="space-y-4">
           {/* Metrics Grid */}
           <div className="grid grid-cols-4 gap-4">
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{planningMetrics.overallProgress}%</div>
-              <div className="text-sm text-slate-400">Planning Progress</div>
+            <div className="bg-card rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-foreground">{planningMetrics.overallProgress}%</div>
+              <div className="text-sm text-muted-foreground">Planning Progress</div>
             </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{siteOptions.find(s => s.selected)?.score || 0}</div>
-              <div className="text-sm text-slate-400">Site Score</div>
+            <div className="bg-card rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-foreground">{siteOptions.find(s => s.selected)?.score || 0}</div>
+              <div className="text-sm text-muted-foreground">Site Score</div>
             </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">18.2%</div>
-              <div className="text-sm text-slate-400">Projected ROI</div>
+            <div className="bg-card rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-foreground">18.2%</div>
+              <div className="text-sm text-muted-foreground">Projected ROI</div>
             </div>
-            <div className="bg-[#0D1117] rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-white">{riskFactors.filter(r => r.level === 'Medium').length}</div>
-              <div className="text-sm text-slate-400">Active Risks</div>
+            <div className="bg-card rounded-lg p-4 text-center">
+              <div className="text-2xl font-bold text-foreground">{riskFactors.filter(r => r.level === 'Medium').length}</div>
+              <div className="text-sm text-muted-foreground">Active Risks</div>
             </div>
           </div>
           
           {/* Summary */}
-          <div className="bg-[#0D1117]/50 rounded-lg p-4">
-            <p className="text-slate-300 text-sm">
+          <div className="bg-card/50 rounded-lg p-4">
+            <p className="text-foreground text-sm">
               Strategic planning at {planningMetrics.overallProgress}% completion with Downtown Business District selected (score: 92/100). Market analysis shows strong demand for Class A office space with 94% occupancy rates. Financial projections indicate 18.2% ROI with manageable risk profile.
             </p>
           </div>
@@ -341,9 +347,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                <span className="text-sm font-medium text-white">Key Insights</span>
+                <span className="text-sm font-medium text-foreground">Key Insights</span>
               </div>
-              <ul className="space-y-2 text-sm text-slate-300">
+              <ul className="space-y-2 text-sm text-foreground">
                 <li>• Site selection favors Downtown Business District with 92/100 score despite higher cost</li>
                 <li>• Market demand strong with 94% occupancy rates and $65/sq ft target achievable</li>
                 <li>• Financial model projects 18.2% IRR exceeding 15% target threshold</li>
@@ -353,9 +359,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-sm font-medium text-white">Recommendations</span>
+                <span className="text-sm font-medium text-foreground">Recommendations</span>
               </div>
-              <ul className="space-y-2 text-sm text-slate-300">
+              <ul className="space-y-2 text-sm text-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-green-400 mt-0.5">→</span>
                   <span>Finalize site selection by July 1st to maintain project timeline</span>
@@ -375,36 +381,36 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </Card>
 
       {/* Quick Actions */}
-      <Card className="bg-[#0D1117] border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-            <Clock className="h-5 w-5 text-slate-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+            <Clock className="h-5 w-5 text-muted-foreground" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Target className="w-4 h-4 mr-2" />
               Finalize Site Selection
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Stakeholder Meetings
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Review Business Case
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Shield className="w-4 h-4 mr-2" />
               Update Risk Mitigation
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <DollarSign className="w-4 h-4 mr-2" />
               Financial Model Review
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <BarChart3 className="w-4 h-4 mr-2" />
               Market Analysis Update
             </Button>
@@ -415,27 +421,27 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Key Planning KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Overall Planning Progress */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-400">Planning Progress</CardTitle>
-            <Target className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Planning Progress</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-white">{planningMetrics.overallProgress}%</div>
-            <div className="text-xs text-slate-400 mt-1">5 of 8 phases complete</div>
+            <div className="text-2xl font-bold text-foreground">{planningMetrics.overallProgress}%</div>
+            <div className="text-xs text-muted-foreground mt-1">5 of 8 phases complete</div>
             <Progress value={planningMetrics.overallProgress} className="mt-2" />
           </CardContent>
         </Card>
 
         {/* Investment Analysis */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-400">Projected ROI</CardTitle>
-            <TrendingUp className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Projected ROI</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-400">18.2%</div>
-            <div className="text-xs text-slate-400 mt-1">5-year IRR projection</div>
+            <div className="text-xs text-muted-foreground mt-1">5-year IRR projection</div>
             <div className="flex items-center mt-2 text-green-400">
               <TrendingUp className="w-4 h-4 mr-1" />
               <span className="text-sm">Above target 15%</span>
@@ -444,14 +450,14 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Market Demand */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-400">Market Demand</CardTitle>
-            <BarChart3 className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Market Demand</CardTitle>
+            <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-400">Strong</div>
-            <div className="text-xs text-slate-400 mt-1">94% occupancy rate</div>
+            <div className="text-xs text-muted-foreground mt-1">94% occupancy rate</div>
             <div className="flex items-center mt-2 text-blue-400">
               <Building className="w-4 h-4 mr-1" />
               <span className="text-sm">$65/sq ft target</span>
@@ -460,14 +466,14 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Risk Level */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-400">Risk Assessment</CardTitle>
-            <Shield className="h-4 w-4 text-slate-400" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Risk Assessment</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-400">Medium</div>
-            <div className="text-xs text-slate-400 mt-1">4 risks identified</div>
+            <div className="text-xs text-muted-foreground mt-1">4 risks identified</div>
             <div className="flex items-center mt-2 text-yellow-400">
               <AlertTriangle className="w-4 h-4 mr-1" />
               <span className="text-sm">Mitigation plans active</span>
@@ -477,17 +483,17 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       </div>
 
       {/* Site Selection Analysis */}
-      <Card className="bg-[#0D1117] border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-            <MapPin className="h-5 w-5 text-slate-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+            <MapPin className="h-5 w-5 text-muted-foreground" />
             Site Selection Analysis
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {siteOptions.map((site) => (
-              <div key={site.id} className="border rounded-lg p-4 hover:bg-[#0D1117]/50 transition-colors">
+              <div key={site.id} className="border rounded-lg p-4 hover:bg-card/50 transition-colors">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
@@ -497,7 +503,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                         Score: {site.score}/100
                       </div>
                     </div>
-                    <p className="text-sm text-slate-400 mb-2">{site.address}</p>
+                    <p className="text-sm text-muted-foreground mb-2">{site.address}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="font-medium">Size:</span> {site.size}
@@ -547,10 +553,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Financial Projections and Market Analysis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Financial Projections */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-              <DollarSign className="h-5 w-5 text-slate-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+              <DollarSign className="h-5 w-5 text-muted-foreground" />
               5-Year Financial Projections
             </CardTitle>
           </CardHeader>
@@ -578,10 +584,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Market Analysis */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-              <Globe className="h-5 w-5 text-slate-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+              <Globe className="h-5 w-5 text-muted-foreground" />
               Market Analysis
             </CardTitle>
           </CardHeader>
@@ -609,10 +615,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <h4 className="font-medium mb-3">Market Trends</h4>
               <div className="space-y-2">
                 {marketAnalysis.marketTrends.map((trend, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 rounded bg-[#0D1117]/50">
+                  <div key={index} className="flex items-center justify-between p-2 rounded bg-card/50">
                     <div>
                       <div className="font-medium text-sm">{trend.trend}</div>
-                      <div className="text-xs text-slate-400">Impact: {trend.impact}</div>
+                      <div className="text-xs text-muted-foreground">Impact: {trend.impact}</div>
                     </div>
                     <Badge variant="outline" className="text-xs">
                       {trend.status}
@@ -628,9 +634,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Risk Assessment and Stakeholder Management */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Risk Assessment */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
               <Shield className="h-5 w-5 text-orange-500" />
               Risk Assessment Matrix
             </CardTitle>
@@ -645,10 +651,10 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                       {risk.level} Risk
                     </Badge>
                   </div>
-                  <p className="text-sm text-slate-400 mb-2">{risk.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{risk.description}</p>
                   <div className="text-sm">
                     <div className="font-medium text-green-700 dark:text-green-400">Mitigation:</div>
-                    <div className="text-slate-400">{risk.mitigation}</div>
+                    <div className="text-muted-foreground">{risk.mitigation}</div>
                   </div>
                   <div className="flex items-center gap-4 mt-2 text-xs">
                     <span>Probability: {risk.probability}%</span>
@@ -661,9 +667,9 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
         {/* Stakeholder Management */}
-        <Card className="bg-[#0D1117] border-slate-800">
+        <Card className="bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
               <Users className="h-5 w-5 text-blue-500" />
               Stakeholder Management
             </CardTitle>
@@ -678,7 +684,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                       {stakeholder.status}
                     </Badge>
                   </div>
-                  <div className="text-sm text-slate-400 mb-2">{stakeholder.role}</div>
+                  <div className="text-sm text-muted-foreground mb-2">{stakeholder.role}</div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
                       <span className="font-medium">Influence:</span> {stakeholder.influence}
@@ -703,17 +709,17 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
       {/* Planning Timeline and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Planning Milestones */}
-        <Card className="lg:col-span-2 bg-[#0D1117] border-slate-800">
+        <Card className="lg:col-span-2 bg-card border-border">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-              <Calendar className="h-5 w-5 text-slate-400" />
+            <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+              <Calendar className="h-5 w-5 text-muted-foreground" />
               Planning Milestones & Timeline
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {planningMilestones.map((milestone) => (
-                  <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-[#0D1117]/50">
+                  <div key={milestone.id} className="flex items-center gap-4 p-4 rounded-lg bg-card/50">
                   <div className={`w-3 h-3 rounded-full ${
                     milestone.status === 'completed' ? 'bg-green-500' :
                     milestone.status === 'in-progress' ? 'bg-blue-500' :
@@ -721,7 +727,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                   }`} />
                   <div className="flex-1">
                     <div className="font-medium">{milestone.milestone}</div>
-                    <div className="text-sm text-slate-400">
+                    <div className="text-sm text-muted-foreground">
                       Due: {milestone.dueDate} • Owner: {milestone.owner}
                     </div>
                     <Progress value={milestone.progress} className="mt-2 h-2" />
@@ -730,7 +736,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
                     <Badge className={getStatusColor(milestone.status)}>
                       {milestone.status.replace('-', ' ')}
                     </Badge>
-                    <div className="text-sm text-slate-400 mt-1">
+                    <div className="text-sm text-muted-foreground mt-1">
                       {milestone.progress}%
                     </div>
                   </div>

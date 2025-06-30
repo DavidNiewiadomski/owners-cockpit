@@ -33,8 +33,6 @@ export default defineConfig(({ mode }) => ({
           'utils': ['clsx', 'tailwind-merge', 'class-variance-authority'],
           'charts': ['recharts'],
           'icons': ['lucide-react'],
-          'ai': ['@anthropic-ai/sdk', '@google/generative-ai', 'openai'],
-          'voice': ['@elevenlabs/elevenlabs-js'],
           'motion': ['framer-motion'],
           'forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
         },

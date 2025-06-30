@@ -26,7 +26,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
   if (!projectData) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-white">Loading executive data...</div>
+        <div className="text-foreground">Loading executive data...</div>
       </div>
     );
   }
@@ -55,36 +55,36 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
       <AIInsightsPanel projectData={aiInsightsData} />
       
       {/* Owner Quick Actions */}
-      <Card className="bg-[#0D1117] border-slate-800">
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg font-medium text-white">
-            <Clock className="h-5 w-5 text-slate-400" />
+          <CardTitle className="flex items-center gap-2 text-lg font-medium text-foreground">
+            <Clock className="h-5 w-5 text-muted-foreground" />
             Owner Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <BarChart3 className="w-4 h-4 mr-2" />
               Review ROI Performance
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Calendar className="w-4 h-4 mr-2" />
               Meet with Project Manager
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Building className="w-4 h-4 mr-2" />
               Inspect Property Progress
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <DollarSign className="w-4 h-4 mr-2" />
               Review Budget vs Actual
             </Button>
-            <Button variant="outline" className="justify-start border-slate-700 hover:bg-[#0D1117] text-slate-300 hover:text-white">
+            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Target className="w-4 h-4 mr-2" />
               Generate Owner Report
             </Button>

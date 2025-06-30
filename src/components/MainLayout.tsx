@@ -43,7 +43,7 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <AppHeader 
+      <AppHeader
         selectedProject={appState.selectedProject}
         onProjectChange={appState.handleProjectChange}
         onUploadToggle={() => appState.setShowUpload(!appState.showUpload)}
