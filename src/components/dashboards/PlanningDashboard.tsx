@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -18,11 +18,18 @@ import {
   Calendar,
   Building,
   Zap,
-  BarChart3
+  BarChart3,
+  FileText,
+  Plus,
+  X,
+  Gavel,
+  Trophy
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { ProcurementManager } from '@/components/procurement/ProcurementManager';
+// import { useRfps } from '@/hooks/useRfpData';
 
 interface PlanningDashboardProps {
   projectId: string;
@@ -390,6 +397,13 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <Button 
+                variant="outline" 
+                className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Review Project Brief
+              </Button>
             <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
               <Target className="w-4 h-4 mr-2" />
               Finalize Site Selection
@@ -410,10 +424,27 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <DollarSign className="w-4 h-4 mr-2" />
               Financial Model Review
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
-              <BarChart3 className="w-4 h-4 mr-2" />
-              Market Analysis Update
-            </Button>
+              <Button 
+                variant="outline" 
+                className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              >
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Project Analytics
+              </Button>
+              <Button 
+                variant="outline" 
+                className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Schedule Review
+              </Button>
+              <Button 
+                variant="outline" 
+                className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              >
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Approval Queue
+              </Button>
           </div>
         </CardContent>
       </Card>
@@ -747,6 +778,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
         </Card>
 
       </div>
+
     </div>
   );
 };

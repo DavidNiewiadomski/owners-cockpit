@@ -34,7 +34,7 @@ const CommunicationHub: React.FC<CommunicationHubProps> = ({
   initialProvider = 'outlook' 
 }) => {
   const [activeTab, setActiveTab] = useState(initialProvider);
-  const { getConnectionStatus } = useOAuthConnections();
+  const { getConnectionStatus, getConnectedProviders, loading } = useOAuthConnections();
 
   // Update active tab when initialProvider changes
   React.useEffect(() => {

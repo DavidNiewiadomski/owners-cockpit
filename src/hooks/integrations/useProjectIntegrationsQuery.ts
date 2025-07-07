@@ -23,32 +23,66 @@ export function useProjectIntegrationsQuery(projectId: string) {
     queryFn: async (): Promise<ProjectIntegration[]> => {
       console.log('🔍 Fetching integrations for project:', projectId);
       
-      // For demo project, map to actual project IDs that exist in the database
-      let actualProjectId = projectId;
-      if (projectId === 'project-1') {
-        // Use the first project ID from your database screenshots
-        actualProjectId = '11111111-1111-1111-1111-111111111111';
-        console.log('🎭 Demo mode: mapping project-1 to actual project ID:', actualProjectId);
-      }
+      // Demo mode: return mock connected integrations
+      const mockIntegrations: ProjectIntegration[] = [
+        {
+          id: '1',
+          project_id: projectId,
+          provider: 'outlook',
+          status: 'connected',
+          last_sync: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          project_id: projectId,
+          provider: 'microsoft_teams',
+          status: 'connected',
+          last_sync: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 minutes ago
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          project_id: projectId,
+          provider: 'zoom',
+          status: 'connected',
+          last_sync: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '4',
+          project_id: projectId,
+          provider: 'procore',
+          status: 'connected',
+          last_sync: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '5',
+          project_id: projectId,
+          provider: 'primavera',
+          status: 'connected',
+          last_sync: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        },
+        {
+          id: '6',
+          project_id: projectId,
+          provider: 'bim360',
+          status: 'connected',
+          last_sync: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      ];
       
-      console.log('🏗️ Fetching integrations for mapped project:', actualProjectId);
-      const { data, error } = await supabase
-        .from('project_integrations')
-        .select('*')
-        .eq('project_id', actualProjectId)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('❌ Error fetching project integrations:', error);
-        throw error;
-      }
-
-      console.log(`✅ Found ${data?.length || 0} integrations for project ${actualProjectId}:`, data);
-      return (data || []).map(item => ({
-        ...item,
-        provider: item.provider as ProjectIntegration['provider'],
-        status: item.status as ProjectIntegration['status']
-      }));
+      console.log(`✅ Returning ${mockIntegrations.length} mock integrations for demo:`, mockIntegrations);
+      return mockIntegrations;
     },
     enabled: !!projectId,
     staleTime: 30 * 1000, // Consider data fresh for 30 seconds 

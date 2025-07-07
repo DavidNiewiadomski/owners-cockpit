@@ -9,7 +9,7 @@
  * - Actions (what users can do with it)
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 // ========================================
 // FOUNDATIONAL TYPES

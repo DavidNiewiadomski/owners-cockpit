@@ -1,0 +1,143 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3 bucket and Lambda trigger for document extraction service",
+  "Parameters": {
+    "DocExtractorEndpoint": {
+      "Type": "String",
+      "Description": "Endpoint URL for the doc-extractor service",
+      "Default": "https://your-doc-extractor-service.com"
+    },
+    "Environment": {
+      "Type": "String",
+      "Description": "Environment name (dev, staging, prod)",
+      "Default": "dev",
+      "AllowedValues": ["dev", "staging", "prod"]
+    }
+  },
+  "Resources": {
+    "RFPSubmissionsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "owners-cockpit-rfp-submissions-${Environment}"
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        }
+      }
+    },
+    "DocExtractorTriggerFunctionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "S3Access",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:GetObjectVersion"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${RFPSubmissionsBucket}/*"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "DocExtractorTriggerFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": {
+          "Fn::Sub": "doc-extractor-trigger-${Environment}"
+        },
+        "Runtime": "nodejs18.x",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["DocExtractorTriggerFunctionRole", "Arn"]
+        },
+        "Code": {
+          "ZipFile": "const AWS = require('aws-sdk'); exports.handler = async (event) => { console.log('Placeholder'); return {statusCode: 200}; };"
+        },
+        "Environment": {
+          "Variables": {
+            "DOC_EXTRACTOR_ENDPOINT": {
+              "Ref": "DocExtractorEndpoint"
+            },
+            "ENVIRONMENT": {
+              "Ref": "Environment"
+            }
+          }
+        },
+        "Timeout": 300,
+        "MemorySize": 512
+      }
+    },
+    "S3InvokeLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DocExtractorTriggerFunction"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "s3.amazonaws.com",
+        "SourceAccount": {
+          "Ref": "AWS::AccountId"
+        },
+        "SourceArn": {
+          "Fn::GetAtt": ["RFPSubmissionsBucket", "Arn"]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "RFPSubmissionsBucketName": {
+      "Description": "Name of the S3 bucket for RFP submissions",
+      "Value": {
+        "Ref": "RFPSubmissionsBucket"
+      }
+    },
+    "DocExtractorTriggerFunctionArn": {
+      "Description": "ARN of the document extractor trigger Lambda function",
+      "Value": {
+        "Fn::GetAtt": ["DocExtractorTriggerFunction", "Arn"]
+      }
+    }
+  }
+}

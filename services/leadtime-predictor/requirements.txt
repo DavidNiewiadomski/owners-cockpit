@@ -1,0 +1,21 @@
+# Lead Time Predictor Service Dependencies
+
+# FastAPI and web framework
+fastapi
+uvicorn[standard]
+pydantic
+
+# Machine Learning Libraries
+scikit-learn
+numpy
+pandas
+
+# Database and API clients
+supabase
+httpx
+
+# Environment and configuration
+python-dotenv
+
+# Additional ML utilities
+joblib

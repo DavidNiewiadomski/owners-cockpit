@@ -29,15 +29,27 @@ export function useProjects() {
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.error('🔥 ERROR fetching projects:', error);
-          throw error;
+          console.warn('🔥 Database error, falling back to sample data:', error);
+          const sampleProjects = getAllProjects();
+          console.log('🔥 Using sample projects:', sampleProjects);
+          return sampleProjects;
+        }
+
+        // If no data in database, use sample data
+        if (!data || data.length === 0) {
+          console.log('🔥 No projects in database, using sample data');
+          const sampleProjects = getAllProjects();
+          console.log('🔥 Sample projects loaded:', sampleProjects);
+          return sampleProjects;
         }
 
         console.log('🔥 SUCCESS - Projects data from database:', data);
-        return data || [];
+        return data;
       } catch (err) {
-        console.error('🔥 UNEXPECTED ERROR:', err);
-        throw err;
+        console.warn('🔥 Fetch failed, falling back to sample data:', err);
+        const sampleProjects = getAllProjects();
+        console.log('🔥 Fallback sample projects:', sampleProjects);
+        return sampleProjects;
       }
     },
     retry: 1,

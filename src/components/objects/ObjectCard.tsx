@@ -47,15 +47,16 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { cn } from '@/lib/utils';
-import {
+import type {
   AnyObject,
   ObjectAction,
+  ObjectPriority} from '@/types/objects';
+import {
   ProjectObject,
   CommunicationObject,
   DocumentObject,
   ActionItemObject,
   UserObject,
-  ObjectPriority,
   ObjectStatus
 } from '@/types/objects';
 

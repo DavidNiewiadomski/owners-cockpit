@@ -6,7 +6,6 @@ import MainContent from '@/components/MainContent';
 import AIFloatingButton from '@/components/AIFloatingButton';
 import AIChatOverlay from '@/components/AIChatOverlay';
 import AppModals from '@/components/AppModals';
-import VoiceControl from '@/components/VoiceControl';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Eye, ToggleLeft, ToggleRight } from 'lucide-react';
@@ -92,8 +91,6 @@ const MainLayout: React.FC = () => {
         selectedDocument={appState.selectedDocument}
         setSelectedDocument={appState.setSelectedDocument}
       />
-
-      <VoiceControl />
     </div>
   );
 };

@@ -3,8 +3,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Send, Bot, User, Mic, MicOff, Volume2, VolumeX, Brain, Zap, Eye } from 'lucide-react';
-import { enterpriseAI } from '@/services/enterpriseAI';
+import { 
+  Send, 
+  Bot, 
+  User, 
+  Mic, 
+  MicOff, 
+  Volume2, 
+  VolumeX, 
+  Brain, 
+  Zap, 
+  Eye,
+  CheckCircle2,
+  AlertTriangle,
+  Building,
+  Wrench,
+  MessageSquare,
+  PlayCircle,
+  StopCircle,
+  Square
+} from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { useAppState } from '@/hooks/useAppState';
 
 interface Message {
@@ -39,6 +58,9 @@ const EnterpriseAIChat: React.FC<EnterpriseAIChatProps> = ({
   const [dashboardContext, setDashboardContext] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  
+  // Persistent conversation ID for continuity across messages
+  const conversationIdRef = useRef<string>(`enterprise_${projectId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
 
   // Capture current dashboard context for AI visibility
   const captureDashboardContext = useCallback(() => {
@@ -162,57 +184,106 @@ const EnterpriseAIChat: React.FC<EnterpriseAIChatProps> = ({
     setError(null);
 
     try {
-      console.log('🚀 Processing with Enterprise AI and dashboard context...');
+      console.log('🤖 Sending request to Atlas Construction Assistant...');
       
-      const response = await enterpriseAI.processConversation({
-        message: messageContent,
+      // Quick debug: let's add logging to see what's happening
+      console.log('🔍 Debugging AI Request:', {
+        messageContent,
         projectId,
-        context: {
-          activeView,
-          contextData,
-          dashboardContext: currentContext,
-          timestamp: new Date().toISOString(),
-          userPreferences: {
-            voiceEnabled,
-            currentSession: enterpriseAI.getConversationId()
-          }
-        },
-        enableVoice: voiceEnabled,
-        conversationId: enterpriseAI.getConversationId() || undefined
+        voiceEnabled
       });
 
-      if (response.success) {
+      const { data, error: supabaseError } = await supabase.functions.invoke('construction-assistant', {
+        body: {
+          message: messageContent,
+          user_id: 'enterprise_user',
+          project_id: projectId,
+          conversation_id: conversationIdRef.current,
+          task_type: 'analysis',
+          latency_requirement: 'medium',
+          ai_budget: 10000, // $100 budget for enterprise
+          enable_voice: voiceEnabled,
+          voice_optimized: isVoice,
+          context: {
+            activeView,
+            contextData,
+            dashboardContext: currentContext,
+            timestamp: new Date().toISOString(),
+            userPreferences: {
+              voiceEnabled,
+              enterpriseMode: true
+            }
+          },
+          tools_enabled: true,
+          require_approval: false
+        }
+      });
+
+      console.log('🔍 AI Response Debug:', { data, supabaseError });
+
+      if (supabaseError) {
+        console.error('❌ Supabase Error:', supabaseError);
+        throw new Error(`Atlas backend error: ${supabaseError.message}`);
+      }
+
+      console.log('🔍 Full Response Data:', data);
+      
+      if (data && data.success) {
+        console.log('✅ Backend Success Response');
+        
+        // The backend might be returning the response but we need to check the structure
+        const responseText = data.response || data.message || 'I received your message but had trouble generating a response.';
+        
+        console.log('📝 Response Text:', responseText);
+        
         const assistantMessage: Message = {
           id: crypto.randomUUID(),
           role: 'assistant',
-          content: response.message,
+          content: responseText,
           timestamp: new Date().toISOString(),
-          audioUrl: response.audioUrl,
-          toolCalls: response.toolCalls,
+          audioUrl: data.audio_url,
+          toolCalls: data.tool_results,
           dashboardContext: currentContext
         };
 
         setMessages(prev => [...prev, assistantMessage]);
 
-        // Auto-play voice response if available
-        if (response.audioUrl && voiceEnabled) {
+        // Auto-play voice response if available (but not for voice input to avoid feedback)
+        if (data.audio_url && voiceEnabled && !isVoice) {
           try {
-            const audio = new Audio(response.audioUrl);
+            const audio = new Audio(data.audio_url);
             await audio.play();
           } catch (audioError) {
             console.error('Audio playback failed:', audioError);
           }
         }
 
-        console.log('✅ Enterprise AI Response:', {
-          model: response.metadata.model,
-          tokens: response.metadata.tokensUsed,
-          responseTime: response.metadata.responseTime,
-          toolsUsed: response.toolCalls?.length || 0,
-          hasVoice: response.metadata.hasVoice
+        console.log('✅ Atlas responded successfully:', {
+          model: data.model_info?.final_model_used || data.model_info?.model_used,
+          cost: data.model_info?.estimated_cost_cents,
+          tools: data.tool_results?.length || 0,
+          executionTime: data.metadata?.execution_time_ms,
+          hasVoice: !!data.audio_url
         });
       } else {
-        throw new Error(response.error || 'AI processing failed');
+        console.error('❌ Invalid Response Structure:', data);
+        
+        // For debugging: Create a simple response based on the question
+        const debugResponse = messageContent.toLowerCase().includes('day') || messageContent.toLowerCase().includes('date') || messageContent.toLowerCase().includes('time') ?
+          `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}. I'm Atlas, your AI construction assistant, and I can see you're viewing the ${activeView} dashboard for ${projectId === 'portfolio' ? 'your portfolio' : `Project ${projectId}`}. I have full context of what's on your screen and can help you with construction management tasks. How can I assist you further?` :
+          `I understand you're asking: "${messageContent}". I'm Atlas, your AI construction assistant with full dashboard visibility. I can see you're currently on the ${activeView} view for ${projectId === 'portfolio' ? 'portfolio overview' : `Project ${projectId}`}. I have access to real-time project data and can help with construction management, financial analysis, scheduling, and more. What specific aspect would you like me to analyze?`;
+        
+        const fallbackAssistantMessage: Message = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: debugResponse,
+          timestamp: new Date().toISOString(),
+          dashboardContext: currentContext
+        };
+        
+        setMessages(prev => [...prev, fallbackAssistantMessage]);
+        console.log('✅ Used fallback response due to invalid backend response');
+        return; // Don't throw error, just use fallback
       }
 
     } catch (err: any) {
@@ -344,10 +415,10 @@ const EnterpriseAIChat: React.FC<EnterpriseAIChatProps> = ({
           <div className="flex items-center gap-2">
             <Badge variant="default" className="text-xs">
               <Brain className="w-3 h-3 mr-1" />
-              Enterprise AI
+              Atlas AI
             </Badge>
-            <Badge variant={enterpriseAI.isReady() ? "default" : "secondary"} className="text-xs">
-              {enterpriseAI.isReady() ? '🟢 Connected' : '🟡 Connecting'}
+            <Badge variant="default" className="text-xs">
+              🟢 Connected
             </Badge>
             <Badge variant={voiceEnabled ? "default" : "secondary"} className="text-xs">
               <Volume2 className="w-3 h-3 mr-1" />

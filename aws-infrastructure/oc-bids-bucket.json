@@ -1,0 +1,259 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "S3 bucket and Lambda setup for secure bid submission vault",
+  "Parameters": {
+    "SupabaseUrl": {
+      "Type": "String",
+      "Description": "Supabase project URL"
+    },
+    "SupabaseServiceRoleKey": {
+      "Type": "String",
+      "Description": "Supabase service role key",
+      "NoEcho": true
+    }
+  },
+  "Resources": {
+    "OCBidsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "oc-bids",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              },
+              "BucketKeyEnabled": true
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "BidSubmissionRetention",
+              "Status": "Enabled",
+              "ExpirationInDays": 2555,
+              "NoncurrentVersionExpirationInDays": 90
+            }
+          ]
+        },
+        "NotificationConfiguration": {
+          "LambdaConfigurations": [
+            {
+              "Event": "s3:ObjectCreated:*",
+              "Function": {
+                "Fn::GetAtt": ["SealBidLambda", "Arn"]
+              },
+              "Filter": {
+                "S3Key": {
+                  "Rules": [
+                    {
+                      "Name": "prefix",
+                      "Value": "rfp/"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "OCBidsAccessLogsBucket"
+          },
+          "LogFilePrefix": "access-logs/"
+        }
+      }
+    },
+    "OCBidsAccessLogsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "oc-bids-access-logs",
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "AccessLogsRetention",
+              "Status": "Enabled",
+              "ExpirationInDays": 90
+            }
+          ]
+        }
+      }
+    },
+    "SealBidLambdaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "S3BidAccess",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject",
+                    "s3:GetObjectMetadata",
+                    "s3:PutObjectTagging"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${OCBidsBucket}/rfp/*"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SealBidLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "seal-bid",
+        "Runtime": "nodejs18.x",
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": ["SealBidLambdaRole", "Arn"]
+        },
+        "Code": {
+          "ZipFile": "// Lambda function code would be deployed separately"
+        },
+        "Environment": {
+          "Variables": {
+            "SUPABASE_URL": {
+              "Ref": "SupabaseUrl"
+            },
+            "SUPABASE_SERVICE_ROLE_KEY": {
+              "Ref": "SupabaseServiceRoleKey"
+            }
+          }
+        },
+        "Timeout": 60,
+        "MemorySize": 256
+      }
+    },
+    "SealBidLambdaInvokePermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "SealBidLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "s3.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": ["OCBidsBucket", "Arn"]
+        }
+      }
+    },
+    "BidSubmissionBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "OCBidsBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyDirectAccess",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": [
+                "s3:GetObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": {
+                "Fn::Sub": "${OCBidsBucket}/rfp/*"
+              },
+              "Condition": {
+                "StringNotEquals": {
+                  "aws:PrincipalServiceName": [
+                    "lambda.amazonaws.com"
+                  ]
+                }
+              }
+            },
+            {
+              "Sid": "AllowPresignedUploads",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "s3:PutObject"
+              ],
+              "Resource": {
+                "Fn::Sub": "${OCBidsBucket}/rfp/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "s3:x-amz-server-side-encryption": "AES256"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CloudWatchBidSubmissionLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/seal-bid",
+        "RetentionInDays": 30
+      }
+    }
+  },
+  "Outputs": {
+    "BucketName": {
+      "Description": "Name of the S3 bucket for bid submissions",
+      "Value": {
+        "Ref": "OCBidsBucket"
+      }
+    },
+    "BucketArn": {
+      "Description": "ARN of the S3 bucket",
+      "Value": {
+        "Fn::GetAtt": ["OCBidsBucket", "Arn"]
+      }
+    },
+    "LambdaFunctionArn": {
+      "Description": "ARN of the seal-bid Lambda function",
+      "Value": {
+        "Fn::GetAtt": ["SealBidLambda", "Arn"]
+      }
+    }
+  }
+}

@@ -50,11 +50,6 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
             </>
           )}
         </div>
-        {selectedProject && (
-          <div className="text-xs text-muted-foreground">
-            Use communication icons in header for messaging
-          </div>
-        )}
       </div>
     </div>
   );

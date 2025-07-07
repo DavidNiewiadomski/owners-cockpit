@@ -6,7 +6,8 @@ import SyncSettings from './integration/SyncSettings';
 
 const IntegrationSettings: React.FC = () => {
   // Map the demo project to an actual project ID that exists in the database
-  const demoProjectId = '11111111-1111-1111-1111-111111111111';
+  // This should match the Downtown Office Building project ID
+  const demoProjectId = 'aa2e669f-c1e4-4da6-a705-c2fb776d64ec';
   const [selectedProject] = useState(demoProjectId);
   
   const { data: integrations, isLoading, error } = useProjectIntegrations(selectedProject);

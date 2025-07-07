@@ -2,7 +2,7 @@
 // This creates realistic, detailed project data that changes when projects are switched
 // Mimics how live system would pull from backend database
 
-import { Project } from '@/hooks/useProjects';
+import type { Project } from '@/hooks/useProjects';
 
 export interface ProjectMetrics {
   financial: {
@@ -147,6 +147,61 @@ export interface ProjectMetrics {
     contractorSelection: number;
     permitSubmissions: number;
     valueEngineering: number;
+  };
+  procurement: {
+    rfpCount: number;
+    activeRfps: number;
+    bidSubmissions: number;
+    awardedContracts: number;
+    totalProcurementValue: number;
+    averageBidTime: number;
+    vendorCount: number;
+    activeVendors: number;
+    complianceScore: number;
+    costSavings: number;
+    rfpData: Array<{
+      id: string;
+      title: string;
+      category: string;
+      status: 'draft' | 'published' | 'bidding' | 'evaluation' | 'awarded' | 'closed';
+      publishDate: string;
+      closeDate: string;
+      estimatedValue: number;
+      submissionCount: number;
+      winningBid?: number;
+      awardedVendor?: string;
+    }>;
+    bidAnalysis: {
+      totalBids: number;
+      averageBidValue: number;
+      highestBid: number;
+      lowestBid: number;
+      standardDeviation: number;
+      outliers: number;
+      qualifiedBids: number;
+      rejectedBids: number;
+    };
+    vendorPerformance: Array<{
+      vendorId: string;
+      vendorName: string;
+      bidCount: number;
+      winRate: number;
+      averageBidValue: number;
+      performanceScore: number;
+      onTimeDelivery: number;
+      qualityRating: number;
+      tier: 'tier1' | 'tier2' | 'tier3';
+    }>;
+    awardHistory: Array<{
+      id: string;
+      contractTitle: string;
+      vendor: string;
+      awardDate: string;
+      contractValue: number;
+      category: string;
+      status: 'active' | 'completed' | 'terminated';
+      performanceRating: number;
+    }>;
   };
 }
 
@@ -361,6 +416,195 @@ export const sampleProjects: DetailedProject[] = [
         contractorSelection: 100,
         permitSubmissions: 100,
         valueEngineering: 95
+      },
+      procurement: {
+        rfpCount: 24,
+        activeRfps: 6,
+        bidSubmissions: 87,
+        awardedContracts: 18,
+        totalProcurementValue: 48500000,
+        averageBidTime: 18,
+        vendorCount: 42,
+        activeVendors: 28,
+        complianceScore: 96,
+        costSavings: 2850000,
+        rfpData: [
+          {
+            id: 'rfp-001-dt',
+            title: 'Curtain Wall System - Floors 8-12',
+            category: 'Exterior Systems',
+            status: 'evaluation',
+            publishDate: '2024-05-15',
+            closeDate: '2024-07-01',
+            estimatedValue: 8500000,
+            submissionCount: 5,
+            winningBid: 7950000,
+            awardedVendor: 'Premium Glass Systems'
+          },
+          {
+            id: 'rfp-002-dt',
+            title: 'HVAC System Installation',
+            category: 'Mechanical',
+            status: 'awarded',
+            publishDate: '2024-04-01',
+            closeDate: '2024-05-20',
+            estimatedValue: 12000000,
+            submissionCount: 8,
+            winningBid: 11200000,
+            awardedVendor: 'Climate Control Solutions'
+          },
+          {
+            id: 'rfp-003-dt',
+            title: 'Electrical Systems - Main Distribution',
+            category: 'Electrical',
+            status: 'bidding',
+            publishDate: '2024-06-10',
+            closeDate: '2024-07-25',
+            estimatedValue: 6500000,
+            submissionCount: 12
+          },
+          {
+            id: 'rfp-004-dt',
+            title: 'Interior Finishes Package A',
+            category: 'Finishes',
+            status: 'draft',
+            publishDate: '2024-07-15',
+            closeDate: '2024-08-30',
+            estimatedValue: 9200000,
+            submissionCount: 0
+          },
+          {
+            id: 'rfp-005-dt',
+            title: 'Fire Safety & Suppression Systems',
+            category: 'Safety Systems',
+            status: 'awarded',
+            publishDate: '2024-03-20',
+            closeDate: '2024-05-05',
+            estimatedValue: 3800000,
+            submissionCount: 6,
+            winningBid: 3650000,
+            awardedVendor: 'SafeGuard Fire Protection'
+          },
+          {
+            id: 'rfp-006-dt',
+            title: 'Elevator Systems',
+            category: 'Vertical Transportation',
+            status: 'evaluation',
+            publishDate: '2024-05-30',
+            closeDate: '2024-07-15',
+            estimatedValue: 4200000,
+            submissionCount: 4
+          }
+        ],
+        bidAnalysis: {
+          totalBids: 87,
+          averageBidValue: 6850000,
+          highestBid: 12500000,
+          lowestBid: 850000,
+          standardDeviation: 2840000,
+          outliers: 8,
+          qualifiedBids: 79,
+          rejectedBids: 8
+        },
+        vendorPerformance: [
+          {
+            vendorId: 'v001-dt',
+            vendorName: 'Premium Glass Systems',
+            bidCount: 3,
+            winRate: 66.7,
+            averageBidValue: 8200000,
+            performanceScore: 94,
+            onTimeDelivery: 96,
+            qualityRating: 92,
+            tier: 'tier1'
+          },
+          {
+            vendorId: 'v002-dt',
+            vendorName: 'Climate Control Solutions',
+            bidCount: 2,
+            winRate: 50.0,
+            averageBidValue: 11500000,
+            performanceScore: 91,
+            onTimeDelivery: 94,
+            qualityRating: 89,
+            tier: 'tier1'
+          },
+          {
+            vendorId: 'v003-dt',
+            vendorName: 'SafeGuard Fire Protection',
+            bidCount: 4,
+            winRate: 25.0,
+            averageBidValue: 3800000,
+            performanceScore: 88,
+            onTimeDelivery: 91,
+            qualityRating: 87,
+            tier: 'tier2'
+          },
+          {
+            vendorId: 'v004-dt',
+            vendorName: 'Metro Steel Fabricators',
+            bidCount: 5,
+            winRate: 40.0,
+            averageBidValue: 5200000,
+            performanceScore: 85,
+            onTimeDelivery: 88,
+            qualityRating: 84,
+            tier: 'tier2'
+          },
+          {
+            vendorId: 'v005-dt',
+            vendorName: 'Urban Electric Co',
+            bidCount: 8,
+            winRate: 12.5,
+            averageBidValue: 4100000,
+            performanceScore: 78,
+            onTimeDelivery: 82,
+            qualityRating: 76,
+            tier: 'tier3'
+          }
+        ],
+        awardHistory: [
+          {
+            id: 'award-001-dt',
+            contractTitle: 'Structural Steel Package',
+            vendor: 'Metro Steel Fabricators',
+            awardDate: '2024-02-15',
+            contractValue: 18500000,
+            category: 'Structural',
+            status: 'active',
+            performanceRating: 92
+          },
+          {
+            id: 'award-002-dt',
+            contractTitle: 'Foundation & Concrete Work',
+            vendor: 'Solid Ground Construction',
+            awardDate: '2024-01-30',
+            contractValue: 8900000,
+            category: 'Concrete',
+            status: 'completed',
+            performanceRating: 88
+          },
+          {
+            id: 'award-003-dt',
+            contractTitle: 'Site Preparation & Excavation',
+            vendor: 'EarthWorks Excavation',
+            awardDate: '2024-01-15',
+            contractValue: 2800000,
+            category: 'Site Work',
+            status: 'completed',
+            performanceRating: 95
+          },
+          {
+            id: 'award-004-dt',
+            contractTitle: 'HVAC System Installation',
+            vendor: 'Climate Control Solutions',
+            awardDate: '2024-05-20',
+            contractValue: 11200000,
+            category: 'Mechanical',
+            status: 'active',
+            performanceRating: 91
+          }
+        ]
       }
     }
   },
@@ -550,6 +794,185 @@ export const sampleProjects: DetailedProject[] = [
         contractorSelection: 40,
         permitSubmissions: 65,
         valueEngineering: 70
+      },
+      procurement: {
+        rfpCount: 12,
+        activeRfps: 3,
+        bidSubmissions: 45,
+        awardedContracts: 7,
+        totalProcurementValue: 25600000,
+        averageBidTime: 20,
+        vendorCount: 30,
+        activeVendors: 14,
+        complianceScore: 89,
+        costSavings: 1200000,
+        rfpData: [
+          {
+            id: 'rfp-001-rc',
+            title: 'Framing Materials Supply',
+            category: 'Materials',
+            status: 'published',
+            publishDate: '2024-05-01',
+            closeDate: '2024-06-20',
+            estimatedValue: 4500000,
+            submissionCount: 4
+          },
+          {
+            id: 'rfp-002-rc',
+            title: 'Landscaping Services',
+            category: 'Exterior',
+            status: 'evaluation',
+            publishDate: '2024-04-15',
+            closeDate: '2024-05-30',
+            estimatedValue: 800000,
+            submissionCount: 3
+          },
+          {
+            id: 'rfp-003-rc',
+            title: 'Concrete Foundation Work',
+            category: 'Foundation',
+            status: 'awarded',
+            publishDate: '2024-03-15',
+            closeDate: '2024-04-30',
+            estimatedValue: 1250000,
+            submissionCount: 8,
+            winningBid: 1150000,
+            awardedVendor: 'Concrete Masters'
+          },
+          {
+            id: 'rfp-004-rc',
+            title: 'Roofing System Installation',
+            category: 'Roofing',
+            status: 'bidding',
+            publishDate: '2024-07-01',
+            closeDate: '2024-08-15',
+            estimatedValue: 650000,
+            submissionCount: 2
+          },
+          {
+            id: 'rfp-005-rc',
+            title: 'High-Efficiency Windows',
+            category: 'Windows',
+            status: 'awarded',
+            publishDate: '2024-02-10',
+            closeDate: '2024-03-25',
+            estimatedValue: 950000,
+            submissionCount: 6,
+            winningBid: 860000,
+            awardedVendor: 'ClearView Glass'
+          },
+          {
+            id: 'rfp-006-rc',
+            title: 'Interior Cabinetry and Millwork',
+            category: 'Interior',
+            status: 'closed',
+            publishDate: '2024-01-15',
+            closeDate: '2024-02-28',
+            estimatedValue: 1100000,
+            submissionCount: 7,
+            winningBid: 1020000,
+            awardedVendor: 'CraftLine Interiors'
+          }
+        ],
+        bidAnalysis: {
+          totalBids: 45,
+          averageBidValue: 3200000,
+          highestBid: 4800000,
+          lowestBid: 200000,
+          standardDeviation: 1250000,
+          outliers: 5,
+          qualifiedBids: 40,
+          rejectedBids: 5
+        },
+        vendorPerformance: [
+          {
+            vendorId: 'v001-rc',
+            vendorName: 'Concrete Masters',
+            bidCount: 5,
+            winRate: 40.0,
+            averageBidValue: 1200000,
+            performanceScore: 90,
+            onTimeDelivery: 93,
+            qualityRating: 95,
+            tier: 'tier1'
+          },
+          {
+            vendorId: 'v002-rc',
+            vendorName: 'ClearView Glass',
+            bidCount: 3,
+            winRate: 33.3,
+            averageBidValue: 900000,
+            performanceScore: 88,
+            onTimeDelivery: 90,
+            qualityRating: 89,
+            tier: 'tier2'
+          },
+          {
+            vendorId: 'v003-rc',
+            vendorName: 'CraftLine Interiors',
+            bidCount: 4,
+            winRate: 50.0,
+            averageBidValue: 1080000,
+            performanceScore: 92,
+            onTimeDelivery: 94,
+            qualityRating: 90,
+            tier: 'tier1'
+          },
+          {
+            vendorId: 'v004-rc',
+            vendorName: 'Landscaping Pros',
+            bidCount: 3,
+            winRate: 33.3,
+            averageBidValue: 850000,
+            performanceScore: 85,
+            onTimeDelivery: 87,
+            qualityRating: 83,
+            tier: 'tier3'
+          },
+          {
+            vendorId: 'v005-rc',
+            vendorName: 'Premier Supply Co',
+            bidCount: 2,
+            winRate: 25.0,
+            averageBidValue: 1200000,
+            performanceScore: 82,
+            onTimeDelivery: 85,
+            qualityRating: 80,
+            tier: 'tier2'
+          }
+        ],
+        awardHistory: [
+          {
+            id: 'award-001-rc',
+            contractTitle: 'Foundation Concrete Work',
+            vendor: 'Concrete Masters',
+            awardDate: '2024-04-05',
+            contractValue: 1150000,
+            category: 'Foundation',
+            status: 'active',
+            performanceRating: 90
+          },
+          {
+            id: 'award-002-rc',
+            contractTitle: 'Window Installation',
+            vendor: 'ClearView Glass',
+            awardDate: '2024-03-30',
+            contractValue: 860000,
+            category: 'Windows',
+            status: 'completed',
+            performanceRating: 88
+          },
+          {
+            id: 'award-003-rc',
+            contractTitle: 'Millwork Installation',
+            vendor: 'CraftLine Interiors',
+            awardDate: '2024-03-20',
+            contractValue: 1020000,
+            category: 'Interior',
+            status: 'completed',
+            performanceRating: 92
+          }
+        ]
       }
     }
   },

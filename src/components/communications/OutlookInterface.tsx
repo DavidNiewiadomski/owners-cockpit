@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   Mail, 
   Send, 
@@ -20,9 +22,18 @@ import {
   Inbox,
   DraftingCompass,
   Users,
-  Settings
+  Settings,
+  Bot,
+  Zap,
+  Filter,
+  RefreshCw,
+  Bell,
+  ChevronDown,
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 import { sampleEmails, ownerCompanyProfile } from '@/data/sampleCommunications';
+import { useToast } from '@/hooks/use-toast';
 
 interface Email {
   id: string;

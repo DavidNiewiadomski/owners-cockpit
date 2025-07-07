@@ -43,10 +43,11 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import {
+import type {
   AnyObject,
   ObjectSearchParams,
-  ObjectSearchResult,
+  ObjectSearchResult} from '@/types/objects';
+import {
   ProjectObject,
   CommunicationObject,
   DocumentObject,

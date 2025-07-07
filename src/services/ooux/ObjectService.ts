@@ -7,7 +7,7 @@
  */
 
 import { supabase } from '@/integrations/supabase/client';
-import {
+import type {
   ObjectId,
   ProjectObject,
   CommunicationObject,
@@ -15,7 +15,8 @@ import {
   ActionItemObject,
   UserObject,
   ObjectSearchParams,
-  ObjectSearchResult,
+  ObjectSearchResult} from '@/types/objects';
+import {
   ObjectAction,
   BaseObject
 } from '@/types/objects';

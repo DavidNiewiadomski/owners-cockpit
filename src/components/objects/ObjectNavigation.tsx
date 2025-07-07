@@ -42,10 +42,11 @@ import {
 import { cn } from '@/lib/utils';
 import { useRole } from '@/contexts/RoleContext';
 import { useRoleBasedAccess } from '@/hooks/useRoleBasedAccess';
-import {
+import type {
   AnyObject,
   ObjectSearchParams,
-  ProjectObject,
+  ProjectObject} from '@/types/objects';
+import {
   CommunicationObject,
   DocumentObject,
   ActionItemObject,

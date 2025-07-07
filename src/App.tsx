@@ -16,6 +16,16 @@ import SettingsAccessPage from '@/pages/SettingsAccessPage';
 import SettingsAuditPage from '@/pages/SettingsAuditPage';
 import OAuthCallback from '@/pages/auth/OAuthCallback';
 import NotFound from '@/pages/NotFound';
+import CrmKanban from '@/components/crm/CrmKanban';
+import BidAnalysisDashboard from '@/pages/BidAnalysisDashboard';
+import PrequalificationDashboard from '@/pages/PrequalificationDashboard';
+import ProcurementDashboard from '@/components/dashboards/ProcurementDashboard';
+import { RFPCreationWizard } from '@/components/procurement/RFPCreationWizard';
+import { RFPLayout } from '@/components/procurement/RFPLayout';
+import { AwardCenter } from '@/components/procurement/AwardCenter';
+import { VendorManagement } from '@/components/procurement/VendorManagement';
+import PrequalDashboard from '@/components/procurement/PrequalDashboard';
+import { RiskAnalysis } from '@/components/procurement/RiskAnalysis';
 
 const queryClient = new QueryClient();
 
@@ -46,7 +56,17 @@ function App() {
                   <Route path="/action-items" element={<ActionItemsPage />} />
                   <Route path="/settings/access" element={<SettingsAccessPage />} />
                   <Route path="/settings/audit" element={<SettingsAuditPage />} />
-                  <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
+                <Route path="/auth/callback/:provider" element={<OAuthCallback />} />
+                  <Route path="/procurement" element={<ProcurementDashboard />} />
+                  <Route path="/procurement/crm" element={<CrmKanban />} />
+                  <Route path="/procurement/rfp/create" element={<RFPCreationWizard />} />
+                  <Route path="/procurement/rfp/:id" element={<RFPLayout />} />
+                  <Route path="/procurement/awards" element={<AwardCenter />} />
+                  <Route path="/procurement/vendors" element={<VendorManagement />} />
+                  <Route path="/procurement/prequalification" element={<PrequalDashboard />} />
+                  <Route path="/procurement/risk-analysis/:bidId" element={<RiskAnalysis />} />
+                  <Route path="/bid-analysis" element={<BidAnalysisDashboard />} />
+                  <Route path="/prequalification" element={<PrequalificationDashboard />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </SettingsProvider>

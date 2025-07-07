@@ -102,83 +102,70 @@ class ConversationalAIService {
     const startTime = Date.now();
     
     try {
-      if (!this.isInitialized) {
-        return this.createErrorResponse('AI service not initialized', startTime);
+      console.log('🤖 Processing conversation via Supabase Edge Function...');
+      
+      // Call our Supabase Edge Function instead of browser-based AI
+      const { supabase } = await import('@/integrations/supabase/client');
+      
+      const { data, error } = await supabase.functions.invoke('construction-assistant', {
+        body: {
+          message: request.message,
+          user_id: request.userId || 'demo_user',
+          project_id: request.projectId,
+          conversation_id: `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          task_type: 'analysis',
+          latency_requirement: request.priority === 'urgent' ? 'low' : 'medium',
+          ai_budget: 1000, // 10 dollars in cents
+          enable_voice: request.enableVoice || false,
+          voice_optimized: false,
+          context: request.context,
+          tools_enabled: true,
+          require_approval: false
+        }
+      });
+      
+      if (error) {
+        console.error('❌ Edge Function error:', error);
+        throw new Error(`AI processing failed: ${error.message}`);
       }
-
-      // Start or continue conversation session
+      
+      if (!data) {
+        throw new Error('No response from AI service');
+      }
+      
+      console.log('✅ AI Response received:', {
+        model: data.model_info?.final_model_used,
+        tokens: data.model_info?.token_count,
+        cost: data.model_info?.estimated_cost_cents
+      });
+      
+      // Start or continue conversation session for local memory
       let sessionId = conversationalMemory.getCurrentSession()?.id;
       if (!sessionId) {
         sessionId = conversationalMemory.startSession(request.projectId, request.userId);
       }
 
-      // Add user message to memory
+      // Add messages to local memory
       conversationalMemory.addMessage(request.message, 'user', {
         context: request.context,
         priority: request.priority
       });
-
-      // Analyze message for tool requirements
-      const toolCalls = await this.analyzeAndExecuteTools(request);
-
-      // Generate natural system prompt for Atlas (internal name only)
-      const systemPrompt = `You are an experienced construction project manager and AI assistant. You have 15+ years in construction management and speak naturally like a human expert.
-
-Key traits:
-- Respond conversationally and directly to questions
-- Never mention you're an AI, your name, or explain your capabilities unless specifically asked
-- Give practical, actionable advice based on construction expertise
-- Use industry terminology naturally
-- Be concise but thorough
-- If asked about portfolio risks, analyze and list the top 3-5 specific risks with brief explanations
-- Speak as if you are a knowledgeable human construction expert
-
-Current context: Project ${request.projectId}, viewing ${request.context?.activeView || 'dashboard'}
-
-Respond naturally and directly to the user's question without revealing your identity.`;
       
-      // Get conversation context
-      const conversationHistory = conversationalMemory.getConversationContext(10);
-
-      // Generate AI response
-      const aiResponse = await this.generateResponse({
-        systemPrompt,
-        conversationHistory,
-        currentMessage: request.message,
-        toolResults: toolCalls,
-        projectId: request.projectId
-      });
-
-      // Add AI response to memory
-      conversationalMemory.addMessage(aiResponse.content, 'assistant', {
-        toolCalls,
+      conversationalMemory.addMessage(data.response, 'assistant', {
+        toolCalls: data.tool_results || [],
         context: request.context
       });
 
-      // Generate voice if enabled
-      let audioUrl: string | undefined;
-      if (request.enableVoice && this.config.enableVoice) {
-        const voiceResult = await elevenLabsVoiceService.synthesizeSpeech(
-          aiResponse.content,
-          this.config.voiceName,
-          { optimize: true, stream: false }
-        );
-        
-        if (voiceResult.success && voiceResult.audioUrl) {
-          audioUrl = voiceResult.audioUrl;
-        }
-      }
-
       return {
-        message: aiResponse.content,
-        audioUrl,
-        toolCalls,
+        message: data.response,
+        audioUrl: data.audio_url,
+        toolCalls: data.tool_results || [],
         metadata: {
-          model: aiResponse.model,
-          tokens: aiResponse.tokens,
+          model: data.model_info?.final_model_used || 'unknown',
+          tokens: data.model_info?.token_count || 0,
           responseTime: Date.now() - startTime,
-          hasVoice: !!audioUrl,
-          toolsUsed: toolCalls.map(t => t.name)
+          hasVoice: !!data.audio_url,
+          toolsUsed: (data.tool_results || []).map((t: any) => t.name || 'tool')
         },
         success: true
       };

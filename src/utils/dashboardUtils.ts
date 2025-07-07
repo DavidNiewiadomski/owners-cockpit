@@ -10,6 +10,7 @@ export const getDashboardTitle = (category: string, projectName?: string): Dashb
   const categoryTitleMap: Record<string, string> = {
     'Overview': 'Overview Dashboard',
     'Planning': 'Planning Dashboard',
+    'Procurement': 'Procurement Dashboard',
     'Preconstruction': 'Preconstruction Dashboard',
     'Design': 'Design Dashboard',
     'Construction': 'Construction Dashboard',
@@ -32,6 +33,7 @@ export const getCategoryDisplayName = (category: string): string => {
   const categoryMap: Record<string, string> = {
     'Overview': 'Overview',
     'Planning': 'Planning',
+    'Procurement': 'Procurement',
     'Design': 'Design',
     'Preconstruction': 'Preconstruction',
     'Construction': 'Construction',

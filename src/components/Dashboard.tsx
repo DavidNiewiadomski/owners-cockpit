@@ -1,9 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRole } from '@/contexts/RoleContext';
+import Division1Dashboard from '@/components/dashboards/Division1Dashboard';
 import OverviewDashboard from '@/components/dashboards/OverviewDashboard';
 import PlanningDashboard from '@/components/dashboards/PlanningDashboard';
 import DesignDashboard from '@/components/dashboards/DesignDashboard';
+import ProcurementDashboard from '@/components/dashboards/ProcurementDashboard';
 import PreconstructionDashboard from '@/components/dashboards/PreconstructionDashboard';
 import ConstructionDashboard from '@/components/dashboards/ConstructionDashboard';
 import SustainabilityDashboard from '@/components/dashboards/SustainabilityDashboard';
@@ -72,16 +74,22 @@ const Dashboard: React.FC<DashboardProps> = ({ projectId }) => {
 
   // ALWAYS use activeCategory to render the correct dashboard
   switch (activeCategory) {
+    case 'Division 1': 
+      console.log('DEBUG: Rendering Division1Dashboard');
+      return <Division1Dashboard />;
     case 'Overview': 
       console.log('DEBUG: Rendering OverviewDashboard');
       return <OverviewDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Planning': 
       console.log('DEBUG: Rendering PlanningDashboard');
       return <PlanningDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
-    case 'Design': 
+    case 'Design':
       console.log('DEBUG: Rendering DesignDashboard');
       return <DesignDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
-    case 'Preconstruction': 
+    case 'Procurement':
+      console.log('DEBUG: Rendering ProcurementDashboard');
+      return <ProcurementDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
+    case 'Preconstruction':
       console.log('DEBUG: Rendering PreconstructionDashboard');
       return <PreconstructionDashboard projectId={effectiveProjectId} activeCategory={activeCategory} />;
     case 'Construction': 
