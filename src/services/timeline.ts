@@ -5,11 +5,11 @@ export class TimelineService {
   /**
    * Validates a timeline for consistency and compliance with RFP rules
    */
-  static validateTimeline(events: TimelineEvent[]): {
+  static async validateTimeline(events: TimelineEvent[]): Promise<{
     valid: boolean;
     warnings: string[];
     errors: string[];
-  } {
+  }> {
     const warnings: string[] = [];
     const errors: string[] = [];
 
@@ -161,7 +161,7 @@ export class TimelineService {
         new Date(criticalPathEvents[criticalPathEvents.length - 1].date),
         new Date(criticalPathEvents[0].date)
       ),
-      tightDependencies: events.some(e => e.dependencies?.length > 2),
+      tightDependencies: events.some(e => (e.dependencies?.length ?? 0) > 2),
       shortDuration: events.some(e => e.duration === 1),
     };
     const riskScore = Object.values(riskFactors).filter(Boolean).length * 33.33;
@@ -181,7 +181,7 @@ export class TimelineService {
   /**
    * Generates a recommended timeline based on RFP requirements
    */
-  static generateRecommendedTimeline(
+  static async generateRecommendedTimeline(
     startDate: string,
     requirements: {
       requirePreBidConference?: boolean;
@@ -189,7 +189,7 @@ export class TimelineService {
       requireLegalReview?: boolean;
       complexityLevel?: 'low' | 'medium' | 'high';
     } = {}
-  ): TimelineEvent[] {
+  ): Promise<TimelineEvent[]> {
     const timeline: TimelineEvent[] = [];
     let currentDate = new Date(startDate);
     let currentId = 1;

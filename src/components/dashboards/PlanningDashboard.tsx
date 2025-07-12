@@ -30,6 +30,9 @@ import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 import { ProcurementManager } from '@/components/procurement/ProcurementManager';
 // import { useRfps } from '@/hooks/useRfpData';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface PlanningDashboardProps {
   projectId: string;
@@ -37,6 +40,7 @@ interface PlanningDashboardProps {
 }
 
 const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, activeCategory }) => {
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -287,6 +291,103 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
     }
   };
   
+  // Button click handlers
+  const handleReviewProjectBrief = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning/brief', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to view brief'
+    });
+    if (validProjectId) {
+      toast.success('Loading project brief');
+    }
+  };
+
+  const handleFinalizeSiteSelection = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning/site-selection', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project for site selection'
+    });
+    if (validProjectId) {
+      toast.info('Opening site selection analysis');
+    }
+  };
+
+  const handleScheduleStakeholderMeetings = () => {
+    // External calendar doesn't need project validation
+    toast.info('Opening calendar for stakeholder meetings');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Stakeholder+Meeting', '_blank');
+  };
+
+  const handleReviewBusinessCase = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning/business-case', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to review business case'
+    });
+    if (validProjectId) {
+      toast.success('Loading business case review');
+    }
+  };
+
+  const handleUpdateRiskMitigation = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning/risk', validProjectId, {
+      allowPortfolio: true, // Risk can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for risk mitigation'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Opening risk mitigation dashboard');
+    }
+  };
+
+  const handleFinancialModelReview = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/finance', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to view financial model',
+      additionalParams: { view: 'model' }
+    });
+    if (validProjectId) {
+      toast.success('Loading financial model');
+    }
+  };
+
+  const handleProjectAnalytics = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/analytics', validProjectId, {
+      allowPortfolio: true, // Analytics can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for analytics'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening project analytics');
+    }
+  };
+
+  const handleScheduleReview = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning/schedule', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to view schedule'
+    });
+    if (validProjectId) {
+      toast.info('Loading project schedule');
+    }
+  };
+
+  const handleApprovalQueue = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/action-items', validProjectId, {
+      allowPortfolio: true, // Action items can be viewed at portfolio level
+      fallbackMessage: 'Please select a project to view approvals',
+      additionalParams: { filter: 'approvals' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Navigating to pending approvals');
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Planning Header */}
@@ -400,33 +501,55 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <Button 
                 variant="outline" 
                 className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+                onClick={handleReviewProjectBrief}
               >
                 <FileText className="w-4 h-4 mr-2" />
                 Review Project Brief
               </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleFinalizeSiteSelection}
+            >
               <Target className="w-4 h-4 mr-2" />
               Finalize Site Selection
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleScheduleStakeholderMeetings}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Stakeholder Meetings
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewBusinessCase}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Review Business Case
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateRiskMitigation}
+            >
               <Shield className="w-4 h-4 mr-2" />
               Update Risk Mitigation
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleFinancialModelReview}
+            >
               <DollarSign className="w-4 h-4 mr-2" />
               Financial Model Review
             </Button>
               <Button 
                 variant="outline" 
                 className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+                onClick={handleProjectAnalytics}
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
                 Project Analytics
@@ -434,6 +557,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <Button 
                 variant="outline" 
                 className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+                onClick={handleScheduleReview}
               >
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule Review
@@ -441,6 +565,7 @@ const PlanningDashboard: React.FC<PlanningDashboardProps> = ({ projectId, active
               <Button 
                 variant="outline" 
                 className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+                onClick={handleApprovalQueue}
               >
                 <CheckCircle2 className="w-4 h-4 mr-2" />
                 Approval Queue

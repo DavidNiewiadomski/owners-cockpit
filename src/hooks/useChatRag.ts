@@ -87,52 +87,53 @@ export function useChatRag({ projectId }: { projectId: string }): UseChatRagResu
     try {
       console.log('🤖 Sending message to AI:', content);
 
-      // For demo purposes, create a simulated response
-      // TODO: Replace with actual Supabase function call when deployed
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-      
-      const demoResponses = [
-        "I'm your AI-powered construction assistant! I can help you with project management, risk analysis, compliance checks, and much more. What would you like to know about your project?",
-        "Based on your query, I can analyze construction data, review documents, track project progress, and provide insights. I'm currently in demo mode - once fully connected, I'll have access to all your project data.",
-        "I understand you're looking for information about your construction project. In the full system, I'll be able to access real-time data, documents, communications, and provide detailed analysis. How can I assist you today?",
-        "Great question! In a fully operational state, I can help with: risk assessments, compliance monitoring, schedule optimization, cost analysis, document review, and communication summaries. What specific area interests you?"
-      ];
-      
-      const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
+      // Check if query needs external search
+      const needsSearch = content.toLowerCase().includes('weather') || content.toLowerCase().includes('market') || content.toLowerCase().includes('news');
+      let externalData = '';
+      if (needsSearch) {
+        // Mock external search instead of tool
+        let externalData = '';
+        if (needsSearch) {
+          // Simulate web search with fetch or mock
+          try {
+            const response = await fetch(`https://api.example.com/search?q=${encodeURIComponent(content)}`);
+            const data = await response.json();
+            externalData = data.results ? data.results.join('\n') : '';
+          } catch {} // Ignore errors
+        }
+      }
+
+      // Query seeded DB for project context
+      const { data: projectData } = await supabase.from('projects').select('*').limit(1);
+      const context = projectData ? JSON.stringify(projectData[0]) : 'No project data';
+
+      // Call actual Supabase function with enhanced prompt
+      const result = await supabase.functions.invoke('chatRag', {
+        body: {
+          question: content,
+          project_id: projectId,
+          context: { external: externalData, db: context },
+          match_count: 8
+        }
+      });
+
+      if (result.error) throw result.error;
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: randomResponse,
+        content: result.data.answer || 'No response',
         timestamp: new Date().toISOString(),
-        citations: [
-          {
-            id: 'demo-1',
-            snippet: 'Demo citation from project documentation...',
-            source: 'document' as const,
-            similarity: 0.85
-          }
-        ]
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-
     } catch (err) {
-      console.error('❌ Chat error:', err);
-      setError(err as Error);
-      
-      const errorMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: 'Sorry, I encountered an error while processing your request. Please try again.',
-        timestamp: new Date().toISOString(),
-      };
-
-      setMessages(prev => [...prev, errorMessage]);
+      setError(new Error('Failed to process message'));
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
-  }, [projectId, conversationId]);
+  }, [projectId]);
 
   return {
     messages,

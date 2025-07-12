@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,13 @@ import {
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 import { useDesignMetrics } from '@/hooks/useProjectMetrics';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
+import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
+import { AutonomousAgent } from '@/lib/ai/autonomous-agent';
 
 interface DesignDashboardProps {
   projectId: string;
@@ -29,6 +36,7 @@ interface DesignDashboardProps {
 }
 
 const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCategory }) => {
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -36,6 +44,10 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
   const firstActiveProject = projects.find(p => p.status === 'active') || projects[0];
   const displayProjectId = isPortfolioView ? (firstActiveProject?.id || null) : projectId;
   
+  if (!displayProjectId) {
+    return <div>Loading design dashboard...</div>;
+  }
+
   const { data: designMetrics, error, isLoading } = useDesignMetrics(displayProjectId);
   const loading = isLoading;
   
@@ -64,6 +76,13 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     stakeholder_approvals: 91,
     design_changes: 8
   } : fallbackData);
+
+  useEffect(() => {
+    if (displayProjectId) {
+      const agent = new AutonomousAgent('user', displayProjectId);
+      agent.operate('Review design changes', 'autonomous');
+    }
+  }, [displayProjectId]);
 
   if (error && !isPortfolioView) {
     console.error('Error fetching design metrics:', error);
@@ -118,6 +137,77 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
     { category: 'Windows', selected: 'High-Performance Glass', alternatives: ['Standard Glass', 'Energy Glass'], cost: 450, unit: 'sq ft', quantity: 1800, status: 'approved', supplier: 'Window Systems Inc.' },
     { category: 'Exterior Cladding', selected: 'Premium Aluminum', alternatives: ['Standard Aluminum', 'Composite'], cost: 85, unit: 'sq ft', quantity: 3200, status: 'approved', supplier: 'Cladding Solutions LLC' }
   ];
+
+  const [uploadedDesigns, setUploadedDesigns] = useState<string[]>([]);
+
+  // Use imported supabase directly
+  const { toast } = useToast();
+
+  // Modular async handler for uploads
+  const handleUploadDesign = async () => {
+    try {
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.pdf,.dwg,.jpg,.png';
+      fileInput.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (file) {
+          if (!['application/pdf', 'image/jpeg', 'image/png', 'application/x-autocad'].includes(file.type)) {
+            throw new Error('Invalid file type');
+          }
+          const { data, error } = await supabase.storage.from('designs').upload(`${projectId}/${file.name}`, file);
+          if (error) throw error;
+          setUploadedDesigns(prev => [...prev, file.name]);
+          toast({ title: 'Success', description: `Uploaded: ${file.name}`, variant: 'default' });
+        }
+      };
+      fileInput.click();
+    } catch (error) {
+      toast({ title: 'Error', description: 'Upload failed: ' + (error as Error).message, variant: 'destructive' });
+    }
+  };
+
+  // Modular async handler for downloads (simulate with Blob)
+  const handleDownloadPlans = async () => {
+    try {
+      const validProjectId = getValidProjectId(projectId, isPortfolioView);
+      if (!validProjectId && !isPortfolioView) {
+        toast({ title: 'Warning', description: 'Please select a project to download plans', variant: 'default' });
+        return;
+      }
+      const { data, error } = await supabase.storage.from('designs').download(`${validProjectId}/plans.pdf`);
+      if (error) throw error;
+      const url = URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `plans_${validProjectId}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast({ title: 'Success', description: 'Plans downloaded', variant: 'default' });
+    } catch (error) {
+      toast({ title: 'Error', description: 'Download failed: ' + (error as Error).message, variant: 'destructive' });
+    }
+  };
+
+  const handleReviewSubmissions = () => {
+    router.push(`/planning/brief?projectId=${displayProjectId}&view=submissions`);
+    toast({ title: 'Success', description: 'Loading design submissions for review', variant: 'default' });
+  };
+
+  const handleDesignerMeeting = () => {
+    toast({ title: 'Info', description: 'Opening calendar for designer meeting', variant: 'default' });
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Designer+Meeting', '_blank');
+  };
+
+  const handle3DModelView = () => {
+    router.push(`/3d-model?projectId=${displayProjectId}`);
+    toast({ title: 'Success', description: 'Opening 3D model viewer', variant: 'default' });
+  };
+
+  const handleApproveChanges = () => {
+    router.push(`/action-items?type=approvals&projectId=${displayProjectId}`);
+    toast({ title: 'Info', description: 'Navigating to pending design approvals', variant: 'default' });
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
@@ -229,27 +319,50 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-blue-600 hover:bg-blue-700 text-foreground">
+            <Button 
+              className="justify-start bg-blue-600 hover:bg-blue-700 text-foreground"
+              onClick={handleUploadDesign}
+            >
               <FileImage className="w-4 h-4 mr-2" />
               Upload Design
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewSubmissions}
+            >
               <Eye className="w-4 h-4 mr-2" />
               Review Submissions
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleDesignerMeeting}
+            >
               <MessageSquare className="w-4 h-4 mr-2" />
               Designer Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleDownloadPlans}
+            >
               <Download className="w-4 h-4 mr-2" />
               Download Plans
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handle3DModelView}
+            >
               <Ruler className="w-4 h-4 mr-2" />
               3D Model View
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleApproveChanges}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Changes
             </Button>
@@ -491,6 +604,14 @@ const DesignDashboard: React.FC<DesignDashboardProps> = ({ projectId, activeCate
           </div>
         </CardContent>
       </Card>
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold text-foreground mb-2">Uploaded Designs</h3>
+        <ul>
+          {uploadedDesigns.map((design, idx) => (
+            <li key={idx}>{design}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

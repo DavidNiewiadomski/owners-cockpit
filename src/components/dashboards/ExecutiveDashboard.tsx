@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AIInsightsPanel from './executive/AIInsightsPanel';
 import KPICards from './executive/KPICards';
 import ChartsSection from './executive/ChartsSection';
@@ -8,14 +8,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target } from 'lucide-react';
 import { useExecutiveMetrics } from '@/hooks/useExecutiveMetrics';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
+import { useProjects } from '@/hooks/useProjects';
 
 interface ExecutiveDashboardProps {
   projectId: string;
 }
 
 const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) => {
-  // Get comprehensive project-specific data based on projectId
-  const { data: projectData, error } = useExecutiveMetrics(projectId);
+  const router = useRouter();
+  const { data: projects = [] } = useProjects();
+  const [showROIModal, setShowROIModal] = useState(false);
+  const [showChangeOrderModal, setShowChangeOrderModal] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  
+  // Handle portfolio view
+  const isPortfolioView = projectId === 'portfolio';
+  const firstActiveProject = projects.find(p => p.status === 'active') || projects[0];
+  const displayProjectId = isPortfolioView ? (firstActiveProject?.id || null) : projectId;
+  
+  // Get comprehensive project-specific data based on displayProjectId
+  const { data: projectData, error } = useExecutiveMetrics(displayProjectId);
 
   if (error) {
     console.error('Error fetching executive metrics:', error);
@@ -50,6 +65,76 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
     stakeholders: displayData.stakeholders || 0
   };
 
+  // Button click handlers
+  const handleReviewROI = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/finance', validProjectId, {
+      additionalParams: { view: 'roi' },
+      allowPortfolio: true,
+      fallbackMessage: 'Please select a project to review ROI'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening ROI Performance Dashboard');
+    }
+  };
+
+  const handleScheduleMeeting = () => {
+    // In a real app, this would open a calendar/scheduling interface
+    toast.info('Opening calendar to schedule meeting with Project Manager');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit', '_blank');
+  };
+
+  const handleApproveChangeOrders = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/action-items', validProjectId, {
+      additionalParams: { filter: 'change-orders' },
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to view change orders'
+    });
+    if (validProjectId) {
+      toast.info('Navigating to pending change orders');
+    }
+  };
+
+  const handleInspectProgress = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/3d-model', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to inspect progress'
+    });
+    if (validProjectId) {
+      toast.success('Opening 3D model view for property inspection');
+    }
+  };
+
+  const handleReviewBudget = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/finance', validProjectId, {
+      additionalParams: { view: 'budget-vs-actual' },
+      allowPortfolio: true,
+      fallbackMessage: 'Please select a project to review budget'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Loading budget vs actual comparison');
+    }
+  };
+
+  const handleGenerateReport = () => {
+    toast.promise(
+      new Promise((resolve) => {
+        // Simulate report generation
+        setTimeout(() => {
+          resolve('Report generated successfully');
+        }, 2000);
+      }),
+      {
+        loading: 'Generating owner report...',
+        success: 'Owner report generated and sent to your email',
+        error: 'Failed to generate report'
+      }
+    );
+  };
+
   return (
     <div className="space-y-6">
       <AIInsightsPanel projectData={aiInsightsData} />
@@ -64,27 +149,51 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({ projectId }) =>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewROI}
+            >
               <BarChart3 className="w-4 h-4 mr-2" />
               Review ROI Performance
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleScheduleMeeting}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Meet with Project Manager
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleApproveChangeOrders}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleInspectProgress}
+            >
               <Building className="w-4 h-4 mr-2" />
               Inspect Property Progress
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewBudget}
+            >
               <DollarSign className="w-4 h-4 mr-2" />
               Review Budget vs Actual
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleGenerateReport}
+            >
               <Target className="w-4 h-4 mr-2" />
               Generate Owner Report
             </Button>

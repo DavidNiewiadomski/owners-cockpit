@@ -54,7 +54,7 @@ import {
 } from 'lucide-react';
 
 interface RFPLayoutProps {
-  projectId: string;
+  projectId?: string;
   teamMembers?: Array<{
     id: string;
     name: string;

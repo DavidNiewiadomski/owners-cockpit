@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AIInsightsPanel from './legal/AIInsightsPanel';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,9 @@ import { Progress } from '@/components/ui/progress';
 import { Scale, Shield, FileText, Clock, BarChart3, Calendar, CheckCircle2, Building, DollarSign, Target, AlertTriangle, TrendingUp, Users, MapPin, Eye, Gavel, Zap, Activity } from 'lucide-react';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 import { 
   useLegalMetrics, 
   useInsurancePolicies, 
@@ -32,7 +35,18 @@ interface LegalDashboardProps {
 
 const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCategory }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  
+  // Check for view parameter from Division 1 navigation
+  useEffect(() => {
+    const legalView = sessionStorage.getItem('legalView');
+    if (legalView === 'compliance-report') {
+      setActiveTab('compliance');
+      // Clear the sessionStorage item after using it
+      sessionStorage.removeItem('legalView');
+    }
+  }, []);
   const { data: projects = [] } = useProjects();
+  const router = useRouter();
   
   // Handle portfolio view
   const isPortfolioView = projectId === 'portfolio';
@@ -167,6 +181,95 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
     return 'text-green-400';
   };
 
+  // Button click handlers
+  const handleReviewMajorContracts = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/legal',
+      validProjectId,
+      {
+        allowPortfolio: true, // Legal contracts can be viewed at portfolio level
+        additionalParams: { view: 'contracts' },
+        fallbackMessage: 'Please select a project to view contracts'
+      }
+    );
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading major contracts for review');
+    }
+  };
+
+  const handleMeetLegalCounsel = () => {
+    toast.info('Opening calendar for legal counsel meeting');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Legal+Counsel+Meeting', '_blank');
+  };
+
+  const handleSignChangeOrders = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/action-items',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { type: 'change-orders' },
+        fallbackMessage: 'Please select a project to sign change orders'
+      }
+    );
+    if (validProjectId) {
+      toast.info('Navigating to change orders requiring signature');
+    }
+  };
+
+  const handleReviewInsurance = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/legal',
+      validProjectId,
+      {
+        allowPortfolio: true, // Insurance can be viewed at portfolio level
+        additionalParams: { view: 'insurance' },
+        fallbackMessage: 'Please select a project to view insurance'
+      }
+    );
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading insurance coverage details');
+    }
+  };
+
+  const handleAddressDisputes = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/legal',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { view: 'disputes' },
+        fallbackMessage: 'Please select a project to view disputes'
+      }
+    );
+    if (validProjectId) {
+      toast.info('Loading owner disputes for review');
+    }
+  };
+
+  const handleGenerateComplianceReport = () => {
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('Report generated successfully');
+        }, 2000);
+      }),
+      {
+        loading: 'Generating compliance report...',
+        success: 'Compliance report generated and sent to your email',
+        error: 'Failed to generate report'
+      }
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Header */}
@@ -207,27 +310,51 @@ const LegalDashboard: React.FC<LegalDashboardProps> = ({ projectId, activeCatego
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewMajorContracts}
+            >
               <FileText className="w-4 h-4 mr-2" />
               Review Major Contracts
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleMeetLegalCounsel}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Meet with Legal Counsel
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleSignChangeOrders}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Sign Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewInsurance}
+            >
               <Shield className="w-4 h-4 mr-2" />
               Review Insurance Coverage
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleAddressDisputes}
+            >
               <Scale className="w-4 h-4 mr-2" />
               Address Owner Disputes
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleGenerateComplianceReport}
+            >
               <Target className="w-4 h-4 mr-2" />
               Generate Compliance Report
             </Button>

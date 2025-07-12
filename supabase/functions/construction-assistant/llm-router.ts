@@ -44,6 +44,8 @@ export class LLMRouter {
 
   private getModelCostPer1kTokens(model: string): number {
     const costs: Record<string, number> = {
+      'azure-gpt-4': 1.5,
+      'azure-gpt-4-32k': 3.0,
       'gpt-4o': 1.5,
       'gpt-4o-mini': 0.15,
       'claude-3-5-sonnet-20241022': 1.5,
@@ -56,10 +58,14 @@ export class LLMRouter {
 
   private isApiKeyAvailable(provider: string): boolean {
     switch (provider) {
+      case 'azure':
+        return !!Deno.env.get('AZURE_OPENAI_KEY') && 
+               !!Deno.env.get('AZURE_OPENAI_ENDPOINT') && 
+               !!Deno.env.get('AZURE_OPENAI_DEPLOYMENT_NAME')
       case 'anthropic':
         return !!Deno.env.get('ANTHROPIC_API_KEY')
       case 'google':
-        return !!Deno.env.get('GEMINI_API_KEY')
+        return !!Deno.env.get('GEMINI_API_KEY') || !!Deno.env.get('GOOGLE_GEMINI_API_KEY')
       case 'openai':
         return !!Deno.env.get('OPENAI_API_KEY')
       default:
@@ -69,6 +75,10 @@ export class LLMRouter {
 
   private getAvailableModels(): string[] {
     const models: string[] = []
+    
+    if (this.isApiKeyAvailable('azure')) {
+      models.push('azure-gpt-4', 'azure-gpt-4-32k')
+    }
     
     if (this.isApiKeyAvailable('openai')) {
       models.push('gpt-4o', 'gpt-4o-mini')
@@ -123,25 +133,25 @@ export class LLMRouter {
       }
     }
     
-    // Task-specific model selection
+    // Task-specific model selection with Azure priority
     const taskModelMap: Record<string, string> = {
-      'vision': availableModels.includes('gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini',
-      'policy_doc': availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o',
-      'email_draft': availableModels.includes('claude-3-haiku-20240307') ? 'claude-3-haiku-20240307' : 'gpt-4o-mini',
-      'code_review': availableModels.includes('gpt-4o') ? 'gpt-4o' : 'claude-3-5-sonnet-20241022',
-      'creative_writing': availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o',
-      'translation': availableModels.includes('gemini-1.5-pro') ? 'gemini-1.5-pro' : 'gpt-4o',
+      'vision': availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini',
+      'policy_doc': availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o',
+      'email_draft': availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('claude-3-haiku-20240307') ? 'claude-3-haiku-20240307' : 'gpt-4o-mini',
+      'code_review': availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('gpt-4o') ? 'gpt-4o' : 'claude-3-5-sonnet-20241022',
+      'creative_writing': availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : 'gpt-4o',
+      'translation': availableModels.includes('gemini-1.5-pro') ? 'gemini-1.5-pro' : availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : 'gpt-4o',
       'summarization': tokenCount > 5000 
-        ? (availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o')
-        : (availableModels.includes('claude-3-haiku-20240307') ? 'claude-3-haiku-20240307' : 'gpt-4o-mini'),
+        ? (availableModels.includes('azure-gpt-4-32k') ? 'azure-gpt-4-32k' : availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o')
+        : (availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('claude-3-haiku-20240307') ? 'claude-3-haiku-20240307' : 'gpt-4o-mini'),
       'analysis': tokenCount > 180000
-        ? (availableModels.includes('gemini-1.5-pro') ? 'gemini-1.5-pro' : 'gpt-4o')
+        ? (availableModels.includes('gemini-1.5-pro') ? 'gemini-1.5-pro' : availableModels.includes('azure-gpt-4-32k') ? 'azure-gpt-4-32k' : 'gpt-4o')
         : tokenCount > 3000
-        ? (availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o')
-        : (availableModels.includes('gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini')
+        ? (availableModels.includes('azure-gpt-4-32k') ? 'azure-gpt-4-32k' : availableModels.includes('claude-3-5-sonnet-20241022') ? 'claude-3-5-sonnet-20241022' : 'gpt-4o')
+        : (availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('gpt-4o') ? 'gpt-4o' : 'gpt-4o-mini')
     }
     
-    const suggestedModel = taskModelMap[taskType] || (availableModels.includes('gpt-4o') ? 'gpt-4o' : availableModels[0])
+    const suggestedModel = taskModelMap[taskType] || (availableModels.includes('azure-gpt-4') ? 'azure-gpt-4' : availableModels.includes('gpt-4o') ? 'gpt-4o' : availableModels[0])
     
     // Final budget check
     const estimatedCost = (tokenCount / 1000) * this.getModelCostPer1kTokens(suggestedModel)
@@ -168,10 +178,11 @@ export class LLMRouter {
       hasKey: !!apiKey,
       keyLength: apiKey?.length || 0,
       keyPrefix: apiKey?.substring(0, 7) || 'none',
-      isPlaceholder: apiKey === 'your_openai_api_key_here'
+      startsWithSk: apiKey?.startsWith('sk-') || false
     })
     
-    if (!apiKey || apiKey === 'your_openai_api_key_here') {
+    if (!apiKey || apiKey.includes('your') || apiKey.includes('api-key-here') || apiKey.length < 20) {
+      console.log('⚠️ OpenAI API key not configured properly, using fallback mode');
       // Advanced dynamic response system that actually analyzes the question
       const userMessage = content.toLowerCase();
       const originalQuery = content;
@@ -284,9 +295,59 @@ export class LLMRouter {
     }
   }
 
+  private async callAzureOpenAI(content: string, model: string = 'azure-gpt-4'): Promise<any> {
+    const endpoint = Deno.env.get('AZURE_OPENAI_ENDPOINT')
+    const apiKey = Deno.env.get('AZURE_OPENAI_KEY')
+    const deploymentName = Deno.env.get('AZURE_OPENAI_DEPLOYMENT_NAME') || 'gpt-4-prod'
+    
+    if (!endpoint || !apiKey || apiKey.includes('your') || endpoint.includes('your')) {
+      console.log('⚠️ Azure OpenAI not configured properly');
+      throw new Error('Azure OpenAI configuration not available')
+    }
+    
+    console.log('🔷 Calling Azure OpenAI:', {
+      endpoint: endpoint.substring(0, 30) + '...',
+      deployment: deploymentName,
+      model: model
+    })
+    
+    const response = await fetch(
+      `${endpoint}/openai/deployments/${deploymentName}/chat/completions?api-version=2024-02-01`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': apiKey
+        },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: 'You are Atlas, an expert construction management AI assistant.' },
+            { role: 'user', content: content }
+          ],
+          temperature: 0.7,
+          max_tokens: 4000
+        })
+      }
+    )
+    
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(`Azure OpenAI API error: ${response.status} - ${error}`)
+    }
+    
+    const result = await response.json()
+    return {
+      content: result.choices[0].message.content,
+      usage: result.usage,
+      model: deploymentName,
+      provider: 'azure'
+    }
+  }
+
   private async callClaude(content: string, model: string = 'claude-3-5-sonnet-20241022'): Promise<any> {
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
-    if (!apiKey) {
+    if (!apiKey || apiKey.includes('your') || apiKey.includes('api-key-here')) {
+      console.log('⚠️ Anthropic API key not configured properly');
       throw new Error('Anthropic API key not available')
     }
 
@@ -321,8 +382,9 @@ export class LLMRouter {
   }
 
   private async callGemini(content: string): Promise<any> {
-    const apiKey = Deno.env.get('GEMINI_API_KEY')
-    if (!apiKey) {
+    const apiKey = Deno.env.get('GEMINI_API_KEY') || Deno.env.get('GOOGLE_GEMINI_API_KEY')
+    if (!apiKey || apiKey.includes('your') || apiKey.includes('api-key-here')) {
+      console.log('⚠️ Gemini API key not configured properly');
       throw new Error('Gemini API key not available')
     }
 
@@ -363,14 +425,23 @@ export class LLMRouter {
   }
 
   private async callModel(content: string, model: string): Promise<any> {
-    if (model.startsWith('gpt-')) {
-      return await this.callOpenAI(content, model)
-    } else if (model.startsWith('claude-')) {
-      return await this.callClaude(content, model)
-    } else if (model.startsWith('gemini-')) {
-      return await this.callGemini(content)
-    } else {
-      throw new Error(`Unsupported model: ${model}`)
+    console.log(`🚀 Attempting to call model: ${model}`);
+    
+    try {
+      if (model.startsWith('azure-')) {
+        return await this.callAzureOpenAI(content, model)
+      } else if (model.startsWith('gpt-')) {
+        return await this.callOpenAI(content, model)
+      } else if (model.startsWith('claude-')) {
+        return await this.callClaude(content, model)
+      } else if (model.startsWith('gemini-')) {
+        return await this.callGemini(content)
+      } else {
+        throw new Error(`Unsupported model: ${model}`)
+      }
+    } catch (error) {
+      console.log(`❌ Failed to call ${model}: ${error.message}`);
+      throw error;
     }
   }
 
@@ -429,12 +500,37 @@ export class LLMRouter {
     let finalModel = selectedModel
     
     try {
+      console.log(`📊 Model routing decision: ${selectedModel} (Available: ${availableModels.join(', ')})`);
       result = await this.callModel(params.content, selectedModel)
+      console.log(`✅ Successfully called ${selectedModel}`);
     } catch (error) {
-      console.log(`Failed to call ${selectedModel}, falling back to OpenAI: ${error.message}`)
+      console.log(`⚠️ Failed to call ${selectedModel}: ${error.message}`)
       
-      finalModel = tokenCount > 3000 ? 'gpt-4o' : 'gpt-4o-mini'
-      result = await this.callOpenAI(params.content, finalModel)
+      // Try fallback models in order
+      const fallbackModels = ['gpt-4o-mini', 'gpt-4o', 'claude-3-haiku-20240307', 'gemini-1.5-flash'];
+      let fallbackSuccess = false;
+      
+      for (const fallbackModel of fallbackModels) {
+        if (availableModels.includes(fallbackModel)) {
+          try {
+            console.log(`🔄 Trying fallback model: ${fallbackModel}`);
+            finalModel = fallbackModel;
+            result = await this.callModel(params.content, fallbackModel);
+            fallbackSuccess = true;
+            console.log(`✅ Fallback successful with ${fallbackModel}`);
+            break;
+          } catch (fallbackError) {
+            console.log(`❌ Fallback ${fallbackModel} also failed: ${fallbackError.message}`);
+          }
+        }
+      }
+      
+      if (!fallbackSuccess) {
+        // Last resort - use the mock intelligent responses
+        console.log(`🤖 All API models failed, using intelligent fallback mode`);
+        finalModel = 'gpt-4o-mini';
+        result = await this.callOpenAI(params.content, finalModel);
+      }
     }
     
     const estimatedCost = Math.round((tokenCount / 1000) * this.getModelCostPer1kTokens(finalModel))

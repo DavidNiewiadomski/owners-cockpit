@@ -102,77 +102,64 @@ class ConversationalAIService {
     const startTime = Date.now();
     
     try {
-      console.log('🤖 Processing conversation via Supabase Edge Function...');
-      
-      // Call our Supabase Edge Function instead of browser-based AI
+      // Retrieve memory from DB
       const { supabase } = await import('@/integrations/supabase/client');
-      
-      const { data, error } = await supabase.functions.invoke('construction-assistant', {
-        body: {
-          message: request.message,
-          user_id: request.userId || 'demo_user',
-          project_id: request.projectId,
-          conversation_id: `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          task_type: 'analysis',
-          latency_requirement: request.priority === 'urgent' ? 'low' : 'medium',
-          ai_budget: 1000, // 10 dollars in cents
-          enable_voice: request.enableVoice || false,
-          voice_optimized: false,
-          context: request.context,
-          tools_enabled: true,
-          require_approval: false
-        }
-      });
-      
-      if (error) {
-        console.error('❌ Edge Function error:', error);
-        throw new Error(`AI processing failed: ${error.message}`);
-      }
-      
-      if (!data) {
-        throw new Error('No response from AI service');
-      }
-      
-      console.log('✅ AI Response received:', {
-        model: data.model_info?.final_model_used,
-        tokens: data.model_info?.token_count,
-        cost: data.model_info?.estimated_cost_cents
-      });
-      
-      // Start or continue conversation session for local memory
-      let sessionId = conversationalMemory.getCurrentSession()?.id;
-      if (!sessionId) {
-        sessionId = conversationalMemory.startSession(request.projectId, request.userId);
+      let conversationHistory = [];
+      if (request.userId) {
+        const { data: history } = await supabase.from('conversations').select('*').eq('user_id', request.userId).order('timestamp');
+        conversationHistory = history || [];
       }
 
-      // Add messages to local memory
-      conversationalMemory.addMessage(request.message, 'user', {
-        context: request.context,
-        priority: request.priority
-      });
-      
-      conversationalMemory.addMessage(data.response, 'assistant', {
-        toolCalls: data.tool_results || [],
-        context: request.context
+      // Intelligent tool execution
+      let toolResults = [];
+      if (request.message.includes('code') || request.message.includes('file')) {
+        const grepResult = await toolRegistry.executeTool('grep_search', { query: request.message });
+        toolResults.push(grepResult);
+      }
+      if (request.message.includes('weather') || request.message.includes('news')) {
+        const webResult = await toolRegistry.executeTool('web_search', { search_term: request.message });
+        toolResults.push(webResult);
+      }
+
+      // Generate response with tools and history
+      const response = await this.generateResponse({
+        systemPrompt: 'You are a helpful AI.',
+        conversationHistory,
+        currentMessage: request.message,
+        toolResults,
+        projectId: request.projectId
       });
 
-      return {
-        message: data.response,
-        audioUrl: data.audio_url,
-        toolCalls: data.tool_results || [],
-        metadata: {
-          model: data.model_info?.final_model_used || 'unknown',
-          tokens: data.model_info?.token_count || 0,
+      // Store in DB memory
+      await supabase.from('conversations').insert([
+        { id: crypto.randomUUID(), user_id: request.userId, message: request.message, role: 'user', timestamp: new Date().toISOString(), project_id: request.projectId, metadata: { priority: request.priority || 'normal' } },
+        { id: crypto.randomUUID(), user_id: request.userId, message: response.content, role: 'assistant', timestamp: new Date().toISOString(), project_id: request.projectId, metadata: { model: response.model, tokens: response.tokens } }
+      ]);
+
+      return { 
+        success: true, 
+        message: response.content, 
+        metadata: { 
+          tokens: response.tokens, 
+          model: response.model,
           responseTime: Date.now() - startTime,
-          hasVoice: !!data.audio_url,
-          toolsUsed: (data.tool_results || []).map((t: any) => t.name || 'tool')
-        },
-        success: true
+          hasVoice: false,
+          toolsUsed: toolResults.map(t => t.name)
+        } 
       };
-
     } catch (error) {
-      console.error('❌ Conversation processing failed:', error);
-      return this.createErrorResponse(error.message || 'Conversation processing failed', startTime);
+      return { 
+        success: false, 
+        error: (error as Error).message || 'Unknown error', 
+        message: '', 
+        metadata: { 
+          tokens: 0, 
+          model: '',
+          responseTime: Date.now() - startTime,
+          hasVoice: false,
+          toolsUsed: []
+        } 
+      };
     }
   }
 
@@ -260,14 +247,14 @@ class ConversationalAIService {
       }
     }
 
-    const messages = [
+    const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
       {
         role: 'system',
         content: params.systemPrompt + contextualInfo
       },
       ...params.conversationHistory.map(msg => ({
         role: msg.role === 'assistant' ? 'assistant' : 'user',
-        content: msg.content
+        content: msg.message  // Changed from msg.content to msg.message to match DB schema
       })),
       {
         role: 'user',

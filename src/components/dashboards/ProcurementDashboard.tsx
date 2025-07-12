@@ -57,10 +57,14 @@ import { AwardCenter } from '@/components/procurement/AwardCenter';
 import LeadTimeTracker from '@/components/procurement/LeadTimeTracker';
 import { ComplianceVerification } from '@/components/procurement/ComplianceVerification';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import jsPDF from 'jspdf';
+import { AutonomousAgent } from '@/lib/ai/autonomous-agent';
+import { useEffect } from 'react';
 
 interface ProcurementDashboardProps {
-  projectId: string;
-  activeCategory: string;
+  projectId?: string;
+  activeCategory?: string;
 }
 
 const ProcurementDashboard: React.FC<ProcurementDashboardProps> = ({ 
@@ -273,7 +277,7 @@ const ProcurementDashboard: React.FC<ProcurementDashboardProps> = ({
     }
   };
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
     switch (action) {
       case 'new-rfp':
         setActiveTab('rfp');
@@ -296,17 +300,21 @@ const ProcurementDashboard: React.FC<ProcurementDashboardProps> = ({
         break;
       case 'performance-report':
         setActiveTab('performance');
-        toast({
-          title: "Performance Report",
-          description: "Generating procurement performance analytics report...",
-        });
-        // Simulate report generation
-        setTimeout(() => {
-          toast({
-            title: "Report Ready",
-            description: "Your procurement performance report has been generated and downloaded.",
-          });
-        }, 2000);
+        try {
+          // Use imported supabase
+          const { data: reportData } = await supabase.from('procurement_reports').select('*').eq('project_id', projectId).single();
+          if (reportData) {
+            const doc = new jsPDF();
+            doc.text('Procurement Performance Report', 10, 10);
+            doc.text(JSON.stringify(reportData, null, 2), 10, 20);
+            doc.save('procurement-report.pdf');
+            toast({ title: 'Success', description: 'Performance report generated and downloaded.' });
+          } else {
+            toast({ title: 'Error', description: 'No report data found.', variant: 'destructive' });
+          }
+        } catch (error) {
+          toast({ title: 'Error', description: 'Failed to generate report.', variant: 'destructive' });
+        }
         break;
     }
   };
@@ -832,6 +840,15 @@ const renderRFPTab = () => (
       </Card>
     </div>
   );
+
+  useEffect(() => {
+    const agent = new AutonomousAgent('user', displayProjectId);
+    agent.operate('Optimize vendor selection', 'autonomous');
+  }, [displayProjectId]);
+
+  if (!displayProjectId) {
+    return <div>Loading procurement data...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">

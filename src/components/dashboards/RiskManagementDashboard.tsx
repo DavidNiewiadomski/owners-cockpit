@@ -42,6 +42,9 @@ import {
 } from 'recharts';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface RiskManagementDashboardProps {
   projectId: string;
@@ -50,6 +53,7 @@ interface RiskManagementDashboardProps {
 
 const RiskManagementDashboard: React.FC<RiskManagementDashboardProps> = ({ projectId, activeCategory }) => {
   const [activeTab, setActiveTab] = useState('overview');
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -257,6 +261,72 @@ const RiskManagementDashboard: React.FC<RiskManagementDashboardProps> = ({ proje
 
   const pieColors = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
 
+  // Button click handlers
+  const handleReviewCriticalRisks = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/risk-management', validProjectId, {
+      additionalParams: { view: 'critical-risks' },
+      allowPortfolio: true,
+      fallbackMessage: 'Select a project to review its critical risks'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening critical risks dashboard');
+    }
+  };
+
+  const handleUpdateInsurance = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/legal', validProjectId, {
+      additionalParams: { view: 'insurance-management' },
+      allowPortfolio: true,
+      fallbackMessage: 'Select a project to manage its insurance'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Opening insurance management portal');
+    }
+  };
+
+  const handleComplianceAudit = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/legal', validProjectId, {
+      additionalParams: { view: 'compliance-audit' },
+      allowPortfolio: true,
+      fallbackMessage: 'Select a project to view its compliance audit'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading compliance audit dashboard');
+    }
+  };
+
+  const handleRiskAssessment = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/risk-management', validProjectId, {
+      additionalParams: { view: 'assessment-tool' },
+      allowPortfolio: true,
+      fallbackMessage: 'Select a project to assess its risks'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Opening risk assessment tool');
+    }
+  };
+
+  const handleTeamMeeting = () => {
+    toast.info('Opening calendar to schedule risk management meeting');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Risk+Management+Team+Meeting', '_blank');
+  };
+
+  const handleMonitorTrends = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/risk-management', validProjectId, {
+      additionalParams: { view: 'trend-analysis' },
+      allowPortfolio: true,
+      fallbackMessage: 'Select a project to monitor its risk trends'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading risk trend analysis');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Header */}
@@ -372,27 +442,51 @@ const RiskManagementDashboard: React.FC<RiskManagementDashboardProps> = ({ proje
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewCriticalRisks}
+            >
               <AlertTriangle className="w-4 h-4 mr-2" />
               Review Critical Risks
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateInsurance}
+            >
               <Shield className="w-4 h-4 mr-2" />
               Update Insurance
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleComplianceAudit}
+            >
               <FileText className="w-4 h-4 mr-2" />
               Compliance Audit
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleRiskAssessment}
+            >
               <BarChart3 className="w-4 h-4 mr-2" />
               Risk Assessment
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleTeamMeeting}
+            >
               <Users className="w-4 h-4 mr-2" />
               Team Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleMonitorTrends}
+            >
               <Eye className="w-4 h-4 mr-2" />
               Monitor Trends
             </Button>

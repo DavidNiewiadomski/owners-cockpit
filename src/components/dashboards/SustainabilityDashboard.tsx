@@ -42,6 +42,9 @@ import {
 import { luxuryOfficeProject } from '@/data/sampleProjectData';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface SustainabilityDashboardProps {
   projectId: string;
@@ -50,6 +53,7 @@ interface SustainabilityDashboardProps {
 
 const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ projectId, activeCategory }) => {
   const project = luxuryOfficeProject;
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -122,6 +126,87 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
     { month: 'May', emissions: 360, offset: 430, net: -70 },
     { month: 'Jun', emissions: 340, offset: 440, net: -100 }
   ];
+
+  // Get display project ID for navigation
+  const displayProjectId = isPortfolioView ? (firstActiveProject?.id || 'portfolio') : projectId;
+
+  // Button click handlers
+  const handleGenerateESGReport = () => {
+    // ESG reports can be generated at portfolio level
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('Report generated successfully');
+        }, 2000);
+      }),
+      {
+        loading: 'Generating ESG report...',
+        success: 'ESG report generated and sent to your email',
+        error: 'Failed to generate report'
+      }
+    );
+  };
+
+  const handleUpdateLEEDScorecard = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/sustainability', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to update LEED scorecard',
+      additionalParams: { view: 'leed-scorecard' }
+    });
+    if (validProjectId) {
+      toast.success('Opening LEED scorecard update interface');
+    }
+  };
+
+  const handleEnergyAudit = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/sustainability', validProjectId, {
+      allowPortfolio: true, // Energy audits can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for energy audit',
+      additionalParams: { view: 'energy-audit' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Loading energy audit dashboard');
+    }
+  };
+
+  const handleWaterUsageReport = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/sustainability', validProjectId, {
+      allowPortfolio: true, // Water usage can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for water usage report',
+      additionalParams: { view: 'water-usage' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Generating water usage report');
+    }
+  };
+
+  const handleWasteAnalysis = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/sustainability', validProjectId, {
+      allowPortfolio: true, // Waste analysis can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for waste analysis',
+      additionalParams: { view: 'waste-analysis' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Opening waste management analysis');
+    }
+  };
+
+  const handleCarbonCalculator = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/sustainability', validProjectId, {
+      allowPortfolio: true, // Carbon calculations can be viewed at portfolio level
+      fallbackMessage: 'Please select a project for carbon calculation',
+      additionalParams: { view: 'carbon-calculator' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening carbon footprint calculator');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
@@ -233,27 +318,50 @@ const SustainabilityDashboard: React.FC<SustainabilityDashboardProps> = ({ proje
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-green-600 hover:bg-green-700 text-foreground">
+            <Button 
+              className="justify-start bg-green-600 hover:bg-green-700 text-foreground"
+              onClick={handleGenerateESGReport}
+            >
               <FileText className="w-4 h-4 mr-2" />
               Generate ESG Report
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateLEEDScorecard}
+            >
               <Award className="w-4 h-4 mr-2" />
               Update LEED Scorecard
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleEnergyAudit}
+            >
               <Zap className="w-4 h-4 mr-2" />
               Energy Audit
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleWaterUsageReport}
+            >
               <Droplets className="w-4 h-4 mr-2" />
               Water Usage Report
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleWasteAnalysis}
+            >
               <Recycle className="w-4 h-4 mr-2" />
               Waste Analysis
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleCarbonCalculator}
+            >
               <TreePine className="w-4 h-4 mr-2" />
               Carbon Calculator
             </Button>

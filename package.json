@@ -11,7 +11,11 @@
     "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "ai-proxy": "cd services/ai-proxy && npm start",
+    "ai-proxy:dev": "cd services/ai-proxy && npm run dev",
+    "ai-proxy:setup": "./scripts/setup-ai-proxy.sh",
+    "dev:all": "echo 'Start both servers in separate terminals:\\n  npm run dev\\n  npm run ai-proxy'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.55.0",
@@ -63,6 +67,7 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.0.5",
     "elevenlabs": "^1.59.0",
     "embla-carousel-react": "^8.3.0",
     "formik": "^2.4.6",
@@ -70,6 +75,7 @@
     "hotkeys-js": "^3.13.14",
     "i18next": "^25.2.1",
     "input-otp": "^1.2.4",
+    "jspdf": "^3.0.1",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
     "openai": "^5.7.0",
@@ -99,11 +105,13 @@
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
+    "cypress": "^14.5.1",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",

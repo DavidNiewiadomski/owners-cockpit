@@ -14,13 +14,8 @@ const AIChat: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const initAI = async () => {
-      await conversationalAI.initialize({
-        openai: process.env.OPENAI_API_KEY,
-        elevenlabs: process.env.ELEVENLABS_API_KEY
-      });
-    };
-    initAI();
+    // AI is initialized through Supabase edge functions
+    // No need to pass API keys in the browser
   }, []);
 
   const handleSend = async () => {
@@ -34,7 +29,9 @@ const AIChat: React.FC = () => {
     try {
       const response = await conversationalAI.processConversation({
         message: input,
-        projectId: 'currentProject'
+        projectId: 'currentProject',
+        enableVoice: true,
+        priority: 'normal'
       });
       const assistantMessage = { role: 'assistant', content: response.message };
       setMessages(prev => [...prev, assistantMessage]);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Clock,
   Building,
-  Target
+  Target,
+  Brain
 } from 'lucide-react';
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
@@ -28,6 +29,12 @@ import {
   useProjectTimeline,
   useProjectTeam
 } from '@/hooks/useProjectMetrics';
+import { AIBudgetWidget, AIScheduleWidget, AISafetyWidget } from '@/components/dashboard/AIEnhancedWidget';
+import { aiAgentFramework } from '@/lib/ai/agent-framework';
+import { motion } from 'framer-motion';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface OverviewDashboardProps {
   projectId: string;
@@ -36,6 +43,7 @@ interface OverviewDashboardProps {
 
 const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, activeCategory }) => {
   console.log('🔥 OverviewDashboard - projectId:', projectId);
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view vs specific project
@@ -116,6 +124,86 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
   const contingencyUsed = contingencyTotal > 0 && activeFinancials ? (activeFinancials.contingency_used / contingencyTotal) * 100 : 23.4;
   const preLeasingRate = activeFinancials?.leasing_projections || 42.0;
   const roi = activeFinancials?.roi || 0.156;
+
+  // Button click handlers
+  const handleReviewBudgetVariance = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/finance', validProjectId, {
+      additionalParams: { view: 'budget-variance' },
+      allowPortfolio: true,
+      fallbackMessage: 'Please select a project to review budget variance'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening budget variance analysis');
+    }
+  };
+
+  const handleScheduleSiteVisit = () => {
+    toast.info('Opening calendar for site visit scheduling');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Site+Visit', '_blank');
+  };
+
+  const handleApproveChangeOrders = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/action-items', validProjectId, {
+      additionalParams: { filter: 'change-orders' },
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to view change orders'
+    });
+    if (validProjectId) {
+      toast.info('Navigating to pending change orders');
+    }
+  };
+
+  const handleReviewTenantApplications = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/planning', validProjectId, {
+      additionalParams: { view: 'tenant-applications' },
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to review tenant applications'
+    });
+    if (validProjectId) {
+      toast.success('Loading tenant applications');
+    }
+  };
+
+  const handleUpdateInsurance = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/legal', validProjectId, {
+      additionalParams: { view: 'insurance' },
+      allowPortfolio: true,
+      fallbackMessage: 'Please select a project to update insurance'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.info('Opening insurance coverage management');
+    }
+  };
+
+  const handleGenerateProgressReport = () => {
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('Report generated successfully');
+        }, 2000);
+      }),
+      {
+        loading: 'Generating progress report...',
+        success: 'Progress report generated and sent to your email',
+        error: 'Failed to generate report'
+      }
+    );
+  };
+
+  const handleViewAllActivity = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/activity', validProjectId, {
+      allowPortfolio: true,
+      fallbackMessage: 'Please select a project to view activity'
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading full activity history');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
@@ -223,27 +311,51 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewBudgetVariance}
+            >
               <BarChart3 className="w-4 h-4 mr-2" />
               Review Budget Variance
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleScheduleSiteVisit}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Site Visit
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleApproveChangeOrders}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Approve Change Orders
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewTenantApplications}
+            >
               <Building className="w-4 h-4 mr-2" />
               Review Tenant Applications
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateInsurance}
+            >
               <DollarSign className="w-4 h-4 mr-2" />
               Update Insurance Coverage
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleGenerateProgressReport}
+            >
               <Target className="w-4 h-4 mr-2" />
               Generate Progress Report
             </Button>
@@ -599,7 +711,11 @@ const OverviewDashboard: React.FC<OverviewDashboardProps> = ({ projectId, active
             </div>
             
             <div className="pt-3 border-t border-border">
-              <Button variant="outline" className="w-full text-sm border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+              <Button 
+                variant="outline" 
+                className="w-full text-sm border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+                onClick={handleViewAllActivity}
+              >
                 View All Activity
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>

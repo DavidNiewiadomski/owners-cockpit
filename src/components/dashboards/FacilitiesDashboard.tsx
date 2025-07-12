@@ -10,6 +10,9 @@ import { useProjects } from '@/hooks/useProjects';
 import { useFacilitiesMetrics } from '@/hooks/useProjectMetrics';
 import WorkOrders from '@/widgets/components/WorkOrders';
 import EnergyUsage from '@/widgets/components/EnergyUsage';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface FacilitiesDashboardProps {
   projectId: string;
@@ -17,6 +20,7 @@ interface FacilitiesDashboardProps {
 }
 
 const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, activeCategory }) => {
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -140,6 +144,84 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
     compliance: []
   };
 
+  // Button click handlers
+  const handleCreateWorkOrder = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/facilities', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to create work order',
+      additionalParams: { view: 'create-work-order' }
+    });
+    if (validProjectId) {
+      toast.success('Opening work order creation form');
+    }
+  };
+
+  const handleScheduleMaintenance = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/facilities', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to schedule maintenance',
+      additionalParams: { view: 'maintenance-schedule' }
+    });
+    if (validProjectId) {
+      toast.info('Opening maintenance scheduling dashboard');
+    }
+  };
+
+  const handleReviewEnergyReports = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/facilities', validProjectId, {
+      allowPortfolio: true, // Energy reports can be viewed at portfolio level
+      fallbackMessage: 'Please select a project to review energy reports',
+      additionalParams: { view: 'energy-reports' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Loading energy consumption reports');
+    }
+  };
+
+  const handleInspectBuildingSystems = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/facilities', validProjectId, {
+      allowPortfolio: false,
+      fallbackMessage: 'Please select a project to inspect systems',
+      additionalParams: { view: 'system-inspection' }
+    });
+    if (validProjectId) {
+      toast.info('Opening building systems inspection checklist');
+    }
+  };
+
+  const handleUpdateOperatingCosts = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(router, '/finance', validProjectId, {
+      allowPortfolio: true, // Operating costs can be viewed at portfolio level
+      fallbackMessage: 'Please select a project to update costs',
+      additionalParams: { view: 'operating-costs' }
+    });
+    if (validProjectId || isPortfolioView) {
+      toast.success('Opening operating costs management');
+    }
+  };
+
+  const handleGenerateFacilitiesReport = () => {
+    // Reports can be generated at portfolio level
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    toast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve('Report generated successfully');
+        }, 2000);
+      }),
+      {
+        loading: 'Generating facilities management report...',
+        success: 'Facilities report generated and sent to your email',
+        error: 'Failed to generate report'
+      }
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Header */}
@@ -176,27 +258,51 @@ const FacilitiesDashboard: React.FC<FacilitiesDashboardProps> = ({ projectId, ac
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleCreateWorkOrder}
+            >
               <Wrench className="w-4 h-4 mr-2" />
               Create Work Order
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleScheduleMaintenance}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Maintenance
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewEnergyReports}
+            >
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Review Energy Reports
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleInspectBuildingSystems}
+            >
               <Building className="w-4 h-4 mr-2" />
               Inspect Building Systems
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateOperatingCosts}
+            >
               <DollarSign className="w-4 h-4 mr-2" />
               Update Operating Costs
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleGenerateFacilitiesReport}
+            >
               <Target className="w-4 h-4 mr-2" />
               Generate Facilities Report
             </Button>

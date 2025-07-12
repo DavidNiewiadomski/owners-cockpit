@@ -125,19 +125,10 @@ const IntegrationCard: React.FC<IntegrationCardProps> = ({
     
     try {
       const { data, error } = await supabase.functions.invoke('mockSync', {
-        body: { 
-          project_id: integration.project_id,
-          provider: integration.provider 
-        }
+        body: { project_id: integration.project_id, provider: integration.provider }
       });
-
-      if (error) {
-        console.error('Sync error:', error);
-        toast.error('Sync failed');
-      } else {
-        console.log('Sync result:', data);
-        toast.success('Sync completed successfully');
-      }
+      if (error) throw error;
+      toast.success('Sync completed successfully');
     } catch (error) {
       console.error('Sync error:', error);
       toast.error('Sync failed');

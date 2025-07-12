@@ -24,7 +24,7 @@ export const useAppState = () => {
   const [showUpload, setShowUpload] = useState(false);
   const [showSourceModal, setShowSourceModal] = useState(false);
   const [showDocumentViewer, setShowDocumentViewer] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState<unknown>(null);
+  const [selectedDocument, setSelectedDocument] = useState<{ url: string; mimeType: string; title: string; } | null>(null);
 
   const handleProjectChange = (projectId: string | null) => {
     if (projectId === 'portfolio') {
@@ -40,7 +40,7 @@ export const useAppState = () => {
     setActiveView(view);
   };
 
-  const handleDocumentSelect = (document: unknown) => {
+  const handleDocumentSelect = (document: { url: string; mimeType: string; title: string; } | null) => {
     setSelectedDocument(document);
     setShowDocumentViewer(true);
   };

@@ -1,10 +1,11 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, MessageSquare, Minimize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import EnterpriseAIChat from '@/components/EnterpriseAIChat';
+import EnterpriseAIChat from '@/components/EnterpriseAIChatNew';
 import { useAppState } from '@/hooks/useAppState';
+import { Badge } from '@/components/ui/badge';
+import { aiAgentFramework } from '@/lib/ai/agent-framework';
 
 interface AIChatOverlayProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
   
   const [isMinimized, setIsMinimized] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [notifications, setNotifications] = useState<string[]>([]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -48,6 +50,13 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    const unsubscribe = aiAgentFramework.subscribeToActions((action) => {
+      setNotifications(prev => [...prev, action.description]);
+    });
+    return unsubscribe;
+  }, []);
 
   if (!isOpen) {
     return null;
@@ -121,6 +130,9 @@ const AIChatOverlay: React.FC<AIChatOverlayProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
+          {isMinimized && notifications.length > 0 && (
+            <Badge>{notifications.length} new</Badge>
+          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>

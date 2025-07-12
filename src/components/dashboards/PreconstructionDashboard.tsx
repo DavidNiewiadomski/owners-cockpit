@@ -41,6 +41,9 @@ import {
 import { getDashboardTitle } from '@/utils/dashboardUtils';
 import { useProjects } from '@/hooks/useProjects';
 import { usePreconstructionMetrics } from '@/hooks/useProjectMetrics';
+import { useRouter } from '@/hooks/useRouter';
+import { toast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
 
 interface PreconstructionDashboardProps {
   projectId: string;
@@ -48,6 +51,7 @@ interface PreconstructionDashboardProps {
 }
 
 const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ projectId, activeCategory }) => {
+  const router = useRouter();
   const { data: projects = [] } = useProjects();
   
   // Handle portfolio view
@@ -163,6 +167,97 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
     }
   };
 
+  // Button click handlers
+  const handleUpdateBudget = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/finance',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { view: 'budget-update' },
+        fallbackMessage: 'Please select a project to update the budget'
+      }
+    );
+    if (validProjectId) {
+      toast.success('Opening budget update interface');
+    }
+  };
+
+  const handleSubmitPermit = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/planning',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { view: 'permit-submission' },
+        fallbackMessage: 'Please select a project to submit permits'
+      }
+    );
+    if (validProjectId) {
+      toast.info('Opening permit submission portal');
+    }
+  };
+
+  const handleReviewBids = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/procurement',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { view: 'bid-analysis' },
+        fallbackMessage: 'Please select a project to review bids'
+      }
+    );
+    if (validProjectId) {
+      toast.success('Loading bid review dashboard');
+    }
+  };
+
+  const handleUpdateSchedule = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/planning/schedule',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { mode: 'edit' },
+        fallbackMessage: 'Please select a project to update the schedule'
+      }
+    );
+    if (validProjectId) {
+      toast.info('Opening schedule update interface');
+    }
+  };
+
+  const handleContractorMeeting = () => {
+    toast.info('Opening calendar to schedule contractor meeting');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Contractor+Preconstruction+Meeting', '_blank');
+  };
+
+  const handleRiskAssessment = () => {
+    const validProjectId = getValidProjectId(displayProjectId, isPortfolioView);
+    navigateWithProjectId(
+      router,
+      '/planning/risk',
+      validProjectId,
+      {
+        allowPortfolio: false,
+        additionalParams: { view: 'assessment' },
+        fallbackMessage: 'Please select a project to assess risks'
+      }
+    );
+    if (validProjectId) {
+      toast.success('Opening risk assessment dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Header */}
@@ -274,27 +369,50 @@ const PreconstructionDashboard: React.FC<PreconstructionDashboardProps> = ({ pro
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button className="justify-start bg-blue-600 hover:bg-blue-700 text-foreground">
+            <Button 
+              className="justify-start bg-blue-600 hover:bg-blue-700 text-foreground"
+              onClick={handleUpdateBudget}
+            >
               <DollarSign className="w-4 h-4 mr-2" />
               Update Budget
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleSubmitPermit}
+            >
               <FileText className="w-4 h-4 mr-2" />
               Submit Permit
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewBids}
+            >
               <Gavel className="w-4 h-4 mr-2" />
               Review Bids
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUpdateSchedule}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Update Schedule
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleContractorMeeting}
+            >
               <Users className="w-4 h-4 mr-2" />
               Contractor Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleRiskAssessment}
+            >
               <Target className="w-4 h-4 mr-2" />
               Risk Assessment
             </Button>

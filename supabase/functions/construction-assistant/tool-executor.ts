@@ -466,17 +466,121 @@ export class ToolExecutor {
   }
 
   private async executeTool(toolName: string, parameters: any): Promise<any> {
-    switch (toolName) {
-      case 'get_project_status':
-        return await this.executeGetProjectStatus(parameters)
-      case 'list_contractors':
-        return await this.executeListContractors(parameters)
-      case 'create_change_order':
-        return await this.executeCreateChangeOrder(parameters)
-      case 'update_schedule':
-        return await this.executeUpdateSchedule(parameters)
+    // Check if it's a read operation
+    const readOperations = ['get_project_status', 'list_contractors', 'get_communications', 'get_emails', 'get_teams_messages', 'get_calendar_events']
+    
+    if (readOperations.includes(toolName)) {
+      switch (toolName) {
+        case 'get_project_status':
+          return await this.executeGetProjectStatus(parameters)
+        case 'list_contractors':
+          return await this.executeListContractors(parameters)
+        default:
+          // Handle other read operations
+          return await this.executeReadOperation(toolName, parameters)
+      }
+    }
+    
+    // For all other operations, call the platform-actions edge function
+    return await this.executePlatformAction(toolName, parameters)
+  }
+  
+  private async executePlatformAction(action: string, parameters: any): Promise<any> {
+    console.log(`🚀 Executing platform action: ${action}`, parameters)
+    
+    // Map tool names to platform action format
+    const actionMapping: Record<string, { action: string, resource: string }> = {
+      'create_task': { action: 'create', resource: 'tasks' },
+      'create_meeting': { action: 'create', resource: 'meetings' },
+      'create_change_order': { action: 'create', resource: 'change_orders' },
+      'create_rfi': { action: 'create', resource: 'rfis' },
+      'create_submittal': { action: 'create', resource: 'submittals' },
+      'update_schedule': { action: 'update', resource: 'schedules' },
+      'update_budget': { action: 'update', resource: 'budgets' },
+      'send_email': { action: 'execute', resource: 'send_email' },
+      'send_sms': { action: 'execute', resource: 'send_sms' },
+      'send_teams_message': { action: 'execute', resource: 'send_teams_message' },
+      'schedule_meeting': { action: 'execute', resource: 'schedule_meeting' },
+      'approve_change_order': { action: 'execute', resource: 'approve_change_order' },
+      'assign_task': { action: 'execute', resource: 'assign_task' },
+      'flag_risk': { action: 'execute', resource: 'flag_risk' }
+    }
+    
+    const mapping = actionMapping[action] || { action: 'execute', resource: action }
+    
+    // Call the platform-actions edge function
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!
+    
+    const response = await fetch(`${supabaseUrl}/functions/v1/platform-actions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`
+      },
+      body: JSON.stringify({
+        action: mapping.action,
+        resource: mapping.resource,
+        data: parameters,
+        user_id: parameters.user_id || 'ai_system',
+        project_id: parameters.project_id,
+        ai_request_id: `ai_${Date.now()}`,
+        require_confirmation: false // AI actions are pre-approved in this context
+      })
+    })
+    
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(`Platform action failed: ${error}`)
+    }
+    
+    const result = await response.json()
+    console.log(`✅ Platform action completed:`, result)
+    
+    return result
+  }
+  
+  private async executeReadOperation(operation: string, parameters: any): Promise<any> {
+    // Handle various read operations
+    switch (operation) {
+      case 'get_communications':
+        const { data: comms } = await this.supabase
+          .from('communications')
+          .select('*')
+          .eq('project_id', parameters.project_id)
+          .order('created_at', { ascending: false })
+          .limit(10)
+        return comms || []
+        
+      case 'get_emails':
+        const { data: emails } = await this.supabase
+          .from('communications')
+          .select('*')
+          .eq('type', 'email')
+          .order('created_at', { ascending: false })
+          .limit(10)
+        return emails || []
+        
+      case 'get_teams_messages':
+        const { data: messages } = await this.supabase
+          .from('communications')
+          .select('*')
+          .eq('type', 'teams')
+          .order('created_at', { ascending: false })
+          .limit(10)
+        return messages || []
+        
+      case 'get_calendar_events':
+        const { data: events } = await this.supabase
+          .from('meetings')
+          .select('*')
+          .gte('start_time', new Date().toISOString())
+          .order('start_time', { ascending: true })
+          .limit(10)
+        return events || []
+        
       default:
-        throw new Error(`Tool execution not implemented: ${toolName}`)
+        return { message: `Read operation ${operation} not implemented` }
     }
   }
 

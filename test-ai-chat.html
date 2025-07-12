@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Chat Test</h1>
+        
+        <h2>1. Test Edge Function Directly</h2>
+        <button onclick="testEdgeFunction()">Test Edge Function</button>
+        
+        <h2>2. Test Voice Recognition</h2>
+        <button onclick="testVoiceRecognition()">Start Voice Test</button>
+        <button onclick="stopVoice()">Stop Voice</button>
+        
+        <h2>3. Test Complete Flow</h2>
+        <input type="text" id="messageInput" placeholder="Enter a message" style="width: 300px; padding: 5px;">
+        <button onclick="testCompleteFlow()">Send Message</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const log = (message, type = 'info') => {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div class="${type}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+
+        const SUPABASE_URL = 'http://127.0.0.1:54321';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
+
+        let recognition = null;
+
+        async function testEdgeFunction() {
+            log('Testing edge function...', 'info');
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/construction-assistant`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        message: 'Hello, this is a test',
+                        enable_voice: false
+                    })
+                });
+
+                const data = await response.json();
+                log('Response: ' + JSON.stringify(data, null, 2), 'success');
+            } catch (error) {
+                log('Error: ' + error.message, 'error');
+            }
+        }
+
+        function testVoiceRecognition() {
+            log('Starting voice recognition...', 'info');
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                log('Speech recognition not supported in this browser', 'error');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const lastResult = event.results[event.results.length - 1];
+                const transcript = lastResult[0].transcript;
+                
+                if (lastResult.isFinal) {
+                    log('Final transcript: ' + transcript, 'success');
+                } else {
+                    log('Interim: ' + transcript, 'info');
+                }
+            };
+
+            recognition.onerror = (event) => {
+                log('Recognition error: ' + event.error, 'error');
+            };
+
+            recognition.onend = () => {
+                log('Recognition ended', 'info');
+            };
+
+            recognition.start();
+            log('Voice recognition started - speak now!', 'success');
+        }
+
+        function stopVoice() {
+            if (recognition) {
+                recognition.stop();
+                log('Voice recognition stopped', 'info');
+            }
+        }
+
+        async function testCompleteFlow() {
+            const message = document.getElementById('messageInput').value || 'What is the project status?';
+            log('Testing complete flow with message: ' + message, 'info');
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/construction-assistant`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        user_id: 'test_user',
+                        project_id: 'test_project',
+                        enable_voice: true,
+                        voice_optimized: false,
+                        tools_enabled: true
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    log('AI Response: ' + data.response, 'success');
+                    
+                    if (data.audio_url) {
+                        log('Audio URL received: ' + data.audio_url.substring(0, 50) + '...', 'info');
+                        
+                        try {
+                            const audio = new Audio(data.audio_url);
+                            audio.play();
+                            log('Playing audio response...', 'success');
+                        } catch (e) {
+                            log('Audio playback failed: ' + e.message, 'error');
+                        }
+                    }
+                    
+                    if (data.tool_results && data.tool_results.length > 0) {
+                        log('Tools used: ' + JSON.stringify(data.tool_results), 'info');
+                    }
+                } else {
+                    log('AI Error: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                log('Request failed: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

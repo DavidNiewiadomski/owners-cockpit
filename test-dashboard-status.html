@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Status Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        pre {
+            background: #f9fafb;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Status Test Report</h1>
+    
+    <div class="test-section">
+        <h2>✅ Fixes Applied</h2>
+        <ul>
+            <li class="success">✓ Fixed Index.tsx to render MainContent inside MainLayout</li>
+            <li class="success">✓ Updated database seed with matching project IDs from sample data</li>
+            <li class="success">✓ Fixed column names in seed script</li>
+            <li class="success">✓ Added better error logging to useProjects hook</li>
+            <li class="success">✓ Successfully seeded 3 projects with all metrics data</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Data Status</h2>
+        <h3>Projects in Database:</h3>
+        <ul>
+            <li>Downtown Office Building (ID: 11111111-1111-1111-1111-111111111111)</li>
+            <li>Residential Complex Phase 1 (ID: 22222222-2222-2222-2222-222222222222)</li>
+            <li>Highway Bridge Renovation (ID: 33333333-3333-3333-3333-333333333333)</li>
+        </ul>
+        
+        <h3>Metrics Seeded:</h3>
+        <ul>
+            <li class="success">✓ Financial Metrics (budgets, ROI, NPV)</li>
+            <li class="success">✓ Construction Metrics (progress, workforce, safety)</li>
+            <li class="success">✓ Executive Metrics (portfolio values, risk scores)</li>
+            <li class="success">✓ Design, Legal, Sustainability Metrics</li>
+            <li class="success">✓ Monthly spend and cash flow data</li>
+            <li class="success">✓ Project timelines and team information</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🚀 How to Test</h2>
+        <ol>
+            <li>Open <a href="http://localhost:5173/" target="_blank">http://localhost:5173/</a></li>
+            <li>The main dashboard should now display with data</li>
+            <li>Use the project selector dropdown to switch between projects</li>
+            <li>Click on different dashboard categories (Overview, Construction, Finance, etc.)</li>
+            <li>All dashboards should show real data from the database</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 What to Look For</h2>
+        <ul>
+            <li><strong>Overview Dashboard:</strong> Should show 68% progress for Downtown Office Building</li>
+            <li><strong>Construction Dashboard:</strong> Should display workforce of 145, safety score of 97%</li>
+            <li><strong>Finance Dashboard:</strong> Should show $52M budget with $35.4M spent</li>
+            <li><strong>Charts:</strong> Should display with real data points</li>
+            <li><strong>Project Switcher:</strong> Should list all 3 projects</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🛠️ Troubleshooting</h2>
+        <p>If dashboards are still blank:</p>
+        <ol>
+            <li>Check browser console for errors (F12)</li>
+            <li>Look for "🔥" prefixed logs showing data fetch status</li>
+            <li>Verify Supabase is running: <code>npx supabase status</code></li>
+            <li>Check if using database data or sample data in console logs</li>
+        </ol>
+    </div>
+
+    <script>
+        // Add timestamp
+        document.body.insertAdjacentHTML('beforeend', 
+            `<p style="text-align: center; color: #666; margin-top: 40px;">
+                Generated at: ${new Date().toLocaleString()}
+            </p>`
+        );
+    </script>
+</body>
+</html>
