@@ -29,26 +29,29 @@ export function useProjects() {
           .order('created_at', { ascending: false });
 
         if (error) {
-          console.warn('🔥 Database error, falling back to sample data:', error);
+          console.error('🔥❌ Database error:', error.message, error.details);
+          console.warn('🔥 Falling back to sample data');
           const sampleProjects = getAllProjects();
-          console.log('🔥 Using sample projects:', sampleProjects);
+          console.log('🔥 Sample projects:', sampleProjects);
           return sampleProjects;
         }
 
         // If no data in database, use sample data
         if (!data || data.length === 0) {
-          console.log('🔥 No projects in database, using sample data');
+          console.warn('🔥⚠️ No projects in database, using sample data');
           const sampleProjects = getAllProjects();
           console.log('🔥 Sample projects loaded:', sampleProjects);
           return sampleProjects;
         }
 
-        console.log('🔥 SUCCESS - Projects data from database:', data);
+        console.log('🔥✅ SUCCESS - Projects from database:', data.length, 'projects');
+        console.log('🔥 Project IDs:', data.map(p => p.id));
+        console.log('🔥 Project names:', data.map(p => p.name));
         return data;
       } catch (err) {
-        console.warn('🔥 Fetch failed, falling back to sample data:', err);
+        console.error('🔥❌ Fetch exception:', err);
         const sampleProjects = getAllProjects();
-        console.log('🔥 Fallback sample projects:', sampleProjects);
+        console.log('🔥 Using fallback sample projects:', sampleProjects.length, 'projects');
         return sampleProjects;
       }
     },

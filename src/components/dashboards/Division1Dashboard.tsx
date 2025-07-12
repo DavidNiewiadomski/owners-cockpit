@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AIInsightsPanel from './division1/AIInsightsPanel';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -48,19 +48,30 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import type { Division1Section } from '@/hooks/useDivision1Data';
 import { useDivision1Data } from '@/hooks/useDivision1Data';
 import { useAppState } from '@/hooks/useAppState';
+import { useRouter } from '@/hooks/useRouter';
+import { toast as sonnerToast } from 'sonner';
+import { navigateWithProjectId, getValidProjectId } from '@/utils/navigationUtils';
+import { useProjects } from '@/hooks/useProjects';
+import { AutonomousAgent } from '@/lib/ai/autonomous-agent';
 
 // Real Division 1 data types are imported from useDivision1Data hook
 type FilterType = 'all' | 'overdue' | 'pending' | 'completed' | 'in_progress';
 
 const Division1Dashboard: React.FC = () => {
+  const router = useRouter();
   const { selectedProject } = useAppState();
+  const { data: projects } = useProjects();
   
-  const [selectedSection, setSelectedSection] = useState<Division1Section | null>(null);
-  const [isIssueDrawerOpen, setIsIssueDrawerOpen] = useState(false);
-  const [filter, setFilter] = useState<FilterType>('all');
+  // Get project ID for navigation
+  const projectId = selectedProject ?? 'portfolio';
+  const isPortfolioView = projectId === 'portfolio';
 
-  // Demo mock data for immediate display
-  const sections: Division1Section[] = [
+  // Get real data from hook - for portfolio view, use first active project
+  const effectiveProjectId = isPortfolioView ? (projects?.[0]?.id || null) : projectId;
+  const { sections: realSections, loading: isLoading, error } = useDivision1Data(effectiveProjectId);
+
+  // Use real data if available, otherwise use demo data
+  const sections: Division1Section[] = realSections && realSections.length > 0 ? realSections : [
     {
       id: '1',
       project_id: 'proj1',
@@ -175,7 +186,7 @@ const Division1Dashboard: React.FC = () => {
     }
   ];
 
-  // Calculate summary metrics from live data
+  // Calculate summary metrics
   const totalSections = sections.length;
   const completedSections = sections.filter(s => s.status === 'completed').length;
   const pendingSections = sections.filter(s => s.status === 'pending').length;
@@ -190,8 +201,8 @@ const Division1Dashboard: React.FC = () => {
   const docsOnFile = sections.reduce((sum, s) => sum + s.docs_on_file, 0);
   const missingDocs = totalDocs - docsOnFile;
   const overallCompliance = Math.round((completedSections / totalSections) * 100);
-  const criticalIssues = 3; // High priority open issues
-  
+  const criticalIssues = 3;
+
   const summary = {
     totalSections,
     completedSections,
@@ -213,6 +224,14 @@ const Division1Dashboard: React.FC = () => {
     }
   };
 
+  // States (single block)
+  const [selectedSection, setSelectedSection] = useState<Division1Section | null>(null);
+  const [isIssueDrawerOpen, setIsIssueDrawerOpen] = useState(false);
+  const [filter, setFilter] = useState<FilterType>('all');
+  const [sectionNotes, setSectionNotes] = useState<Record<string, string[]>>({});
+  const [uploadedDocuments, setUploadedDocuments] = useState<string[]>([]);
+  const [localDocsOnFile, setLocalDocsOnFile] = useState<number>(docsOnFile);
+
   const handleSectionClick = (section: Division1Section) => {
     setSelectedSection(section);
     setIsIssueDrawerOpen(true);
@@ -223,6 +242,76 @@ const Division1Dashboard: React.FC = () => {
       title: "Issue Resolved",
       description: "Issue has been marked as resolved.",
     });
+  };
+
+  // Modular upload function
+  const performUpload = async (files: FileList | null, sectionId?: string) => {
+    try {
+      if (!files || files.length === 0) return;
+      const newDocs = Array.from(files).filter(file =>
+        ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'image/png', 'image/jpeg'].includes(file.type)
+      ).map(file => file.name);
+      if (newDocs.length !== files.length) throw new Error('Invalid file type');
+      setUploadedDocuments((prev: string[]) => [...prev, ...newDocs]);
+      setLocalDocsOnFile((prev: number) => prev + newDocs.length);
+      if (sectionId) {
+        const sectionIndex = sections.findIndex(s => s.id === sectionId);
+        if (sectionIndex !== -1) sections[sectionIndex].docs_on_file += newDocs.length;
+      }
+      sonnerToast.success(`${newDocs.length} documents uploaded`);
+    } catch (error) {
+      sonnerToast.error('Upload failed: ' + (error as Error).message);
+    }
+  };
+
+  const handleSheetUploadDocuments = () => {
+    if (!selectedSection) return;
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.multiple = true;
+    fileInput.accept = '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg';
+    fileInput.onchange = (e) => performUpload((e.target as HTMLInputElement).files, selectedSection.id);
+    fileInput.click();
+  };
+
+  const handleAddNote = () => {
+    if (!selectedSection) return;
+    
+    const note = prompt('Add a note for this section:');
+    if (note && note.trim()) {
+      setSectionNotes(prev => ({
+        ...prev,
+        [selectedSection.id]: [...(prev[selectedSection.id] || []), note.trim()]
+      }));
+      sonnerToast.success('Note added successfully');
+    }
+  };
+
+  const handleMarkAsComplete = () => {
+    if (!selectedSection) return;
+    
+    sonnerToast.promise(
+      new Promise((resolve) => {
+        setTimeout(() => {
+          // Update the section status
+          const sectionIndex = sections.findIndex(s => s.id === selectedSection.id);
+          if (sectionIndex !== -1) {
+            sections[sectionIndex].status = 'completed';
+            sections[sectionIndex].completion_percentage = 100;
+          }
+          setSelectedSection({...selectedSection, status: 'completed', completion_percentage: 100});
+          resolve(`${selectedSection.title} marked as complete`);
+        }, 1000);
+      }),
+      {
+        loading: 'Marking section as complete...',
+        success: (msg) => {
+          setIsIssueDrawerOpen(false);
+          return msg as string;
+        },
+        error: 'Failed to mark as complete'
+      }
+    );
   };
 
   const getStatusColor = (status: string) => {
@@ -261,7 +350,7 @@ const Division1Dashboard: React.FC = () => {
     if (!section.due_date) return section.status;
     const dueDate = new Date(section.due_date);
     const today = new Date();
-    return dueDate < today && section.status !== 'completed' ? 'overdue' : section.status;
+    return dueDate < today ? 'overdue' : section.status;
   };
 
   // Filter and sort sections based on filter
@@ -278,11 +367,125 @@ const Division1Dashboard: React.FC = () => {
     return a.section_number.localeCompare(b.section_number);
   });
 
+  // Button click handlers
+  const handleReviewComplianceReport = () => {
+    const validProjectId = getValidProjectId(projectId, isPortfolioView);
+    if (!validProjectId && !isPortfolioView) {
+      sonnerToast.warning('Please select a project to review compliance reports', {
+        description: 'Navigate to a specific project to access this feature',
+        duration: 4000,
+      });
+      return;
+    }
+    
+    // Switch to Legal tab in the dashboard
+    sessionStorage.setItem('activeCategory', 'Legal');
+    sessionStorage.setItem('legalView', 'compliance-report');
+    window.dispatchEvent(new CustomEvent('activeCategoryChange', { detail: 'Legal' }));
+    sonnerToast.success('Opening compliance report dashboard');
+  };
+
+  const handleScheduleMeeting = () => {
+    sonnerToast.info('Opening calendar to schedule Division 1 meeting');
+    window.open('https://calendar.google.com/calendar/u/0/r/eventedit?text=Division+1+Compliance+Meeting', '_blank');
+  };
+
+  const handleApproveChanges = () => {
+    const validProjectId = getValidProjectId(projectId, isPortfolioView);
+    if (!validProjectId && !isPortfolioView) {
+      sonnerToast.warning('Please select a project to approve changes', {
+        description: 'Navigate to a specific project to access this feature',
+        duration: 4000,
+      });
+      return;
+    }
+    
+    // Navigate to action-items page with division filter
+    navigateWithProjectId(
+      router,
+      '/action-items',
+      validProjectId,
+      {
+        allowPortfolio: true,
+        additionalParams: { type: 'approvals', division: '1' },
+        fallbackMessage: 'Please select a project to view Division 1 approvals'
+      }
+    );
+    if (validProjectId) {
+      sonnerToast.info('Navigating to pending Division 1 approvals');
+    }
+  };
+
+  // Enhanced download with real blob
+  const handleDownloadReport = async () => {
+    try {
+      const reportContent = JSON.stringify(summary, null, 2);
+      const blob = new Blob([reportContent], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'division1_report.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      sonnerToast.success('Report downloaded');
+    } catch (error) {
+      sonnerToast.error('Download failed');
+    }
+  };
+
+  const handleUploadDocument = () => {
+    const validProjectId = getValidProjectId(projectId, isPortfolioView);
+    if (!validProjectId && !isPortfolioView) {
+      sonnerToast.warning('Please select a project to upload documents', { description: 'Navigate to a specific project to access this feature', duration: 4000 });
+      return;
+    }
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.multiple = true;
+    fileInput.accept = '.pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg';
+    fileInput.onchange = (e) => performUpload((e.target as HTMLInputElement).files);
+    fileInput.click();
+  };
+
+  const handleGenerateDivision1Report = async () => {
+    try {
+      const reportContent = JSON.stringify(sections, null, 2);
+      const blob = new Blob([reportContent], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'full_division1_report.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      sonnerToast.success('Report generated and downloaded');
+    } catch (error) {
+      sonnerToast.error('Generation failed');
+    }
+  };
+
+  // Loading state
+  if (isLoading && (!sections || sections.length === 0)) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading Division 1 data...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Trigger agent for proactive compliance check
+  useEffect(() => {
+    const agent = new AutonomousAgent('user', projectId);
+    agent.operate('Check compliance risks', 'autonomous');
+  }, [projectId]);
+
   return (
     <div className="p-6 space-y-6">
       {/* AI Insights Panel */}
       <AIInsightsPanel projectData={{
-        name: selectedProject?.name || "Project",
+        name: selectedProject ? projects?.find(p => p.id === selectedProject)?.name ?? `Project ${selectedProject}` : 'Portfolio',
         compliancePercent: summary.overallCompliance,
         overdueItems: summary.overdueSections,
         missingDocs: summary.missingDocs,
@@ -313,27 +516,51 @@ const Division1Dashboard: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleReviewComplianceReport}
+            >
               <BarChart3 className="w-4 h-4 mr-2" />
               Review Compliance Report
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleScheduleMeeting}
+            >
               <Calendar className="w-4 h-4 mr-2" />
               Schedule Meeting
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleApproveChanges}
+            >
               <CheckCircle className="w-4 h-4 mr-2" />
               Approve Changes
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleDownloadReport}
+            >
               <Download className="w-4 h-4 mr-2" />
               Download Report
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleUploadDocument}
+            >
               <Upload className="w-4 h-4 mr-2" />
               Upload Document
             </Button>
-            <Button variant="outline" className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground">
+            <Button 
+              variant="outline" 
+              className="justify-start border-border hover:bg-accent text-foreground hover:text-accent-foreground"
+              onClick={handleGenerateDivision1Report}
+            >
               <Target className="w-4 h-4 mr-2" />
               Generate Division 1 Report
             </Button>
@@ -701,19 +928,46 @@ const Division1Dashboard: React.FC = () => {
             
             {/* Actions */}
             <div className="space-y-2">
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleSheetUploadDocuments}
+              >
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Documents
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleAddNote}
+              >
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Add Note
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={handleMarkAsComplete}
+                disabled={selectedSection?.status === 'completed'}
+              >
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Mark as Complete
+                {selectedSection?.status === 'completed' ? 'Already Complete' : 'Mark as Complete'}
               </Button>
             </div>
+            
+            {/* Notes Section */}
+            {selectedSection && sectionNotes[selectedSection.id]?.length > 0 && (
+              <div className="mt-4">
+                <h5 className="font-semibold mb-2">Notes</h5>
+                <div className="space-y-2">
+                  {sectionNotes[selectedSection.id].map((note, index) => (
+                    <div key={index} className="p-2 bg-muted rounded-lg">
+                      <p className="text-sm">{note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>
@@ -805,6 +1059,12 @@ const Division1Dashboard: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+      <div>
+        <h3>Uploaded Documents</h3>
+        <ul>
+          {uploadedDocuments.map((doc, idx) => <li key={idx}>{doc}</li>)}
+        </ul>
       </div>
     </div>
   );
